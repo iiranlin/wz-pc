@@ -1,0 +1,737 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3528651 */
+  /* Color fonts */
+  src: 
+       url('iconfont.woff2?t=1702005026588') format('woff2'),
+       url('iconfont.woff?t=1702005026588') format('woff'),
+       url('iconfont.ttf?t=1702005026588') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.Icon-a-reportforms2:before {
+  content: "\e601";
+}
+
+.Icon-a-reportforms1:before {
+  content: "\e602";
+}
+
+.Icon-a-reportforms3:before {
+  content: "\e603";
+}
+
+.Icon-help:before {
+  content: "\e7b7";
+}
+
+.Icon-insertcolumn:before {
+  content: "\e7b5";
+}
+
+.Icon-insertrow:before {
+  content: "\e7b6";
+}
+
+.Icon-Icon-checking1:before {
+  content: "\e7b1";
+}
+
+.Icon-Icon-goback1:before {
+  content: "\e7b2";
+}
+
+.Icon-Icon-reject1:before {
+  content: "\e7b3";
+}
+
+.Icon-Icon-turnout1:before {
+  content: "\e7b4";
+}
+
+.Icon-Icon-checking:before {
+  content: "\e7ad";
+}
+
+.Icon-Icon-reject:before {
+  content: "\e7ae";
+}
+
+.Icon-Icon-goback:before {
+  content: "\e7af";
+}
+
+.Icon-Icon-turnout:before {
+  content: "\e7b0";
+}
+
+.Icon-Blue-Newsuits:before {
+  content: "\e7ac";
+}
+
+.Icon-Left-list:before {
+  content: "\e78e";
+}
+
+.Icon-Left-buttons:before {
+  content: "\e797";
+}
+
+.Icon-Left-formsetting:before {
+  content: "\e798";
+}
+
+.Icon-Left-editnote:before {
+  content: "\e799";
+}
+
+.Icon-Left-organrules:before {
+  content: "\e79a";
+}
+
+.Icon-Left-dictionary:before {
+  content: "\e79b";
+}
+
+.Icon-Left-company:before {
+  content: "\e79c";
+}
+
+.Icon-Left-Lines:before {
+  content: "\e79d";
+}
+
+.Icon-Left-post:before {
+  content: "\e79e";
+}
+
+.Icon-Left-note:before {
+  content: "\e79f";
+}
+
+.Icon-Left-dictnormal:before {
+  content: "\e7a0";
+}
+
+.Icon-Left-menu:before {
+  content: "\e7a1";
+}
+
+.Icon-Left-pages:before {
+  content: "\e7a2";
+}
+
+.Icon-Left-authority:before {
+  content: "\e7a3";
+}
+
+.Icon-Left-datarules:before {
+  content: "\e7a4";
+}
+
+.Icon-Left-authored:before {
+  content: "\e7a5";
+}
+
+.Icon-Left-usersetting:before {
+  content: "\e7a6";
+}
+
+.Icon-Left-regnote:before {
+  content: "\e7a7";
+}
+
+.Icon-Left-menusetting:before {
+  content: "\e7a8";
+}
+
+.Icon-Left-forms:before {
+  content: "\e7a9";
+}
+
+.Icon-Left-title:before {
+  content: "\e7aa";
+}
+
+.Icon-Left-organization:before {
+  content: "\e7ab";
+}
+
+.Icon-Left-change:before {
+  content: "\e781";
+}
+
+.Icon-Left-data:before {
+  content: "\e782";
+}
+
+.Icon-Left-finance:before {
+  content: "\e783";
+}
+
+.Icon-Left-local:before {
+  content: "\e784";
+}
+
+.Icon-Left-goods:before {
+  content: "\e785";
+}
+
+.Icon-Left-home:before {
+  content: "\e786";
+}
+
+.Icon-Left-number:before {
+  content: "\e787";
+}
+
+.Icon-Left-parameter:before {
+  content: "\e788";
+}
+
+.Icon-Left-code:before {
+  content: "\e789";
+}
+
+.Icon-Left-receive:before {
+  content: "\e78a";
+}
+
+.Icon-Left-property:before {
+  content: "\e78b";
+}
+
+.Icon-Left-return:before {
+  content: "\e78c";
+}
+
+.Icon-Left-taglist:before {
+  content: "\e78d";
+}
+
+.Icon-Left-transfer:before {
+  content: "\e78f";
+}
+
+.Icon-Left-reg:before {
+  content: "\e790";
+}
+
+.Icon-Left-todo:before {
+  content: "\e791";
+}
+
+.Icon-Left-technical:before {
+  content: "\e792";
+}
+
+.Icon-Left-voucher:before {
+  content: "\e793";
+}
+
+.Icon-Left-working:before {
+  content: "\e794";
+}
+
+.Icon-Left-waiting:before {
+  content: "\e795";
+}
+
+.Icon-Left-audit:before {
+  content: "\e796";
+}
+
+.Icon-Left-asset:before {
+  content: "\e77e";
+}
+
+.Icon-Left-classify:before {
+  content: "\e77f";
+}
+
+.Icon-Left-basement:before {
+  content: "\e780";
+}
+
+.Icon-State-Pause:before {
+  content: "\e77d";
+}
+
+.Icon-Line-EditCancel:before {
+  content: "\e77c";
+}
+
+.Icon-Blue-Export1:before {
+  content: "\e77a";
+}
+
+.Icon-Blue-Spend:before {
+  content: "\e77b";
+}
+
+.Icon-Icon-GoodsHistory:before {
+  content: "\e779";
+}
+
+.Icon-Blue-AddParameter:before {
+  content: "\e778";
+}
+
+.Icon-Blue-NewCheck:before {
+  content: "\e76b";
+}
+
+.Icon-Blue-SubmitResult:before {
+  content: "\e76e";
+}
+
+.Icon-Blue-AddReplacement:before {
+  content: "\e767";
+}
+
+.Icon-Blue-AddSon:before {
+  content: "\e768";
+}
+
+.Icon-Blue-CodePrinter:before {
+  content: "\e769";
+}
+
+.Icon-Blue-Copy:before {
+  content: "\e76a";
+}
+
+.Icon-Blue-Invalid:before {
+  content: "\e76c";
+}
+
+.Icon-Blue-FastProcessing:before {
+  content: "\e76d";
+}
+
+.Icon-Blue-EditCard:before {
+  content: "\e76f";
+}
+
+.Icon-Blue-InvalidReplacement:before {
+  content: "\e770";
+}
+
+.Icon-Blue-Log:before {
+  content: "\e771";
+}
+
+.Icon-Blue-NewGoods:before {
+  content: "\e772";
+}
+
+.Icon-Blue-NewInvalid:before {
+  content: "\e773";
+}
+
+.Icon-Blue-Receive:before {
+  content: "\e774";
+}
+
+.Icon-Blue-NewCard:before {
+  content: "\e775";
+}
+
+.Icon-Blue-FixedAssets:before {
+  content: "\e776";
+}
+
+.Icon-Blue-Sendback:before {
+  content: "\e777";
+}
+
+.Icon-Blue-Cancel:before {
+  content: "\e766";
+}
+
+.Icon-Icon-Set:before {
+  content: "\e765";
+}
+
+.Icon-State-Emtpy:before {
+  content: "\e764";
+}
+
+.Icon-Icon-Boxes:before {
+  content: "\e763";
+}
+
+.Icon-Icon-BroLevel:before {
+  content: "\e75f";
+}
+
+.Icon-Icon-QR:before {
+  content: "\e760";
+}
+
+.Icon-Icon-Bar:before {
+  content: "\e761";
+}
+
+.Icon-Icon-SonLevel:before {
+  content: "\e762";
+}
+
+.Icon-Drag-Tip:before {
+  content: "\e75e";
+}
+
+.Icon-Blue-history:before {
+  content: "\e75d";
+}
+
+.Icon-Code-Bottom:before {
+  content: "\e759";
+}
+
+.Icon-Code-Top:before {
+  content: "\e75a";
+}
+
+.Icon-Code-Left:before {
+  content: "\e75b";
+}
+
+.Icon-Code-Right:before {
+  content: "\e75c";
+}
+
+.Icon-State-Audit:before {
+  content: "\e74d";
+}
+
+.Icon-State-Recycle:before {
+  content: "\e74e";
+}
+
+.Icon-State-Repair:before {
+  content: "\e74f";
+}
+
+.Icon-State-Idle:before {
+  content: "\e750";
+}
+
+.Icon-State-Borrow:before {
+  content: "\e751";
+}
+
+.Icon-State-Fail:before {
+  content: "\e752";
+}
+
+.Icon-State-Warning:before {
+  content: "\e753";
+}
+
+.Icon-State-Waiting:before {
+  content: "\e754";
+}
+
+.Icon-State-Success:before {
+  content: "\e755";
+}
+
+.Icon-State-Storing:before {
+  content: "\e756";
+}
+
+.Icon-State-Scrap:before {
+  content: "\e757";
+}
+
+.Icon-State-Working:before {
+  content: "\e758";
+}
+
+.Icon-Blue-Upload:before {
+  content: "\e74c";
+}
+
+.Icon-Line-Download:before {
+  content: "\e730";
+}
+
+.Icon-Line-Detail:before {
+  content: "\e731";
+}
+
+.Icon-Line-Date:before {
+  content: "\e732";
+}
+
+.Icon-Line-Filter:before {
+  content: "\e733";
+}
+
+.Icon-Line-Printer:before {
+  content: "\e734";
+}
+
+.Icon-Line-FullScreen:before {
+  content: "\e735";
+}
+
+.Icon-Line-Export:before {
+  content: "\e736";
+}
+
+.Icon-Line-Search:before {
+  content: "\e737";
+}
+
+.Icon-Line-Refresh:before {
+  content: "\e738";
+}
+
+.Icon-Line-GobackCard:before {
+  content: "\e739";
+}
+
+.Icon-Line-RecordCard:before {
+  content: "\e73a";
+}
+
+.Icon-Menu-Document:before {
+  content: "\e73b";
+}
+
+.Icon-Line-Submit:before {
+  content: "\e73c";
+}
+
+.Icon-Menu-Home:before {
+  content: "\e73d";
+}
+
+.Icon-LIne-Edit:before {
+  content: "\e73e";
+}
+
+.Icon-Menu-Search:before {
+  content: "\e73f";
+}
+
+.Icon-Menu-Inventory:before {
+  content: "\e740";
+}
+
+.Icon-Menu-Contract:before {
+  content: "\e741";
+}
+
+.Icon-Line-Reverse:before {
+  content: "\e742";
+}
+
+.Icon-Menu-Order:before {
+  content: "\e743";
+}
+
+.Icon-Menu-Sale:before {
+  content: "\e744";
+}
+
+.Icon-Menu-Project:before {
+  content: "\e745";
+}
+
+.Icon-Menu-Production:before {
+  content: "\e746";
+}
+
+.Icon-Line-UploadImg:before {
+  content: "\e747";
+}
+
+.Icon-Menu-Inspection:before {
+  content: "\e748";
+}
+
+.Icon-Menu-UploadImg:before {
+  content: "\e749";
+}
+
+.Icon-Menu-Stock:before {
+  content: "\e74a";
+}
+
+.Icon-Menu-Setting:before {
+  content: "\e74b";
+}
+
+.Icon-Line-Audit:before {
+  content: "\e72b";
+}
+
+.Icon-Line-AddDepartment:before {
+  content: "\e72c";
+}
+
+.Icon-Line-Check:before {
+  content: "\e72d";
+}
+
+.Icon-Line-Delete:before {
+  content: "\e72e";
+}
+
+.Icon-Line-Change:before {
+  content: "\e72f";
+}
+
+.Icon-Blue-Save:before {
+  content: "\e707";
+}
+
+.Icon-Blue-Handle:before {
+  content: "\e708";
+}
+
+.Icon-Blue-LimitOrder:before {
+  content: "\e709";
+}
+
+.Icon-Blue-Department:before {
+  content: "\e70a";
+}
+
+.Icon-Blue-Print:before {
+  content: "\e70b";
+}
+
+.Icon-Blue-Edit:before {
+  content: "\e70c";
+}
+
+.Icon-Blue-MultiSelect:before {
+  content: "\e70d";
+}
+
+.Icon-Blue-Detail:before {
+  content: "\e70e";
+}
+
+.Icon-Blue-Export:before {
+  content: "\e70f";
+}
+
+.Icon-Blue-Range:before {
+  content: "\e710";
+}
+
+.Icon-Blue-roleset:before {
+  content: "\e711";
+}
+
+.Icon-Blue-Reverseinvoice:before {
+  content: "\e712";
+}
+
+.Icon-Blue-Filter:before {
+  content: "\e713";
+}
+
+.Icon-Blue-Msg:before {
+  content: "\e714";
+}
+
+.Icon-Blue-Forbid:before {
+  content: "\e715";
+}
+
+.Icon-Blue-Column:before {
+  content: "\e716";
+}
+
+.Icon-Blue-Accessory:before {
+  content: "\e717";
+}
+
+.Icon-Blue-Examine:before {
+  content: "\e718";
+}
+
+.Icon-Blue-Flow:before {
+  content: "\e719";
+}
+
+.Icon-Blue-Goback:before {
+  content: "\e71a";
+}
+
+.Icon-Blue-Play:before {
+  content: "\e71b";
+}
+
+.Icon-Blue-Delete:before {
+  content: "\e71c";
+}
+
+.Icon-Blue-NewUser:before {
+  content: "\e71d";
+}
+
+.Icon-Blue-NewDepartment:before {
+  content: "\e71e";
+}
+
+.Icon-Blue-Createcode:before {
+  content: "\e71f";
+}
+
+.Icon-Blue-Download:before {
+  content: "\e720";
+}
+
+.Icon-Blue-Check:before {
+  content: "\e721";
+}
+
+.Icon-Blue-Pause:before {
+  content: "\e722";
+}
+
+.Icon-Blue-NewDoc:before {
+  content: "\e723";
+}
+
+.Icon-Blue-Putin:before {
+  content: "\e724";
+}
+
+.Icon-Blue-Search:before {
+  content: "\e725";
+}
+
+.Icon-Blue-Reset:before {
+  content: "\e726";
+}
+
+.Icon-Blue-Submit:before {
+  content: "\e727";
+}
+
+.Icon-Blue-NewCompany:before {
+  content: "\e728";
+}
+
+.Icon-Blue-Permission:before {
+  content: "\e729";
+}
+
+.Icon-Blue-Inport:before {
+  content: "\e72a";
+}
+

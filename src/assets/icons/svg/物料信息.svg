@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-396,-550)">
+        <g id="物料信息" transform="matrix(1,0,0,1,396,550)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g transform="matrix(1,0,0,1,-0.475108,0)">
+                <g transform="matrix(0.928479,0,0,1.04261,-367.545,-574.6)">
+                    <path d="M421.706,559.702C421.706,559.332 421.542,558.978 421.248,558.717C420.955,558.455 420.557,558.309 420.142,558.309C416.683,558.309 408.42,558.309 404.962,558.309C404.547,558.309 404.149,558.455 403.855,558.717C403.562,558.978 403.397,559.332 403.397,559.702C403.397,562.453 403.397,568.551 403.397,571.302C403.397,571.672 403.562,572.026 403.855,572.287C404.149,572.549 404.547,572.696 404.962,572.696C408.42,572.696 416.683,572.696 420.142,572.696C420.557,572.696 420.955,572.549 421.248,572.287C421.542,572.026 421.706,571.672 421.706,571.302C421.706,568.551 421.706,562.453 421.706,559.702Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.01px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,-396,-550)">
+                    <path d="M403.476,561.488L419.593,561.488" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+                </g>
+                <g transform="matrix(1.22287,0,0,1.22287,-488.041,-674.593)">
+                    <rect x="412.983" y="559.038" width="0.818" height="0.818" style="fill:rgb(32,104,255);"/>
+                </g>
+                <g transform="matrix(1.22287,0,0,1.22287,-486.041,-674.593)">
+                    <rect x="412.983" y="559.038" width="0.818" height="0.818" style="fill:rgb(32,104,255);"/>
+                </g>
+                <g transform="matrix(1.22287,0,0,1.22287,-484.041,-674.593)">
+                    <rect x="412.983" y="559.038" width="0.818" height="0.818" style="fill:rgb(32,104,255);"/>
+                </g>
+                <g transform="matrix(1.01354,0,0,1,-401.018,-550)">
+                    <path d="M405.533,564.483L411.452,564.483" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.99px;"/>
+                </g>
+                <g transform="matrix(0.506772,0,0,1,-195.505,-547)">
+                    <path d="M405.533,564.483L411.452,564.483" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.26px;"/>
+                </g>
+            </g>
+            <g transform="matrix(1.12003,0,0,1.12003,-1105.47,2.62267)">
+                <path d="M1008.24,15.526L1010.7,15.526C1010.93,15.526 1011.11,15.709 1011.11,15.936C1011.11,16.93 1011.11,19.456 1011.11,20.45C1011.11,20.677 1010.93,20.86 1010.7,20.86C1009.33,20.86 1004.87,20.86 1003.5,20.86C1003.27,20.86 1003.09,20.677 1003.09,20.45L1003.09,14.189C1003.09,13.934 1003.29,13.727 1003.55,13.727C1004.34,13.727 1005.96,13.727 1006.76,13.727C1007.05,13.727 1007.32,13.885 1007.47,14.14C1007.76,14.671 1008.24,15.526 1008.24,15.526Z" style="fill:url(#_Linear1);"/>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.134562,7.75119,-7.14619,0.124059,1006.96,13.1091)"><stop offset="0" style="stop-color:rgb(51,142,248);stop-opacity:0"/><stop offset="0.99" style="stop-color:rgb(51,142,248);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(0,59,128);stop-opacity:0"/></linearGradient>
+    </defs>
+</svg>

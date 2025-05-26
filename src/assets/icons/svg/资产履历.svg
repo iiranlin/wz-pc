@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-557.2,0)">
+        <g id="资产履历" transform="matrix(1,0,0,1,557.2,0)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g>
+                <g transform="matrix(0.769674,0,0,0.861857,-59.1143,0.572006)">
+                    <path d="M109.286,8.905L109.286,22.256C109.286,22.64 109.115,23.007 108.811,23.279C108.508,23.55 108.096,23.702 107.666,23.702L88.818,23.702C88.388,23.702 87.976,23.55 87.673,23.279C87.369,23.007 87.198,22.64 87.198,22.256L87.198,8.905C87.198,8.521 87.369,8.153 87.673,7.882C87.976,7.611 88.388,7.458 88.818,7.458L107.666,7.458C108.096,7.458 108.508,7.611 108.811,7.882C109.115,8.153 109.286,8.521 109.286,8.905ZM107.986,8.905C107.986,8.829 107.953,8.756 107.893,8.702C107.832,8.649 107.751,8.619 107.666,8.619L88.818,8.619C88.733,8.619 88.651,8.649 88.591,8.702C88.531,8.756 88.498,8.829 88.498,8.905L88.498,22.256C88.498,22.332 88.531,22.405 88.591,22.458C88.651,22.512 88.733,22.542 88.818,22.542L107.666,22.542C107.751,22.542 107.832,22.512 107.893,22.458C107.953,22.405 107.986,22.332 107.986,22.256L107.986,8.905Z" style="fill:rgb(39,60,147);"/>
+                </g>
+                <g transform="matrix(1.09508,0,0,1.09508,-177.649,-1.07442)">
+                    <path d="M170.231,11.3L184.315,11.3" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.91px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,-160.107,0)">
+                    <g id="图层1">
+                        <g>
+                            <g transform="matrix(1,0,0,1,0.102206,0)">
+                                <path d="M174.56,7.793L174.56,10.789" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+                            </g>
+                            <g transform="matrix(1,0,0,1,3.99125,0)">
+                                <path d="M174.56,7.793L174.56,10.789" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+            <g transform="matrix(1,0,0,1,0,1)">
+                <g transform="matrix(1.18799,0,0,1.18799,-196.732,-5.71259)">
+                    <g id="图层2">
+                        <circle cx="184.422" cy="21.46" r="4.228" style="fill:url(#_Linear1);"/>
+                    </g>
+                </g>
+                <g id="图层3" transform="matrix(1,0,0,1,-161.463,0)">
+                    <path d="M183.899,16.798L183.899,20.073L186.3,20.073" style="fill:none;stroke:white;stroke-width:1px;"/>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-4.71072,-7.27246,8.59472,-5.56722,187.628,25.5492)"><stop offset="0" style="stop-color:rgb(51,142,248);stop-opacity:0"/><stop offset="1" style="stop-color:rgb(51,142,248);stop-opacity:1"/></linearGradient>
+    </defs>
+</svg>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-159.794,-94)">
+        <g id="租赁信息" transform="matrix(1,0,0,1,159.794,94)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g>
+                <g transform="matrix(1,0,0,1,-159.334,-93.5329)">
+                    <g opacity="0.8">
+                        <path d="M183.174,104.11L175.334,108.23L175.334,118.687L183.174,113.98L183.174,104.11Z" style="fill:url(#_Linear1);"/>
+                    </g>
+                </g>
+                <g transform="matrix(1,0,0,1,-159.794,-94)">
+                    <path d="M168.029,105.308L175.794,110L175.794,119.082" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+                </g>
+                <g transform="matrix(0.977478,0,0,0.977478,-157.535,-89.9113)">
+                    <path d="M177.534,98.121L186.394,103.236L186.394,113.467L177.534,118.582L168.674,113.467L168.674,103.236L177.534,98.121ZM177.534,99.302L169.697,103.827L169.697,112.876L177.534,117.401L185.371,112.876L185.371,103.827L177.534,99.302Z" style="fill:rgb(39,60,147);"/>
+                </g>
+                <g transform="matrix(0.968225,0,0,0.968225,-153.961,-90.6514)">
+                    <path d="M175.539,110L183.562,105.385" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.03px;"/>
+                </g>
+                <g transform="matrix(0.959218,-0.00575562,-0.0270765,0.993324,-150.061,-92.365)">
+                    <path d="M170.536,109.731L172.834,111.075" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.04px;"/>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(4.83187e-16,7.89105,-7.89105,4.83187e-16,179.6,108.03)"><stop offset="0" style="stop-color:rgb(51,142,248);stop-opacity:0"/><stop offset="1" style="stop-color:rgb(51,142,248);stop-opacity:1"/></linearGradient>
+    </defs>
+</svg>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-317,-460)">
+        <g id="供应商信息" transform="matrix(1,0,0,1,317,460)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g transform="matrix(0.0592961,0,0,0.0715875,-3.57982,-32.4731)">
+                <g transform="matrix(20.5179,0,0,15.5968,-9427.45,-3057.01)">
+                    <path d="M474.773,238.925C474.68,239.104 474.559,239.269 474.414,239.414C474.039,239.789 473.53,240 473,240C472.47,240 471.961,239.789 471.586,239.414C471.211,239.039 471,238.925 471,238.925C471,238.925 470.789,239.039 470.414,239.414C470.039,239.789 469.53,240 469,240C468.47,240 467.961,239.789 467.586,239.414C467.211,239.039 467,238.53 467,238C467,238 468.239,234.153 468.767,232.515C468.906,232.081 469.283,231.79 469.705,231.791C471.768,231.791 477.779,231.791 479.842,231.791C480.264,231.79 480.64,232.081 480.78,232.515C481.308,234.153 482.547,238 482.547,238C482.547,238.53 482.336,239.039 481.961,239.414C481.586,239.789 481.077,240 480.547,240C480.016,240 479.507,239.789 479.132,239.414C478.757,239.039 478.547,238.925 478.547,238.925C478.547,238.925 478.336,239.039 477.961,239.414C477.586,239.789 477.077,240 476.547,240C476.016,240 475.507,239.789 475.132,239.414C474.987,239.269 474.867,239.104 474.773,238.925Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.86px;"/>
+                </g>
+                <g transform="matrix(16.8645,0,0,18.2917,-7688.88,-3689.79)">
+                    <path d="M471,235.291L478,235.291" style="fill:none;stroke:rgb(32,104,255);stroke-width:0.86px;"/>
+                </g>
+                <g transform="matrix(22.0833,0,0,18.2917,-10170.6,-3722.07)">
+                    <path d="M469,241L469,245.981C469,246.251 469.107,246.51 469.299,246.701C469.49,246.893 469.749,247 470.019,247C472.196,247 477.275,247 479.451,247C479.722,247 479.981,246.893 480.172,246.701C480.363,246.51 480.471,246.251 480.471,245.981C480.471,244.268 480.471,241 480.471,241" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.76px;"/>
+                </g>
+            </g>
+            <g transform="matrix(1.4,0,0,1.4,-371.6,-316)">
+                <rect x="279" y="240" width="5" height="5" style="fill:url(#_Linear1);"/>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(4.37697e-11,7.38993,-7.38993,4.37697e-11,281.5,238.51)"><stop offset="0" style="stop-color:rgb(51,142,248);stop-opacity:0"/><stop offset="0.99" style="stop-color:rgb(51,142,248);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(0,59,128);stop-opacity:0"/></linearGradient>
+    </defs>
+</svg>

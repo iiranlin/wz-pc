@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-237.834,-275.569)">
+        <g id="维修耗材" transform="matrix(1,0,0,1,237.834,275.569)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g transform="matrix(1,0,0,1,-2,0)">
+                <g transform="matrix(1,0,0,1,-479.309,-183.569)">
+                    <path d="M494.302,191.569L494.302,192.576L492.302,192.576L492.302,191.569L489.042,191.569C488.582,191.569 488.142,191.751 487.817,192.076C487.492,192.401 487.309,192.842 487.309,193.302C487.309,194.382 487.309,195.569 487.309,195.569L499.309,195.569L499.309,193.302C499.309,192.842 499.127,192.401 498.802,192.076C498.477,191.751 498.036,191.569 497.576,191.569L494.302,191.569Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,-479.309,-183.775)">
+                    <path d="M492.075,202.405L494.61,204.016" style="fill:none;stroke:rgb(51,142,248);stroke-width:1px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,-479.309,-186.125)">
+                    <path d="M492.075,202.405L494.61,204.016" style="fill:none;stroke:rgb(51,142,248);stroke-width:1px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,-479.309,-188.506)">
+                    <path d="M492.075,202.405L494.61,204.016" style="fill:none;stroke:rgb(51,142,248);stroke-width:1px;"/>
+                </g>
+                <g transform="matrix(0.821562,0,0,0.972129,-391.427,-180.181)">
+                    <path d="M495.309,197.691L491.657,197.691L491.657,207.978L495.309,210.035L495.309,197.691Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.11px;"/>
+                </g>
+            </g>
+            <g transform="matrix(0.611236,0,0,0.611236,-283.297,-101.737)">
+                <path d="M501.484,201.131L505.57,203.49L505.57,208.209L501.484,210.568L497.397,208.209L497.397,203.49L501.484,201.131Z" style="fill:url(#_Linear1);"/>
+            </g>
+            <g transform="matrix(6.12323e-17,1,-1,6.12323e-17,225.76,-481.397)">
+                <path d="M501.484,201.131L505.57,203.49L505.57,208.209L501.484,210.568L497.397,208.209L497.397,203.49L501.484,201.131Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,-480.102,-183.948)">
+                <circle cx="500.012" cy="204.034" r="1.686" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(5.66379e-16,9.24967,-17.9212,1.09735e-15,501.928,201.285)"><stop offset="0" style="stop-color:rgb(51,142,248);stop-opacity:0"/><stop offset="1" style="stop-color:rgb(51,142,248);stop-opacity:1"/></linearGradient>
+    </defs>
+</svg>

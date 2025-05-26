@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-479.309,-93)">
+        <g id="单位机关" transform="matrix(1,0,0,1,479.309,93)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g transform="matrix(1.0983,0,0,1.0983,-437.826,-106.629)">
+                <rect x="415.94" y="113.475" width="7.284" height="7.284" style="fill:url(#_Linear1);"/>
+            </g>
+            <g transform="matrix(0.920179,0,0,1,-439.409,-91.7649)">
+                <path d="M484.046,115.265L505.781,115.265" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.04px;"/>
+            </g>
+            <g transform="matrix(1.23988,0,0,0.946015,-597.124,-86.8717)">
+                <path d="M495.866,116.142L495.866,100.286L489.011,100.286L489.011,116.142" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.91px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,-477.309,-92)">
+                <path d="M499,115L499,106.475L495.104,104.286" style="fill:none;stroke:rgb(39,60,147);stroke-width:1px;"/>
+            </g>
+            <g>
+                <g transform="matrix(0.566918,0,0,0.566918,-266.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+                <g transform="matrix(0.566918,0,0,0.566918,-264.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+                <g transform="matrix(0.566918,0,0,0.566918,-262.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+            </g>
+            <g transform="matrix(1,0,0,1,0,2)">
+                <g transform="matrix(0.566918,0,0,0.566918,-266.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+                <g transform="matrix(0.566918,0,0,0.566918,-264.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+                <g transform="matrix(0.566918,0,0,0.566918,-262.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+            </g>
+            <g transform="matrix(1,0,0,1,0,4)">
+                <g transform="matrix(0.566918,0,0,0.566918,-266.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+                <g transform="matrix(0.566918,0,0,0.566918,-264.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+                <g transform="matrix(0.566918,0,0,0.566918,-262.717,-47.8854)">
+                    <rect x="489.872" y="104.171" width="1.764" height="1.764" style="fill:rgb(51,142,248);"/>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(3.79445e-16,6.57224,-5.84282,3.79445e-16,419.766,113.797)"><stop offset="0" style="stop-color:rgb(51,142,248);stop-opacity:0"/><stop offset="1" style="stop-color:rgb(51,142,248);stop-opacity:1"/></linearGradient>
+    </defs>
+</svg>

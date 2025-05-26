@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g id="Icon-checking" transform="translate(-512 -1027)">
+    <circle id="椭圆_127" data-name="椭圆 127" cx="8" cy="8" r="8" transform="translate(512 1027)" fill="#1a58ff"/>
+    <g id="组_1303" data-name="组 1303" transform="translate(1 0.75)">
+      <path id="椭圆_149" data-name="椭圆 149" d="M3.5,1.5a2,2,0,1,0,2,2,2,2,0,0,0-2-2M3.5,0A3.5,3.5,0,1,1,0,3.5,3.5,3.5,0,0,1,3.5,0Z" transform="translate(515 1030)" fill="#fff"/>
+      <path id="路径_2381" data-name="路径 2381" d="M2.438,3.187a.748.748,0,0,1-.53-.22L-.53.53A.75.75,0,0,1-.53-.53.75.75,0,0,1,.53-.53L2.968,1.907a.75.75,0,0,1-.53,1.28Z" transform="translate(520.5 1035.5)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

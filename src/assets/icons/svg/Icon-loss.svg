@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g id="Icon-loss" transform="translate(-512 -1027)">
+    <circle id="椭圆_127" data-name="椭圆 127" cx="8" cy="8" r="8" transform="translate(512 1027)" fill="#fa7630"/>
+    <g id="组_1309" data-name="组 1309" transform="translate(74.414 -0.77)">
+      <path id="路径_2379" data-name="路径 2379" d="M446.223,1037.709a.748.748,0,0,1-.53-.22l-4.43-4.43a.75.75,0,1,1,1.061-1.061l4.43,4.43a.75.75,0,0,1-.53,1.28Z" transform="translate(1.39 0.836)" fill="#fff"/>
+      <path id="路径_2380" data-name="路径 2380" d="M447.99,1038.922h-4a.75.75,0,0,1,0-1.5h3.25v-3.25a.75.75,0,0,1,1.5,0v4A.75.75,0,0,1,447.99,1038.922Z" fill="#fff"/>
+    </g>
+  </g>
+</svg>

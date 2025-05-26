@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-158,-550)">
+        <g id="生产信息" transform="matrix(1,0,0,1,158,550)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g transform="matrix(1.11139,0,0,1,-177.655,-548.452)">
+                <path d="M179.199,561.702L179.199,555.935L176.478,555.935L176.478,560.084" style="fill:none;stroke:rgb(32,104,255);stroke-width:0.95px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,-158,-550)">
+                <path d="M176.481,571.464L176.481,566.478L169.491,566.478L169.491,571.464" style="fill:none;stroke:rgb(32,104,255);stroke-width:1px;"/>
+            </g>
+            <g transform="matrix(0.876626,0,0,1,-137.58,-549.815)">
+                <path d="M167.21,561.315L169.491,561.315" style="fill:none;stroke:rgb(39,60,147);stroke-width:1.06px;"/>
+            </g>
+            <g transform="matrix(0.947859,0,0,1.07396,-150.155,-593.377)">
+                <path d="M183.207,565.982L171.689,560.395L165.272,560.395L165.272,572.5L183.207,572.5L183.207,565.982Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.99px;"/>
+            </g>
+            <g transform="matrix(1.03347,0,0,1.03347,-164.951,-570.098)">
+                <clipPath id="_clip1">
+                    <path d="M183.185,568.165C182.632,568.056 182.062,568.056 181.509,568.165L181.373,569.328C180.915,569.472 180.495,569.714 180.142,570.039L179.066,569.575C178.695,570 178.41,570.493 178.228,571.027L179.167,571.727C179.063,572.195 179.063,572.68 179.167,573.148L178.228,573.848C178.41,574.381 178.695,574.875 179.066,575.3L180.142,574.836C180.495,575.16 180.915,575.403 181.373,575.546L181.509,576.71C182.062,576.819 182.632,576.819 183.185,576.71L183.322,575.546C183.779,575.403 184.2,575.16 184.553,574.836L185.628,575.3C185.999,574.875 186.284,574.381 186.467,573.848L185.527,573.148C185.632,572.68 185.632,572.195 185.527,571.727L186.467,571.027C186.284,570.493 185.999,570 185.628,569.575L184.553,570.039C184.2,569.714 183.779,569.472 183.322,569.328L183.185,568.165ZM182.347,570.899C183.196,570.899 183.886,571.588 183.886,572.437C183.886,573.287 183.196,573.976 182.347,573.976C181.498,573.976 180.808,573.287 180.808,572.437C180.808,571.588 181.498,570.899 182.347,570.899Z"/>
+                </clipPath>
+                <g clip-path="url(#_clip1)">
+                    <g transform="matrix(0.967612,-0,-0,0.967612,159.608,551.634)">
+                        <use xlink:href="#_Image2" x="19.243" y="17" width="9px" height="9px"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <image id="_Image2" width="9px" height="9px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAO0lEQVQYlWM07vthwYAbMDIwMDCwMDAwiKELogMWBgYGcTwmwRWJ4ZBjxKYIq1UUW8eITRFOq4i1jhEADrMCzdQvcccAAAAASUVORK5CYII="/>
+    </defs>
+</svg>

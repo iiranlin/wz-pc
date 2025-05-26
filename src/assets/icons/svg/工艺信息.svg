@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-238,-550)">
+        <g id="工艺信息" transform="matrix(1,0,0,1,238,550)">
+            <rect x="0" y="0" width="32" height="32" style="fill:none;"/>
+            <g transform="matrix(0.340953,0,0,0.340953,-63.7871,-169.41)">
+                <clipPath id="_clip1">
+                    <path d="M256.063,558.464L263.396,562.697L263.396,571.164L256.063,575.398L248.731,571.164L248.731,562.697L256.063,558.464Z"/>
+                </clipPath>
+                <g clip-path="url(#_clip1)">
+                    <g transform="matrix(2.93296,-0,-0,2.93296,187.085,496.872)">
+                        <use xlink:href="#_Image2" x="21.018" y="21" width="5px" height="6px"/>
+                    </g>
+                </g>
+            </g>
+            <g transform="matrix(1,0,0,1,-1,-1)">
+                <g transform="matrix(1,0,0,1,-238,-550)">
+                    <path d="M254,574.244L254,565.459" style="fill:none;stroke:rgb(32,104,255);stroke-width:1px;stroke-dasharray:1,2,0,0,0,0;"/>
+                </g>
+                <g transform="matrix(1,-5.60663e-15,-5.71765e-15,1,-238,-550)">
+                    <path d="M261.49,561.725L254,565.459L246.51,561.886" style="fill:none;stroke:rgb(32,104,255);stroke-width:1px;stroke-dasharray:1,2,0,0,0,0;"/>
+                </g>
+                <g transform="matrix(1.02153,0,0,1.02153,-245.576,-563.137)">
+                    <path d="M256.063,558.464L263.396,562.697L263.396,571.164L256.063,575.398L248.731,571.164L248.731,562.697L256.063,558.464Z" style="fill:none;stroke:rgb(39,60,147);stroke-width:0.98px;"/>
+                </g>
+                <g transform="matrix(1.14538,0,0,1.14538,-275.295,-630.804)">
+                    <clipPath id="_clip3">
+                        <circle cx="254.321" cy="557.155" r="1.31"/>
+                    </clipPath>
+                    <g clip-path="url(#_clip3)">
+                        <g transform="matrix(0.87307,-0,-0,0.87307,241.225,551.61)">
+                            <use xlink:href="#_Image4" x="13.5" y="4.851" width="3px" height="3px"/>
+                        </g>
+                    </g>
+                </g>
+                <g transform="matrix(1.14538,0,0,1.14538,-275.295,-630.804)">
+                    <circle cx="254.321" cy="557.155" r="1.746" style="fill:white;"/>
+                </g>
+                <g transform="matrix(1.14538,0,0,1.14538,-282.785,-617.85)">
+                    <circle cx="254.321" cy="557.155" r="1.746" style="fill:white;"/>
+                </g>
+                <g transform="matrix(1.14538,0,0,1.14538,-267.91,-617.85)">
+                    <circle cx="254.321" cy="557.155" r="1.746" style="fill:white;"/>
+                </g>
+                <g transform="matrix(0.763589,0,0,0.763589,-178.197,-418.086)">
+                    <circle cx="254.321" cy="557.155" r="1.31" style="fill:rgb(32,104,255);"/>
+                </g>
+                <g transform="matrix(0.763589,0,0,0.763589,-185.687,-405.131)">
+                    <circle cx="254.321" cy="557.155" r="1.31" style="fill:rgb(32,104,255);"/>
+                </g>
+                <g transform="matrix(0.763589,0,0,0.763589,-170.812,-405.131)">
+                    <circle cx="254.321" cy="557.155" r="1.31" style="fill:rgb(32,104,255);"/>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <image id="_Image2" width="5px" height="6px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAGCAYAAAAL+1RLAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKUlEQVQImWM07vthxwABjFCagYWBgUGZAQEYsQkyMDAwMGITxKoSuyAAIboCv/C45UAAAAAASUVORK5CYII="/>
+        <image id="_Image4" width="3px" height="3px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAH0lEQVQImWM07vvhx8DAwMjAwMDAwsDA4IzMcWGAAgBS4wKaF6wq1AAAAABJRU5ErkJggg=="/>
+    </defs>
+</svg>

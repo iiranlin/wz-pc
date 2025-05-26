@@ -1,0 +1,717 @@
+@import "./variables.scss";
+@import "./mixin.scss";
+@import "./transition.scss";
+@import "./element-ui.scss";
+@import "./sidebar.scss";
+@import "./btn.scss";
+
+body {
+    height: 100%;
+    min-width: 1300px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+        Microsoft YaHei, Arial, sans-serif;
+}
+.el-popup-parent--hidden {
+    padding-right: 0px !important;
+    overflow: hidden !important;
+}
+.dialog-route {
+    .el-dialog__body {
+        padding: 0px 20px 30px 20px !important;
+        min-height: 45vh;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+}
+.hiprint-printTemplate {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.table-no-checkbox .el-table__fixed-header-wrapper .el-checkbox {
+    display: none !important;
+  }
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    
+    #preview_content_custom, #preview_content_custom * {
+      visibility: visible;
+    }
+    
+    #preview_content_custom {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+.el-icon-question:before {
+    cursor: pointer;
+ 
+}
+.column_format_bg {
+    background-color: #e8f4ff !important;
+}
+.vue-office-excel {
+    min-height: 600px;
+}
+.x-spreadsheet-sheet {
+    width: 100%;
+}
+label {
+    font-weight: 700;
+}
+.el-input-number .el-input__inner{
+    text-align: left !important;
+}
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#app {
+    height: 100%;
+}
+
+*,
+*:before,
+
+*:after {
+    box-sizing: inherit;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.padding-content {
+    padding: 4px 0;
+}
+
+a:focus,
+a:active {
+    outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+}
+
+div:focus {
+    outline: none;
+}
+
+.block {
+    display: block;
+}
+
+.clearfix {
+    &:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+}
+
+aside {
+    background: #eef1f6;
+    padding: 8px 24px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+    display: block;
+    line-height: 32px;
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    color: #2c3e50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    a {
+        color: #337ab7;
+        cursor: pointer;
+
+        &:hover {
+            color: rgb(32, 160, 255);
+        }
+    }
+}
+
+//main-container全局样式
+.app-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.components-container {
+    margin: 30px 50px;
+    position: relative;
+}
+
+.text-center {
+    text-align: center;
+}
+.dialog-padding .el-dialog__body{
+    padding: 10px;
+}
+.el-date-editor--daterange.el-input__inner {
+    width: 100% !important;
+}
+.sub-navbar {
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+    width: 100%;
+    text-align: right;
+    padding-right: 20px;
+    transition: 600ms ease position;
+    background: linear-gradient(90deg,
+            rgba(32, 182, 249, 1) 0%,
+            rgba(32, 182, 249, 1) 0%,
+            rgba(33, 120, 241, 1) 100%,
+            rgba(33, 120, 241, 1) 100%);
+
+    .subtitle {
+        font-size: 20px;
+        color: #fff;
+    }
+
+    &.draft {
+        background: #d0d0d0;
+    }
+
+    &.deleted {
+        background: #d0d0d0;
+    }
+}
+
+.link-type,
+.link-type:focus {
+    color: #337ab7;
+    cursor: pointer;
+
+    &:hover {
+        color: rgb(32, 160, 255);
+    }
+}
+
+.filter-container {
+    padding-bottom: 10px;
+
+    .filter-item {
+        display: inline-block;
+        vertical-align: middle;
+        margin-bottom: 10px;
+    }
+}
+
+//refine vue-multiselect plugin
+.multiselect {
+    line-height: 16px;
+}
+
+.multiselect--active {
+    z-index: 1000 !important;
+}
+
+.container_flex {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .container_flex_button {
+        background-color: #f1f3f8;
+        padding-left: 10px;
+        height: 46px;
+        display: flex;
+        margin-top: 5px;
+        align-items: center;
+        .el-col:first-child {
+            margin-left: 5px;
+        }
+    }
+
+    .container_table {
+        flex: 1;
+
+        th {
+            padding: 0;
+        }
+
+        td {
+            padding: 4px 0;
+        }
+    }
+}
+
+.container_flex_button {
+    background-color: #f1f3f8;
+    padding-left: 10px;
+    height: 46px;
+    display: flex;
+    margin-top: 5px;
+    align-items: center;
+    .el-col:first-child {
+        margin-left: 5px;
+    }
+}
+
+.container_flex_overflow {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 48px);
+    overflow-y: auto;
+    margin-top: 6px;
+    // width: 240px;
+    border-right: 1px solid #dfe6ec;
+}
+
+.container_flex_overflow::-webkit-scrollbar {
+    display: none;
+}
+
+.container_flex_overflow:hover::-webkit-scrollbar {
+    display: block;
+}
+
+.container_h {
+    height: 100%;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.container_h::-webkit-scrollbar {
+    display: none;
+}
+
+.search-input {
+    margin: 0 8px 6px;
+    width: calc(100% - 16px);
+}
+
+.form-data-search {
+    padding-left: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.12);
+
+    .el-input__inner {
+        border-radius: 50px;
+        height: 34px;
+    }
+
+    .vue-treeselect__control {
+        border-radius: 18px;
+        height: 34px;
+    }
+
+    .form-content-box {
+        padding: 16px 0 8px 0;
+    }
+
+    .custom-form-item {
+        width: 25%;
+        margin: 0 0 8px 0;
+        display: inline-flex !important;
+    }
+
+    @media (min-width: 1440px) {
+        .custom-form-item {
+            width: calc(25% - 10px)
+        }
+    }
+
+    .custom-form-item .el-form-item__content {
+        width: 70%;
+    }
+
+    .search-control {
+        position: absolute;
+        right: 0px;
+        top: 11px !important;
+    }
+
+    .search,
+    .reset,
+    .toggleClose {
+        border: none;
+        border-radius: 50px;
+        min-width: 100px;
+        height: 32px;
+        padding: 5px 24px 5px 44px;
+        text-align: right;
+        box-shadow: 0px 1px 2px rgba(0, 57, 186, 0.2);
+        position: relative;
+        margin-right: 6px;
+
+        &:hover {
+            border-color: none;
+
+            .icon-svg-blue {
+                color: #ffffff;
+            }
+        }
+    }
+
+    .toggleOpen {
+        color: #1b1e22;
+        min-width: 100px;
+        height: 34px;
+        border-radius: 5px 5px 0px 0px;
+        border-width: 3px 0px 0px 0px;
+        border-color: #ffffff;
+        padding-left: 0px;
+        padding-right: 0px;
+        box-shadow: 0px 1px 2px rgba(0, 57, 186, 0.2);
+        margin-right: 6px;
+
+        &:hover {
+            background-color: #ffffff;
+            color: #3d8aff;
+        }
+
+        &::after {
+            width: 100%;
+            height: 10px;
+            display: block;
+            content: "";
+            background-color: #ffffff;
+            transform: translateY(10px);
+        }
+    }
+
+    .search {
+        background-color: #227aff;
+        color: #ffffff;
+
+        &:hover {
+            background-color: #106df8;
+        }
+    }
+
+    .reset {
+        background-color: #ffffff;
+        color: #1b1e22;
+
+        &:hover {
+            color: #ffffff;
+            background-color: #106df8;
+        }
+    }
+
+    .toggleClose {
+        background-color: #ffffff;
+        color: #1b1e22;
+
+        &:hover {
+            color: #ffffff;
+            background-color: #3d8aff;
+        }
+
+        .search-btn-text {
+            margin-left: 3px;
+        }
+    }
+
+    .svg-icon-font {
+        position: absolute;
+        left: 20px;
+        top: 3px;
+    }
+
+    .icon-svg-blue {
+        color: #3d8aff;
+    }
+}
+
+.vue-treeselect__menu-container {
+    //浮层内部样式 写在全局中 浮层被加入到了body里
+    font-size: 14px;
+    color: #606266;
+    font-weight: 100;
+}
+
+
+.card-container{
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    .el-card__header {
+        position: relative;
+        border-bottom: 1px solid rgba(112, 112, 112, 0.11);
+        background: linear-gradient(90deg,#2f3eef 0%,#2f9fff 13.79%,#ffffff 100%);
+        border-radius:4px;
+    }
+    .card-title {
+        color: #fff;
+        &::after {
+            width: 40px;
+            height: 100%;
+            display: block;
+            content: "";
+            background: url("~@/assets/images/card_header_icon.webp") no-repeat right top;
+            background-size: contain;
+            position: absolute;
+            right: 0px;
+            top: 0px;
+        }
+    }
+    .float-right{
+        position: absolute;
+        top: 18px;
+        right: 15px;
+        cursor: pointer;
+    }
+}
+
+
+.form-item-b10 {
+    margin-bottom: 10px !important;
+}
+// .border-radius50 {
+//     .el-input__inner {
+//         border-radius: 18px !important;
+//     }
+//     .vue-treeselect__control {
+//         border-radius: 18px !important;
+//     }
+//     border-radius: 18px !important;
+//     .el-input-number__decrease{
+//         border-bottom-right-radius: 18px !important;
+//     }
+//     .el-input-number__increase{
+//         border-top-right-radius: 18px !important;
+//     }
+// }
+// .border-color-none {
+//     .el-input__inner {
+//         border-top-right-radius: 0 !important;
+//         border-bottom-right-radius: 0 !important;
+//     }
+//     .el-input-group__append{
+//         border-top-right-radius: 18px !important;
+//         border-bottom-right-radius: 18px !important;
+//     }
+// }
+
+.container_flex_form{
+    flex: 1;
+    margin: 10px;
+    overflow-y: auto;
+    .container_flex_form_dialog{
+        width: 99%;
+    }
+    .el-form-item{
+        margin-bottom: 0;
+    }
+    .el-divider__text.is-left{
+        left: 0;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 0 20px 0 0;
+    }
+    .el-divider--horizontal{
+        width: 100%;
+        height: 1px;
+        background-image: linear-gradient(
+            to right,
+            rgb(255, 255, 255, 1) 0%,
+            rgb(255, 255, 255, 1) 50%,
+            transparent 50%
+        );
+        background-size: 20px 1px;//第一个值（20px）越大线条越长间隙越大
+        background-repeat: repeat-x;
+    }
+}
+
+
+.table-radio {
+    .el-radio__label {
+        display: none;
+    }
+}
+
+
+.el-form-item.is-error{
+    .vue-treeselect__control{
+        border-color: #ff4949 !important;
+    }
+}
+.el-form-item.is-error .el-input {
+    position: relative;
+}
+
+// .el-form-item.is-error .el-input::before {
+//     content: "";
+//     position: absolute;
+//     border-width: 4px 6px 0 6px;
+//     border-style: solid;
+//     border-color: #fff;
+//     border-top-color: #f70b0b;
+//     z-index: 2;
+//     opacity:1;
+
+//     top: 50%;
+//     left:0;
+//     margin-left: -9px;
+//     transform: translateY(-50%) rotate(-90deg);
+
+// }
+// .el-table .cell {
+//     overflow: inherit;
+// }
+// .el-form-item.is-error .el-input::after {
+//     content: "必填项不能为空";
+//     font-size: 12px;
+//     position: absolute;
+//     background: #f70b0b;
+//     text-align: center;
+//     color: #fff;        
+//     border-radius: 5px;
+//     padding: 4px 12px;
+//     pointer-events: none;
+//     z-index:2;
+//     opacity:1;
+//     display: inline-flex;
+//     justify-content: center;
+//     width: 120px;
+//     height: 36px;
+//     align-items: center;
+//     border: 1px solid #f70b0b;
+//     top: 50%;
+//     left: 0;
+//     margin-left: -5px;
+//     transform: translateY(-50%) translateX(-100%);
+// }
+
+.icon-size{
+    width: 16px !important;
+    height: 16px !important;
+    margin-left: 4px;
+    margin-right: 3.5px;
+}
+
+
+// .flex-dialog-button{
+//     position: absolute;
+//     right: 50px;
+//     top: 9px;
+// }
+
+.design_p{
+  width: 100%;
+  height: 32px;
+  line-height: 32px;
+  background: #f2f2f2;
+  margin: 12px 0;
+  padding: 0;
+  color: #18223e;
+  font-size: 12px;
+  text-indent: 14px;
+}
+
+.totalBlue{
+  .el-form-item__content{
+    color: blue;
+  }
+}
+
+
+//详情页样式
+.formRender_view{
+  .design_p{
+    background: none;
+    font-size: 15px;
+    text-indent: 0;
+    svg{
+      font-size: 32px;
+      vertical-align: -0.28em;
+    }
+  }
+  .field-wrapper + .container-wrapper{
+    border-top: 1px solid #E5E6EB;
+  }
+  .el-card__body{
+    .container-wrapper:first-child{
+      .el-row{
+        border-top: 1px solid #E5E6EB;
+      }
+    }
+  }
+  .el-row{
+    padding: 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid #E5E6EB;
+    border-right: 1px solid #E5E6EB;
+    border-left: 1px solid #E5E6EB;
+    .el-col{
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+  }
+  .el-form-item__label{
+    min-height: 38px;
+    text-align: left !important;
+    padding-left: 10px;
+    background: #F2F2F2;
+  }
+  .el-form-item__content{
+    min-height: 38px;
+    padding-left: 10px;
+  }
+}
+//详情页明细下面合计
+.formrender_view_cancel{
+  .el-row{
+    border: 0;
+    padding: 8px !important;
+    .el-form-item__label{
+      background: none;
+      text-align: right !important;
+    }
+    .el-form-item__content{
+      min-height: auto;
+      padding-left: 0;
+    }
+  }
+}
+
+
+#appContainer{
+  width: 100%;
+  height: 100%;
+  &>div{
+    width: 100%;
+    height: 100%;
+  }
+}
+
+
+.form_unitId_h{
+  .vue-treeselect__control {
+    height: 40px;
+  }
+  .vue-treeselect__value-container{
+    line-height: initial;
+  }
+}
+
+.myHighLight{/*自定义高亮背景*/
+  background-color: yellow;
+}
+.selected-highlight{/*自定义选中高亮背景*/
+  background-color: yellowgreen;
+}
