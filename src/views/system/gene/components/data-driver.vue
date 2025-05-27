@@ -201,6 +201,13 @@ export default {
         sysMenuButtonList: this.buttonList,
         onlForm: this.onlFormInfo
       }
+        // 同步修改打印模板id
+      if(obj.sysMenuFieldList.length > 0)
+      (obj?.sysMenuButtonList).forEach(x => {
+        if (x) {
+          x.printTemplateId = ''
+        }
+      })
       save(obj).then(res => {
         this.$modal.msgSuccess(res.message)
         const obj = { path: '/system/tools/data-driver', query: { t: Date.now(), pageNum: this.$route.query.pageNum } }
