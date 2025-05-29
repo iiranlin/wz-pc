@@ -41,15 +41,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item :label="'标准或图号'" prop="standardCode">
-              <el-input
-                v-model="form.standardCode"
-                maxlength="240"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-          </el-col>
+
           <el-col :span="24">
             <el-form-item :label="'计量单位'" prop="unit">
               <el-select
@@ -64,6 +56,15 @@
                   :value="item.label"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item :label="'标准或图号'" prop="standardCode">
+              <el-input
+                v-model="form.standardCode"
+                maxlength="240"
+                placeholder="请输入"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -90,7 +91,13 @@ export default {
       form: {},
       rules: {
         materialName: [
-          { required: true, message: '请输入', trigger: 'blur' }
+          { required: true, message: '请输入', trigger: 'blur' },
+        ],
+        specModel: [
+          { required: true, message: '请输入', trigger: 'blur' },
+        ],
+        unit: [
+          { required: true, message: '请选择', trigger: 'change' },
         ],
       },
     }
