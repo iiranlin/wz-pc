@@ -10,6 +10,15 @@ export function list(params) {
   })
 }
 
+// 根据deptCode查询指定部门列表
+export function listByDeptCode(params) {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/dept/getListByDeptCode`,
+    method: 'get',
+    params
+  })
+}
+
 // 查询部门详细
 export function deptDetail(deptId) {
   return request({

@@ -705,4 +705,31 @@ export const collectField = (data, field) => {
         item.children ? collectField(item.children, field) : []
       );
     }, []);
-  }
+}
+  
+
+/**
+ * 提取树形结构下所有 children 节点，构造成 Element UI Select 的数据源格式
+ * @param {Object} node - 树形结构的根节点
+ * @returns {Array} - [{ label, value }] 格式数组
+ */
+export function extractSelectOptions(node) {
+  if (!node || !Array.isArray(node.children)) return [];
+
+  const transform = (children) => {
+    return children.map(child => {
+      const option = {
+        label: child.deptName,
+        value: child.id
+      };
+
+      if (child.children && child.children.length > 0) {
+        option.children = transform(child.children);
+      }
+
+      return option;
+    });
+  };
+
+  return transform(node.children);
+}

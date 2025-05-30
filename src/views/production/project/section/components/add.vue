@@ -60,7 +60,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in lineOptions"
+                  v-for="item in constructionCompanyOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -90,7 +90,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in lineOptions"
+                  v-for="item in supervisionUnitOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -120,7 +120,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in lineOptions"
+                  v-for="item in materialAgentCompanyOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -145,6 +145,7 @@ import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
 import attachmentTable from '@/views/components/attachmentTable'
+import { listByDeptCode } from '@/api/system/dept.js'
 import { extractSelectOptions } from '@/utils/index'
 export default {
   name: "SectionAdd",
@@ -172,6 +173,9 @@ export default {
         businessType: '24'
       },
       lineOptions: [],
+      constructionCompanyOptions: [],
+      supervisionUnitOptions: [],
+      materialAgentCompanyOptions: [],
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '取消', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
@@ -188,8 +192,14 @@ export default {
       return this.$route.query?.id || ''
     }
   },
-  created () {
-    this.getDeptTree()
+async  created () {
+    // this.getDeptTree()
+    this.getLineOptions()
+    
+
+    this.constructionCompanyOptions = await this.getDeptTree('SGDW')
+    this.supervisionUnitOptions =await this.getDeptTree('JLDW')
+    this.materialAgentCompanyOptions =await this.getDeptTree('WDGS')
   },
   mounted () {
 
@@ -207,7 +217,6 @@ export default {
   methods: {
     //初始化
     init () {
-      this.getLineOptions()
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
@@ -215,7 +224,6 @@ export default {
     },
     // 编辑初始化
     async updateInit (id) {
-      this.getLineOptions()
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
@@ -239,6 +247,18 @@ export default {
           label: item.projectName
         }
       })
+    },
+    async getDeptTree (deptCode) {
+      const res = await listByDeptCode({
+        deptCode
+      })
+      const data = res.data.map(item => {
+        return {
+          value: item.id,
+          label: item.deptName
+        }
+      })
+      return Promise.resolve(data)
     },
     newButton (buttonCode) {
       if (buttonCode === 'cancel') {
