@@ -21,13 +21,14 @@
             label="归属线路项目"
             class="label-right-align"
           >
-            <template v-if="type !== 'view'">
+            <template v-if="type !== 'view' && !projectId">
               <el-select
                 v-model="formModel.projectId"
                 filterable
                 required
                 style="width: 100%"
                 placeholder="请选择"
+                @change="(val) => selectChange(lineOptions, val, 'projectName')"
               >
                 <el-option
                   v-for="item in lineOptions"
@@ -39,7 +40,7 @@
               </el-select>
             </template>
             <template v-else>
-              <span>{{ formModel.constructionUnit }}</span>
+              <span>{{ formModel.projectName }}</span>
             </template>
           </el-form-item>
         </template>
@@ -58,6 +59,14 @@
                 required
                 style="width: 100%"
                 placeholder="请选择"
+                @change="
+                  (val) =>
+                    selectChange(
+                      constructionCompanyOptions,
+                      val,
+                      'constructionCompany'
+                    )
+                "
               >
                 <el-option
                   v-for="item in constructionCompanyOptions"
@@ -76,18 +85,22 @@
         <!-- 监理单位 -->
         <template #supervisionUnitSlot="{ formModel }">
           <el-form-item
-            prop="supervisionUnit"
+            prop="supervisionUnitId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
             label="监理单位"
             class="label-right-align"
           >
             <template v-if="type !== 'view'">
               <el-select
-                v-model="formModel.supervisionUnit"
+                v-model="formModel.supervisionUnitId"
                 filterable
                 required
                 style="width: 100%"
                 placeholder="请选择"
+                @change="
+                  (val) =>
+                    selectChange(supervisionUnitOptions, val, 'supervisionUnit')
+                "
               >
                 <el-option
                   v-for="item in supervisionUnitOptions"
@@ -106,18 +119,26 @@
         <!-- 物代公司 -->
         <template #materialAgentCompanySlot="{ formModel }">
           <el-form-item
-            prop="materialAgentCompany"
+            prop="materialAgentCompanyId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
             label="物代公司"
             class="label-right-align"
           >
             <template v-if="type !== 'view'">
               <el-select
-                v-model="formModel.materialAgentCompany"
+                v-model="formModel.materialAgentCompanyId"
                 filterable
                 required
                 style="width: 100%"
                 placeholder="请选择"
+                @change="
+                  (val) =>
+                    selectChange(
+                      materialAgentCompanyOptions,
+                      val,
+                      'materialAgentCompany'
+                    )
+                "
               >
                 <el-option
                   v-for="item in materialAgentCompanyOptions"
@@ -190,16 +211,19 @@ export default {
     },
     id () {
       return this.$route.query?.id || ''
-    }
+    },
+    projectId () {
+      return this.$route.query?.projectId || ''
+    },
   },
-async  created () {
+  async created () {
     // this.getDeptTree()
     this.getLineOptions()
-    
+
 
     this.constructionCompanyOptions = await this.getDeptTree('SGDW')
-    this.supervisionUnitOptions =await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions =await this.getDeptTree('WDGS')
+    this.supervisionUnitOptions = await this.getDeptTree('JLDW')
+    this.materialAgentCompanyOptions = await this.getDeptTree('WDGS')
   },
   mounted () {
 
@@ -247,6 +271,8 @@ async  created () {
           label: item.projectName
         }
       })
+
+
     },
     async getDeptTree (deptCode) {
       const res = await listByDeptCode({
@@ -275,8 +301,10 @@ async  created () {
       this.$router.go(-1)
     },
 
-    buttonShow (item) {
-      console.log(item, 'item')
+     buttonShow (item) {
+      if (item.buttonCode === 'save') {
+        return this.type !== 'view'
+      }
       return true
     },
     //新建
@@ -314,11 +342,28 @@ async  created () {
           this.$refs['vFormRef'].setFormJson(res.data)
           //   form action
           this.$refs['vFormRef'].setReadMode(false)
+
+          // 如果有projectId 则默认赋值归属项目，并且禁用归属线路项目选项
+          if (this.projectId) {
+            this.$refs['vFormRef'].setFormData({
+              projectId: this.projectId,
+              projectName: this.lineOptions.find(item => item.value === this.projectId).label
+            })
+
+          }
+
+
           resolve(true)
         })
       })
     },
+    selectChange (options, val, key) {
+      this.$refs.vFormRef.setFormData({
+        [key]: options.find(item => item.value === val)?.label
+      })
 
+      console.log(val, key)
+    }
 
   },
 }

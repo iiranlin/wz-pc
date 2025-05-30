@@ -73,7 +73,26 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
-        />
+        >
+         <!-- 供应商数量 -->
+          <template #sellerList="scoped">
+            <el-button
+              type="text"
+              @click="
+                () => {
+                  if (scoped.data.sellerList.length)
+                    $refs.sellerDialogRef.open(
+                      scoped.data.sellerList.map((x) => ({
+                        name: x.contractName,
+                      }))
+                    );
+                }
+              "
+            >
+              {{ scoped.data.sellerList.length }}
+            </el-button>
+          </template>
+        </table-index>
         <pagination
           v-show="total > 0"
           :total="total"
@@ -83,6 +102,7 @@
         />
       </el-col>
     </el-row>
+    <SellerDialog ref="sellerDialogRef" />
   </div>
 </template>
 
@@ -91,10 +111,11 @@ import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
 import * as Api from '@/api/prodmgr-inv/project/section.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
+import SellerDialog from './components/sellerDialog.vue'
 export default {
   // 标段项目
   name: "section",
-  components: { Add },
+  components: { Add,SellerDialog },
   mixins: [indexMixin],
 
   data () {
@@ -136,6 +157,9 @@ export default {
       selection: [],
       hasOwn: true,
     };
+  },
+  activated(){
+    this.getList();
   },
   created () {
     let id = this.$route.meta.id;

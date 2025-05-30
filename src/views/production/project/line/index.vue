@@ -73,7 +73,44 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
-        />
+        >
+          <!-- 标段数量 -->
+          <template #sectionList="scoped">
+            <el-button
+              type="text"
+              @click="
+                () => {
+                  if (scoped.data.sectionList.length)
+                    $refs.sectionDialogRef.open(
+                      scoped.data.sectionList.map((x) => ({
+                        name: x.sectionName,
+                      }))
+                    );
+                }
+              "
+            >
+              {{ scoped.data.sectionList.length }}
+            </el-button>
+          </template>
+          <!-- 合同数量 -->
+          <template #contractList="scoped">
+            <el-button
+              type="text"
+              @click="
+                () => {
+                  if (scoped.data.contractList.length)
+                    $refs.constrctDialogRef.open(
+                      scoped.data.contractList.map((x) => ({
+                        name: x.contractName,
+                      }))
+                    );
+                }
+              "
+            >
+              {{ scoped.data.contractList.length }}
+            </el-button>
+          </template>
+        </table-index>
         <pagination
           v-show="total > 0"
           :total="total"
@@ -83,6 +120,8 @@
         />
       </el-col>
     </el-row>
+    <SectionDialog ref="sectionDialogRef" />
+    <ConstrctDialog ref="constrctDialogRef" />
   </div>
 </template>
 
@@ -91,10 +130,12 @@ import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
 import * as Api from '@/api/prodmgr-inv/project/line.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
+import SectionDialog from './components/sectionDialog.vue'
+import ConstrctDialog from './components/constrctDialog.vue'
 export default {
   // 线路项目
   name: "line",
-  components: { Add },
+  components: { Add, SectionDialog, ConstrctDialog },
   mixins: [indexMixin],
 
   data () {
@@ -238,6 +279,10 @@ export default {
           break;
         case 'view':
           this.$router.push({ name: 'addLine', query: { id: idArr[0], type: 'view' } })
+          break;
+        case 'createSection':
+          console.log(rowArr,'rowArr')
+          this.$router.push({ name: 'addSection', query: { type: 'create', projectId: rowArr[0].id } })
           break;
       }
     },
