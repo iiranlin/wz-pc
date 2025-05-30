@@ -50,7 +50,7 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in dict.type.JLDW"
+                  v-for="item in dict.type.MeasureUnit"
                   :key="item.value"
                   :label="item.label"
                   :value="item.label"
@@ -82,7 +82,7 @@
 import * as Api from '@/api/prodmgr-inv/project/item.js'
 export default {
   name: "ItemAdd",
-  dicts: ['JLDW'],
+  dicts: ['MeasureUnit'],
   data () {
     return {
       title: '新增',
