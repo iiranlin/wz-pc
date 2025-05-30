@@ -48,6 +48,7 @@
                 v-model="form.unit"
                 placeholder="请选择"
                 style="width: 100%"
+                filterable
               >
                 <el-option
                   v-for="item in dict.type.MeasureUnit"
