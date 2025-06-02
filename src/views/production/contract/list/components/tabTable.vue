@@ -324,7 +324,7 @@
       </el-row>
     </div>
 
-    <BatchDialog ref="batchDialogRef" />
+    <BatchDialog ref="batchDialogRef" @onOk="onDialogOk" />
   </div>
 </template>
 
@@ -386,7 +386,7 @@ export default {
     // 计算总金额
     totalAmount () {
       return this.filteredTableData.reduce((sum, item) => {
-      
+
         return sum + item.totalAmount;
       }, 0);
     },
@@ -425,6 +425,10 @@ export default {
     this.getSectionOptions()
   },
   methods: {
+    onDialogOk (data) {
+      // 将批量上传的文件，导入到总的数据中
+      this.tableData.push(...data)
+    },
     // 获取options数据
     async getItemsOptions () {
       const res = await ItemApi.itemList(this.params)
@@ -620,7 +624,7 @@ export default {
       );
     },
 
-   
+
     // 返回唯一行 key，用于多选保留状态
     getRowKey (row) {
       return `${row.id}`;
@@ -661,7 +665,6 @@ export default {
       const validationErrors = this.validateTableData();
 
       if (validationErrors.length === 0) {
-        this.$message.success('表格数据验证通过！');
         return true;
       } else {
         // 显示验证错误信息

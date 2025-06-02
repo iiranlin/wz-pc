@@ -271,8 +271,6 @@ export default {
           label: item.projectName
         }
       })
-
-
     },
     async getDeptTree (deptCode) {
       const res = await listByDeptCode({
@@ -301,7 +299,7 @@ export default {
       this.$router.go(-1)
     },
 
-     buttonShow (item) {
+    buttonShow (item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
@@ -349,10 +347,7 @@ export default {
               projectId: this.projectId,
               projectName: this.lineOptions.find(item => item.value === this.projectId).label
             })
-
           }
-
-
           resolve(true)
         })
       })
@@ -361,8 +356,6 @@ export default {
       this.$refs.vFormRef.setFormData({
         [key]: options.find(item => item.value === val)?.label
       })
-
-      console.log(val, key)
     }
 
   },
