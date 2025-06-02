@@ -102,7 +102,7 @@
         </template>
 
         <template #table>
-          <TabTable :tableData="mockData" />
+          <TabTable ref="tabTableRef" :tableData="tableData" />
         </template>
       </VFormRender>
     </div>
@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import TabTable from './tabTable.vue'
@@ -154,36 +155,7 @@ export default {
       ],
       constructionOptions: [],
       gysOptions: [],
-      mockData: [
-        {
-          序号: 1,
-          物资名称: '铁路标准轨道支座(简支梁)',
-          项目简称: '宁德铁路',
-          标段项目名称: '宁德铁路XXX标段',
-          买方名称: 'XXX公司',
-          钢轨型号: 'TJGZ-Q2500-ZX-0.2g-T',
-          标准或编号: '见技术规格书',
-          计量单位: '个',
-          数量: 10,
-          到站不含税单价: 1000.00,
-          物资增值税率: '13%',
-          到站含税单价: 1130.00
-        },
-        {
-          序号: 2,
-          物资名称: '铁路标准轨道支座(连续梁)',
-          项目简称: '福州铁路',
-          标段项目名称: '福州铁路YYY标段',
-          买方名称: 'YYY公司',
-          钢轨型号: 'TJGZ-Q2500-ZX-0.3g-T',
-          标准或编号: '见技术规格书',
-          计量单位: '个',
-          数量: 15,
-          到站不含税单价: 1200.00,
-          物资增值税率: '13%',
-          到站含税单价: 1356.00
-        }
-      ]
+      tableData: []
     }
   },
   computed: {
@@ -215,8 +187,6 @@ export default {
 
   },
   methods: {
-
-
     //初始化
     init () {
       this.$nextTick(async () => {
@@ -237,7 +207,7 @@ export default {
             fileList: data.fileList[0]?.fileList || []
           }
 
-          
+
 
           this.$refs.vFormRef.setFormData(newData)
 
@@ -270,7 +240,22 @@ export default {
     //新建
     handleCreate () {
       this.$refs.vFormRef.validateForm(async (valid) => {
-        console.log(valid, 'valid')
+        if (!valid) {
+          this.$message.warning('请完善信息')
+          return
+        }
+        // 校验表格
+      const tableValid =   this.$refs.tabTableRef.onCheck()
+        if(!tableValid) {
+          return
+        }
+
+        // 如果表格内数据为空，则提示
+        if (this.tableData.length === 0) {
+          this.$message.warning('请添加合同物资科目')
+          return
+        }
+
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
@@ -324,6 +309,21 @@ export default {
       this.$refs.vFormRef.setFormData({
         [key]: options.find(item => item.value === val)?.label
       })
+
+      if (key === 'projectName') {
+        this.$store.dispatch('setProjectId', val)
+      }
+      // 当选择卖方时，同步更新tabTable中所有行的卖方数据
+      if (key === 'seller') {
+        const selectedSeller = options.find(item => item.value === val)
+        if (selectedSeller) {
+          // 更新tableData中所有行的卖方信息
+          this.tableData.forEach(row => {
+            row.sellerName = selectedSeller.label
+          })
+        }
+      }
+
     },
     async getLineOptions () {
       const res = await LineApi.itemList({

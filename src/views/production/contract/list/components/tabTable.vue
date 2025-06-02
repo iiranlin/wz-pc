@@ -2,11 +2,7 @@
   <div class="tab-table-container">
     <!-- Action Button -->
     <template>
-      <el-button
-        type="primary"
-        icon="el-icon-plus"
-        size="mini"
-        @click="handleButton('create')"
+      <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
         >添加物资</el-button
       >
       <!-- 批量导入 -->
@@ -14,7 +10,7 @@
         type="primary"
         icon="el-icon-upload"
         size="mini"
-        @click="handleButton('import')"
+        @click="onBatchUpload"
         >批量导入</el-button
       >
       <!-- 删除 -->
@@ -46,14 +42,6 @@
       @selection-change="handleSelectionChange"
       ref="dataTable"
     >
-      <!-- 公共列 -->
-      <!-- <el-table-column
-        prop="id"
-        label="id"
-        width="80"
-        align="center"
-        fixed="left"
-      ></el-table-column> -->
       <el-table-column
         type="index"
         label="序号"
@@ -71,9 +59,29 @@
       <el-table-column
         prop="materialName"
         label="物资名称"
-        width="180"
+        width="250"
         fixed="left"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-select
+            v-if="scope.row.isManual"
+            v-model="scope.row.materialId"
+            placeholder="请选择物资名称"
+            size="mini"
+            @change="handleFieldChange('materialId', scope.row)"
+            style="width: 100%"
+            filterable
+          >
+            <el-option
+              v-for="unit of options['itemOptions']"
+              :key="unit.value"
+              :label="unit.label"
+              :value="unit.value"
+            ></el-option>
+          </el-select>
+          <span v-else>{{ scope.row.materialName }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="projectShortName"
         label="项目简称"
@@ -86,7 +94,27 @@
         prop="sectionName"
         label="标段项目名称"
         width="150"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-select
+            v-if="scope.row.isManual"
+            v-model="scope.row.sectionId"
+            placeholder="请选择标段项目名称"
+            size="mini"
+            @change="handleFieldChange('sectionId', scope.row)"
+            style="width: 100%"
+            filterable
+          >
+            <el-option
+              v-for="item of options['setcionOptions']"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <span v-else>{{ scope.row.sectionName }}</span>
+        </template>
+      </el-table-column>
 
       <!-- 其他列 -->
       <el-table-column
@@ -94,46 +122,58 @@
         label="卖方名称"
         width="120"
       ></el-table-column>
-      <el-table-column
-        prop="specModel"
-        label="规格型号"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="standardCode"
-        label="标准或图号"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.specModel"
+            size="mini"
+            @change="handleFieldChange('specModel', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="standardCode" label="标准或图号" width="120">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.standardCode"
+            size="mini"
+            @change="handleFieldChange('standardCode', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
 
       <!-- 可选择计量单位 -->
-      <el-table-column prop="unit" label="计量单位" width="120" align="center">
+      <el-table-column prop="unit" label="计量单位" width="150" align="center">
         <template slot-scope="scope">
-          <el-select
+          <!-- <el-select
             v-model="scope.row.unit"
             placeholder="请选择单位"
             size="mini"
-            @change="handleUnitChange(scope.$index, scope.row)"
+            @change="handleFieldChange('unit', scope.row)"
             style="width: 100%"
+            filterable
           >
             <el-option
-              v-for="unit in unitOptions"
+              v-for="unit of dict.type.MeasureUnit"
               :key="unit.value"
               :label="unit.label"
-              :value="unit.value"
+              :value="unit.label"
             ></el-option>
-          </el-select>
+          </el-select> -->
+          <span>{{ scope.row.unit }}</span>
         </template>
       </el-table-column>
 
       <!-- 可编辑amount -->
-      <el-table-column prop="amount" label="数量" width="120" align="center">
+      <el-table-column prop="amount" label="数量" width="180" align="center">
         <template slot-scope="scope">
           <el-input-number
             v-model="scope.row.amount"
             :min="0"
             :precision="2"
             size="mini"
-            @change="handleQuantityChange(scope.$index, scope.row)"
+            @change="handleFieldChange('amount', scope.row)"
             style="width: 100%"
           ></el-input-number>
         </template>
@@ -146,19 +186,37 @@
         align="right"
       >
         <template slot-scope="scope">
-          {{ scope.row.price ? scope.row.price.toFixed(2) : '' }}
+          <el-input-number
+            v-model="scope.row.price"
+            :min="0.01"
+            :precision="2"
+            size="mini"
+            @change="handleFieldChange('price', scope.row)"
+            style="width: 100%"
+          ></el-input-number>
         </template>
       </el-table-column>
       <el-table-column
         prop="vatRate"
-        label="物资增值税率"
-        width="120"
+        label="物资增值税率（%）"
+        width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-input-number
+            v-model="scope.row.vatRate"
+            :min="0.01"
+            :precision="2"
+            size="mini"
+            @change="handleFieldChange('vatRate', scope.row)"
+            style="width: 100%"
+          ></el-input-number>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="taxPrice"
         label="到站含税单价(元)"
-        width="140"
+        width="150"
         align="right"
       >
         <template slot-scope="scope">
@@ -168,7 +226,7 @@
       <el-table-column
         prop="totalAmount"
         label="到站合价含税(元)"
-        width="140"
+        width="150"
         align="right"
       >
         <template slot-scope="scope">
@@ -180,31 +238,76 @@
         label="交货地点"
         width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.deliveryLocation"
+            size="mini"
+            @change="handleFieldChange('deliveryLocation', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="receiver"
         label="收货人"
         width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.receiver"
+            size="mini"
+            @change="handleFieldChange('receiver', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="deliveryStatus"
         label="交货状态"
         width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.deliveryStatus"
+            size="mini"
+            @change="handleFieldChange('deliveryStatus', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="deliveryTerms"
         label="交货条件"
         width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.deliveryTerms"
+            size="mini"
+            @change="handleFieldChange('deliveryTerms', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="deliveryDate"
         label="交货期"
         width="150"
         align="center"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.deliveryDate"
+            size="mini"
+            @change="handleFieldChange('deliveryDate', scope.row)"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 统计信息 -->
@@ -212,7 +315,7 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="summary-item">
-            <span class="summary-label">总金额：</span>
+            <span class="summary-label">到站合价含税合计：</span>
             <span class="summary-value amount-text"
               >{{ totalAmount.toFixed(2) }} 元</span
             >
@@ -220,32 +323,28 @@
         </el-col>
       </el-row>
     </div>
+
+    <BatchDialog ref="batchDialogRef" />
   </div>
 </template>
 
 <script>
+import BatchDialog from './batchDialog.vue';
+import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
+import * as LineApi from '@/api/prodmgr-inv/project/line.js';
 export default {
-  name: 'EnhancedDynamicTabTable',
+  name: 'tabTable',
+  dicts: ['MeasureUnit'],
   props: {
     // 接收外部传入的表格数据
     tableData: {
       type: Array,
       default: () => []
     },
-    // 单位选项配置
-    unitOptions: {
-      type: Array,
-      default: () => [
-        { label: '吨', value: '吨' },
-        { label: '米', value: '米' },
-        { label: '公里', value: '公里' },
-        { label: '根', value: '根' },
-        { label: '套', value: '套' },
-        { label: '个', value: '个' },
-        { label: '台', value: '台' },
-        { label: '批', value: '批' }
-      ]
-    }
+
+  },
+  components: {
+    BatchDialog
   },
   data () {
     return {
@@ -253,6 +352,14 @@ export default {
       currentTableData: [], // 当前显示的表格数据
       loading: false,
       selectedRowKeys: { total: [] }, // 用户存储当前选择的数据
+      maxManualIndex: 0,
+      options: {
+
+      },
+      params: {
+        pageNum: 1,
+        pageSize: -1,
+      }
     }
   },
   computed: {
@@ -279,8 +386,8 @@ export default {
     // 计算总金额
     totalAmount () {
       return this.filteredTableData.reduce((sum, item) => {
-        const subtotal = this.calculateSubtotalValue(item);
-        return sum + subtotal;
+      
+        return sum + item.totalAmount;
       }, 0);
     },
     projectTabs () {
@@ -291,6 +398,9 @@ export default {
         projectName: name
       }));
     },
+    projectId () {
+      return this.$store.state.project.projectId || this.$route.query.projectId
+    }
   },
 
   watch: {
@@ -305,9 +415,96 @@ export default {
     // 监听activeTab变化
     activeTab () {
       this.updateCurrentData();
+    },
+    projectId () {
+      this.getSectionOptions()
     }
   },
+  created () {
+    this.getItemsOptions()
+    this.getSectionOptions()
+  },
   methods: {
+    // 获取options数据
+    async getItemsOptions () {
+      const res = await ItemApi.itemList(this.params)
+      this.options.itemOptions = res.data.list.map(item => {
+        return {
+          ...item,
+          value: item.id,
+          label: item.materialName
+        }
+      })
+    },
+    async getSectionOptions () {
+      if (!this.projectId) {
+        return
+      }
+      const res = await LineApi.detail(this.projectId)
+      this.options.setcionOptions = res.data.sectionList.map(item => {
+        return {
+          ...item,
+          value: item.id,
+          label: item.sectionName
+        }
+      })
+    },
+    // 新增物资行
+    onAdd () {
+      this.maxManualIndex += 1
+      // 生成新的ID（基于时间戳和随机数）
+      const newId = this.maxManualIndex;
+
+      // 创建新行数据模板
+      const newRow = {
+        id: newId,
+        isManual: true, // 标记为手动添加的行
+        materialName: '', // 物资名称
+        projectShortName: '', // 项目简称
+        sectionName: '', // 标段项目名称
+        sellerName: '', // 卖方名称
+        specModel: '', // 规格型号
+        standardCode: '', // 标准或图号
+        unit: '', // 计量单位
+        amount: 0, // 数量
+        price: 0, // 到站不含税单价
+        vatRate: '', // 物资增值税率
+        taxPrice: 0, // 到站含税单价
+        totalAmount: 0, // 到站合价含税
+        deliveryLocation: '', // 交货地点
+        receiver: '', // 收货人
+        deliveryStatus: '', // 交货状态
+        deliveryTerms: '', // 交货条件
+        deliveryDate: '' // 交货期
+      };
+
+      // 将新行添加到表格数据中
+      this.tableData.push(newRow);
+
+      // 向父组件发送新增事件
+      this.$emit('data-change', {
+        type: 'add',
+        row: newRow,
+        index: this.tableData.length - 1
+      });
+
+      // 刷新当前数据显示
+      this.updateCurrentData();
+
+      // 滚动到表格底部，让用户看到新增的行
+      this.$nextTick(() => {
+        const tableBodyWrapper = this.$refs.dataTable.$el.querySelector('.el-table__body-wrapper');
+        if (tableBodyWrapper) {
+          tableBodyWrapper.scrollTop = tableBodyWrapper.scrollHeight;
+        }
+      });
+
+      this.$message.success('已添加新行，请填写物资信息');
+    },
+
+    onBatchUpload () {
+      this.$refs.batchDialogRef.open();
+    },
     // 批量删除选中数据
     onDelete () {
       this.$confirm('确认删除选中数据吗？', '提示', {
@@ -318,8 +515,67 @@ export default {
         .then(() => {
           // 找到当前tab对应的所有选中行
           this.tableData = this.tableData.filter(row => !this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)))
-
         })
+    },
+    // 每个字段的变化都触发这个方法
+    handleFieldChange (fieldType, row) {
+      this.$emit('data-change', {
+        type: fieldType,
+        index: this.getOriginalIndex(row),
+        row: row,
+        newValue: row[fieldType]
+      });
+
+      console.log('handleFieldChange', fieldType, row);
+
+      // 选择物资名称时，同步更新其他物资信息，选择标段名称时，同步简称
+      switch (fieldType) {
+        case 'materialId':
+          // 同步更新其他物资信息
+          const selectedItem = this.options.itemOptions.find(item => item.value === row.materialId);
+          if (selectedItem) {
+            row.specModel = selectedItem.specModel;
+            row.unit = selectedItem.unit;
+            row.materialName = selectedItem.materialName
+          }
+          break;
+        case 'sectionId':
+          // 同步更新简称
+          const selectedSection = this.options.setcionOptions.find(item => item.value === row.sectionId);
+          if (selectedSection) {
+            this.$set(row, 'projectShortName', selectedSection.projectShortName)
+            this.$set(row, 'sectionName', selectedSection.sectionName)
+          }
+          break;
+        // (100 + 税率) * 不含税单价 = 到站含税单价
+        case 'vatRate':
+          this.calculateTaxPrice(row);
+          break;
+        case 'price':
+          this.calculateTaxPrice(row);
+          break;
+        // 数量 * 到站含税单价 = 到站合价含税
+        case 'amount':
+          this.calculateTotalAmount(row);
+          break;
+        case 'taxPrice':
+          this.calculateTotalAmount(row);
+          break;
+      }
+    },
+    calculateTaxPrice (row) {
+      if (row.vatRate && row.price) {
+        const taxPrice = (100 + row.vatRate) * row.price
+        row.taxPrice = taxPrice
+
+        this.calculateTotalAmount(row)
+      }
+    },
+    calculateTotalAmount (row) {
+      if (row.amount && row.taxPrice) {
+        const totalAmount = row.amount * row.taxPrice
+        row.totalAmount = totalAmount
+      }
     },
     // 处理Tab点击事件
     handleTabClick (tab) {
@@ -356,30 +612,6 @@ export default {
       });
     },
 
-    // 处理amount变化
-    handleQuantityChange (index, row) {
-      // 向父组件发送数据变化事件
-      this.$emit('data-change', {
-        type: 'quantity',
-        index: this.getOriginalIndex(row),
-        row: row,
-        newValue: row.amount
-      });
-
-      // 触发重新计算
-      this.$forceUpdate();
-    },
-
-    // 处理单位变化
-    handleUnitChange (index, row) {
-      // 向父组件发送数据变化事件
-      this.$emit('data-change', {
-        type: 'unit',
-        index: this.getOriginalIndex(row),
-        row: row,
-        newValue: row.unit
-      });
-    },
 
     // 获取原始数据中的索引
     getOriginalIndex (row) {
@@ -388,18 +620,7 @@ export default {
       );
     },
 
-    // 计算小计金额（显示用）
-    calculateSubtotal (row) {
-      const subtotal = this.calculateSubtotalValue(row);
-      return subtotal.toFixed(2);
-    },
-
-    // 计算小计金额（数值）
-    calculateSubtotalValue (row) {
-      const quantity = parseFloat(row.amount) || 0;
-      const price = parseFloat(row.taxPrice) || 0;
-      return quantity * price;
-    },
+   
     // 返回唯一行 key，用于多选保留状态
     getRowKey (row) {
       return `${row.id}`;
@@ -416,9 +637,6 @@ export default {
     emitSelectionChange () {
       const allSelectedRows = this.tableData.filter(row => this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)));
     },
-
-
-
     // ✅ 当切换Tab时刷新表格并恢复多选
     updateCurrentData () {
       if (!this.selectedRowKeys[this.activeTab]) {
@@ -436,6 +654,113 @@ export default {
 
       this.$nextTick(() => {
         this.restoreSelectionAfterTabChange();
+      });
+    },
+    // 验证表格数据
+    onCheck () {
+      const validationErrors = this.validateTableData();
+
+      if (validationErrors.length === 0) {
+        this.$message.success('表格数据验证通过！');
+        return true;
+      } else {
+        // 显示验证错误信息
+        const errorMessage = this.formatValidationErrors(validationErrors);
+        this.$message({
+          message: errorMessage,
+          type: 'error',
+          duration: 8000,
+          dangerouslyUseHTMLString: true
+        });
+        return false;
+      }
+    },
+
+    // 验证表格数据的核心方法
+    validateTableData () {
+      const errors = [];
+      const currentData = this.filteredTableData;
+
+      currentData.forEach((row, index) => {
+        const rowErrors = [];
+        const displayIndex = index + 1; // 显示行号从1开始
+
+        // 验证数量字段
+        if (!row.amount || row.amount <= 0) {
+          rowErrors.push('数量');
+        }
+
+        // 验证物资名称（对于手动添加的行）
+        if (row.isManual && (!row.materialId || !row.materialName)) {
+          rowErrors.push('物资名称');
+        }
+
+        // 验证计量单位
+        if (!row.unit || row.unit.trim() === '') {
+          rowErrors.push('计量单位');
+        }
+
+        // 如果有错误，添加到错误列表
+        if (rowErrors.length > 0) {
+          errors.push({
+            rowIndex: displayIndex,
+            rowData: row,
+            missingFields: rowErrors
+          });
+        }
+      });
+
+      return errors;
+    },
+
+    // 格式化验证错误信息
+    formatValidationErrors (errors) {
+      const currentTabName = this.activeTab === 'total' ? '总数据' :
+        this.projectTabs.find(p => p.name === this.activeTab)?.label || '当前标签页';
+
+      let message = `<div style="text-align: left;"><strong>${currentTabName} 数据验证失败：</strong><br/>`;
+
+      errors.forEach(error => {
+        const fieldsText = error.missingFields.join('、');
+        message += `<div style="margin: 5px 0; color: #f56c6c;">• 第 ${error.rowIndex} 行：${fieldsText} 未填写</div>`;
+      });
+
+      message += '</div>';
+      return message;
+    },
+
+    // 高亮显示有错误的行（可选功能）
+    highlightErrorRows (errors) {
+      // 清除之前的高亮
+      this.clearRowHighlight();
+
+      // 高亮错误行
+      errors.forEach(error => {
+        const rowIndex = error.rowIndex - 1;
+        this.$nextTick(() => {
+          const tableRef = this.$refs.dataTable;
+          if (tableRef && tableRef.$el) {
+            const rows = tableRef.$el.querySelectorAll('.el-table__body tr');
+            if (rows[rowIndex]) {
+              rows[rowIndex].style.backgroundColor = '#fef0f0';
+              rows[rowIndex].style.border = '1px solid #f56c6c';
+            }
+          }
+        });
+      });
+    },
+
+    // 清除行高亮
+    clearRowHighlight () {
+      this.$nextTick(() => {
+        const tableRef = this.$refs.dataTable;
+        if (tableRef && tableRef.$el) {
+          const rows = tableRef.$el.querySelectorAll('.el-table__body tr');
+          rows.forEach(row => {
+            row.style.backgroundColor = '';
+            row.style.border = '';
+          });
+        }
       });
     },
   },

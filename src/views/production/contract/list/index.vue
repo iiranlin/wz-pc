@@ -57,8 +57,6 @@
         />
       </el-col>
     </el-row>
-    <SectionDialog ref="sectionDialogRef" />
-    <ConstrctDialog ref="constrctDialogRef" />
   </div>
 </template>
 
@@ -67,13 +65,11 @@
 import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
-import SectionDialog from './components/sectionDialog.vue'
-import ConstrctDialog from './components/constrctDialog.vue'
 import { listByDeptCode } from '@/api/system/dept.js'
 export default {
   // 线路项目
   name: "contractList",
-  components: { Add, SectionDialog, ConstrctDialog },
+  components: { Add },
   mixins: [indexMixin],
 
   data () {

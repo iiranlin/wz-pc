@@ -39,12 +39,16 @@
       <el-table-column prop="fileName" label="文件名" />
       <el-table-column prop="number" label="物资条数" />
       <el-table-column prop="totalAmount" label="到站合作总金额" />
-      <el-table-column prop="fileSize" label="文件大小" />
+      <el-table-column
+        prop="fileSize"
+        label="文件大小"
+        :formatter="formatFileSize"
+      />
       <el-table-column prop="status" label="状态" />
     </el-table>
 
     <el-alert
-      v-if="fileList.length > 0 && fileList[0].reason"
+      v-if="fileList.length > 0 && fileList[0].reason.length > 0"
       title="提示"
       type="warning"
       style="margin-top: 16px"
@@ -60,6 +64,7 @@
     </el-alert>
 
     <div slot="footer" class="dialog-footer">
+       <el-button round type="primary" @click="onOk">确认</el-button>
       <el-button round @click="visible = false">取消</el-button>
     </div>
   </Dialog>
@@ -81,13 +86,30 @@ export default {
     }
   },
   methods: {
+    formatFileSize (row, column, cellValue) {
+      if (!cellValue) return '0 KB'
+      const sizeInMB = cellValue / (1024 * 1024)
+      if (sizeInMB < 1) {
+        const sizeInKB = cellValue / 1024
+        return sizeInKB.toFixed(2) + ' KB'
+      } else {
+        return sizeInMB.toFixed(2) + ' MB'
+      }
+    },
     open () {
       this.visible = true;
-
-
+      this.fileList = []
     },
     //取消
     handleCancel () {
+      this.visible = false;
+    },
+    onOk () {
+      if(!this.fileList[0]?.list?.length){
+        this.$message.warning('请先上传文件')
+        return
+      }
+      this.$emit('onOk', this.fileList[0].list)
       this.visible = false;
     },
     beforeUpload (file) {

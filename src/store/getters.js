@@ -14,5 +14,6 @@ const getters = {
     defaultRoutes: state => state.permission.defaultRoutes,
     sidebarRouters: state => state.permission.sidebarRouters,
     sidebarRoutersHidden: state => state.permission.sidebarRoutersHidden,
+    projectId: state => state.project.projectId,
 }
 export default getters
