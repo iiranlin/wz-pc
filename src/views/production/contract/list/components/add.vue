@@ -97,12 +97,18 @@
               :limit="1"
               :fileSize="50"
               :fileType="['pdf']"
+              :preview="type === 'view'"
             />
           </el-form-item>
         </template>
 
         <template #table>
-          <TabTable ref="tabTableRef" :tableData="tableData" />
+          <TabTable
+            ref="tabTableRef"
+            :tableData="tableData"
+            @data-change="onDataChange"
+            :sellerName="$refs.vFormRef.getFieldValue('seller')"
+          />
         </template>
       </VFormRender>
     </div>
@@ -130,6 +136,7 @@ export default {
   data () {
     const userInfo = getUserInfo()
     return {
+      maxManualIndex: 1,
       buyer: userInfo?.deptName,
       loading: false,
       title: '新增',
@@ -187,6 +194,48 @@ export default {
 
   },
   methods: {
+    onDataChange (data) {
+      if (['delete'].includes(data.type)) {
+        const getDeleteIds = this.tableData.findIndex(item => data.row.includes(item.id + ''))
+        if (getDeleteIds !== -1) {
+          this.tableData.splice(getDeleteIds, 1)
+        }
+        return
+      }
+
+      if (data.type === 'add') {
+        this.onAdd()
+        return
+      }
+    },
+    onAdd () {
+      this.maxManualIndex += 1
+      const newId = this.maxManualIndex;
+      // 创建新行数据模板
+      const newRow = {
+        id: newId,
+        isManual: true, // 标记为手动添加的行
+        materialName: '', // 物资名称
+        projectShortName: '', // 项目简称
+        sectionName: '', // 标段项目名称
+        sellerName: this.$refs.vFormRef.getFieldValue('seller'), // 卖方名称
+        specModel: '', // 规格型号
+        standardCode: '', // 标准或图号
+        unit: '', // 计量单位
+        amount: 0, // 数量
+        price: 0, // 到站不含税单价
+        vatRate: '', // 物资增值税率
+        taxPrice: 0, // 到站含税单价
+        totalAmount: 0, // 到站合价含税
+        deliveryLocation: '', // 交货地点
+        receiver: '', // 收货人
+        deliveryStatus: '', // 交货状态
+        deliveryTerms: '', // 交货条件
+        deliveryDate: '' // 交货期
+      };
+      // 将新行添加到表格数据中
+      this.tableData.push(newRow);
+    },
     //初始化
     init () {
       this.$nextTick(async () => {
@@ -204,15 +253,15 @@ export default {
           // fileList回显
           const newData = {
             ...data,
+            contractStatus: data.contractStatus == '2',
             fileList: data.fileList[0]?.fileList || []
           }
-
-
-
           this.$refs.vFormRef.setFormData(newData)
 
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
+
+          this.tableData = data.materialList
         });
       });
     },
@@ -228,6 +277,7 @@ export default {
 
     },
     cancel () {
+      this.$store.dispatch('setProjectId', '')
       this.$router.go(-1)
     },
 
@@ -245,8 +295,8 @@ export default {
           return
         }
         // 校验表格
-      const tableValid =   this.$refs.tabTableRef.onCheck()
-        if(!tableValid) {
+        const tableValid = this.$refs.tabTableRef.onCheck()
+        if (!tableValid) {
           return
         }
 
@@ -259,12 +309,18 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
+          formData.contractStatus = formData.contractStatus ? '2' : '1'
           // 后端存入嵌套数组
           const fileList = formData.fileList
           formData.fileList = [{ fileList }]
           await Api[
             this.type === 'update' ? `edit` : `save`
-          ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData))
+          ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
+            materialList: this.tableData.map(x => ({
+              ...x,
+              id: null,
+            }))
+          }))
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);

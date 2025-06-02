@@ -41,10 +41,16 @@
           @handleButton="handleButton"
         >
           <!-- 合同状态 -->
-          <template #status="scope">
+          <template #contractStatus="scope">
+            <!-- 0: "State-Fail", //审核不通过
+                1: "State-Waiting", //未提交
+                2: "State-Audit", //审核中
+                3: "State-Success" //审核通过 -->
             <icon-svg
-              :class="iconClassSize({ 1: 3, 2: 0 }[scope.value])"
-              :icon-class="iconEnableStautsClass({ 1: 3, 2: 0 }[scope.value])"
+              :class="iconClassSize({ '1': 0, '2': 3 }[scope.value])"
+              :icon-class="
+                iconEnableStautsClass({ '1': 0, '2': 3 }[scope.value])
+              "
             />{{ scope.value == 2 ? '启用' : '未启用' }}
           </template>
         </table-index>

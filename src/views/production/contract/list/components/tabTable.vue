@@ -23,7 +23,7 @@
       >
     </template>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane label="线路项目清单总数据" name="total"></el-tab-pane>
+      <el-tab-pane label="线路项目" name="total"></el-tab-pane>
       <el-tab-pane
         v-for="project in projectTabs"
         :key="project.name"
@@ -64,7 +64,7 @@
       >
         <template slot-scope="scope">
           <el-select
-            v-if="scope.row.isManual"
+            v-if="scope.row.isManual && type !== 'view'"
             v-model="scope.row.materialId"
             placeholder="请选择物资名称"
             size="mini"
@@ -97,7 +97,7 @@
       >
         <template slot-scope="scope">
           <el-select
-            v-if="scope.row.isManual"
+            v-if="scope.row.isManual && type !== 'view'"
             v-model="scope.row.sectionId"
             placeholder="请选择标段项目名称"
             size="mini"
@@ -123,44 +123,11 @@
         width="120"
       ></el-table-column>
       <el-table-column prop="specModel" label="规格型号" width="200">
-        <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.specModel"
-            size="mini"
-            @change="handleFieldChange('specModel', scope.row)"
-            style="width: 100%"
-          ></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column prop="standardCode" label="标准或图号" width="120">
-        <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.standardCode"
-            size="mini"
-            @change="handleFieldChange('standardCode', scope.row)"
-            style="width: 100%"
-          ></el-input>
-        </template>
       </el-table-column>
 
       <!-- 可选择计量单位 -->
       <el-table-column prop="unit" label="计量单位" width="150" align="center">
         <template slot-scope="scope">
-          <!-- <el-select
-            v-model="scope.row.unit"
-            placeholder="请选择单位"
-            size="mini"
-            @change="handleFieldChange('unit', scope.row)"
-            style="width: 100%"
-            filterable
-          >
-            <el-option
-              v-for="unit of dict.type.MeasureUnit"
-              :key="unit.value"
-              :label="unit.label"
-              :value="unit.label"
-            ></el-option>
-          </el-select> -->
           <span>{{ scope.row.unit }}</span>
         </template>
       </el-table-column>
@@ -169,6 +136,7 @@
       <el-table-column prop="amount" label="数量" width="180" align="center">
         <template slot-scope="scope">
           <el-input-number
+            v-if="type !== 'view'"
             v-model="scope.row.amount"
             :min="0"
             :precision="2"
@@ -176,6 +144,7 @@
             @change="handleFieldChange('amount', scope.row)"
             style="width: 100%"
           ></el-input-number>
+          <span v-else>{{ scope.row.amount }}</span>
         </template>
       </el-table-column>
 
@@ -187,13 +156,15 @@
       >
         <template slot-scope="scope">
           <el-input-number
+            v-if="type !== 'view'"
             v-model="scope.row.price"
-            :min="0.01"
+            :min="0"
             :precision="2"
             size="mini"
             @change="handleFieldChange('price', scope.row)"
             style="width: 100%"
           ></el-input-number>
+          <span v-else>{{ scope.row.price }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -204,13 +175,15 @@
       >
         <template slot-scope="scope">
           <el-input-number
+            v-if="type !== 'view'"
             v-model="scope.row.vatRate"
-            :min="0.01"
+            :min="0"
             :precision="2"
             size="mini"
             @change="handleFieldChange('vatRate', scope.row)"
             style="width: 100%"
           ></el-input-number>
+          <span v-else>{{ scope.row.vatRate }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -241,11 +214,13 @@
       >
         <template slot-scope="scope">
           <el-input
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryLocation"
             size="mini"
             @change="handleFieldChange('deliveryLocation', scope.row)"
             style="width: 100%"
           ></el-input>
+          <span v-else>{{ scope.row.deliveryLocation }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -256,11 +231,13 @@
       >
         <template slot-scope="scope">
           <el-input
+            v-if="type !== 'view'"
             v-model="scope.row.receiver"
             size="mini"
             @change="handleFieldChange('receiver', scope.row)"
             style="width: 100%"
           ></el-input>
+          <span v-else>{{ scope.row.receiver }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -271,11 +248,13 @@
       >
         <template slot-scope="scope">
           <el-input
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryStatus"
             size="mini"
             @change="handleFieldChange('deliveryStatus', scope.row)"
             style="width: 100%"
           ></el-input>
+          <span v-else>{{ scope.row.deliveryStatus }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -286,11 +265,13 @@
       >
         <template slot-scope="scope">
           <el-input
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryTerms"
             size="mini"
             @change="handleFieldChange('deliveryTerms', scope.row)"
             style="width: 100%"
           ></el-input>
+          <span v-else>{{ scope.row.deliveryTerms }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -301,11 +282,13 @@
       >
         <template slot-scope="scope">
           <el-input
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryDate"
             size="mini"
             @change="handleFieldChange('deliveryDate', scope.row)"
             style="width: 100%"
           ></el-input>
+          <span v-else>{{ scope.row.deliveryDate }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -313,6 +296,14 @@
     <!-- 统计信息 -->
     <div class="summary-info" v-if="currentTableData.length > 0">
       <el-row :gutter="20">
+        <el-col :span="6">
+          <div class="summary-item">
+            <span class="summary-label">总条数：</span>
+            <span class="summary-value amount-text"
+              >{{ currentTableData.length }} 条</span
+            >
+          </div>
+        </el-col>
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">到站合价含税合计：</span>
@@ -341,6 +332,10 @@ export default {
       type: Array,
       default: () => []
     },
+    sellerName: {
+      type: String,
+      default: ''
+    }
 
   },
   components: {
@@ -400,6 +395,9 @@ export default {
     },
     projectId () {
       return this.$store.state.project.projectId || this.$route.query.projectId
+    },
+    type () {
+      return this.$route.query.type
     }
   },
 
@@ -427,7 +425,11 @@ export default {
   methods: {
     onDialogOk (data) {
       // 将批量上传的文件，导入到总的数据中
-      this.tableData.push(...data)
+      const newData = data.map(item => ({
+        ...item,
+        sellerName: this.sellerName,
+      }))
+      this.tableData.push(...newData)
     },
     // 获取options数据
     async getItemsOptions () {
@@ -455,53 +457,15 @@ export default {
     },
     // 新增物资行
     onAdd () {
-      this.maxManualIndex += 1
-      // 生成新的ID（基于时间戳和随机数）
-      const newId = this.maxManualIndex;
-
-      // 创建新行数据模板
-      const newRow = {
-        id: newId,
-        isManual: true, // 标记为手动添加的行
-        materialName: '', // 物资名称
-        projectShortName: '', // 项目简称
-        sectionName: '', // 标段项目名称
-        sellerName: '', // 卖方名称
-        specModel: '', // 规格型号
-        standardCode: '', // 标准或图号
-        unit: '', // 计量单位
-        amount: 0, // 数量
-        price: 0, // 到站不含税单价
-        vatRate: '', // 物资增值税率
-        taxPrice: 0, // 到站含税单价
-        totalAmount: 0, // 到站合价含税
-        deliveryLocation: '', // 交货地点
-        receiver: '', // 收货人
-        deliveryStatus: '', // 交货状态
-        deliveryTerms: '', // 交货条件
-        deliveryDate: '' // 交货期
-      };
-
-      // 将新行添加到表格数据中
-      this.tableData.push(newRow);
 
       // 向父组件发送新增事件
       this.$emit('data-change', {
         type: 'add',
-        row: newRow,
-        index: this.tableData.length - 1
+        row: {},
       });
 
       // 刷新当前数据显示
       this.updateCurrentData();
-
-      // 滚动到表格底部，让用户看到新增的行
-      this.$nextTick(() => {
-        const tableBodyWrapper = this.$refs.dataTable.$el.querySelector('.el-table__body-wrapper');
-        if (tableBodyWrapper) {
-          tableBodyWrapper.scrollTop = tableBodyWrapper.scrollHeight;
-        }
-      });
 
       this.$message.success('已添加新行，请填写物资信息');
     },
@@ -518,7 +482,11 @@ export default {
       })
         .then(() => {
           // 找到当前tab对应的所有选中行
-          this.tableData = this.tableData.filter(row => !this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)))
+          // this.tableData = this.tableData.filter(row => !this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)))
+          this.$emit('data-change', {
+            type: 'delete',
+            row: this.selectedRowKeys[this.activeTab],
+          });
         })
     },
     // 每个字段的变化都触发这个方法
@@ -703,6 +671,22 @@ export default {
           rowErrors.push('计量单位');
         }
 
+        // 验证标段名称
+        if (!row.sectionId || row.sectionId.trim() === '') {
+          rowErrors.push('标段名称');
+        }
+
+        // 到站不含税单价
+        if (!row.price || row.price <= 0) {
+          rowErrors.push('到站不含税单价');
+        }
+
+        // 物资增值税率
+        if (!row.vatRate || row.vatRate <= 0) {
+          rowErrors.push('物资增值税率');
+        }
+
+
         // 如果有错误，添加到错误列表
         if (rowErrors.length > 0) {
           errors.push({
@@ -813,7 +797,7 @@ export default {
 
 /* 统计信息样式 */
 .summary-info {
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  margin-left: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
