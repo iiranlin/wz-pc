@@ -196,10 +196,7 @@ export default {
   methods: {
     onDataChange (data) {
       if (['delete'].includes(data.type)) {
-        const getDeleteIds = this.tableData.findIndex(item => data.row.includes(item.id + ''))
-        if (getDeleteIds !== -1) {
-          this.tableData.splice(getDeleteIds, 1)
-        }
+       this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
         return
       }
 

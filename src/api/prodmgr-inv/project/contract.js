@@ -97,3 +97,12 @@ export const save = (data) => {
 export function adjustInExport(data) {
   return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
 }
+
+// 合同变更
+export const changeList = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/changeContract`,
+    method: 'post',
+    data
+  })
+}

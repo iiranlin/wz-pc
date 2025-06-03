@@ -1,7 +1,7 @@
 <template>
   <div class="tab-table-container">
     <!-- Action Button -->
-    <template>
+    <template v-if="type !== 'view'">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
         >添加物资</el-button
       >
