@@ -24,7 +24,12 @@ import './assets/icons' // icon
 import './permission' // permission control
 import {db, IDB} from '@/utils'
 import PrintTemplateDialog from "@/views/print/activitiyTmpl";
-
+import VueAMap from 'vue-amap';
+Vue.use(VueAMap);
+VueAMap.initAMapApiLoader({
+  key: '06541558d151d51375463a6fcb9192c2', // 替换为你的API Key
+  plugin: ['AMap.Geolocation'], // 根据需要添加插件
+});
 Vue.use(PrintTemplateDialog);
 Vue.prototype.$db = db.initDb()
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/publicMethods";
