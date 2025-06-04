@@ -40,6 +40,14 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
+          <template #planStatus="scope">
+            {{ planStatus[scope.value] }}
+          </template>
+          <template #planNumber="scope">
+            <el-button type="text" @click="onGoDetail(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"
@@ -55,16 +63,29 @@
 
 <script>
 
-import * as Api from '@/api/prodmgr-inv/project/wzgl.js'
+import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
   name: "wzxqList",
-  components: {  },
+  components: {},
   mixins: [indexMixin],
 
   data () {
+    // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
+    const planStatus = {
+      '1': '未提交',
+      '2': '审核中',
+      '3': '修改后通过',
+      '4': '已驳回',
+      '5': '已撤回',
+      '6': '发货中',
+      '7': '收货完成',
+      '8': '已入库',
+      '9': '已出库',
+    }
     return {
+      planStatus: planStatus,
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -105,12 +126,18 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
-
-
   },
 
   methods: {
-
+    onGoDetail (row) {
+      this.$router.push({
+        name: 'requestDetail',
+        query: {
+          type: 'view',
+          id:row.id
+        }
+      })
+    },
     numberChange (val) {
       this.numberShow = val;
     },
@@ -166,7 +193,7 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
-          this.$router.push({ name: 'addContract', query: { type: 'create' } })
+          this.$router.push({ name: 'requestAdd', query: { type: 'create' } })
           break;
         case "update":
           this.$router.push({ name: 'addContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })

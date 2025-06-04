@@ -98,3 +98,18 @@ export function adjustInExport(data) {
   return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
 }
 
+// 获取当前标段信息
+export function getCurrentSection() {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSectionProject/getSectionProject`,
+    method: 'get'
+  })
+}
+
+// 获取当前标段所有物料
+export function getCurrentSectionMaterial() {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getListBySectionId`,
+    method: 'get'
+  })
+}
