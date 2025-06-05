@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :buttonDisable="handleButtonDisabled"
     ></button-top>
     <form-data
       ref="formData"
@@ -129,12 +130,21 @@ export default {
   },
 
   methods: {
+    handleButtonDisabled (item) {
+      // 删除按钮，只能未提交和已驳回的才可以删除
+      if (item.buttonCode === 'delete') {
+        return this.selection.some(item => {
+          return item.planStatus !== '1' && item.planStatus !== '4'
+        })
+      }
+      return false;
+    },
     onGoDetail (row) {
       this.$router.push({
         name: 'requestDetail',
         query: {
           type: 'view',
-          id:row.id
+          id: row.id
         }
       })
     },
@@ -196,7 +206,8 @@ export default {
           this.$router.push({ name: 'requestAdd', query: { type: 'create' } })
           break;
         case "update":
-          this.$router.push({ name: 'addContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })
+          // from 用于判断是否是从列表跳转过来的，列表跳转要刷新参数
+          this.$router.push({ name: 'requestUpdate', query: { id: idArr[0], type: 'update', id: idArr[0], from: 'list' } })
           break;
         case "delete":
           this.handleDelete(idArr)
@@ -204,8 +215,32 @@ export default {
         case 'logisticsView':
           this.$router.push({ name: 'logisticsView', query: { id: idArr[0], type: 'view' } })
           break;
+        case 'examine':
+          this.handleExamine(idArr[0])
+          break;
+        case 'withdraw':
+          this.handleRecall(idArr[0])
+          break;
 
       }
+    },
+    // 提交审核
+    handleExamine (id) {
+      this.$modal.confirm("是否确认提交审核?").then(function () {
+        return Api.examine({ id });
+      }).then(() => {
+        this.$modal.msgSuccess("提交审核成功");
+        this.getList();
+      })
+    },
+    // 撤回
+    handleRecall (id) {
+      this.$modal.confirm("是否确认撤回?").then(function () {
+        return Api.recall({ id });
+      }).then(() => {
+        this.$modal.msgSuccess("撤回成功");
+        this.getList();
+      })
     },
     handleDelete (ids) {
       this.$modal.confirm("是否确认删除?").then(function () {

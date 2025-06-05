@@ -106,3 +106,12 @@ export const changeList = (data) => {
     data
   })
 }
+
+// 撤销
+export const recall = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/recall`,
+    method: 'post',
+    data
+  })
+}

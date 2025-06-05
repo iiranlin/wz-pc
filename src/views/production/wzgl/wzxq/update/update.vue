@@ -15,7 +15,7 @@
         :class="{ formRender_view: true }"
       >
         <template #table>
-          <item-table ref="itemTableRef" />
+          <item-table-update ref="itemTableRef" />
         </template>
       </VFormRender>
     </div>
@@ -32,16 +32,16 @@ import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
 import attachmentTable from '@/views/components/attachmentTable'
 import { listByDeptCode } from '@/api/system/dept.js'
-import ItemTable from './itemTable.vue'
+import ItemTableUpdate from './itemTableUpdate.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 export default {
-  // 需求填报
+  // 需求填报更新
   components: {
     VFormRender,
     attachmentTable,
-    ItemTable,
+    ItemTableUpdate,
   },
   data () {
     return {
@@ -86,16 +86,13 @@ export default {
     projectId () {
       return this.$route.query?.projectId || ''
     },
-    ...mapState(['request'])
+    from () {
+      return this.$route.query?.from || ''
+    },
+    ...mapState(['requestUpdate'])
   },
   async created () {
-    // this.getDeptTree()
-    this.getLineOptions()
 
-
-    this.constructionCompanyOptions = await this.getDeptTree('SGDW')
-    this.supervisionUnitOptions = await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions = await this.getDeptTree('WDGS')
   },
   mounted () {
 
@@ -124,15 +121,15 @@ export default {
           errors.push(`第${rowNum}行，供应时间未填写 `);
         }
 
-        if (!row.addr || row.addr.trim()==='') {
+        if (!row.addr || row.addr.trim() === '') {
           errors.push(`第${rowNum}行，使用地点未填写 `);
         }
-          if (!row.receiver || row.receiver.trim()==='') {
+        if (!row.receiver || row.receiver.trim() === '') {
           errors.push(`第${rowNum}行，收货人及联系方式未填写 `);
         }
 
         const plan = +row.planAmount || 0;
-        const cumulative = +row.cumulativeAmount || 0;
+        const cumulative = +row.cumulativeAmount - +(row.backPlanAmount || 0)
         const contract = +row.amount || 0;
 
         if (plan <= 0) {
@@ -178,12 +175,26 @@ export default {
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
+
           await this.formFillInPage()
+          this.getCurrentSection()
           this.$refs.vFormRef.setFormData(data)
 
           //   form action
           this.$refs.vFormRef.setReadMode(true)
-
+          // 当选择数据后，不做数据回填
+          if (this.getSelectedMaterialList().length > 0 && this.id === this.getUpdateId() && this.from === 'view') {
+            return
+          }
+          this.setUpdateId(this.id)
+          const details = data.details.map(x => ({
+            ...x,
+            supplyDate: dayjs(x.supplyDate).format('YYYY-MM-DD'),
+            uid: x.allocationUniqueNumber,
+            backPlanAmount: x.planAmount || 0,
+          }))
+          this.setSelectedMaterialList(details)
+          this.$refs.itemTableRef.setTableData(details)
         });
       });
     },
@@ -234,7 +245,7 @@ export default {
     },
     //新建
     async handleCreate () {
-      if (this.getSelectedMaterialList.length === 0) {
+      if (this.getSelectedMaterialList().length === 0) {
         this.$modal.msgError('请选择物料')
         return
       }
@@ -245,13 +256,14 @@ export default {
       }
       this.loading = true;
       const data = {
+        id: this.id,
         detailsModifyParams: tableData.map(x => ({
           ...x,
           id: null,
           allocationUniqueNumber: x.uniqueNumber
         }))
       }
-      await Api[`save`](data)
+      await Api[`edit`](data)
         .then(({ message }) => {
           this.loading = false;
           this.$modal.msgSuccess(message);
@@ -279,11 +291,17 @@ export default {
       })
     },
     setSelectedMaterialList (data) {
-      this.$store.dispatch('request/setSelectedMaterialList', data)
+      this.$store.dispatch('requestUpdate/setSelectedMaterialList', data)
     },
-    getSelectedMaterialList (data) {
-      return this.request.selectedMaterialList
-    }
+    getSelectedMaterialList () {
+      return this.requestUpdate.selectedMaterialList
+    },
+    setUpdateId (data) {
+      this.$store.dispatch('requestUpdate/setUpdateId', data)
+    },
+    getUpdateId () {
+      return this.requestUpdate.updateId
+    },
 
   },
 }

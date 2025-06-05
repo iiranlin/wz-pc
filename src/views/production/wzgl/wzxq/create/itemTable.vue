@@ -109,6 +109,7 @@
 <script>
 import { mapState } from 'vuex';
 export default {
+  // 新增物资填报表格
   data () {
     return {
       tableData: [],

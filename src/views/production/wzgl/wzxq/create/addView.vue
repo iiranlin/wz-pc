@@ -37,7 +37,7 @@ import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 export default {
-  // 需求填报物资选择
+  // 需求填报物资选择-页面
   components: {
     VFormRender,
     attachmentTable,

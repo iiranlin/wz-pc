@@ -118,12 +118,20 @@ export default {
         selected.forEach(sel => {
           const match = this.allData.find(item => item.id === sel.id);
           if (match) {
+            // ✅ 把 store 中的数据字段 merge 到 allData 的项上（只 merge 附加字段，不覆盖关键字段）
+            Object.keys(sel).forEach(key => {
+              if (key !== 'uid') {
+                this.$set(match, key, sel[key]);
+              }
+            });
             this.$set(this.selectedMap, match.id, match); // ✅ 必须同步 selectedMap
             this.$nextTick(() => {
               this.$refs.tableRef.toggleRowSelection(match, true); // ✅ 先设置数据再勾选 UI
             });
           }
         });
+
+        this.sortData(); // 排序
       }
       this.hasRestoredFromStore = true; // ✅ 防止后续重新勾选
     },
