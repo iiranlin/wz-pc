@@ -221,6 +221,16 @@ export default {
         case 'withdraw':
           this.handleRecall(idArr[0])
           break;
+        case 'supplyView':
+          this.$router.push({
+            name: 'supplyOverview',
+            query: {
+              id: idArr[0],
+              type: 'view'
+
+            }
+          })
+          break;
 
       }
     },
