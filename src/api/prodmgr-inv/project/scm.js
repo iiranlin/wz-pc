@@ -50,16 +50,46 @@ export const listMaterials = (params) => {
   })
 }
 /**
- * 详情
+ * 发货-保存
+ * @param {*} params 
+ * @returns 
+ */
+export const save = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/save`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 供应需求详情
  * @param {*} params 
  * @returns 
  */
 export const detail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialContract/detail/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/detail/${id}`,
     method: 'get',
   })
 }
+
+/**
+ * 供应管理发货列表
+ * @param {*} params 
+ * @returns 
+ */
+export const sandList = (params) => {
+  return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/list`,
+      method: 'get',
+      params
+  })
+}
+
+
+
+
 
 /**
  * 新增
@@ -98,20 +128,6 @@ export const remove = (id) => {
   })
 }
 
-
-
-/**
- * 保存
- * @param {*} params 
- * @returns 
- */
-export const save = (data) => {
-  return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialContract/save`,
-    method: 'post',
-    data
-  })
-}
 
 /**
  * 导出

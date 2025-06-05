@@ -3,7 +3,7 @@
     <!-- Action Button -->
     <div class="flex">
       <span class="title">
-        发运物资明细 （共计<span style="color: red">{{ selection.length }}</span
+        发运物资明细 （共计<span style="color: red">{{ tableData.length }}</span
         >条）
       </span>
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="selectItem"
@@ -16,87 +16,112 @@
       style="width: 100%"
       :max-height="600"
       v-loading="loading"
-      :row-key="getRowKey"
-      @selection-change="handleSelectionChange"
-      ref="dataTable"
+      ref="tableRef"
     >
       <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
-      <!-- ✅ 多选框列 -->
-      <el-table-column
-        type="selection"
-        width="55"
-        fixed="left"
-        align="center"
-      ></el-table-column>
-      <el-table-column prop="materialName" label="标段项目名称" width="250" fixed="left">
+      <el-table-column prop="sectionName" label="标段项目名称" width="250" fixed="left">
       </el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="规格型号"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="120"></el-table-column>
 
-      <el-table-column
-        prop="projectShortName"
-        label="计量单位"
-        width="120"
-      ></el-table-column>
-      <el-table-column prop="projectShortName" label="数量" width="120"></el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="包装形式"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="生产日期"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="有效期截止日期"
-        width="120"
-      ></el-table-column>
-      <el-table-column prop="projectShortName" label="备注" width="120"></el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="合格证附件"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="厂检报告附件"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+      <el-table-column prop="planAmount" label="数量" width="160">
+        <template slot-scope="scope">
+          <el-input-number
+            v-model="scope.row.planAmount"
+            :min="0"
+            :precision="2"
+            size="mini"
+            style="width: 100%"
+          ></el-input-number>
+        </template>
+      </el-table-column>
+      <el-table-column prop="bzxs" label="包装形式" width="160">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.bzxs" size="mini" style="width: 100%"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" label="生产日期" width="160">
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.date"
+            type="date"
+            size="mini"
+            style="width: 100%"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </template>
+      </el-table-column>
+      <el-table-column prop="projectShortName" label="有效期截止日期" width="160">
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.date"
+            type="date"
+            size="mini"
+            style="width: 100%"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </template>
+      </el-table-column>
+      <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+      <el-table-column prop="projectShortName" label="合格证附件" width="160">
+        <!-- <template slot-scope="scope">
+          <fileUpload
+            v-if="scope.row.fileList[0]"
+            :value="scope.row.fileList[0].fileList"
+            :limit="1"
+            :fileSize="50"
+          />
+        </template> -->
+      </el-table-column>
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="160">
+        <!-- <template slot-scope="scope">
+          <fileUpload
+            v-if="scope.row.fileList[0]"
+            :value="scope.row.fileList[0].fileList"
+            :limit="1"
+            :fileSize="50"
+          />
+        </template> -->
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import * as ItemApi from "@/api/prodmgr-inv/project/item.js";
-import * as LineApi from "@/api/prodmgr-inv/project/line.js";
 export default {
   name: "tabTable",
   dicts: ["MeasureUnit"],
+
   props: {
     // 接收外部传入的表格数据
     tableData: {
       type: Array,
       default: () => [],
     },
-    PARAMS:Object
   },
   components: {},
+  computed: {
+    type() {
+      return this.$route.query.type;
+    },
+    id() {
+      return this.$route.query?.id || "";
+    },
+    supplyName() {
+      return this.$route.query?.supplyName || "";
+    },
+    supplyNumber() {
+      return this.$route.query?.supplyNumber || "";
+    },
+    sellerId() {
+      return this.$route.query?.sellerId || "";
+    },
+  },
   data() {
     return {
       loading: false,
-      selection: [],
-      params: {
-        pageNum: 1,
-        pageSize: -1,
-      },
     };
   },
 
@@ -105,16 +130,14 @@ export default {
     selectItem() {
       this.$router.push({
         name: "selectItem",
-        params: this.PARAMS,
+        query: {
+          id: this.id,
+          type: "create",
+          supplyName: this.supplyName,
+          supplyNumber: this.supplyNumber,
+          sellerId: this.sellerId,
+        },
       });
-    },
-    // 返回唯一行 key，用于多选保留状态
-    getRowKey(row) {
-      return `${row.id}`;
-    },
-    // 处理表格的勾选变化 - 修改版本
-    handleSelectionChange(selection) {
-      this.selection = selection;
     },
   },
 };

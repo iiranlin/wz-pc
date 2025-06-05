@@ -229,8 +229,7 @@ export default {
         case "send":
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0],type: "create" },
-            params:rowArr[0]
+            query: { id: idArr[0],type: "create",supplyName:rowArr[0].supplyName,supplyNumber:rowArr[0].supplyNumber,sellerId:rowArr[0].sellerId },
           });
           break;
         case "detail":

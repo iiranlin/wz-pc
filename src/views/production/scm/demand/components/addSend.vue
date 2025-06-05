@@ -28,7 +28,7 @@
         </template>
 
         <template #detailSlot>
-          <TabTable ref="tabTableRef" :tableData="tableData" :PARAMS="params"/>
+          <TabTable ref="tabTableRef" :tableData="tableData" />
         </template>
       </VFormRender>
     </div>
@@ -37,15 +37,14 @@
 
 <script>
 import Vue from "vue";
-import * as Api from "@/api/prodmgr-inv/project/contract.js";
-import * as LineApi from "@/api/prodmgr-inv/project/line.js";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import TabTable from "./tabTable.vue";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
-import { listByDeptCode } from "@/api/system/dept.js";
 import { getUserInfo } from "@/utils/user-info";
+import { mapState } from "vuex";
 export default {
   name: "addSend",
   components: {
@@ -101,25 +100,58 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
-    params(){
-        return this.$route.params;
-    }
+    supplyName() {
+      return this.$route.query?.supplyName || "";
+    },
+    supplyNumber() {
+      return this.$route.query?.supplyNumber || "";
+    },
+    sellerId() {
+      return this.$route.query?.sellerId || "";
+    },
+    ...mapState(["request"]),
   },
   async created() {
-
+    this.tableData = this.getSelectedItemList();
   },
   mounted() {
-     if (['view', 'update'].includes(this.type)) {
-      this.updateInit(this.id)
-      return
+    if (["view", "update"].includes(this.type)) {
+      this.updateInit(this.id);
+      return;
     }
 
-    if (this.type === 'create') {
-      this.init()
-      return
+    if (this.type === "create") {
+      this.init();
+      return;
     }
   },
   methods: {
+    onCheck(tableData) {
+      const errors = [];
+      tableData.forEach((row, index) => {
+        const rowNum = index + 1;
+        if (!row.planAmount && row.planAmount !== 0) {
+          errors.push(`第${rowNum}行，数量未填写 `);
+        }
+      });
+
+      if (errors.length > 0) {
+        this.$message({
+          message: errors.join("<br/> <br/>"),
+          type: "error",
+          dangerouslyUseHTMLString: true,
+        });
+        return false;
+      }
+      // TODO: 提交逻辑放这里
+      return true;
+    },
+    getSelectedItemList() {
+      return this.request.selectedItemList;
+    },
+    setSelectedItemList(data) {
+      this.$store.dispatch("request/setSelectedItemList", data);
+    },
     //初始化
     init() {
       this.$nextTick(async () => {
@@ -161,11 +193,11 @@ export default {
       this.$router.go(-1);
     },
 
-    buttonShow (item) {
-      if (item.buttonCode === 'save') {
-        return this.type !== 'view'
+    buttonShow(item) {
+      if (item.buttonCode === "save") {
+        return this.type !== "view";
       }
-      return true
+      return true;
     },
     //新建
     handleCreate() {
@@ -174,28 +206,31 @@ export default {
           this.$message.warning("请完善信息");
           return;
         }
-        // 校验表格
-        const tableValid = this.$refs.tabTableRef.onCheck();
-        if (!tableValid) {
+        const flag = this.tableData.every(
+          (obj) => obj.sectionId === this.tableData[0].sectionId
+        );
+        if (!flag) {
+          this.$modal.msgError("一个发货批次只允许选择一个标段项目的供应物资");
           return;
         }
-
-        // 如果表格内数据为空，则提示
-        if (this.tableData.length === 0) {
-          this.$message.warning("请添加合同物资科目");
+        if (this.getSelectedItemList().length === 0) {
+          this.$modal.msgError("请选择物资");
+          return;
+        }
+        const isValid = this.onCheck(this.tableData);
+        if (!isValid) {
           return;
         }
 
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
-          formData.contractStatus = formData.contractStatus ? "2" : "1";
           // 后端存入嵌套数组
           const fileList = formData.fileList;
           formData.fileList = [{ fileList }];
           await Api[this.type === "update" ? `edit` : `save`](
             Object.assign({ id: this.type === "update" ? this.id : null }, formData, {
-              materialList: this.tableData.map((x) => ({
+              materialSupplierDetailParams: this.tableData.map((x) => ({
                 ...x,
                 id: null,
               })),
@@ -204,7 +239,10 @@ export default {
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
-              this.cancel();
+              this.setSelectedItemList([]);
+              this.$router.push({
+                name: "demand",
+              });
             })
             .finally((err) => {
               this.loading = false;
@@ -217,12 +255,10 @@ export default {
       return new Promise((resolve) => {
         formFillInPage("addSend").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
-          if (this.params) {
-            this.$refs["vFormRef"].setFormData({
-              supplyName: this.params.supplyName,
-              supplyNumber: this.params.supplyNumber,
-            });
-          }
+          this.$refs["vFormRef"].setFormData({
+            supplyName: this.supplyName,
+            supplyNumber: this.supplyNumber,
+          });
           resolve(true);
         });
       });
