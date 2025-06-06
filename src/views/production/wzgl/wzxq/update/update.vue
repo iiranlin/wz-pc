@@ -260,7 +260,7 @@ export default {
         detailsModifyParams: tableData.map(x => ({
           ...x,
           id: null,
-          allocationUniqueNumber: x.uniqueNumber
+          allocationUniqueNumber: x.uniqueNumber || x.allocationUniqueNumber
         }))
       }
       await Api[`edit`](data)
