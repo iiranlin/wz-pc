@@ -19,6 +19,8 @@
             :projectId="projectId"
             ref="detailTable"
           ></detailTable>
+        <!-- 没有订单号显示表格 -->
+          <table />
         </template>
       </VFormRender>
     </div>
@@ -29,7 +31,7 @@
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
-
+import table from './table.vue'
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
@@ -45,6 +47,7 @@ export default {
     VFormRender,
     attachmentTable,
     detailTable,
+    table
   },
   data () {
     return {
