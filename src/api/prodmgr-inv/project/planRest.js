@@ -115,3 +115,12 @@ export const recall = (data) => {
     data
   })
 }
+
+// 获取多个计划下所有明细
+export const getAllDetail = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/getByParentIdList`,
+    method: 'post',
+    data
+  })
+}

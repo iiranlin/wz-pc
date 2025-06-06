@@ -134,7 +134,7 @@ export default {
       // 删除按钮，只能未提交和已驳回的才可以删除
       if (item.buttonCode === 'delete') {
         return this.selection.some(item => {
-          return item.planStatus !== '1' && item.planStatus !== '4'
+          // return item.planStatus !== '1' && item.planStatus !== '4'
         })
       }
       return false;
