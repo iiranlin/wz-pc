@@ -147,3 +147,12 @@ export const remove = (id) => {
 export function adjustInExport(data) {
   return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
 }
+
+// 获取供应商下所有物料
+export const getMaterial = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanDetails/getList`,
+    method: 'get',
+    params
+  })
+}

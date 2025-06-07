@@ -124,3 +124,22 @@ export const getAllDetail = (data) => {
     data
   })
 }
+
+// 提交计划
+export const submit = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/merger`,
+    method: 'post',
+    data
+  })
+}
+
+// 获取所有供应商
+export const getSeller = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/getSeller`,
+    method: 'get',
+    params
+  })
+}
+
