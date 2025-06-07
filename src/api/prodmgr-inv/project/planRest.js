@@ -133,3 +133,13 @@ export const submit = (data) => {
     data
   })
 }
+
+// 获取所有供应商
+export const getSeller = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/getSeller`,
+    method: 'get',
+    params
+  })
+}
+
