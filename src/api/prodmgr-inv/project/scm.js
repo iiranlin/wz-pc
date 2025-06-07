@@ -26,11 +26,11 @@ export const demandEdit = (data) => {
   })
 }
 /**
- * 查询标段项目列表
+ * 查询需求组织列表
  * @param {*} params 
  * @returns 
  */
-export const findBdList = (params) => {
+export const findDeptList = (params) => {
   return request({
       url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanDetails/listSection`,
       method: 'get',
@@ -87,8 +87,30 @@ export const sandList = (params) => {
   })
 }
 
+/**
+ * 发货列表删除
+ * @param {*} params 
+ * @returns 
+ */
+export const batchRemove = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/batchRemove`,
+    method: 'post',
+    data
+  })
+}
 
-
+/**
+ * 发货列表修改、详情回显
+ * @param {*} params 
+ * @returns 
+ */
+export const sendDetail = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detail/${id}`,
+    method: 'get',
+  })
+}
 
 
 /**
@@ -104,18 +126,6 @@ export const add = (data) => {
   })
 }
 
-/**
- * 批量删除
- * @param {*} params 
- * @returns 
- */
-export const batchRemove = (data) => {
-  return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialContract/batchRemove`,
-    method: 'post',
-    data
-  })
-}
 
 
 /**

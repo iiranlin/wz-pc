@@ -6,7 +6,12 @@
         发运物资明细 （共计<span style="color: red">{{ tableData.length }}</span
         >条）
       </span>
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="selectItem"
+      <el-button
+        type="primary"
+        icon="el-icon-plus"
+        size="mini"
+        @click="selectItem"
+        v-if="type != 'view'"
         >选择发货物资</el-button
       >
     </div>
@@ -23,7 +28,7 @@
       </el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="120"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="150"></el-table-column>
 
       <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
       <el-table-column prop="planAmount" label="数量" width="160">
@@ -34,38 +39,70 @@
             :precision="2"
             size="mini"
             style="width: 100%"
+            v-if="type != 'view'"
           ></el-input-number>
+          <span v-else>
+            {{ scope.row.planAmount }}
+          </span>
         </template>
       </el-table-column>
-      <el-table-column prop="bzxs" label="包装形式" width="160">
+      <el-table-column prop="packagingFm" label="包装形式" width="160">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.bzxs" size="mini" style="width: 100%"></el-input>
+          <el-input
+            v-model="scope.row.packagingFm"
+            size="mini"
+            style="width: 100%"
+            v-if="type != 'view'"
+          ></el-input>
+          <span v-else>
+            {{ scope.row.packagingFm }}
+          </span>
         </template>
       </el-table-column>
-      <el-table-column prop="date" label="生产日期" width="160">
+      <el-table-column prop="manufactureDate" label="生产日期" width="160">
         <template slot-scope="scope">
           <el-date-picker
-            v-model="scope.row.date"
+            v-model="scope.row.manufactureDate"
             type="date"
             size="mini"
             style="width: 100%"
             value-format="yyyy-MM-dd"
+            v-if="type != 'view'"
           ></el-date-picker>
+          <span v-else>
+            {{ scope.row.manufactureDate }}
+          </span>
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="有效期截止日期" width="160">
+      <el-table-column prop="expirationDate" label="有效期截止日期" width="160">
         <template slot-scope="scope">
           <el-date-picker
-            v-model="scope.row.date"
+            v-model="scope.row.expirationDate"
             type="date"
             size="mini"
             style="width: 100%"
             value-format="yyyy-MM-dd"
+            v-if="type != 'view'"
           ></el-date-picker>
+          <span v-else>
+            {{ scope.row.expirationDate }}
+          </span>
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-      <el-table-column prop="projectShortName" label="合格证附件" width="160">
+      <el-table-column prop="remark" label="备注" width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.remark"
+            size="mini"
+            style="width: 100%"
+            v-if="type != 'view'"
+          ></el-input>
+          <span v-else>
+            {{ scope.row.remark }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="projectShortName" label="合格证附件" width="200">
         <!-- <template slot-scope="scope">
           <fileUpload
             v-if="scope.row.fileList[0]"
@@ -75,7 +112,7 @@
           />
         </template> -->
       </el-table-column>
-      <el-table-column prop="projectShortName" label="厂检报告附件" width="160">
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
         <!-- <template slot-scope="scope">
           <fileUpload
             v-if="scope.row.fileList[0]"

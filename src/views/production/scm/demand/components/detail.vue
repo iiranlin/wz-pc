@@ -33,7 +33,7 @@
               fixed="left"
             />
             <el-table-column
-              prop="materialName"
+              prop="sectionName"
               label="标段项目名称"
               width="250"
               fixed="left"
@@ -47,7 +47,7 @@
             >
             </el-table-column>
             <el-table-column
-              prop="projectShortName"
+              prop="specModel"
               label="规格型号"
               width="120"
             ></el-table-column>

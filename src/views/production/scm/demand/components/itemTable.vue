@@ -9,18 +9,18 @@
       </span>
       <el-select
         class="select-box"
-        v-model="form.sectionId"
-        placeholder="请选择标段项目"
+        v-model="form.deptId"
+        placeholder="请选择需求组织"
         clearable
         style="width: 240px"
         size="small"
         @change="findWzList"
       >
         <el-option
-          v-for="(item, key) in proList"
+          v-for="(item, key) in deptList"
           :key="key"
-          :label="item.sectionName"
-          :value="item.sectionId"
+          :label="item.deptName"
+          :value="item.deptId"
         />
       </el-select>
     </div>
@@ -106,35 +106,38 @@ export default {
       allData: [],
       selectRows: [],
       form: {},
-      proList: [],
+      deptList: [],
       selectedMap: {}, // 使用对象或Map来存储全局选中项（按id）
       hasRestoredFromStore: false, // ✅ 是否已初始化选中项
     };
   },
   mounted() {
-    this.findBdList();
+    this.findDeptList();
     this.findWzList();
   },
   created() {},
   methods: {
-    //获取标段项目
-    findBdList() {
-      Api.findBdList({ sellerId: this.sellerId, planId: this.supplyNumber })
+    //获取需求组织
+    findDeptList() {
+      Api.findDeptList({ sellerId: this.sellerId, planId: this.supplyNumber })
         .then(({ data }) => {
-          this.proList = data;
+          this.deptList = data;
         })
         .finally(() => {});
     },
     //获取物资列表
     findWzList() {
       Api.listMaterials({
-        sellerId: this.sellerId,
-        planId: this.supplyNumber,
-        sectionId: this.form.sectionId,
+        // sellerId: this.sellerId,
+        // planId: this.supplyNumber,
+        // deptId: this.form.deptId,
+        sellerId: '1928340067179323392',
+        planId: 1,
+        deptId: 1,
       })
         .then(({ data }) => {
           this.tableData = data.list;
-          if (!this.form.sectionId) {
+          if (!this.form.deptId) {
             this.allData = data.list;
             this.syncStoreSelectedData();
           } else {

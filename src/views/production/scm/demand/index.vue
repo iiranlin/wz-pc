@@ -227,6 +227,18 @@ export default {
 
           break;
         case "send":
+          if(rowArr[0].status == "1"){
+            this.$modal.msgError("请先确认需求！");
+            return;
+          };
+           if(rowArr[0].status == "4"){
+            this.$modal.msgError("已验收！");
+            return;
+          };
+           if(rowArr[0].status == "5"){
+            this.$modal.msgError("已完成！");
+            return;
+          }
           this.$router.push({
             name: "addSend",
             query: { id: idArr[0],type: "create",supplyName:rowArr[0].supplyName,supplyNumber:rowArr[0].supplyNumber,sellerId:rowArr[0].sellerId },

@@ -74,46 +74,38 @@
         />
       </el-col>
     </el-row>
+    <add-adress ref="addAdress"/>
   </div>
 </template>
 
 <script>
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
+import AddAdress from './components/addAdress.vue';
 export default {
   // 线路项目
   name: "sendList",
-  components: {},
+  components: {AddAdress},
   mixins: [indexMixin],
 
   data() {
     return {
       status: {
-        1: "未确认",
-        2: "已确认",
-        3: "供货中",
-        4: "已验收",
-        5: "已完成",
+        1: "未发货",
+        2: "货运中",
+        3: "已完成",
       },
       options: [
         {
           code: "1",
-          name: "未确认",
+          name: "未发货",
         },
         {
           code: "2",
-          name: "已确认",
+          name: "货运中",
         },
         {
           code: "3",
-          name: "供货中",
-        },
-        {
-          code: "4",
-          name: "已验收",
-        },
-        {
-          code: "5",
           name: "已完成",
         },
       ],
@@ -215,21 +207,34 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "confirm":
-          
+          this.handleSend(idArr,rowArr);
           break;
         case "update":
+           if(rowArr[0].status!='1'){
+          this.$modal.msgError("已发货，无法修改！");
+          return;
+        }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0] },
+            query: { id: idArr[0],type:'update' },
           });
           break;
         case "delete":
-           
+           this.handleDelete(idArr,rowArr);
+          break;
+          case "addAdress":
+           this.$refs.addAdress.init();
           break;
        
       }
     },
-    handleDelete(ids) {
+    handleDelete(ids,rowArr) {
+      for(var i in rowArr){
+        if(rowArr[i].status!='1'){
+          this.$modal.msgError("已发货，无法删除！");
+          return;
+        }
+      }
       this.$modal
         .confirm("是否确认删除?")
         .then(function () {
@@ -240,7 +245,24 @@ export default {
           this.$modal.msgSuccess("删除成功");
         });
     },
-
+    //确认发货
+  handleSend(ids,rowArr) {
+      for(var i in rowArr){
+        if(rowArr[i].status!='1'){
+          this.$modal.msgError("已发货！");
+          return;
+        }
+      }
+      this.$modal
+        .confirm("是否确认发货?")
+        .then(function () {
+          return Api.save({ id:ids[0],status:'2' });
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("已发货");
+        });
+    },
     clickReset() {
       this.handleQuery();
     },

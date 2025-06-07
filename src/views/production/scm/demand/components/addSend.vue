@@ -26,7 +26,35 @@
             />
           </el-form-item>
         </template>
-
+        <!-- 供应需求ID和需求项目切换 -->
+        <template #slot2="scope">
+          <el-form-item
+            prop="supplyNumber"
+            label="供应需求ID"
+            class="label-right-align"
+            v-if="type != 'view'"
+          >
+            <el-input v-model="scope.formModel.supplyNumber" readonly></el-input>
+          </el-form-item>
+          <el-form-item
+            prop="sectionName"
+            label="需求项目"
+            class="label-right-align"
+            v-else
+          >
+            <el-input v-model="scope.formModel.sectionName" readonly></el-input>
+          </el-form-item>
+        </template>
+        <template #shippingNumberSlot="scope">
+          <el-form-item
+            prop="shippingNumber"
+            label="发货单号"
+            class="label-right-align"
+            v-if="type == 'view'"
+          >
+            {{ scope.formModel.shippingNumber }}
+          </el-form-item>
+        </template>
         <template #detailSlot>
           <TabTable ref="tabTableRef" :tableData="tableData" />
         </template>
@@ -45,6 +73,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { mapState } from "vuex";
+import dayjs from 'dayjs'
 export default {
   name: "addSend",
   components: {
@@ -114,6 +143,24 @@ export default {
   async created() {
     this.tableData = this.getSelectedItemList();
   },
+  activated() {
+    this.tableData = this.getSelectedItemList();
+  },
+  watch: {
+    $route(to, from) {
+      if (from.path != "/scm/selectItem"&&from.path != "/scm/addSend") {
+        if (["view", "update"].includes(this.type)) {
+          this.updateInit(this.id);
+          return;
+        }
+
+        if (this.type === "create") {
+          this.init();
+          return;
+        }
+      }
+    },
+  },
   mounted() {
     if (["view", "update"].includes(this.type)) {
       this.updateInit(this.id);
@@ -130,8 +177,14 @@ export default {
       const errors = [];
       tableData.forEach((row, index) => {
         const rowNum = index + 1;
-        if (!row.planAmount && row.planAmount !== 0) {
+        if (!row.planAmount || row.planAmount == 0) {
           errors.push(`第${rowNum}行，数量未填写 `);
+        }
+        if (!row.packagingFm) {
+          errors.push(`第${rowNum}行，包装形式未填写 `);
+        }
+        if (!row.manufactureDate) {
+          errors.push(`第${rowNum}行，生产日期未填写 `);
         }
       });
 
@@ -160,22 +213,32 @@ export default {
     },
     // 编辑初始化
     async updateInit(id) {
-      await Api.detail(id).then(({ data }) => {
+      await Api.sendDetail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage();
           // fileList回显
           const newData = {
             ...data,
-            contractStatus: data.contractStatus == "2",
-            fileList: data.fileList[0]?.fileList || [],
+            fileList: data.fileList&&data.fileList[0]?.fileList || [],
+            arrivalDate:dayjs(data.arrivalDate).format('YYYY-MM-DD'),
+            shippingDate:dayjs(data.shippingDate).format('YYYY-MM-DD'),
           };
           this.$refs.vFormRef.setFormData(newData);
 
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === "view");
 
-          this.tableData = data.materialList;
+          
+            const detail = data.materialSupplierDetailDTOList.map(x => ({
+            ...x,
+            manufactureDate: dayjs(x.manufactureDate).format('YYYY-MM-DD'),
+            expirationDate: dayjs(x.expirationDate).format('YYYY-MM-DD'),
+            id: x.planDetailId,
+            
+          }))
+          this.tableData = detail;
+          this.setSelectedItemList(this.tableData)
         });
       });
     },
@@ -228,13 +291,17 @@ export default {
           // 后端存入嵌套数组
           const fileList = formData.fileList;
           formData.fileList = [{ fileList }];
-          await Api[this.type === "update" ? `edit` : `save`](
-            Object.assign({ id: this.type === "update" ? this.id : null }, formData, {
-              materialSupplierDetailParams: this.tableData.map((x) => ({
-                ...x,
-                id: null,
-              })),
-            })
+          await Api.save(
+            Object.assign(
+              { supplyId: this.type === "create" ? this.id : null,id:this.type === "create" ? null : this.id},
+              formData,
+              {
+                materialSupplierDetailParams: this.tableData.map((x) => ({
+                  planDetailId:x.id,
+                  ...x,
+                })),
+              }
+            )
           )
             .then(({ message }) => {
               this.loading = false;
@@ -245,6 +312,7 @@ export default {
               });
             })
             .finally((err) => {
+              formData.fileList=fileList;
               this.loading = false;
             });
         }
