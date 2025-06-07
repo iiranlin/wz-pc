@@ -4,19 +4,22 @@
     <div class="search-container">
       <div style="font-size: 20px; font-weight: bold">
         计划物资明细（共计
-        <i style="color: red">{{ Object.keys(selectedMap).length }}</i> 项）
+        <i style="color: red">{{ filteredData.length }}</i> 项）
       </div>
-      <!-- <el-input
-        v-model="searchKeyword"
-        placeholder="请输入物资名称搜索"
-        clearable
-        prefix-icon="el-icon-search"
-        size="small"
-        style="width: 200px"
-      ></el-input> -->
-      <el-button @click="addColumn" :disabled="dynamicColumns.length >= 5"
-        >增加列</el-button
-      >
+
+      <div style="display: flex; gap: 10px">
+        <el-button raw-type="button" @click="addCol" v-if="cols.length < 5">
+          添加一列
+        </el-button>
+        <el-button
+          type="danger"
+          raw-type="button"
+          @click="deleteCol"
+          v-if="cols.length > 0"
+        >
+          删除一列
+        </el-button>
+      </div>
     </div>
 
     <!-- 表格 -->
@@ -96,46 +99,34 @@
       >
       </el-table-column>
       <el-table-column
+        v-for="(col, index) in cols"
+        :key="index"
+        align="right"
+        width="200"
+      >
+        <template v-slot:header>
+          <el-input
+            v-if="colsIndex === index"
+            v-model="col.title"
+            size="mini"
+            placeholder="输入表头"
+          />
+          <span v-if="colsIndex !== index">{{ cols[index].title }}</span>
+        </template>
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row[`field${index}`]"
+            size="mini"
+            placeholder="输入内容"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="remark"
         label="备注"
         align="center"
         min-width="200"
       ></el-table-column>
-      <el-table-column
-        v-for="col in dynamicColumns"
-        :key="col.prop"
-        :prop="col.prop"
-        :label="col.label"
-        align="center"
-        min-width="120"
-      >
-        <template slot="header" >
-          <div style="display: flex; align-items: center">
-            <el-input
-              v-model="col.label"
-              size="mini"
-              style="width: 100px; margin-right: 5px"
-              placeholder="列名"
-            />
-            <el-button
-              icon="el-icon-delete"
-              size="mini"
-              type="danger"
-              circle
-              @click.stop="removeColumn(index)"
-            />
-          </div>
-        </template>
-
-        <!-- 单元格输入框 -->
-        <template slot-scope="{ row }">
-          <el-input
-            v-model="row[col.prop]"
-            size="mini"
-            placeholder="请输入"
-          />
-        </template>
-      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -160,136 +151,63 @@ export default {
   },
   data () {
     return {
-      searchKeyword: '',
-      selectedMap: {}, // 使用对象或Map来存储全局选中项（按id）
-      hasRestoredFromStore: false, // ✅ 是否已初始化选中项
-      dynamicColumns: [] // 动态列数组
+
+      cols: [],
+      colsIndex: 0,
+      itemKey: null // 强制让表格刷新一次
     };
   },
   computed: {
     ...mapState(['requestPlan']),
     // 根据搜索词过滤表格数据
     filteredData () {
-      if (!this.searchKeyword) return this.allData;
-      return this.allData.filter(row =>
-        row.materialName.includes(this.searchKeyword)
-      );
+      return this.allData;
+
     }
   },
-  watch: {
-    // 每次搜索结果变更后，重新设置选中状态
-    filteredData () {
-      this.$nextTick(this.restoreSelection);
-    },
-    allData: {
-      handler (newVal) {
-        if (newVal && newVal.length > 0) {
-          this.syncStoreSelectedData();
-        }
-      },
-      immediate: true // 组件创建时立即执行一次
-    },
-  },
+
   methods: {
-    // 删除列
-  removeColumn(index) {
-    const prop = this.dynamicColumns[index].prop;
-    this.dynamicColumns.splice(index, 1);
-    // 删除所有数据行中该字段
-    this.allData.forEach(row => {
-      this.$delete(row, prop);
-    });
-  },
-    addColumn () {
-      const max = 5;
-      if (this.dynamicColumns.length >= max) return;
-      const idx = this.dynamicColumns.length;
-      this.dynamicColumns.push({
-        prop: `field${idx}`,
-        label: `自定义列${idx + 1}`,
-        editable: true // 用于未来扩展，标识这是可编辑列
-      });
-    },
-    // 新增方法：同步store中已选中的数据到组件
-    syncStoreSelectedData () {
-      if (this.hasRestoredFromStore) return;
-      const selected = this.getSelectedMaterialList();
-      if (selected.length > 0) {
-        selected.forEach(sel => {
-          const match = this.allData.find(item => item.id === sel.id);
-          if (match) {
-            // ✅ 把 store 中的数据字段 merge 到 allData 的项上（只 merge 附加字段，不覆盖关键字段）
-            Object.keys(sel).forEach(key => {
-              if (key !== 'uid') {
-                this.$set(match, key, sel[key]);
-              }
-            });
-            this.$set(this.selectedMap, match.id, match); // ✅ 必须同步 selectedMap
-            this.$nextTick(() => {
-              this.$refs.tableRef.toggleRowSelection(match, true); // ✅ 先设置数据再勾选 UI
-            });
-          }
-        });
-
-        this.sortData(); // 排序
+    addCol () {
+      // titile必须填写后才能继续新增
+      if (this.cols.some(item => !item.title)) {
+        this.$message.warning('请先填写表头');
+        return
       }
-      this.hasRestoredFromStore = true; // ✅ 防止后续重新勾选
-    },
-    getSelectedMaterialList () {
-      return this.requestPlan.selectedMaterialList
-    },
-    async noop () {
-      // 忽略默认 selection-change 行为
-      await new Promise(resolve => setTimeout(resolve, 10))
-      this.$emit('onSelectRow', Object.values(this.selectedMap))
-    },
 
-    // 恢复当前页已选中的行
-    restoreSelection () {
-      this.$refs.tableRef && this.$refs.tableRef.clearSelection();
-      this.filteredData.forEach(row => {
-        if (this.selectedMap[row.id]) {
-          this.$refs.tableRef.toggleRowSelection(row, true);
-        }
-      });
-    },
-    // 排序函数：已选项置顶
-    sortData () {
-      this.allData.sort((a, b) => {
-        const aSelected = !!this.selectedMap[a.id];
-        const bSelected = !!this.selectedMap[b.id];
-        if (aSelected === bSelected) return 0;
-        return aSelected ? -1 : 1;
-      });
-    },
+      this.cols.push({ title: "" });
+      this.colsIndex = this.cols.length - 1;
+      console.log("增加的值", this.cols);
+      this.itemKey = Math.random()
 
-    // 用户单选时记录勾选状态
-    handleSelect (selection, row) {
-      if (selection.find(r => r.id === row.id)) {
-        this.$set(this.selectedMap, row.id, row);
-      } else {
-        this.$delete(this.selectedMap, row.id);
+    },
+    deleteCol () {
+      /** 
+       * bug 数据更新了 页面没更新数据 table拿到的数据还是以前的老数据，采用了给table加个key的方法解决
+       * 让 table 重新加载 然后刷新数据
+      */
+      this.$confirm('是否确认删除最后一列？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const data = JSON.parse(JSON.stringify(this.cols));
+        data.splice(data.length - 1, 1);
+        console.log("删除后的值", this.cols, data);
+        this.$set(this, 'cols', data)
+        this.colsIndex = this.cols.length - 1;
+        this.itemKey = Math.random()
+      })
+    },
+    
+    onCheck () {
+       if (this.cols.some(item => !item.title)) {
+        this.$message.warning('请先填写表头');
+        return false
       }
-      this.sortData(); // 排序
-    },
+      return true
+    }
 
-    // 用户点击“全选”或“取消全选”
-    handleSelectAll (selection) {
-      const currentIds = this.filteredData.map(row => row.id);
-      currentIds.forEach(id => {
-        const row = this.allData.find(r => r.id === id);
-        if (selection.find(r => r.id === id)) {
-          this.$set(this.selectedMap, id, row);
-        } else {
-          this.$delete(this.selectedMap, id);
-        }
-      });
-      this.sortData(); // 排序
-    },
   },
-  mounted () {
-    this.restoreSelection();
-  }
 };
 </script>
 

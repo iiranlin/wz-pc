@@ -163,7 +163,7 @@ export default {
     },
     onGoDetail (row) {
       this.$router.push({
-        name: 'requestPlanDetail',
+        name: 'requestDetail',
         query: {
           type: 'view',
           id: row.id

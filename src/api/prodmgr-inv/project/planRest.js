@@ -124,3 +124,12 @@ export const getAllDetail = (data) => {
     data
   })
 }
+
+// 提交计划
+export const submit = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/merger`,
+    method: 'post',
+    data
+  })
+}

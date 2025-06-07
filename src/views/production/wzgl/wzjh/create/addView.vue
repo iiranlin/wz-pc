@@ -15,7 +15,7 @@
         :class="{ formRender_view: true }"
       >
         <template #table>
-          <ItemTableView :allData="allData" @onSelectRow="onSelectRow" />
+          <ItemTableView ref="itemTableViewRef" :allData="allData" />
         </template>
       </VFormRender>
     </div>
@@ -86,13 +86,7 @@ export default {
     },
     ...mapState(['requestPlan'])
   },
-  async created () {
-    // this.getDeptTree()
-    // this.getLineOptions()
-
-  },
   mounted () {
-    console.log(this.getSelecList(), 'selec')
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
       return
@@ -123,7 +117,7 @@ export default {
           this.title = "编辑";
           await this.formFillInPage()
           this.$refs.vFormRef.setFormData(data)
-        
+
 
           //   form action
           this.$refs.vFormRef.setReadMode(true)
@@ -139,19 +133,7 @@ export default {
         this.allData = data
       })
 
-      
-    },
-    async getLineOptions () {
-      const res = await LineApi.itemList({
-        pageNum: 1,
-        pageSize: -1,
-      })
-      this.lineOptions = res.data.list.map(item => {
-        return {
-          value: item.id,
-          label: item.projectName
-        }
-      })
+
     },
     async getDeptTree (deptCode) {
       const res = await listByDeptCode({
@@ -185,20 +167,20 @@ export default {
     },
     //新建
     handleCreate () {
-      console.log(this.selectRows, 'rows')
-      // 判断当前是否选择了数据
-      if (this.selectRows.length === 0) {
-        this.$message.warning('请选择要添加的物资')
-        return
+      const valid = this.$refs.itemTableViewRef.onCheck()
+      if (valid) {
+        // 存Col json 配置
+        Api.submit({
+          columnConfig: JSON.stringify(this.$refs.itemTableViewRef.cols),
+          detailsModifyParams: this.$refs.itemTableViewRef.allData,
+          childrenIds: this.getSelecList(),
+        }).then(() => {
+          this.$modal.msgSuccess("提交成功");
+          this.$router.push({
+            name:'jgPlanList'
+          })
+        })
       }
-      this.setSelectedMaterialList(this.selectRows)
-      this.$router.push({
-        name: 'requestAdd',
-        query: {
-          type: 'create',
-        }
-      })
-
     },
     formFillInPage () {
       return new Promise((resolve) => {
