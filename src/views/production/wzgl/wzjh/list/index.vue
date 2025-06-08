@@ -59,6 +59,10 @@
         />
       </el-col>
     </el-row>
+    <workFlowView
+      :bill-data="selectedRow"
+      :work-flow-view-visible.sync="workFlowViewVisible"
+    />
   </div>
 </template>
 
@@ -66,10 +70,11 @@
 
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import indexMixin from "@/views/mixins";
+import workFlowView from '@/components/workFlowView'
 export default {
   // 线路项目
   name: "wzxqList",
-  components: {},
+  components: { workFlowView },
   mixins: [indexMixin],
 
   data () {
@@ -119,6 +124,8 @@ export default {
       total: 0,
       selection: [],
       hasOwn: true,
+      workFlowViewVisible: false,
+      selectedRow: null,
 
     };
   },
@@ -230,6 +237,10 @@ export default {
 
             }
           })
+          break;
+        case 'flowSee':
+          this.workFlowViewVisible = true
+          this.selectedRow = rowArr[0]
           break;
 
       }
