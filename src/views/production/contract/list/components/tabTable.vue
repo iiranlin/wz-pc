@@ -61,6 +61,7 @@
         label="物资名称"
         width="250"
         fixed="left"
+        align="center"
       >
         <template slot-scope="scope">
           <el-select
@@ -86,6 +87,7 @@
         prop="projectShortName"
         label="项目简称"
         width="120"
+        align="center"
       ></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
@@ -94,6 +96,7 @@
         prop="sectionName"
         label="标段项目名称"
         width="150"
+        align="center"
       >
         <template slot-scope="scope">
           <el-select
@@ -121,8 +124,9 @@
         prop="sellerName"
         label="卖方名称"
         width="120"
+        align="center"
       ></el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200">
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center">
       </el-table-column>
 
       <!-- 可选择计量单位 -->
@@ -149,10 +153,17 @@
       </el-table-column>
 
       <el-table-column
+        prop="cumulativeAmount"
+        label="累计计划量"
+        width="120"
+        align="center"
+      ></el-table-column>
+
+      <el-table-column
         prop="price"
         label="到站不含税单价(元)"
         width="160"
-        align="right"
+        align="center"
       >
         <template slot-scope="scope">
           <el-input-number
@@ -190,7 +201,7 @@
         prop="taxPrice"
         label="到站含税单价(元)"
         width="150"
-        align="right"
+        align="center"
       >
         <template slot-scope="scope">
           {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
@@ -200,7 +211,7 @@
         prop="totalAmount"
         label="到站合价含税(元)"
         width="150"
-        align="right"
+        align="center"
       >
         <template slot-scope="scope">
           {{ scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : '' }}
