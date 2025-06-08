@@ -101,7 +101,7 @@
       <el-table-column
         v-for="(col, index) in cols"
         :key="index"
-        align="right"
+        align="center"
         width="200"
       >
         <template v-slot:header>

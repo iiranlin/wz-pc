@@ -14,39 +14,7 @@
       :formData="formData"
     />
     <el-row type="flex" class="container_h">
-      <!--部门数据-->
-      <collapse>
-        <el-col :xs="24" class="container_flex_overflow">
-          <el-input
-            class="search-input"
-            placeholder="输入关键字过滤"
-            v-model="filterText"
-            clearable
-          >
-          </el-input>
-          <div class="head-container ov_head">
-            <el-tree
-              v-loading="treeLoading"
-              class="drawer-tree"
-              node-key="id"
-              :indent="0"
-              :data="deptOptions"
-              :props="defaultProps"
-              :expand-on-click-node="false"
-              ref="tree"
-              :highlight-current="true"
-              :filter-node-method="filterNode"
-              @node-click="handleNodeClick"
-            >
-              <template slot-scope="{ node }">
-                <span class="el-tree-node__label" :title="node.label">{{
-                  node.label
-                }}</span>
-              </template>
-            </el-tree>
-          </div>
-        </el-col>
-      </collapse>
+   
 
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
@@ -166,7 +134,6 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
-    this.deptTree();
   },
   watch: {
     filterText (val) {
@@ -261,7 +228,7 @@ export default {
           this.handleDelete(idArr)
           break;
         case 'view':
-          this.$router.push({ name: 'addSection', query: { id: idArr[0], type: 'view' } })
+          this.$router.push({ name: 'detailSection', query: { id: idArr[0], type: 'view' } })
           break;
       }
     },

@@ -1,7 +1,10 @@
 <template>
   <div class="tab-table-container">
     <!-- Action Button -->
-    <div style="display: flex; justify-content: space-between" v-if="type !== 'view'">
+    <div
+      style="display: flex; justify-content: space-between"
+      v-if="type !== 'view'"
+    >
       <div>
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
           >添加物资</el-button
@@ -76,6 +79,7 @@
         label="物资名称"
         width="250"
         fixed="left"
+        align="center"
       >
         <template slot-scope="scope">
           <el-select
@@ -101,6 +105,7 @@
         prop="projectShortName"
         label="项目简称"
         width="120"
+        align="center"
       ></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
@@ -109,6 +114,7 @@
         prop="sectionName"
         label="标段项目名称"
         width="150"
+        align="center"
       >
         <template slot-scope="scope">
           <el-select
@@ -136,8 +142,14 @@
         prop="sellerName"
         label="卖方名称"
         width="120"
+        align="center"
       ></el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200">
+      <el-table-column
+        prop="specModel"
+        label="规格型号"
+        width="200"
+        align="center"
+      >
       </el-table-column>
 
       <!-- 可选择计量单位 -->
@@ -162,12 +174,18 @@
           <span v-else>{{ scope.row.amount }}</span>
         </template>
       </el-table-column>
+      <el-table-column
+        prop="cumulativeAmount"
+        label="累计计划量"
+        width="120"
+        align="center"
+      ></el-table-column>
 
       <el-table-column
         prop="price"
         label="到站不含税单价(元)"
         width="160"
-        align="right"
+        align="center"
       >
         <template slot-scope="scope">
           <el-input-number
@@ -190,7 +208,10 @@
       >
         <template slot-scope="scope">
           <el-input-number
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type =='add' "
+            v-if="
+              (type !== 'view' && scope.row.id.split('-').length != 1) ||
+              scope.row.type == 'add'
+            "
             v-model="scope.row.vatRate"
             :min="0"
             :precision="2"
@@ -205,7 +226,7 @@
         prop="taxPrice"
         label="到站含税单价(元)"
         width="150"
-        align="right"
+        align="center"
       >
         <template slot-scope="scope">
           {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
@@ -215,7 +236,7 @@
         prop="totalAmount"
         label="到站合价含税(元)"
         width="150"
-        align="right"
+        align="center"
       >
         <template slot-scope="scope">
           {{ scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : '' }}
@@ -229,7 +250,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
+            v-if="
+              (type !== 'view' && scope.row.id.split('-').length != 1) ||
+              scope.row.type == 'add'
+            "
             v-model="scope.row.deliveryLocation"
             size="mini"
             style="width: 100%"
@@ -245,7 +269,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
+            v-if="
+              (type !== 'view' && scope.row.id.split('-').length != 1) ||
+              scope.row.type == 'add'
+            "
             v-model="scope.row.receiver"
             size="mini"
             style="width: 100%"
@@ -261,7 +288,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
+            v-if="
+              (type !== 'view' && scope.row.id.split('-').length != 1) ||
+              scope.row.type == 'add'
+            "
             v-model="scope.row.deliveryStatus"
             size="mini"
             style="width: 100%"
@@ -277,7 +307,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
+            v-if="
+              (type !== 'view' && scope.row.id.split('-').length != 1) ||
+              scope.row.type == 'add'
+            "
             v-model="scope.row.deliveryTerms"
             size="mini"
             style="width: 100%"
@@ -293,7 +326,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
+            v-if="
+              (type !== 'view' && scope.row.id.split('-').length != 1) ||
+              scope.row.type == 'add'
+            "
             v-model="scope.row.deliveryDate"
             size="mini"
             style="width: 100%"
