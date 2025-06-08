@@ -142,10 +142,10 @@ export default {
         return;
       }
       const flag = this.selectRows.every(
-        (obj) => obj.sectionId === this.selectRows[0].sectionId
+        (obj) => obj.deptId === this.selectRows[0].deptId
       );
       if (!flag) {
-        this.$modal.msgError("一个发货批次只允许选择一个标段项目的供应物资");
+        this.$modal.msgError("一次发货只允许选择一个需求组织（分部）的供应物资");
         return;
       }
       this.setSelectedItemList(this.selectRows);

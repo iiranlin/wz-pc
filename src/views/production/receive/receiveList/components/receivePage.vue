@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="tab-table-container" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -44,7 +44,6 @@
             border
             style="width: 100%"
             :max-height="600"
-            v-loading="loading"
             ref="dataTable"
           >
             <el-table-column
@@ -59,7 +58,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="120"
+              width="150"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
@@ -109,16 +108,36 @@
           />
         </template> -->
             </el-table-column>
-            <el-table-column
-              prop="putTotal"
-              label="收货数量"
-              width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="refundTotal"
-              label="退货数量"
-              width="120"
-            ></el-table-column>
+            <el-table-column prop="putTotal" label="收货数量" width="120">
+              <template slot-scope="scope">
+                <el-input-number
+                  v-model="scope.row.putTotal"
+                  :min="0"
+                  @change="changePut(scope.row)"
+                  size="mini"
+                  style="width: 100%"
+                  v-if="type != 'view' && show"
+                ></el-input-number>
+                <span v-else>
+                  {{ scope.row.putTotal }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="refundTotal" label="退货数量" width="120">
+              <template slot-scope="scope">
+                <el-input-number
+                  v-model="scope.row.refundTotal"
+                  :min="0"
+                  size="mini"
+                  style="width: 100%"
+                  v-if="type != 'view' && show"
+                  @change="changeRefund(scope.row)"
+                ></el-input-number>
+                <span v-else>
+                  {{ scope.row.refundTotal }}
+                </span>
+              </template>
+            </el-table-column>
             <el-table-column
               prop="projectShortName"
               label="退货附件"
@@ -133,11 +152,14 @@
 
 <script>
 import Vue from "vue";
+import * as Api from "@/api/prodmgr-inv/project/receive.js";
+import * as server from "@/api/prodmgr-inv/project/scm.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
+import dayjs from "dayjs";
 export default {
   name: "receivePage",
   components: {
@@ -174,7 +196,7 @@ export default {
           type: "create, update",
         },
         {
-          buttonName: "保存",
+          buttonName: "确定",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
@@ -185,6 +207,7 @@ export default {
       tableData: [],
       selection: [],
       form: {},
+      show: true,
     };
   },
   computed: {
@@ -197,41 +220,52 @@ export default {
   },
   async created() {},
   mounted() {
-    this.init();
+    this.init(this.id);
   },
   methods: {
-    //初始化
-    init() {
-      this.$nextTick(async () => {
-        await this.formFillInPage();
-      });
+    getDate() {
+      let now = new Date();
+
+      // 获取年、月、日
+      let year = now.getFullYear();
+      let month = now.getMonth() + 1;
+      month = month < 10 ? "0" + month : month;
+      let day = now.getDate();
+      day = day < 10 ? "0" + day : day;
+      var date = year + "-" + month + "-" + day;
+      return date;
     },
-    // 编辑初始化
-    async updateInit(id) {
-      await Api.sendDetail(id).then(({ data }) => {
-        this.$nextTick(async () => {
-          this.title = "编辑";
-          await this.formFillInPage();
-          // fileList回显
-          const newData = {
-            ...data,
-            fileList: (data.fileList && data.fileList[0]?.fileList) || [],
-            arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
-            shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
-          };
-          this.$refs.vFormRef.setFormData(newData);
 
-          //   form action
-          this.$refs.vFormRef.setReadMode(this.type === "view");
+    //初始化
+    init(id) {
+      this.$nextTick(async () => {
+        await Api.detailTake(id).then(({ data }) => {
+          this.$nextTick(async () => {
+            await this.formFillInPage();
+            if (this.type == "create") {
+              //收货的时候默认本机日期
+              data.takeDate = this.getDate();
+            } else {
+              data.takeDate = dayjs(data.takeDate).format("YYYY-MM-DD");
+            }
+            // fileList回显
+            const newData = {
+              ...data,
+              fileList: (data.fileList && data.fileList[0]?.fileList) || [],
+            };
+            this.$refs.vFormRef.setFormData(newData);
 
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
-            ...x,
-            manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-            expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-            id: x.planDetailId,
-          }));
-          this.tableData = detail;
-          this.setSelectedItemList(this.tableData);
+            this.$refs.vFormRef.setReadMode(this.type === "view");
+
+            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+              ...x,
+              manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
+              expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+              id: x.planDetailId,
+              putTotal: x.sendTotal, //默认收货数量=发货数量
+            }));
+            this.tableData = detail;
+          });
         });
       });
     },
@@ -255,6 +289,32 @@ export default {
       }
       return true;
     },
+    //   onCheck(tableData) {
+    //   const errors = [];
+    //   tableData.forEach((row, index) => {
+    //     const rowNum = index + 1;
+    //     if (!row.planAmount || row.planAmount == 0) {
+    //       errors.push(`第${rowNum}行，数量未填写 `);
+    //     }
+    //     if (!row.packagingFm) {
+    //       errors.push(`第${rowNum}行，包装形式未填写 `);
+    //     }
+    //     if (!row.manufactureDate) {
+    //       errors.push(`第${rowNum}行，生产日期未填写 `);
+    //     }
+    //   });
+
+    //   if (errors.length > 0) {
+    //     this.$message({
+    //       message: errors.join("<br/> <br/>"),
+    //       type: "error",
+    //       dangerouslyUseHTMLString: true,
+    //     });
+    //     return false;
+    //   }
+    //   // TODO: 提交逻辑放这里
+    //   return true;
+    // },
     //新建
     handleCreate() {
       this.$refs.vFormRef.validateForm(async (valid) => {
@@ -262,21 +322,11 @@ export default {
           this.$message.warning("请完善信息");
           return;
         }
-        const flag = this.tableData.every(
-          (obj) => obj.sectionId === this.tableData[0].sectionId
-        );
-        if (!flag) {
-          this.$modal.msgError("一个发货批次只允许选择一个标段项目的供应物资");
-          return;
-        }
-        if (this.getSelectedItemList().length === 0) {
-          this.$modal.msgError("请选择物资");
-          return;
-        }
-        const isValid = this.onCheck(this.tableData);
-        if (!isValid) {
-          return;
-        }
+
+        // const isValid = this.onCheck(this.tableData);
+        // if (!isValid) {
+        //   return;
+        // }
 
         if (valid) {
           this.loading = true;
@@ -284,7 +334,7 @@ export default {
           // 后端存入嵌套数组
           const fileList = formData.fileList;
           formData.fileList = [{ fileList }];
-          await Api.save(
+          await server.save(
             Object.assign(
               {
                 supplyId: this.type === "create" ? this.id : null,
@@ -302,10 +352,8 @@ export default {
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
-              this.setSelectedItemList([]);
-              this.$router.push({
-                name: "demand",
-              });
+
+              this.cancel();
             })
             .finally((err) => {
               formData.fileList = fileList;
@@ -325,6 +373,35 @@ export default {
 
           resolve(true);
         });
+      });
+    },
+    //填写收货数量
+    changePut(row) {
+      //收货不能超过发货，最终算出退货
+      if (Number(row.putTotal) > Number(row.sendTotal)) {
+        this.$modal.msgError("收货数量不能大于发货数量！");
+        row.putTotal = row.sendTotal;
+        console.log(row.putTotal, "======row.putTotal====");
+      } else {
+        row.refundTotal = Number(row.sendTotal) - Number(row.putTotal);
+      }
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
+      });
+    },
+    //填写退货数量
+    changeRefund(row) {
+      //退货不能超过发货，最终算出收货
+      if (Number(row.refundTotal) > Number(row.sendTotal)) {
+        this.$modal.msgError("退货数量不能大于发货数量！");
+        row.refundTotal = Number(row.sendTotal) - Number(row.putTotal);
+      } else {
+        row.putTotal = Number(row.sendTotal) - Number(row.refundTotal);
+      }
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
       });
     },
   },

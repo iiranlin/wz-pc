@@ -47,7 +47,7 @@
       </el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="120"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="150"></el-table-column>
       <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
       <el-table-column
         prop="planAmount"
@@ -128,12 +128,12 @@ export default {
     //获取物资列表
     findWzList() {
       Api.listMaterials({
-        // sellerId: this.sellerId,
-        // planId: this.supplyNumber,
-        // deptId: this.form.deptId,
-        sellerId: '1928340067179323392',
-        planId: 1,
-        deptId: 1,
+        sellerId: this.sellerId,
+        planId: this.supplyNumber,
+        deptId: this.form.deptId,
+        // sellerId: '1928340067179323392',
+        // planId: 1,
+        // deptId: 1,
       })
         .then(({ data }) => {
           this.tableData = data.list;
