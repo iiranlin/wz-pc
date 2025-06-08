@@ -14,24 +14,24 @@
       :formData="formData"
     >
       <template #status="data">
-          <el-select
-            class="select-box"
-            v-model="formData[data.data.fieldCode]"
-            :placeholder="
-              ($t(`please_select`) || '请选择') +
-              i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-            "
-            clearable
-            style="width: 100%"
-            size="small"
-          >
-            <el-option
-              v-for="(item, key) in options"
-              :key="key"
-              :label="item.name"
-              :value="item.code"
-            />
-          </el-select>
+        <el-select
+          class="select-box"
+          v-model="formData[data.data.fieldCode]"
+          :placeholder="
+            ($t(`please_select`) || '请选择') +
+            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          "
+          clearable
+          style="width: 100%"
+          size="small"
+        >
+          <el-option
+            v-for="(item, key) in options"
+            :key="key"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
@@ -64,6 +64,24 @@
           <template #status="scope">
             {{ status[scope.value] }}
           </template>
+          <!-- 发货单号 -->
+          <template #shipmentBatchNumber="scope">
+            <el-button type="text" @click="toFhd(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
+          <!-- 供应需求ID -->
+          <template #supplyNumber="scope">
+            <el-button type="text" @click="toGyxq(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
+          <!-- 物流单号 -->
+          <template #oddNumbers="scope">
+            <el-button type="text" @click="toWuliu(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"
@@ -74,18 +92,18 @@
         />
       </el-col>
     </el-row>
-    <add-adress ref="addAdress"/>
+    <add-adress ref="addAdress" :shipmentBatchNumber="shipmentBatchNumber" />
   </div>
 </template>
 
 <script>
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
-import AddAdress from './components/addAdress.vue';
+import AddAdress from "./components/addAdress.vue";
 export default {
   // 线路项目
   name: "sendList",
-  components: {AddAdress},
+  components: { AddAdress },
   mixins: [indexMixin],
 
   data() {
@@ -141,6 +159,7 @@ export default {
       total: 0,
       selection: [],
       hasOwn: true,
+      shipmentBatchNumber: "",
     };
   },
   async created() {
@@ -207,30 +226,32 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "confirm":
-          this.handleSend(idArr,rowArr);
+          this.handleSend(idArr, rowArr);
           break;
         case "update":
-           if(rowArr[0].status!='1'){
-          this.$modal.msgError("已发货，无法修改！");
-          return;
-        }
+          if (rowArr[0].status != "1") {
+            this.$modal.msgError("已发货，无法修改！");
+            return;
+          }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0],type:'update' },
+            query: { id: idArr[0], type: "update" },
           });
           break;
         case "delete":
-           this.handleDelete(idArr,rowArr);
+          this.handleDelete(idArr, rowArr);
           break;
-          case "addAdress":
-           this.$refs.addAdress.init();
+        case "addAdress":
+          this.shipmentBatchNumber = rowArr[0].shipmentBatchNumber;
+          this.$nextTick(() => {
+            this.$refs.addAdress.init();
+          });
           break;
-       
       }
     },
-    handleDelete(ids,rowArr) {
-      for(var i in rowArr){
-        if(rowArr[i].status!='1'){
+    handleDelete(ids, rowArr) {
+      for (var i in rowArr) {
+        if (rowArr[i].status != "1") {
           this.$modal.msgError("已发货，无法删除！");
           return;
         }
@@ -246,9 +267,9 @@ export default {
         });
     },
     //确认发货
-  handleSend(ids,rowArr) {
-      for(var i in rowArr){
-        if(rowArr[i].status!='1'){
+    handleSend(ids, rowArr) {
+      for (var i in rowArr) {
+        if (rowArr[i].status != "1") {
           this.$modal.msgError("已发货！");
           return;
         }
@@ -256,7 +277,7 @@ export default {
       this.$modal
         .confirm("是否确认发货?")
         .then(function () {
-          return Api.save({ id:ids[0],status:'2' });
+          return Api.save({ id: ids[0], status: "2" });
         })
         .then(() => {
           this.getList();
@@ -274,6 +295,33 @@ export default {
         this.formData[key] = null;
       }
       this.handleQuery();
+    },
+    //跳转需求供应详情
+    toGyxq(row) {
+      this.$router.push({
+        name: "requestSupplyDetail",
+        query: {
+          type: "view",
+          id: row.id,
+        },
+      });
+    },
+    // 物流
+    toWuliu(row) {
+      this.$router.push({
+        name: "logisticsView",
+        query: { id: row.id, type: "view" },
+      });
+    },
+    //发货单
+    toFhd(row) {
+      this.$router.push({
+        name: "addSend",
+        query: {
+          type: "view",
+          id: row.id,
+        },
+      });
     },
   },
 };

@@ -113,45 +113,46 @@ export const sendDetail = (id) => {
 }
 
 
-/**
- * 新增
- * @param {*} params 
- * @returns 
- */
-export const add = (data) => {
-  return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialContract/create`,
-    method: 'post',
-    data
-  })
-}
-
-
-
-/**
- * 删除
- */
-export const remove = (id) => {
-  return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialContract/remove/${id}`,
-    method: 'post',
-  })
-}
-
-
-/**
- * 导出
- * @param {*} params 
- * @returns 
- */
-export function adjustInExport(data) {
-  return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
-}
-
 // 获取供应商下所有物料
 export const getMaterial = (params) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanDetails/getList`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 添加货运位置
+ * @param {*} params 
+ * @returns 
+ */
+export const addAdress = (data) => {
+  return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/create`,
+      method: 'post',
+      data
+  })
+}
+/**
+ * 查回货运位置list
+ * @param {*} params 
+ * @returns 
+ */
+export const findAdressList = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/list`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 供应商退货列表
+ * @param {*} params 
+ * @returns 
+ */
+export const listRetreat = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listRetreat`,
     method: 'get',
     params
   })

@@ -273,7 +273,7 @@ export default {
           (obj) => obj.sectionId === this.tableData[0].sectionId
         );
         if (!flag) {
-          this.$modal.msgError("一个发货批次只允许选择一个标段项目的供应物资");
+          this.$modal.msgError("一次发货只允许选择一个需求组织（分部）的供应物资");
           return;
         }
         if (this.getSelectedItemList().length === 0) {

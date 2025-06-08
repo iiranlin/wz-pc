@@ -62,9 +62,9 @@
           @handleButton="handleButton"
         >
           <template #takeStatus="scope">
-            {{ status[scope.value]}}
+            {{ status[scope.value] }}
           </template>
-            <!-- 收货单号 -->
+          <!-- 收货单号 -->
           <template #takeNumber="scope">
             <el-button type="text" @click="toReceive(scope.data)">
               {{ scope.value }}
@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
@@ -106,11 +106,11 @@ export default {
 
   data() {
     return {
-      status:{
-        1:'未收货',
-        2:'已收货',
-        3:'部分退货',
-        4:'c'
+      status: {
+        1: "未收货",
+        2: "已收货",
+        3: "部分退货",
+        4: "已退货",
       },
       options: [
         {
@@ -121,13 +121,13 @@ export default {
           code: "2",
           name: "已收货",
         },
-         {
+        {
           code: "3",
           name: "部分退货",
         },
-         {
+        {
           code: "4",
-          name: "部分退货",
+          name: "已退货",
         },
       ],
       treeCurrentKey: "",
@@ -209,7 +209,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.sandList(Object.assign({}, this.listQuery, this.formData))
+      Api.listTake(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -225,12 +225,14 @@ export default {
       this.selection = selection;
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
-       this.proxyPrint(buttonCode, rowArr, buttonData);
+      this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "receive":
-         
+          this.$router.push({
+            name: "receivePage",
+            query: { id: idArr[0], type: "create" },
+          });
           break;
-       
       }
     },
 
@@ -247,7 +249,12 @@ export default {
       this.handleQuery();
     },
     //收货单
-    toReceive(){},
+    toReceive(row) {
+      this.$router.push({
+        name: "receivePage",
+        query: { id: row.id, type: "create" },
+      });
+    },
     //跳转货运详情
     toFhd(row) {
       this.$router.push({
@@ -256,7 +263,12 @@ export default {
       });
     },
     //跳转需求供应详情
-    toWuliu() {},
+    toWuliu() {
+      this.$router.push({
+        name: "logisticsView",
+        query: { id: row.id, type: "view" },
+      });
+    },
   },
 };
 </script>

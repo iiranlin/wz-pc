@@ -72,6 +72,7 @@
 <script>
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
+import { getUserInfo } from "@/utils/user-info";
 export default {
   // 线路项目
   name: "returnList_sh",
@@ -158,8 +159,9 @@ export default {
     },
     /** 查询菜单列表 */
     getList() {
+      const userInfo = getUserInfo();
       this.loading = true;
-      Api.sandList(Object.assign({}, this.listQuery, this.formData))
+      Api.listRetreat(Object.assign({deptId:userInfo.deptId}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -189,7 +191,12 @@ export default {
       this.handleQuery();
     },
     //退货单
-    toThd(){},
+    toThd(){
+       this.$router.push({
+        name: "detail_sh",
+        query: { id: row.id, type: "view" },
+      });
+    },
     //跳转货运详情
     toFhd(row) {
       this.$router.push({

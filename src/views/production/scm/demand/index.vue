@@ -64,6 +64,12 @@
           <template #status="scope">
             {{ status[scope.value] }}
           </template>
+          <!-- 供应需求ID -->
+          <template #supplyNumber="scope">
+            <el-button type="text" @click="toGyxq(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"
@@ -227,21 +233,27 @@ export default {
 
           break;
         case "send":
-          if(rowArr[0].status == "1"){
+          if (rowArr[0].status == "1") {
             this.$modal.msgError("请先确认需求！");
             return;
-          };
-           if(rowArr[0].status == "4"){
+          }
+          if (rowArr[0].status == "4") {
             this.$modal.msgError("已验收！");
             return;
-          };
-           if(rowArr[0].status == "5"){
+          }
+          if (rowArr[0].status == "5") {
             this.$modal.msgError("已完成！");
             return;
           }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0],type: "create",supplyName:rowArr[0].supplyName,supplyNumber:rowArr[0].supplyNumber,sellerId:rowArr[0].sellerId },
+            query: {
+              id: idArr[0],
+              type: "create",
+              supplyName: rowArr[0].supplyName,
+              supplyNumber: rowArr[0].supplyNumber,
+              sellerId: rowArr[0].sellerId,
+            },
           });
           break;
         case "detail":
@@ -270,6 +282,16 @@ export default {
         this.formData[key] = null;
       }
       this.handleQuery();
+    },
+    //跳转需求供应详情
+    toGyxq(row) {
+      this.$router.push({
+        name: "requestSupplyDetail",
+        query: {
+          type: "view",
+          id: row.id,
+        },
+      });
     },
   },
 };
