@@ -118,13 +118,18 @@ export default {
       endCenter: [],
     };
   },
+    watch: {
+      courierNumber: {
+        handler() {
+        this.formData.mailNo = this.courierNumber;
+        this.handleInputChange();
+        },
+        immediate: true
+      },
+
+    },
   created() {
     this.queryExpressCompanyList();
-    this.formData.mailNo = this.courierNumber;
-    // this.arcgisMap='/map/expressQueryMap.html';
-    if (this.formData.mailNo) {
-      this.handleInputChange();
-    }
   },
   methods: {
     //查询快递公司
@@ -154,6 +159,7 @@ export default {
     //快递单号改变后
     handleInputChange() {
       if (!this.formData.mailNo) {
+        this.$modal.msgError("没有快递单号无法查询！");
         return;
       }
       let obj = {
@@ -196,6 +202,7 @@ export default {
             //     this.handleQueryClick();
             // }
           } else {
+            this.$modal.msgError(res.data.errorMsg);
             this.expressCompanyOptions = this.localExpressCompanyOptions;
             this.formData.cpCode = "";
             this.formData.cpName = "";
