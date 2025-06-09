@@ -16,8 +16,8 @@
       >
         <template #table>
           <detailTable
-            :projectId="projectId"
             ref="detailTable"
+            :tableData="tableData"
           ></detailTable>
         </template>
       </VFormRender>
@@ -29,7 +29,7 @@
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
-
+import * as Scm from '@/api/prodmgr-inv/project/scm.js'
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
@@ -76,6 +76,7 @@ export default {
       constructionOptions: [],
       selectRows: [],
       userInfo: getUserInfo(),
+      tableData:[]
     }
   },
   computed: {
@@ -113,6 +114,16 @@ export default {
         title: this.sectionInfo.constructionCompany + this.sectionInfo.sectionName + dayjs().format('YYYY年MM月') + '甲供物资需求'
       })
     },
+    // 获取物资概览
+    async getMaterialOverview () {
+      const params = {
+        pageNum: 1,
+        pageSize: -1,
+        // planDetailDd:this.id
+      }
+      const res = await Scm.getMaterialCount(params)
+      this.tableData = res.data
+    },
 
     //初始化
     init () {
@@ -136,6 +147,8 @@ export default {
 
         });
       });
+
+      this.getMaterialOverview()
     },
     newButton (buttonCode) {
       if (buttonCode === 'cancel') {

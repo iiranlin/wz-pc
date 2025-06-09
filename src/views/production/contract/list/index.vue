@@ -53,6 +53,10 @@
               "
             />{{ scope.value == 2 ? '启用' : '未启用' }}
           </template>
+
+          <template #materialUsedRatio="scope">
+            {{ scope.value }}%
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"

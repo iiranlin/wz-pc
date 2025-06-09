@@ -24,7 +24,7 @@
 
 <script>
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
-import * as LineApi from '@/api/prodmgr-inv/project/line.js'
+import * as SupplyRest from '@/api/prodmgr-inv/project/supplyRest.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
 
 import VFormRender from '@/components/form-render/index'
@@ -68,7 +68,7 @@ export default {
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
-
+        { buttonName: '生成需求供应单', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
       ],
       constructionOptions: [],
       selectRows: [],
@@ -141,16 +141,33 @@ export default {
         this.cancel()
         return
       }
+      if (buttonCode === 'save') {
+        this.save()
+        return
+      }
 
     },
     cancel () {
       this.$router.go(-1)
     },
+    save () {
+      this.$confirm('供应计划生成后不能修改，请确认操作', '提示', {
 
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return SupplyRest.save({ demandPlanId: this.id })
+
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '生成成功'
+        })
+        this.cancel()
+      })
+    },
     buttonShow (item) {
-      if (item.buttonCode === 'save') {
-        return this.type !== 'view'
-      }
       return true
     },
     formFillInPage () {

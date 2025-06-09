@@ -121,39 +121,34 @@ export const getMaterial = (params) => {
     params
   })
 }
-/**
- * 添加货运位置
- * @param {*} params 
- * @returns 
- */
-export const addAdress = (data) => {
+
+// 物流跟踪查询
+export const getLogistics = (id) => {
   return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/create`,
-      method: 'post',
-      data
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailWlgz/${id}`,
+    method: 'get',
   })
 }
-/**
- * 查回货运位置list
- * @param {*} params 
- * @returns 
- */
-export const findAdressList = (params) => {
+
+// 分页查询供货单查看所有物资剩余发货数量
+export const getMaterialCount = (params) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/list`,
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listShippingInformation`,
     method: 'get',
     params
   })
 }
-/**
- * 供应商退货列表
- * @param {*} params 
- * @returns 
- */
-export const listRetreat = (params) => {
+// 物流跟踪明细查询
+export const getLogisticsDetail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listRetreat`,
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailWlgz/${id}`,
     method: 'get',
-    params
+  })
+}
+// 根据需求计划查询发货批次
+export const getBatch = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listPc/${id}`,
+    method: 'get',
   })
 }

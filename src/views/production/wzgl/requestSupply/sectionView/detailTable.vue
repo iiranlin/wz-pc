@@ -88,12 +88,13 @@
         :key="index"
         align="center"
         width="200"
+        :prop="`filed${index}`"
       >
         <template v-slot:header>
           <span>{{ cols[index].title }}</span>
         </template>
         <template slot-scope="scope">
-          {{ scope.row[`filed${index}`] }}
+          {{ scope.row[`field${index}`] }}
         </template>
       </el-table-column>
       <el-table-column
