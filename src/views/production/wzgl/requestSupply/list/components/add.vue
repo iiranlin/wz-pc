@@ -49,7 +49,7 @@
     </div>
 
     <div slot="footer" class="dialog-footer" v-if="type !== 'view'">
-      <el-button round type="primary" @click="handleCreate">确认</el-button>
+      <el-button round type="primary" @click="handleCreate" :loading="loading" :disabled="loading">确认</el-button>
       <el-button round @click="visible = false">取消</el-button>
     </div>
   </Dialog>
@@ -103,10 +103,14 @@ export default {
     handleCreate () {
       this.$refs.elform.validate(async (valid) => {
         if (valid) {
+          const data = {
+            ...this.form,
+            fileList: [{ fileList: this.form.fileList }]
+          }
           this.loading = true;
           await Api[
-           `submit`
-          ](Object.assign({}, this.form))
+            `submit`
+          ](Object.assign({}, data))
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);

@@ -12,17 +12,17 @@
       >
       </el-table-column>
       <el-table-column
-        prop="updateType"
+        prop="materialName"
         label="物资名称"
         align="center"
         width="150px"
       >
       </el-table-column>
-      <el-table-column prop="updateBefore" label="规格型号" align="center">
+      <el-table-column prop="specModel" label="规格型号" align="center">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="计量单位" align="center">
+      <el-table-column prop="unit" label="计量单位" align="center">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="合同数量" align="center">
+      <el-table-column prop="planAmount" label="合同数量" align="center">
       </el-table-column>
       <el-table-column
         prop="updateAfter"
@@ -30,13 +30,13 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="updateAfter" label="本次计划数量" align="center">
+      <el-table-column prop="suppingAmount" label="本次计划数量" align="center">
       </el-table-column>
       <el-table-column prop="updateAfter" label="已发货" align="center">
       </el-table-column>
       <el-table-column prop="updateAfter" label="已验收" align="center">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已入库" align="center">
+      <el-table-column prop="putTotal" label="已入库" align="center">
       </el-table-column>
       <el-table-column prop="updateAfter" label="已出库" align="center">
       </el-table-column>

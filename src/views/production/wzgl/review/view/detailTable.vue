@@ -16,12 +16,12 @@
       @selection-change="handleSelectionChange"
     >
       <!-- 增加多选 -->
-      <el-table-column
+      <!-- <el-table-column
         type="selection"
         width="55"
         align="center"
         fixed="left"
-      ></el-table-column>
+      ></el-table-column> -->
       <!-- 序号 -->
       <el-table-column
         type="index"

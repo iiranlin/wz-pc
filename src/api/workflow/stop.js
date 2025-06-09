@@ -10,7 +10,7 @@ export function flowStop(data) {
     const type = data.businessType.split('_')[0]
     const PRODMGR = { MM: VUE_APP_PRODMGR_MM, SA: VUE_APP_PRODMGR_SA, INV: VUE_APP_PRODMGR_INV, PU: VUE_APP_PRODMGR_PU, FA: VUE_APP_PRODMGR_FA }[type]
     return request({
-        url: `${PRODMGR}/audit/stop`,
+        url: `${PRODMGR ||VUE_APP_PRODMGR_INV }/audit/stop`,
         method: 'post',
         data: data
     })

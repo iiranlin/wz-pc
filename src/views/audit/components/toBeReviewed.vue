@@ -51,7 +51,7 @@
 
 <script>
 import activitiAssignee from './activitiAssignee'
-import { passWorkFlow, rejectWorkFlow, activitiAssigneeList } from '@/api/system/workflow.js'
+import { passWorkFlow,passEditWorkFlow, rejectWorkFlow, activitiAssigneeList } from '@/api/system/workflow.js'
 export default {
   components: { activitiAssignee },
   data () {
@@ -77,14 +77,16 @@ export default {
       selected: [],
       candidateUsers: [],
       queryName: '',
+      numArr: []
     }
   },
   methods: {
-    init (type, row, queryName) {
+    init (type, row, queryName, numArr = []) {
       this.selected = row;
       this.type = type
-      this.title = type === 'pass' ? '通过' : '驳回'
+      this.title = type === 'pass' ? '同意' : type ==='passEdit' ? '修改后同意': '不同意'
       this.queryName = queryName || ''
+      this.numArr = numArr;
       this.visible = true
       this.$nextTick(() => {
         this.$refs['elForm'].resetFields()
@@ -94,18 +96,22 @@ export default {
     submitForm () {
       if (this.type === 'pass') {
         this.getActivitiAssigneeList();
+      } else if (this.type === 'passEdit') { 
+        this.getActivitiAssigneeList('passEdit');
       } else {
         this.handleReject()
       }
     },
     //获取下一级审批人
-    getActivitiAssigneeList () {
+    getActivitiAssigneeList (type) {
       activitiAssigneeList(this.selected[0].taskId).then(({ data }) => {
         let assigneeList = data;
 
         if (!!assigneeList && assigneeList.length !== 0) {
           this.$refs.activitiAssignee.init(assigneeList);
-        } else {
+        } else if (type === 'passEdit') {
+           this.activitiCompleteWithEdit();
+        }else {
           this.activitiComplete();
         }
       })
@@ -121,6 +127,32 @@ export default {
         message: this.toBeReviewedForm.comment || "同意"
       }
       passWorkFlow(params).then(res => {
+        if (res.success) {
+          this.$modal.msgSuccess(res.message)
+          this.visible = false
+          if (this.queryName) {
+            // 关闭当前tabs
+            this.$tab.closeOpenPage({ name: this.queryName });
+          } else {
+            this.$parent.handleQuery()
+          }
+        } else {
+          this.$modal.msgError(res.message)
+        }
+      })
+    },
+    //修改后同意
+    activitiCompleteWithEdit () {
+      const params = {
+        taskId: this.selected[0].taskId,
+        procInstId: this.selected[0].procInstId,
+        candidateUsers: this.candidateUsers,
+        businessType: this.selected[0].businessType,
+        businessId: this.selected[0].businessId,
+        message: this.toBeReviewedForm.comment || "修改后同意",
+        modifyIds: this.numArr // 添加勾选的参数
+      }
+      passEditWorkFlow(params).then(res => {
         if (res.success) {
           this.$modal.msgSuccess(res.message)
           this.visible = false

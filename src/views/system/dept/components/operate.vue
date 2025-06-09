@@ -6,7 +6,6 @@
     :close-on-click-modal="false"
     width="600px"
     append-to-body
-    
   >
     <el-form ref="elForm" :model="form" :rules="rules" label-width="85px">
       <el-row>
@@ -24,19 +23,32 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="部门编号:" prop="deptCode">
-            <el-input v-model="form.deptCode" placeholder="请输入部门编号" maxlength="150" :disabled="title==='修改部门'"/>
+            <el-input
+              v-model="form.deptCode"
+              placeholder="请输入部门编号"
+              maxlength="150"
+              :disabled="title === '修改部门'"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="部门名称:" prop="deptName">
-            <el-input v-model="form.deptName" placeholder="请输入部门名称" maxlength="150" />
+            <el-input
+              v-model="form.deptName"
+              placeholder="请输入部门名称"
+              maxlength="150"
+            />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="部门简称:" prop="deptAlias">
-            <el-input v-model="form.deptAlias" placeholder="请输入部门简称" maxlength="150" />
+            <el-input
+              v-model="form.deptAlias"
+              placeholder="请输入部门简称"
+              maxlength="150"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -51,10 +63,29 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="状态:" prop="status">
             <el-radio-group v-model="form.status">
-              <el-radio v-for="dict in statusOpt" :key="dict.label" :label="dict.value">{{ dict.label }}
+              <el-radio
+                v-for="dict in statusOpt"
+                :key="dict.label"
+                :label="dict.value"
+                >{{ dict.label }}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="级别:" prop="unitFlag"  >
+            <el-radio-group v-model="form.unitFlag" :disabled="type === 'update'">
+              <el-radio
+                v-for="dict in [
+                  { label: '部门', value: 0 },
+                  { label: '单位', value: 1 },
+                ]"
+                :key="dict.value"
+                :label="dict.value"
+                >{{ dict.label }}
               </el-radio>
             </el-radio-group>
           </el-form-item>
@@ -85,15 +116,15 @@ export default {
       default: () => [],
     },
   },
-  components: {Treeselect},
-  data() {
+  components: { Treeselect },
+  data () {
     return {
       loading: false,
       title: "新增部门",
       type: "add",
       id: "",
       openDataScope: false,
-      company:[],
+      company: [],
       form: {
         deptName: "",
         deptCode: "",
@@ -152,27 +183,28 @@ export default {
       ],
     };
   },
-  created() {},
+  created () { },
   methods: {
     /** 提交按钮（数据权限） */
-    init(type, id) {
-        this.type = type;
-        this.id = id;
-        this.openDataScope = true;
-        this.loading = false;
-        this.$nextTick(() => {
-            this.$refs.elForm.resetFields();
-            if (type === "update") {
-                this.title = "修改部门";
-                this.deptDetail(id);
-            } else {
-                this.title = "新增部门";
-                this.form.parentId = id || undefined;
-            }
-        });
+    init (type, id) {
+      this.type = type;
+      this.id = id;
+      this.openDataScope = true;
+      this.loading = false;
+      this.form.unitFlag = 0
+      this.$nextTick(() => {
+        this.$refs.elForm.resetFields();
+        if (type === "update") {
+          this.title = "修改部门";
+          this.deptDetail(id);
+        } else {
+          this.title = "新增部门";
+          this.form.parentId = id || undefined;
+        }
+      });
     },
     /** 转换部门数据结构 */
-    normalizer(node) {
+    normalizer (node) {
       if (node.children && !node.children.length) {
         delete node.children;
       }
@@ -182,7 +214,7 @@ export default {
         children: node.children,
       };
     },
-    deptDetail(id) {
+    deptDetail (id) {
       deptDetail(id).then(({ data }) => {
         this.form = {
           deptName: data.deptName,
@@ -190,44 +222,45 @@ export default {
           parentId: data.parentId || undefined,
           seq: data.seq || 0,
           deptAlias: data.deptAlias,
-          flag : data.flag == undefined ? 1: data.flag,
-          status: data.status || 0
+          flag: data.flag == undefined ? 1 : data.flag,
+          status: data.status || 0,
+          unitFlag: data.unitFlag || 0
         }
       });
     },
-    submitDataScope() {
-        this.$refs["elForm"].validate((valid) => {
-            if (valid) {
-                this.loading = true;
-                deptCreate(this.form).then(({ success,message }) => {
-                    this.loading = false;
-                    if (success) {
-                        this.$modal.msgSuccess(message);
-                        this.openDataScope = false;
-                        this.$emit("deptSuccess");
-                    } else {
-                        this.$modal.msgError(message);
-                    }
-                });
+    submitDataScope () {
+      this.$refs["elForm"].validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          deptCreate(this.form).then(({ success, message }) => {
+            this.loading = false;
+            if (success) {
+              this.$modal.msgSuccess(message);
+              this.openDataScope = false;
+              this.$emit("deptSuccess");
+            } else {
+              this.$modal.msgError(message);
             }
-        });
+          });
+        }
+      });
     },
-    deptModify() {
-        this.$refs["elForm"].validate((valid) => {
-            if (valid) {
-                this.loading = true;
-                deptModify(Object.assign({}, this.form, { id: this.id })).then(({ success, message }) => {
-                    this.loading = false;
-                    if (success) {
-                        this.$modal.msgSuccess(message);
-                        this.openDataScope = false;
-                        this.$emit("deptSuccess");
-                    } else {
-                        this.$modal.msgError(message);
-                    }
-                });
+    deptModify () {
+      this.$refs["elForm"].validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          deptModify(Object.assign({}, this.form, { id: this.id })).then(({ success, message }) => {
+            this.loading = false;
+            if (success) {
+              this.$modal.msgSuccess(message);
+              this.openDataScope = false;
+              this.$emit("deptSuccess");
+            } else {
+              this.$modal.msgError(message);
             }
-        });
+          });
+        }
+      });
     },
   },
 };

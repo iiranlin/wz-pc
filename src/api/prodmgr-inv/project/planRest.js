@@ -143,3 +143,15 @@ export const getSeller = (params) => {
   })
 }
 
+/**
+ * 分布需求列表提交
+ * @param {*} params
+ * @returns
+ */
+export const submitTodo = (data) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/submit`,
+        method: 'post',
+        data
+    })
+}
