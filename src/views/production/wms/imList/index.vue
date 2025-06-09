@@ -13,7 +13,7 @@
       @handleQuery="handleQuery"
       :formData="formData"
     >
-      <template #takeStatus="data">
+      <template #storeStatus="data">
         <el-select
           class="select-box"
           v-model="formData[data.data.fieldCode]"
@@ -60,17 +60,18 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :row-class-name="tableRowClassName"
         >
-          <template #takeStatus="scope">
-            {{ status[scope.value]}}
+          <template #storeStatus="scope">
+            {{ storeStatus[scope.value] }}
           </template>
-            <!-- 入库单号 -->
-          <template #shipmentBatchNumber="scope">
+          <!-- 入库单号 -->
+          <template #storeNumber="scope">
             <el-button type="text" @click="toIm(scope.data)">
               {{ scope.value }}
             </el-button>
           </template>
-            <!-- 收货单号 -->
+          <!-- 收货单号 -->
           <template #takeNumber="scope">
             <el-button type="text" @click="toReceive(scope.data)">
               {{ scope.value }}
@@ -90,7 +91,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
@@ -100,28 +101,23 @@ export default {
 
   data() {
     return {
-      status:{
-        1:'未收货',
-        2:'已收货',
-        3:'部分退货',
-        4:'c'
+      storeStatus: {
+        1: "未入库",
+        2: "部分退货",
+        3: "已入库",
       },
       options: [
         {
           code: "1",
-          name: "未收货",
+          name: "未入库",
         },
         {
           code: "2",
-          name: "已收货",
+          name: "部分退货",
         },
-         {
+        {
           code: "3",
-          name: "部分退货",
-        },
-         {
-          code: "4",
-          name: "部分退货",
+          name: "已入库",
         },
       ],
       treeCurrentKey: "",
@@ -203,7 +199,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.sandList(Object.assign({}, this.listQuery, this.formData))
+      Api.listStore(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -219,12 +215,18 @@ export default {
       this.selection = selection;
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
-       this.proxyPrint(buttonCode, rowArr, buttonData);
+      this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
-        case "receive":
-         
+        case "ruku":
+          if (rowArr[0].storeStatus != "1") {
+            this.$modal.msgError("未入库状态才能入库");
+            return;
+          }
+          this.$router.push({
+            name: "imPage",
+            query: { id: idArr[0], type: "create" },
+          });
           break;
-       
       }
     },
 
@@ -241,18 +243,29 @@ export default {
       this.handleQuery();
     },
     //入库单号
-    toIm(){},
-    //收货单
-    toReceive(){},
-    //跳转货运详情
-    toFhd(row) {
+    toIm(row) {
       this.$router.push({
-        name: "addSend",
+        name: "imPage",
         query: { id: row.id, type: "view" },
       });
     },
-    //跳转需求供应详情
-    toWuliu() {},
+    //收货单
+    toReceive(row) {
+      this.$router.push({
+        name: "receivePage",
+        query: { id: row.id, type: "view" },
+      });
+    },
+    //收货超过20天未入库显示红色
+    tableRowClassName({ row, rowIndex }) {
+      var time=20 * 24 * 60 * 60 * 1000;
+      var dateTime = new Date(row.takeDate).getTime();
+      const timestamp = new Date().getTime();
+      if (Number(timestamp) - Number(dateTime) > time && row.storeStatus == "1") {
+        return "highlight-row-red";
+      }
+      return "";
+    },
   },
 };
 </script>
@@ -261,5 +274,10 @@ export default {
   flex: 1;
   height: 100%;
   overflow-y: scroll;
+}
+</style>
+<style>
+.highlight-row-red {
+  color: red;
 }
 </style>

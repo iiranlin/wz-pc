@@ -61,7 +61,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="120"
+              width="150"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
@@ -94,6 +94,7 @@ import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 export default {
   name: "returnDetail_gys",
   components: {
@@ -147,14 +148,24 @@ export default {
   },
   async created() {},
   mounted() {
-    this.init();
+    this.init(this.id);
   },
   methods: {
     //初始化
-    init() {
-      this.$nextTick(async () => {
-        await this.formFillInPage();
-        this.$refs.vFormRef.setReadMode(true);
+    async init(id) {
+      await Api.detailBack(id).then(({ data }) => {
+        this.$nextTick(async () => {
+          await this.formFillInPage();
+          // fileList回显
+          const newData = {
+            ...data,
+            fileList: data.fileList&&data.fileList[0]?.fileList || [],
+          };
+          this.$refs.vFormRef.setFormData(newData);
+          //   form action
+          this.$refs.vFormRef.setReadMode(true);
+          this.tableData = data.materialSupplierDetailDTOList;
+        });
       });
     },
     newButton(buttonCode) {

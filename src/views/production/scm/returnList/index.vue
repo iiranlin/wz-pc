@@ -230,7 +230,7 @@ export default {
     //退货单
     toThd(row) {
       this.$router.push({
-        name: "detail_gys",
+        name: "returnDetail_gys",
         query: {
           type: "view",
           id: row.id,

@@ -87,7 +87,7 @@ export default {
       this.$refs.elform.validate(async (valid) => {
         if (valid) {
           this.loading = true;
-          await Api.demandEdit(Object.assign({id:this.id,status:'2'}, this.form))
+          await Api.demandEdit(Object.assign({id:this.id}, this.form))
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);

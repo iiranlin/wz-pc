@@ -20,7 +20,7 @@ export const demandList = (params) => {
  */
 export const demandEdit = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/modify`,
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/modifyConfirm`,
     method: 'post',
     data
   })
@@ -79,7 +79,7 @@ export const detail = (id) => {
  * @param {*} params 
  * @returns 
  */
-export const sandList = (params) => {
+export const sendList = (params) => {
   return request({
       url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/list`,
       method: 'get',
@@ -153,6 +153,29 @@ export const findAdressList = (params) => {
 export const listRetreat = (params) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listRetreat`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 退货明细
+ * @param {*} params 
+ * @returns 
+ */
+export const detailBack = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailBack/${id}`,
+    method: 'get',
+  })
+}
+/**
+ * 供应需求详情
+ * @param {*} params 
+ * @returns 
+ */
+export const listShippingInformation = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierDetailRest/listShippingInformation`,
     method: 'get',
     params
   })

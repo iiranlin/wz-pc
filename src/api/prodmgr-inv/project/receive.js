@@ -6,11 +6,11 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  * @returns 
  */
 export const listTake = (params) => {
-  return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listTake`,
-    method: 'get',
-    params
-  })
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listTake`,
+        method: 'get',
+        params
+    })
 }
 /**
  * 收货明细
@@ -19,7 +19,15 @@ export const listTake = (params) => {
  */
 export const detailTake = (id) => {
     return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailTake/${id}`,
-      method: 'get',
+        url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailTake/${id}`,
+        method: 'get',
     })
-  }
+}
+//收货保存
+export const save = (data) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/saveTake`,
+        method: 'post',
+        data
+    })
+}

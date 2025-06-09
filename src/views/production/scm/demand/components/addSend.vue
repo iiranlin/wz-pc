@@ -47,12 +47,12 @@
         </template>
         <template #shippingNumberSlot="scope">
           <el-form-item
-            prop="shippingNumber"
+            prop="shipmentBatchNumber"
             label="发货单号"
             class="label-right-align"
             v-if="type == 'view'"
           >
-            {{ scope.formModel.shippingNumber }}
+            {{ scope.formModel.shipmentBatchNumber }}
           </el-form-item>
         </template>
         <template #detailSlot>
@@ -73,7 +73,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { mapState } from "vuex";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 export default {
   name: "addSend",
   components: {
@@ -141,14 +141,23 @@ export default {
     ...mapState(["request"]),
   },
   async created() {
-    this.tableData = this.getSelectedItemList();
+    var data = this.getSelectedItemList();
+    this.tableData = data.map((x) => ({
+      ...x,
+      sendTotal: x.planAmount,
+    }));
   },
   activated() {
-    this.tableData = this.getSelectedItemList();
+    //选择物资，发货数量默认带过来计划数量
+    var data = this.getSelectedItemList();
+    this.tableData = data.map((x) => ({
+      ...x,
+      sendTotal: x.planAmount,
+    }));
   },
   watch: {
     $route(to, from) {
-      if (from.path != "/scm/selectItem"&&from.path != "/scm/addSend") {
+      if (from.path != "/scm/selectItem" && from.path != "/scm/addSend") {
         if (["view", "update"].includes(this.type)) {
           this.updateInit(this.id);
           return;
@@ -177,8 +186,8 @@ export default {
       const errors = [];
       tableData.forEach((row, index) => {
         const rowNum = index + 1;
-        if (!row.planAmount || row.planAmount == 0) {
-          errors.push(`第${rowNum}行，数量未填写 `);
+        if (!row.sendTotal || row.sendTotal == 0) {
+          errors.push(`第${rowNum}行，发货数量未填写 `);
         }
         if (!row.packagingFm) {
           errors.push(`第${rowNum}行，包装形式未填写 `);
@@ -220,25 +229,23 @@ export default {
           // fileList回显
           const newData = {
             ...data,
-            fileList: data.fileList&&data.fileList[0]?.fileList || [],
-            arrivalDate:dayjs(data.arrivalDate).format('YYYY-MM-DD'),
-            shippingDate:dayjs(data.shippingDate).format('YYYY-MM-DD'),
+            fileList: (data.fileList && data.fileList[0]?.fileList) || [],
+            arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
+            shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
           };
           this.$refs.vFormRef.setFormData(newData);
 
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === "view");
 
-          
-            const detail = data.materialSupplierDetailDTOList.map(x => ({
+          const detail = data.materialSupplierDetailDTOList.map((x) => ({
             ...x,
-            manufactureDate: dayjs(x.manufactureDate).format('YYYY-MM-DD'),
-            expirationDate: dayjs(x.expirationDate).format('YYYY-MM-DD'),
+            manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
+            expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
             id: x.planDetailId,
-            
-          }))
+          }));
           this.tableData = detail;
-          this.setSelectedItemList(this.tableData)
+          this.setSelectedItemList(this.tableData);
         });
       });
     },
@@ -293,11 +300,14 @@ export default {
           formData.fileList = [{ fileList }];
           await Api.save(
             Object.assign(
-              { supplyId: this.type === "create" ? this.id : null,id:this.type === "create" ? null : this.id},
+              {
+                supplyId: this.type === "create" ? this.id : null,
+                id: this.type === "create" ? null : this.id,
+              },
               formData,
               {
                 materialSupplierDetailParams: this.tableData.map((x) => ({
-                  planDetailId:x.id,
+                  planDetailId: x.id,
                   ...x,
                 })),
               }
@@ -312,7 +322,7 @@ export default {
               });
             })
             .finally((err) => {
-              formData.fileList=fileList;
+              formData.fileList = fileList;
               this.loading = false;
             });
         }

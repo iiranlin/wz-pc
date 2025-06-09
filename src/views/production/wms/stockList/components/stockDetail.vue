@@ -68,6 +68,7 @@
 
 <script>
 import Vue from "vue";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
@@ -106,12 +107,6 @@ export default {
           buttonName: "返回",
           buttonCode: "cancel",
           buttonIcon: "Blue-Cancel",
-          type: "create, update",
-        },
-        {
-          buttonName: "确定",
-          buttonCode: "save",
-          buttonIcon: "Blue-Save",
           type: "create, update",
         },
       ],
@@ -166,7 +161,6 @@ export default {
             id: x.planDetailId,
           }));
           this.tableData = detail;
-          this.setSelectedItemList(this.tableData);
         });
       });
     },
@@ -191,64 +185,7 @@ export default {
       return true;
     },
     //新建
-    handleCreate() {
-      this.$refs.vFormRef.validateForm(async (valid) => {
-        if (!valid) {
-          this.$message.warning("请完善信息");
-          return;
-        }
-        const flag = this.tableData.every(
-          (obj) => obj.sectionId === this.tableData[0].sectionId
-        );
-        if (!flag) {
-          this.$modal.msgError("一个发货批次只允许选择一个标段项目的供应物资");
-          return;
-        }
-        if (this.getSelectedItemList().length === 0) {
-          this.$modal.msgError("请选择物资");
-          return;
-        }
-        const isValid = this.onCheck(this.tableData);
-        if (!isValid) {
-          return;
-        }
-
-        if (valid) {
-          this.loading = true;
-          const formData = await this.$refs.vFormRef.getFormData();
-          // 后端存入嵌套数组
-          const fileList = formData.fileList;
-          formData.fileList = [{ fileList }];
-          await Api.save(
-            Object.assign(
-              {
-                supplyId: this.type === "create" ? this.id : null,
-                id: this.type === "create" ? null : this.id,
-              },
-              formData,
-              {
-                materialSupplierDetailParams: this.tableData.map((x) => ({
-                  planDetailId: x.id,
-                  ...x,
-                })),
-              }
-            )
-          )
-            .then(({ message }) => {
-              this.loading = false;
-              this.$modal.msgSuccess(message);
-              this.setSelectedItemList([]);
-              this.$router.push({
-                name: "demand",
-              });
-            })
-            .finally((err) => {
-              formData.fileList = fileList;
-              this.loading = false;
-            });
-        }
-      });
-    },
+    handleCreate() {},
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("stockDetail").then((res) => {

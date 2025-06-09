@@ -79,7 +79,7 @@
           <!-- 物流单号 -->
           <template #oddNumbers="scope">
             <el-button type="text" @click="toWuliu(scope.data)">
-              {{ scope.value }}
+              {{ scope.value||'其它' }}
             </el-button>
           </template>
         </table-index>
@@ -207,7 +207,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.sandList(Object.assign({}, this.listQuery, this.formData))
+      Api.sendList(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -242,10 +242,14 @@ export default {
           this.handleDelete(idArr, rowArr);
           break;
         case "addAdress":
-          this.shipmentBatchNumber = rowArr[0].shipmentBatchNumber;
-          this.$nextTick(() => {
-            this.$refs.addAdress.init();
-          });
+          if (!rowArr[0].oddNumbers && rowArr[0].status == "2") {
+            this.shipmentBatchNumber = rowArr[0].shipmentBatchNumber;
+            this.$nextTick(() => {
+              this.$refs.addAdress.init();
+            });
+          } else {
+            this.$modal.msgError("没有物流单号且状态为货运中的才能添加货运位置");
+          }
           break;
       }
     },
