@@ -227,7 +227,6 @@ export default {
           this.handleExamine(idArr,rowArr[0].planType)
           break;
         case 'withdraw':
-          // this.handleRecall(idArr[0])
           this.handleWithdraw({ businessId: idArr[0], businessType: 'FBYLXQ', })
           break;
         case 'supplyView':

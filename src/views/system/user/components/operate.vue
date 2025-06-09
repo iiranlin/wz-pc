@@ -47,7 +47,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col :span="12">
           <el-form-item label="数据权限:" prop="rank">
             <el-select ref="upSelect0" v-model="form.rank" filterable placeholder="请选择所属级别" style="width: 100%"
@@ -57,7 +57,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="24" v-if="form.rank == 4">
           <el-form-item label="权限范围:" prop="deptIds">
@@ -114,7 +114,7 @@ export default {
         nickName: '',
         deptId: undefined,
         status: 0,
-        rank: '',
+        rank: '1',
         deptIds: [],
         sort: 1,
         flag: 1,
@@ -189,9 +189,9 @@ export default {
         deptId: [
           { required: true, message: '所属部门不能为空', trigger: 'input' }
         ],
-        rank: [
-          { required: true, message: '所属级别不能为空', trigger: 'change' }
-        ],
+        // rank: [
+        //   { required: true, message: '所属级别不能为空', trigger: 'change' }
+        // ],
       },
       iteratorChildren: [],
       typeDeptId: false,
@@ -246,6 +246,7 @@ export default {
         } else {
           this.title = '新增用户'
           this.typeDeptId = false
+          this.form.rank = '1'
           if (!!id) {
             // 所选部门ID
             this.form.deptId = id
@@ -323,7 +324,8 @@ export default {
       userDetail(id).then(({ data }) => {
         this.form = data
         this.form.deptId = data.deptId || undefined
-        this.form.flag = data.flag == undefined ? 1: data.flag
+        this.form.flag = data.flag == undefined ? 1 : data.flag
+        this.form.rank = '1'
         this.$nextTick(async () => {
           if (this.form.rank == 4) {
             await this.initCustom()
@@ -349,7 +351,7 @@ export default {
     },
     create() {
         this.loading = true
-        userCreate(this.form).then(({ success, message }) => {
+        userCreate({...this.form,rank:'1'}).then(({ success, message }) => {
             this.loading = false
             if (success) {
                 this.$modal.msgSuccess(message)
@@ -377,7 +379,7 @@ export default {
     },
     modify() {
         this.loading = true
-        userModify(Object.assign({}, this.form, { id: this.id })).then(({ success, message }) => {
+        userModify(Object.assign({rank:'1'}, this.form, { id: this.id })).then(({ success, message }) => {
             this.loading = false
             if (success) {
                 this.$modal.msgSuccess(message)

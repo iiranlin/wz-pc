@@ -164,7 +164,7 @@ export default {
       } else if (buttonCode === 'reject') {
         this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
       } else if (buttonCode === 'passEdit') {
-        this.$refs.toBereview.init('passEdit', this.queryAuditArr, this.name, this.selectRows.map(x => x.id))
+        this.$refs.toBereview.init('passEdit', this.queryAuditArr, this.name, this.selectRows.map(x => x.planId))
       }
 
     },
