@@ -15,9 +15,14 @@
         :class="{ formRender_view: true }"
       >
         <template #table>
-          <detailTable ref="itemTableRef" :tableData="tableData" @selectionChange="selectionChange" />
+          <detailTable
+            ref="itemTableRef"
+            :tableData="tableData"
+            @selectionChange="selectionChange"
+          />
         </template>
       </VFormRender>
+      <toBeReviewed ref="toBereview" />
     </div>
   </div>
 </template>
@@ -26,6 +31,7 @@
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
+import toBeReviewed from '@/views/audit/components/toBeReviewed'
 
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
@@ -42,6 +48,7 @@ export default {
     VFormRender,
     attachmentTable,
     detailTable,
+    toBeReviewed
   },
   data () {
     return {
@@ -68,7 +75,9 @@ export default {
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
-
+        { buttonName: '同意', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
+        { buttonName: '修改后同意', buttonCode: 'passEdit', buttonIcon: 'Blue-Edit', type: '' },
+        { buttonName: '不同意', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
       ],
       constructionOptions: [],
       selectRows: [],
@@ -86,7 +95,13 @@ export default {
     projectId () {
       return this.$route.query?.projectId || ''
     },
-    ...mapState(['request'])
+    ...mapState(['request']),
+    queryAuditArr () {
+      return JSON.parse(this.$route.query.auditArr || '[]')
+    },
+    name () {
+      return this.$route.query?.name || ''
+    }
   },
 
   mounted () {
@@ -139,10 +154,16 @@ export default {
         });
       });
     },
+
     newButton (buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
-        return
+      } else if (buttonCode === 'pass') {
+        this.$refs.toBereview.init('pass', this.queryAuditArr, this.name)
+      } else if (buttonCode === 'reject') {
+        this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
+      } else if (buttonCode === 'passEdit') {
+        this.$refs.toBereview.init('passEdit', this.queryAuditArr, this.name, [this.id])
       }
 
     },

@@ -98,12 +98,12 @@ export default {
   },
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
-     const planStatus = {
+    const planStatus = {
       '0': '已驳回',
       '1': '未提交',
       '2': '审核中',
       '3': '审核通过',
-      '4': '修改同意后通过',
+      '4': '修改后同意',
       '5': '已撤回',
       '6': '发货中',
       '7': '收货完成',
@@ -158,13 +158,13 @@ export default {
   },
   methods: {
     onGoView (row) {
-       this.$router.push({
-          name: 'requestReviewDetail',
-          query:{
-            id: row.id,
-            type:'view'
-          }
-        })
+      this.$router.push({
+        name: 'requestReviewDetail',
+        query: {
+          id: row.id,
+          type: 'view'
+        }
+      })
     },
     filterNode (value, data) {
       if (!value) return true
@@ -251,11 +251,14 @@ export default {
       } else if (buttonCode === 'view') {
         this.$router.push({
           name: 'requestReviewDetail',
-          query:{
+          query: {
             id: idArr[0],
-            type:'view'
+            type: 'view'
           }
         })
+      } else if (buttonCode === 'agreeAfter') {
+        // 修改后同意
+        this.$router.push({ name:'requestReviewDetail', query: { type: 'view', name: 'audit', id: idArr[0] } });
       }
     },
     handleDelete (ids) {

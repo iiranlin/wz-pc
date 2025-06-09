@@ -59,15 +59,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item :label="'标准或图号'" prop="standardCode">
-              <el-input
-                v-model="form.standardCode"
-                maxlength="240"
-                placeholder="请输入"
-              ></el-input>
-            </el-form-item>
-          </el-col>
         </el-row>
       </el-form>
     </div>

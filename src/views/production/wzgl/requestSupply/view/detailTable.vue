@@ -85,6 +85,20 @@
       >
       </el-table-column>
       <el-table-column
+        v-for="(col, index) in cols"
+        :key="index"
+        align="center"
+        width="200"
+        :prop="`filed${index}`"
+      >
+        <template v-slot:header>
+          <span>{{ cols[index].title }}</span>
+        </template>
+        <template slot-scope="scope">
+          {{ scope.row[`field${index}`] }}
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="remark"
         label="备注"
         align="center"
@@ -105,9 +119,18 @@ export default {
       type: Array,
       default: () => [],
     },
+     details: {
+      type: Object,
+      default:  {}
+    }
   },
-    components: {
+  components: {
     fileUpload
+  },
+  computed: {
+    cols () {
+      return JSON.parse(this.details?.columnConfig || '[]')
+    }
   },
   filters: {
     // 日期格式化过滤器

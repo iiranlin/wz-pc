@@ -45,6 +45,7 @@ export const ACTIVITI_ASSUGNEE = {
     INV_GHD: 'INV_GHD', // 归还单
     MM_SCBG: 'MM_SCBG', // 生产变更
     INV_ADJUST_IN: 'INV_ADJUST_IN', // 入库调整单
+    FBYLXQ:'FBYLXQ' ,//分部用料需求
 }
 
 // 审批类型对应的路由
@@ -85,6 +86,11 @@ export const FLOW_ROUTE = {
     SA_YTDD: 'preOperate', // 预投单
     MM_SCBG: 'productionChangeOperate', // 生产变更
     INV_ADJUST_IN: 'inventoryAdjustOperate', // 入库调整单
+    FBYLXQ: 'requestReviewDetail',//分部用料需求审核详情
+    YLXQ: 'requestReviewDetail',//总部用料需求审核详情
+    FBYLJH: 'planReviewDetail',//分部甲供计划审核详情
+    YLJH:'planReviewDetail',//总部甲供计划审核详情
+    
 }
 
 // 生产变更日志

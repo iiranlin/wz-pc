@@ -15,7 +15,7 @@
         :class="{ formRender_view: true }"
       >
         <template #table>
-          <detailTable ref="itemTableRef" :tableData="tableData" />
+          <detailTable ref="itemTableRef" :tableData="tableData" :details="details"/>
         </template>
         <!-- 附件 -->
         <template #fileList="scope">
@@ -92,6 +92,7 @@ export default {
       selectRows: [],
       userInfo: getUserInfo(),
       tableData: [],
+      details:{},
     }
   },
   computed: {
@@ -145,8 +146,8 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
-          this.tableData = data.details
-
+          this.tableData = data.demandPlanDetails
+          this.details = data
           // 状态 1-未确认 2-已确认 3-供货中 4-已验收 5-已完成
           const status = {
             '1': '未确认',

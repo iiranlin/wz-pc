@@ -79,12 +79,12 @@ export default {
 
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
-     const planStatus = {
+    const planStatus = {
       '0': '已驳回',
       '1': '未提交',
       '2': '审核中',
       '3': '审核通过',
-      '4': '修改同意后通过',
+      '4': '修改后同意',
       '5': '已撤回',
       '6': '发货中',
       '7': '收货完成',
@@ -224,10 +224,11 @@ export default {
           this.$router.push({ name: 'logisticsView', query: { id: idArr[0], type: 'view' } })
           break;
         case 'examine':
-          this.handleExamine(idArr[0])
+          this.handleExamine(idArr,rowArr[0].planType)
           break;
         case 'withdraw':
-          this.handleRecall(idArr[0])
+          // this.handleRecall(idArr[0])
+          this.handleWithdraw({ businessId: idArr[0], businessType: 'FBYLXQ', })
           break;
         case 'supplyView':
           this.$router.push({
@@ -241,18 +242,30 @@ export default {
           break;
         case 'flowSee':
           this.workFlowViewVisible = true
-          this.selectedRow = rowArr[0]
+          this.selectedRow = { businessId: idArr[0] }
           break;
 
       }
     },
     // 提交审核
-    handleExamine (id) {
-      this.$modal.confirm("是否确认提交审核?").then(function () {
-        return Api.examine({ id });
-      }).then(() => {
-        this.$modal.msgSuccess("提交审核成功");
-        this.getList();
+    handleExamine (ids, planType) {
+        const businessCode = {
+        '1': 'FBYLXQ',
+        '2': 'FBYLJH',
+        '3': 'YLXQ',
+        '4': 'YLJH',
+      }
+      this.$modal.confirm("是否确认提交审核?").then(() => {
+        this.$reviewerDialog({
+          type: businessCode[planType],
+          multiple: false,
+          success: async (assignee) => {
+            await Api.submitTodo({ ids, planType })
+
+            this.$modal.msgSuccess("提交审核成功");
+            this.getList();
+          }
+        })
       })
     },
     // 撤回

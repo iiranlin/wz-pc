@@ -114,6 +114,7 @@
       </el-descriptions-item>
     </el-descriptions>
     <wuliu :courierNumber="detail.oddNumbers" style="height: 500px" />
+    <!-- 没有订单号则展示普通表格 -->
   </div>
 </template>
 

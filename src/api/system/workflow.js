@@ -20,7 +20,9 @@ const businessType = (data) => {
       type = VUE_APP_PRODMGR_PU;
     } else if(businessType === 'FA'){
       type = VUE_APP_PRODMGR_FA;
-  } 
+    } else {
+        type = VUE_APP_PRODMGR_INV
+  }
     return type
 }
 
@@ -32,6 +34,19 @@ const businessType = (data) => {
 export const passWorkFlow = (data) => {
     return request({
         url: `${businessType(data)}/audit/approve`,
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * 修改后通过
+ * @param {*} data 
+ * @returns 
+ */
+export const passEditWorkFlow = (data) => {
+    return request({
+        url: `${businessType(data)}/audit/modify/approve`,
         method: 'post',
         data
     })

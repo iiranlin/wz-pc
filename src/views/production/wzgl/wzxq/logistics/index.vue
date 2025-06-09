@@ -15,11 +15,8 @@
         :class="{ formRender_view: true }"
       >
         <template #table>
-          <detailTable
-            :projectId="projectId"
-            ref="detailTable"
-          ></detailTable>
-        <!-- 没有订单号显示表格 -->
+          <detailTable :projectId="projectId" ref="detailTable"></detailTable>
+          <!-- 没有订单号显示表格 -->
           <table />
         </template>
       </VFormRender>

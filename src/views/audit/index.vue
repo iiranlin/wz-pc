@@ -143,6 +143,10 @@ export default {
                 case 'reject':
                     this.$refs.toBereview.init('reject', rowArr)
                     break;
+                case 'passEdit':
+                    // 修改后同意直接跳转详情
+                    this.clickLink(rowArr[0])
+                        break;
                 default:
                     break;
             }
