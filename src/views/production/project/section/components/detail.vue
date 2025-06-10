@@ -40,7 +40,21 @@
               </el-select>
             </template>
             <template v-else>
-              <span>{{ formModel.projectName }}</span>
+              <el-tooltip
+                :content="formModel.projectName"
+                placement="bottom"
+                effect="light"
+              >
+                <div
+                  style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ formModel.projectName }}
+                </div>
+              </el-tooltip>
             </template>
           </el-form-item>
         </template>
@@ -78,7 +92,21 @@
               </el-select>
             </template>
             <template v-else>
-              <span>{{ formModel.constructionCompany }}</span>
+              <el-tooltip
+                :content="formModel.constructionCompany"
+                placement="bottom"
+                effect="light"
+              >
+                <div
+                  style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ formModel.constructionCompany }}
+                </div>
+              </el-tooltip>
             </template>
           </el-form-item>
         </template>
@@ -112,7 +140,21 @@
               </el-select>
             </template>
             <template v-else>
-              <span>{{ formModel.supervisionUnit }}</span>
+              <el-tooltip
+                :content="formModel.supervisionUnit"
+                placement="bottom"
+                effect="light"
+              >
+                <div
+                  style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ formModel.supervisionUnit }}
+                </div>
+              </el-tooltip>
             </template>
           </el-form-item>
         </template>
@@ -150,11 +192,25 @@
               </el-select>
             </template>
             <template v-else>
-              <span>{{ formModel.materialAgentCompany }}</span>
+              <el-tooltip
+                :content="formModel.materialAgentCompany"
+                placement="bottom"
+                effect="light"
+              >
+                <div
+                  style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ formModel.materialAgentCompany }}
+                </div>
+              </el-tooltip>
             </template>
           </el-form-item>
         </template>
-         <template #table>
+        <template #table>
           <TabTable
             ref="tabTableRef"
             :tableData="tableData"
@@ -212,7 +268,7 @@ export default {
         { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
       ],
       constructionOptions: [],
-      tableData:[],
+      tableData: [],
     }
   },
   computed: {
@@ -233,7 +289,7 @@ export default {
 
     this.constructionCompanyOptions = await this.getDeptTree('SGDW')
     this.supervisionUnitOptions = await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions = await this.getDeptTree('WDGS')
+    this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
   },
   mounted () {
 
@@ -264,7 +320,7 @@ export default {
           await this.formFillInPage()
           this.$refs.vFormRef.setFormData(data)
 
-            this.tableData = data.materialList
+          this.tableData = data.materialList
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
 

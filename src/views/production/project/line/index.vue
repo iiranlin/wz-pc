@@ -14,7 +14,6 @@
       :formData="formData"
     />
     <el-row type="flex" class="container_h">
-
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
         <right-toolbar
@@ -247,8 +246,11 @@ export default {
           this.$router.push({ name: 'detailLine', query: { id: idArr[0], type: 'view' } })
           break;
         case 'createSection':
-          console.log(rowArr,'rowArr')
+          console.log(rowArr, 'rowArr')
           this.$router.push({ name: 'addSection', query: { type: 'create', projectId: rowArr[0].id } })
+          break;
+        case 'createContract':
+          this.$router.push({ name: 'addContract', query: { type: 'create', projectId: rowArr[0].id } })
           break;
       }
     },
