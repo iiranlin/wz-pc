@@ -71,8 +71,11 @@
               label="需求数量"
               width="120"
             ></el-table-column>
-            <el-table-column prop="1" label="当前库存数量" width="120"></el-table-column>
-
+            <el-table-column
+              prop="storeTotal"
+              label="当前库存数量"
+              width="120"
+            ></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
@@ -87,15 +90,15 @@
             <el-table-column prop="2" label="出库数量" width="120">
               <template slot-scope="scope">
                 <el-input-number
-                  v-model="scope.row.refundTotal"
+                  v-model="scope.row.outTotle"
                   :min="0"
-                  @change="changeRefund(scope.row)"
+                  @change="changeOut(scope.row)"
                   size="mini"
                   style="width: 100%"
                   v-if="type != 'view' && !preview && show"
                 ></el-input-number>
                 <span v-else>
-                  {{ scope.row.refundTotal }}
+                  {{ scope.row.outTotle }}
                 </span>
               </template>
             </el-table-column>
@@ -163,7 +166,7 @@ export default {
       form: {},
       show: false,
       materialName: "",
-      preview: false,//出库页还是预览页
+      preview: false, //出库页还是预览页
     };
   },
   computed: {
@@ -180,36 +183,26 @@ export default {
   },
   methods: {
     //初始化
-    init() {
+    init(id) {
       this.$nextTick(async () => {
-        await this.formFillInPage();
-      });
-    },
-    // 编辑初始化
-    async updateInit(id) {
-      await Api.sendDetail(id).then(({ data }) => {
-        this.$nextTick(async () => {
-          this.title = "编辑";
-          await this.formFillInPage();
-          // fileList回显
-          const newData = {
-            ...data,
-            fileList: (data.fileList && data.fileList[0]?.fileList) || [],
-            arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
-            shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
-          };
-          this.$refs.vFormRef.setFormData(newData);
-
-          //   form action
-          this.$refs.vFormRef.setReadMode(this.type === "view");
-
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
-            ...x,
-            manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-            expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-            id: x.planDetailId,
-          }));
-          this.tableData = detail;
+        await Api.outDetail(id).then(({ data }) => {
+          this.$nextTick(async () => {
+            await this.formFillInPage();
+            // fileList回显
+            const newData = {
+              ...data,
+              fileList: (data.fileList && data.fileList[0]?.fileList) || [],
+            };
+            this.$refs.vFormRef.setFormData(newData);
+            this.$refs.vFormRef.setReadMode(true);
+            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+              ...x,
+              manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
+              expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+              outTotle: x.storeTotal, //默认出库数量=库存数量
+            }));
+            this.tableData = detail;
+          });
         });
       });
     },
@@ -253,16 +246,14 @@ export default {
         // 后端存入嵌套数组
         const fileList = formData.fileList;
         formData.fileList = [{ fileList }];
-        Api.save(
+        Api.outSave(
           Object.assign(
             {
-              supplyId: this.type === "create" ? this.id : null,
-              id: this.type === "create" ? null : this.id,
+              id: this.id,
             },
             formData,
             {
               materialSupplierDetailDTOList: this.tableData.map((x) => ({
-                planDetailId: x.id,
                 ...x,
               })),
             }
@@ -290,6 +281,18 @@ export default {
 
           resolve(true);
         });
+      });
+    },
+    //填写出库数量
+    changeOut(row) {
+      //出库不能超过库存
+      if (Number(row.outTotle) > Number(row.storeTotal)) {
+        this.$modal.msgError("出库数量不能大于库存数量！");
+        row.outTotle = row.storeTotal;
+      }
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
       });
     },
   },

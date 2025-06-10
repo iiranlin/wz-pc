@@ -33,6 +33,26 @@
           />
         </el-select>
       </template>
+      <template #takeStatus="data">
+        <el-select
+          class="select-box"
+          v-model="formData[data.data.fieldCode]"
+          :placeholder="
+            ($t(`please_select`) || '请选择') +
+            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          "
+          clearable
+          style="width: 100%"
+          size="small"
+        >
+          <el-option
+            v-for="(item, key) in kucunOptions"
+            :key="key"
+            :label="item.name"
+            :value="item.code"
+          />
+        </el-select>
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -62,9 +82,12 @@
           @handleButton="handleButton"
         >
           <template #takeStatus="scope">
-            {{ status[scope.value]}}
+            {{ status[scope.value] }}
           </template>
-            <!-- 需求ID -->
+          <template #takeStatus="scope">
+            {{ status[scope.value] }}
+          </template>
+          <!-- 需求ID -->
           <template #supplyNumber="scope">
             <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
@@ -84,7 +107,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/planRest.js";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
@@ -94,28 +117,32 @@ export default {
 
   data() {
     return {
-      status:{
-        1:'未收货',
-        2:'已收货',
-        3:'部分退货',
-        4:'c'
+      status: {
+        1: "未完成",
+        2: "已完成",
+      },
+      kucunStatus: {
+        1: "无",
+        2: "有",
       },
       options: [
         {
           code: "1",
-          name: "未收货",
+          name: "为完成",
         },
         {
           code: "2",
-          name: "已收货",
+          name: "已完成",
         },
-         {
-          code: "3",
-          name: "部分退货",
+      ],
+      kucunOptions: [
+        {
+          code: "1",
+          name: "无",
         },
-         {
-          code: "4",
-          name: "部分退货",
+        {
+          code: "2",
+          name: "有",
         },
       ],
       treeCurrentKey: "",
@@ -197,7 +224,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.itemList(Object.assign({status:2}, this.listQuery, this.formData))
+      Api.listStock(Object.assign({ status: 2 }, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -213,12 +240,26 @@ export default {
       this.selection = selection;
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
-       this.proxyPrint(buttonCode, rowArr, buttonData);
+      this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
-        case "receive":
-         
+        case "om":
+          this.$router.push({
+            name: "omPage",
+            query: {
+              type: "create",
+              id: idArr[0],
+            },
+          });
           break;
-       
+        case "stockDetail":
+          this.$router.push({
+            name: "stockDetail",
+            query: {
+              type: "view",
+              id: idArr[0],
+            },
+          });
+          break;
       }
     },
 

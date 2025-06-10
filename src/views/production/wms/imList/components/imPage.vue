@@ -257,14 +257,11 @@ export default {
               fileList: (data.fileList && data.fileList[0]?.fileList) || [],
             };
             this.$refs.vFormRef.setFormData(newData);
-
             this.$refs.vFormRef.setReadMode(true);
-
             const detail = data.materialSupplierDetailDTOList.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-              id: x.planDetailId,
               storeTotal: x.putTotal, //默认入库数量=收货数量
             }));
             this.tableData = detail;

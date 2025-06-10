@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
 import { getUserInfo } from "@/utils/user-info";
 export default {

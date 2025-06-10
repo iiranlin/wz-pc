@@ -46,8 +46,7 @@
               label="需求数量"
               width="120"
             ></el-table-column>
-            <el-table-column prop="1" label="当前库存数量" width="120"></el-table-column>
-
+            <el-table-column prop="storeTotal" label="当前库存数量" width="120"></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
