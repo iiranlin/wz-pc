@@ -62,7 +62,7 @@
           @handleButton="handleButton"
         >
           <template #backNode="scope">
-            {{ scope.value }}
+            {{ status[scope.value] }}
           </template>
           <!-- 退货单号 -->
           <template #backNumber="scope">
@@ -107,13 +107,17 @@ export default {
 
   data() {
     return {
+      status: {
+        1: "收货不通过",
+        2: "质检不通过",
+      },
       options: [
         {
-          code: "质检不通过",
+          code: "1",
           name: "收货不通过",
         },
         {
-          code: "质检不通过",
+          code: "2",
           name: "质检不通过",
         },
       ],

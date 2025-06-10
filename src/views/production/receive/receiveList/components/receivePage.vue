@@ -38,6 +38,28 @@
             />
           </el-form-item>
         </template>
+        <!-- 收货时间 -->
+        <template #dateSlot="scope">
+          <el-form-item
+            prop="takeDate"
+            label="收货时间"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请选择收货时间', trigger: 'change' }]"
+          >
+            <el-date-picker
+              v-model="scope.formModel.takeDate"
+              type="datetime"
+              :picker-options="pickerOptions"
+              style="width: 100%"
+              v-if="type != 'view'"
+              value-format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH:mm"
+            ></el-date-picker>
+            <span v-else>
+              {{ scope.formModel.takeDate }}
+            </span>
+          </el-form-item>
+        </template>
         <template #detailSlot>
           <el-table
             :data="tableData"
@@ -208,6 +230,15 @@ export default {
       selection: [],
       form: {},
       show: true,
+      shippingDate: "", //发货时间
+      pickerOptions: {
+        disabledDate: (time) => {
+          var nowDate = new Date().getTime();
+          return (
+            time.getTime() > nowDate || time.getTime() < this.shippingDate - 28800000
+          );
+        },
+      },
     };
   },
   computed: {
@@ -234,7 +265,10 @@ export default {
       month = month < 10 ? "0" + month : month;
       let day = now.getDate();
       day = day < 10 ? "0" + day : day;
-      var date = year + "-" + month + "-" + day;
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+      var date =
+        year + "-" + month + "-" + day + " " + hour + ":" + minute;
       return date;
     },
 
@@ -247,6 +281,7 @@ export default {
             if (this.type == "create") {
               //收货的时候默认本机日期
               data.takeDate = this.getDate();
+              this.shippingDate = data.shippingDate;
             } else {
               data.takeDate = dayjs(data.takeDate).format("YYYY-MM-DD");
             }
@@ -338,7 +373,7 @@ export default {
           await Api.save(
             Object.assign(
               {
-                supplyId:this.supplyId,
+                supplyId: this.supplyId,
                 id: this.id,
               },
               formData,
@@ -406,7 +441,7 @@ export default {
     },
     //有效期不足30天变红色
     tableRowClassName({ row, rowIndex }) {
-      var time=20 * 24 * 60 * 60 * 1000;
+      var time = 30 * 24 * 60 * 60 * 1000;
       var dateTime = new Date(row.expirationDate).getTime();
       const timestamp = new Date().getTime();
       if (Number(dateTime) - Number(timestamp) < time) {

@@ -31,3 +31,15 @@ export const save = (data) => {
         data
     })
 }
+/**
+ * 收货退货列表
+ * @param {*} params 
+ * @returns 
+ */
+export const listRetreat = (params) => {
+    return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listRetreat`,
+      method: 'get',
+      params
+    })
+  }

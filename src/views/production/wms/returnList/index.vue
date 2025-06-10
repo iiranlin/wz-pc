@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
@@ -162,7 +162,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.listRetreat(Object.assign({deptId:userInfo.deptId}, this.listQuery, this.formData))
+      Api.listCrRetreat(Object.assign({deptId:userInfo.deptId}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;

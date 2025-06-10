@@ -257,12 +257,28 @@ export default {
           });
           break;
         case "detail":
+          if (
+            rowArr[0].status != "4" &&
+            rowArr[0].status != "5" &&
+            rowArr[0].status != "6"
+          ) {
+            this.$modal.msgError("状态为供货中|已验收|已完成才可以操作");
+            return;
+          }
           this.$router.push({
             name: "freightDetail",
             query: { id: idArr[0] },
           });
           break;
         case "logistics":
+          if (
+            rowArr[0].status != "4" &&
+            rowArr[0].status != "5" &&
+            rowArr[0].status != "6"
+          ) {
+            this.$modal.msgError("状态为供货中|已验收|已完成才可以操作");
+            return;
+          }
           this.$router.push({
             name: "logisticsView",
             query: { id: idArr[0], type: "view" },

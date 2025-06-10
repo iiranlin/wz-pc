@@ -42,7 +42,7 @@
             class="label-right-align"
             v-else
           >
-            <el-input v-model="scope.formModel.sectionName" readonly></el-input>
+          {{scope.formModel.sectionName}}
           </el-form-item>
         </template>
         <template #shippingNumberSlot="scope">
