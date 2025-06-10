@@ -1,5 +1,5 @@
 <template>
-  <div class="material-search-table">
+  <div class="">
     <el-tabs tab-position="top" v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane
         v-for="tab in tabList"
@@ -9,34 +9,38 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <el-descriptions :column="3" size="small" border>
+    <el-descriptions style="margin: 0 12px;" :column="3" size="small" border>
       <el-descriptions-item
         label="发货单号"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        shippingNumber
+        {{ detail.shippingNumber }}
       </el-descriptions-item>
       <el-descriptions-item
         label="物流单号"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        归属线路项目
+        {{ detail.oddNumbers }}
       </el-descriptions-item>
       <el-descriptions-item
         label="发货事件"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        归属线路项目
+        {{ status[detail.status] }}
       </el-descriptions-item>
       <el-descriptions-item
         label="发货地址"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip content="Bottom center" placement="bottom" effect="light">
+        <el-tooltip
+          :content="detail.shippingAddress"
+          placement="bottom"
+          effect="light"
+        >
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -47,7 +51,7 @@
               text-overflow: ellipsis;
             "
           >
-            归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目
+            {{ detail.shippingAddress }}
           </div>
         </el-tooltip>
       </el-descriptions-item>
@@ -56,7 +60,11 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip content="Bottom center" placement="bottom" effect="light">
+        <el-tooltip
+          :content="detail.receivingAddress"
+          placement="bottom"
+          effect="light"
+        >
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -67,7 +75,7 @@
               text-overflow: ellipsis;
             "
           >
-            归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目
+            {{ detail.receivingAddress }}
           </div>
         </el-tooltip>
       </el-descriptions-item>
@@ -76,7 +84,7 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip content="Bottom center" placement="bottom" effect="light">
+        <el-tooltip content="" placement="bottom" effect="light">
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -87,7 +95,7 @@
               text-overflow: ellipsis;
             "
           >
-            归属线路项目归属线路
+            {{ detail.arrivalDate | formatDate }}
           </div>
         </el-tooltip>
       </el-descriptions-item>
@@ -96,31 +104,42 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        归属线路项目
+        {{ detail.carNumber }}
       </el-descriptions-item>
       <el-descriptions-item
         label="联系人"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        归属线路项目
+        {{ detail.contacts }}
       </el-descriptions-item>
       <el-descriptions-item
         label="联系电话"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        归属线路项目
+        {{ detail.contactsPhone }}
       </el-descriptions-item>
     </el-descriptions>
-    <wuliu :courierNumber="detail.oddNumbers" style="height: 500px" />
-    <!-- 没有订单号则展示普通表格 -->
+    <div style="height: 10px"></div>
+    <template v-if="detail.materialTrackMessageDTOS.length === 0">
+      <wuliu :courierNumber="detail.oddNumbers" style="height: 500px" />
+    </template>
+    <template v-else >
+      <!-- 没有订单号则展示普通表格 -->
+      <wuliuTable :tableData="detail.materialTrackMessageDTOS" />
+    </template>
+    <!-- 物资明细 -->
+    <div style="height: 10px"></div>
+    <itemTable :tableData="detail.materialSupplierDetailDTOList" />
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs';
 import wuliu from '@/views/components/wuliu'
+import itemTable from './itemTable'
+import wuliuTable from './table.vue'
 import * as Api from '@/api/prodmgr-inv/project/scm.js'
 export default {
   // 需求详情表格数据
@@ -139,6 +158,8 @@ export default {
   },
   components: {
     wuliu,
+    itemTable,
+    wuliuTable
   },
   computed: {
     id () {
@@ -146,7 +167,14 @@ export default {
     }
   },
   data () {
+    // 状态（1.未发货 2.货运中 3.已完成）
+    const status = {
+      '1': '未发货',
+      '2': '货运中',
+      '3': '已完成'
+    }
     return {
+      status,
       courierNumber: '',
       detail: {},
       tabList: [],
@@ -154,24 +182,23 @@ export default {
     }
   },
   created () {
-    this.getLogistics()
     this.getBatch()
   },
   methods: {
-    async getLogistics (id = 'FH202506080001') {
+    async getLogistics (id) {
       const res = await Api.getLogisticsDetail(id)
       this.detail = res.data
     },
     async getBatch () {
       const res = await Api.getBatch(this.id)
       this.tabList = res.data.map((x, idx) => ({
-        label: x.batchNumber,
-        name: x.batchNumber
+        label: `发货批次${idx + 1}`,
+        name: x.shipmentBatchNumber
       }))
 
       if (this.tabList.length) {
         this.activeTab = this.tabList[0].name
-        this.handleTabClick(this.tabList[0].name)
+        this.handleTabClick(this.tabList[0])
       }
     },
     handleTabClick (tab) {

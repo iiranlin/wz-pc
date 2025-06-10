@@ -64,6 +64,7 @@
     </el-row>
 
     <Add ref="addRef" @createSuccess="getList" />
+    <BatchDialog ref="batchDialogRef" @onOk="onDialogOk" />
   </div>
 </template>
 
@@ -72,12 +73,14 @@ import { itemList } from '@/api/prodmgr-inv/project/item.js'
 import indexMixin from '@/views/mixins'
 import * as Api from '@/api/prodmgr-inv/project/item.js'
 import Add from './components/add.vue'
+import BatchDialog from './components/batchDialog.vue';
 export default {
   // 物资列表
   name: 'itemList',
   mixins: [indexMixin],
   components: {
     Add,
+    BatchDialog
   },
   data () {
     return {
@@ -201,14 +204,20 @@ export default {
     },
     handleResetField () {
     },
+    onDialogOk (data) {
+      this.getList()
+    },
     handleButton (buttonCode, idArr, rowArr, { buttonData }) {
-      this.proxyPrint(buttonCode, rowArr, buttonData)
+
       if (buttonCode == 'update') {
         this.$refs['addRef'].updateInit(idArr[0])
       } else if (buttonCode === 'create') {
         this.$refs['addRef'].init()
       } else if (buttonCode === 'delete') {
         this.handleDelete(idArr)
+      } else if (buttonCode === 'batch') {
+        this.$refs.batchDialogRef.open();
+
       }
     },
     handleDelete (ids) {

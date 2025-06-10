@@ -1,45 +1,99 @@
 <template>
-  <div class="material-search-table">
+  <div class="">
     <el-table :data="tableData" border style="width: 100%">
       <!-- 序号 -->
       <el-table-column type="index" label="序号" align="center" width="80px">
       </el-table-column>
       <el-table-column
-        prop="updateContent"
+        prop="sectionName"
         label="标段项目名称"
         align="center"
         width="200px"
       >
-      {{ row.updateTime | formatDate }}
       </el-table-column>
       <el-table-column
-        prop="updateType"
+        prop="materialName"
         label="物资名称"
         align="center"
         min-width="250px"
       >
       </el-table-column>
-      <el-table-column prop="updateBefore" label="规格型号" align="center" width="200px">
+      <el-table-column
+        prop="specModel"
+        label="规格型号"
+        align="center"
+        width="200px"
+      >
       </el-table-column>
-       <el-table-column prop="updateBefore" label="计量单位" align="center" width="120px">
+      <el-table-column
+        prop="unit"
+        label="计量单位"
+        align="center"
+        width="120px"
+      >
       </el-table-column>
-       <el-table-column prop="updateBefore" label="合同数量" align="center" width="150px">
+      <el-table-column
+        prop="amount"
+        label="合同数量"
+        align="center"
+        width="150px"
+      >
       </el-table-column>
-       <el-table-column prop="updateBefore" label="累计计划量（含本次）" align="center" width="150px">
+      <el-table-column
+        prop="cumulativeAmount"
+        label="累计计划量（含本次）"
+        align="center"
+        width="150px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="本次计划数量" align="center" width="150px">
+      <el-table-column
+        prop="updateBefore"
+        label="本次计划数量"
+        align="center"
+        width="150px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="累计发货数量（含本次）" align="center" width="150px">
+      <el-table-column
+        prop="updateBefore"
+        label="累计发货数量（含本次）"
+        align="center"
+        width="150px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="本批次发货数量" align="center" width="150px">
+      <el-table-column
+        prop="updateBefore"
+        label="本批次发货数量"
+        align="center"
+        width="150px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="供应时间" align="center" width="200px">
+      <el-table-column
+        prop="updateBefore"
+        label="供应时间"
+        align="center"
+        width="200px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="使用地点" align="center" width="200px">
+      <el-table-column
+        prop="updateBefore"
+        label="使用地点"
+        align="center"
+        width="200px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="收货人及联系方式" align="center" width="200px">
+      <el-table-column
+        prop="updateBefore"
+        label="收货人及联系方式"
+        align="center"
+        width="200px"
+      >
       </el-table-column>
-         <el-table-column prop="updateBefore" label="备注" align="center" width="200px">
+      <el-table-column
+        prop="updateBefore"
+        label="备注"
+        align="center"
+        width="200px"
+      >
       </el-table-column>
     </el-table>
   </div>

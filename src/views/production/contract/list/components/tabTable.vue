@@ -2,9 +2,9 @@
   <div class="tab-table-container">
     <!-- Action Button -->
     <template v-if="type !== 'view'">
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
+      <!-- <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
         >添加物资</el-button
-      >
+      > -->
       <!-- 批量导入 -->
       <el-button
         type="primary"

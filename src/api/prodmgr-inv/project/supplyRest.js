@@ -1,4 +1,5 @@
-import request from '@/utils/request'
+import request,{ download } from '@/utils/request'
+
 let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
 
 /**
@@ -141,5 +142,10 @@ export const getSeller = (params) => {
     method: 'get',
     params
   })
+}
+
+// 下载供应商计划表
+export const downloadPlan = (data) => {
+  return download(`${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/export`, data)
 }
 

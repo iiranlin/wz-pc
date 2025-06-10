@@ -98,3 +98,11 @@ export function adjustInExport(data) {
   return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
 }
 
+// 物资批量导入
+export const itemBatchImport = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/importExcel`,
+    method: 'post',
+    data
+  })
+}

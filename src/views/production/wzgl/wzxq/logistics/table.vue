@@ -1,25 +1,27 @@
 <template>
-  <div class="material-search-table">
+  <div class="">
     <el-table :data="tableData" border style="width: 100%">
       <!-- 序号 -->
       <el-table-column type="index" label="序号" align="center" width="80px">
       </el-table-column>
       <el-table-column
-        prop="updateContent"
+        prop="createDate"
         label="填写时间"
         align="center"
         width="200px"
       >
-      {{ row.updateTime | formatDate }}
+       <template slot-scope="scope">
+          <span>{{ scope.row.createDate | formatDate }}</span>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="updateType"
+        prop="positionInformation"
         label="货运位置"
         align="center"
         min-width="250px"
       >
       </el-table-column>
-      <el-table-column prop="updateBefore" label="操作人" align="center">
+      <el-table-column prop="createUserName" label="操作人" align="center">
       </el-table-column>
     </el-table>
   </div>
@@ -42,6 +44,7 @@ export default {
       return dayjs(value).format(format);
     }
   },
+
   methods: {
 
 

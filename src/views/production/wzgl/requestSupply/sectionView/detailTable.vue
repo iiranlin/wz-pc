@@ -170,6 +170,7 @@ export default {
     async getMaterialList (sellerId) {
       const res = await Material.getMaterial({
         sellerId,
+        demandPlanId: this.id
       })
       this.tableData = res.data
      

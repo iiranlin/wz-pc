@@ -97,14 +97,12 @@ export default {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const status = {
       '1': '未提交',
-      '2': '审核中',
-      '3': '修改后通过',
-      '4': '已驳回',
-      '5': '已撤回',
-      '6': '发货中',
-      '7': '收货完成',
-      '8': '已入库',
-      '9': '已出库',
+      '2': '未确认',
+      '3': '已确认',
+      '4': '供货中',
+      '5': '已验收',
+      '6': '已完成',
+      '7': '已撤回',
     }
     return {
       status: status,
@@ -226,6 +224,9 @@ export default {
         case "create":
           this.$refs['addRef'].updateInit(idArr[0])
           break;
+        case "download":
+         this.handleExport(rowArr[0])
+          break;
       }
     },
     // 提交审核
@@ -254,7 +255,9 @@ export default {
         this.$modal.msgSuccess("删除成功");
       })
     },
-
+    handleExport (obj) {
+      Api.downloadPlan(obj.id)
+    },
     clickReset () {
       this.handleQuery();
     },
