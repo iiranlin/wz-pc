@@ -20,7 +20,7 @@ export const demandList = (params) => {
  */
 export const demandEdit = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/modify`,
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/modifyConfirm`,
     method: 'post',
     data
   })
@@ -79,7 +79,7 @@ export const detail = (id) => {
  * @param {*} params 
  * @returns 
  */
-export const sandList = (params) => {
+export const sendList = (params) => {
   return request({
       url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/list`,
       method: 'get',
@@ -143,6 +143,65 @@ export const getLogisticsDetail = (id) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailWlgz/${id}`,
     method: 'get',
+  })
+}
+/**
+ * 添加货运位置
+ * @param {*} params 
+ * @returns 
+ */
+export const addAdress = (data) => {
+  return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/create`,
+      method: 'post',
+      data
+  })
+}
+/**
+ * 查回货运位置list
+ * @param {*} params 
+ * @returns 
+ */
+export const findAdressList = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/list`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 供应商退货列表
+ * @param {*} params 
+ * @returns 
+ */
+export const listGysRetreat = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listGysRetreat`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 退货明细
+ * @param {*} params 
+ * @returns 
+ */
+export const detailBack = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailBack/${id}`,
+    method: 'get',
+  })
+}
+/**
+ * 供应需求详情
+ * @param {*} params 
+ * @returns 
+ */
+export const listShippingInformation = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierDetailRest/listShippingInformation`,
+    method: 'get',
+    params
   })
 }
 // 根据需求计划查询发货批次

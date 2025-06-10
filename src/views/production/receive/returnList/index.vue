@@ -191,9 +191,9 @@ export default {
       this.handleQuery();
     },
     //退货单
-    toThd(){
+    toThd(row){
        this.$router.push({
-        name: "detail_sh",
+        name: "returnDetail_sh",
         query: { id: row.id, type: "view" },
       });
     },

@@ -97,31 +97,31 @@ export default {
   data() {
     return {
       status: {
-        1: "未确认",
-        2: "已确认",
-        3: "供货中",
-        4: "已验收",
-        5: "已完成",
+        2: "未确认",
+        3: "已确认",
+        4: "供货中",
+        5: "已验收",
+        6: "已完成",
       },
       options: [
         {
-          code: "1",
+          code: "2",
           name: "未确认",
         },
         {
-          code: "2",
+          code: "3",
           name: "已确认",
         },
         {
-          code: "3",
+          code: "4",
           name: "供货中",
         },
         {
-          code: "4",
+          code: "5",
           name: "已验收",
         },
         {
-          code: "5",
+          code: "6",
           name: "已完成",
         },
       ],
@@ -224,7 +224,7 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "confirm":
-          if (rowArr[0].status == "1") {
+          if (rowArr[0].status == "2") {
             this.id = idArr[0];
             this.$refs.confirm.init();
           } else {
@@ -233,15 +233,15 @@ export default {
 
           break;
         case "send":
-          if (rowArr[0].status == "1") {
+          if (rowArr[0].status == "2") {
             this.$modal.msgError("请先确认需求！");
             return;
           }
-          if (rowArr[0].status == "4") {
+          if (rowArr[0].status == "5") {
             this.$modal.msgError("已验收！");
             return;
           }
-          if (rowArr[0].status == "5") {
+          if (rowArr[0].status == "6") {
             this.$modal.msgError("已完成！");
             return;
           }

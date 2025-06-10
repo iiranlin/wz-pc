@@ -21,8 +21,6 @@
             style="width: 100%"
             :max-height="600"
             v-loading="loading"
-            :row-key="getRowKey"
-            @selection-change="handleSelectionChange"
             ref="dataTable"
           >
             <el-table-column
@@ -49,54 +47,38 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="120"
+              width="150"
             ></el-table-column>
 
+            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column prop="1" label="合同数量" width="120"></el-table-column>
             <el-table-column
-              prop="projectShortName"
-              label="计量单位"
-              width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="projectShortName"
-              label="合同数量"
-              width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="projectShortName"
+              prop="1"
               label="累计计划量（含本次）"
-              width="120"
+              width="100"
             ></el-table-column>
             <el-table-column
-              prop="projectShortName"
+              prop="planAmount"
               label="本次计划数量"
               width="120"
             ></el-table-column>
             <el-table-column
-              prop="projectShortName"
+              prop="sendTotal"
               label="已发货"
               width="120"
             ></el-table-column>
+            <el-table-column prop="putTotal" label="已验收" width="120"></el-table-column>
             <el-table-column
-              prop="projectShortName"
-              label="已验收"
-              width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="projectShortName"
+              prop="storeTotal"
               label="已入库"
               width="120"
             ></el-table-column>
-             <el-table-column
-              prop="projectShortName"
+            <el-table-column
+              prop="refundTotal"
               label="已退回"
               width="120"
             ></el-table-column>
-              <el-table-column
-              prop="projectShortName"
-              label="剩余待发货"
-              width="120"
-            ></el-table-column>
+            <el-table-column prop="1" label="剩余待发货" width="120"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -106,21 +88,18 @@
 
 <script>
 import Vue from "vue";
-import * as Api from "@/api/prodmgr-inv/project/contract.js";
-import * as LineApi from "@/api/prodmgr-inv/project/line.js";
-import TabTable from "./tabTable.vue";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
-import { listByDeptCode } from "@/api/system/dept.js";
 import { getUserInfo } from "@/utils/user-info";
+import dayjs from "dayjs";
 export default {
   name: "freightDetail",
   components: {
     VFormRender,
     fileUpload,
-    TabTable,
   },
   data() {
     const userInfo = getUserInfo();
@@ -169,44 +148,37 @@ export default {
   },
   async created() {},
   mounted() {
-    this.init();
+    this.init(this.id);
+    this.findList(this.id);
   },
   methods: {
     //初始化
-    init() {
+    init(id) {
       this.$nextTick(async () => {
-        await this.formFillInPage();
-        this.$refs.vFormRef.setReadMode(true);
+        await Api.detail(id).then(({ data }) => {
+          this.$nextTick(async () => {
+            await this.formFillInPage();
+            const newData = {
+              ...data,
+              fileList: (data.fileList && data.fileList[0]?.fileList) || [],
+              createDate: dayjs(data.createDate).format("YYYY-MM-DD"),
+            };
+            this.$refs.vFormRef.setFormData(newData);
+            this.$refs.vFormRef.setReadMode(true);
+          });
+        });
       });
     },
-    // 编辑初始化
-    async updateInit(id) {
-      await Api.detail(id).then(({ data }) => {
+    findList(id) {
+      Api.listShippingInformation(id).then(({ data }) => {
         this.$nextTick(async () => {
-          this.title = "编辑";
-          await this.formFillInPage();
-          // fileList回显
-          const newData = {
-            ...data,
-            contractStatus: data.contractStatus == "2",
-            fileList: data.fileList[0]?.fileList || [],
-          };
-          this.$refs.vFormRef.setFormData(newData);
-
-          //   form action
-          this.$refs.vFormRef.setReadMode(this.type === "view");
-
-          this.tableData = data.materialList;
+          this.tableData = data.list;
         });
       });
     },
     newButton(buttonCode) {
       if (buttonCode === "cancel") {
         this.cancel();
-        return;
-      }
-      if (buttonCode === "save") {
-        this.handleCreate();
         return;
       }
     },
@@ -217,80 +189,13 @@ export default {
     buttonShow(item) {
       return true;
     },
-    //新建
-    handleCreate() {
-      this.$refs.vFormRef.validateForm(async (valid) => {
-        if (!valid) {
-          this.$message.warning("请完善信息");
-          return;
-        }
-        // 校验表格
-        const tableValid = this.$refs.tabTableRef.onCheck();
-        if (!tableValid) {
-          return;
-        }
-
-        // 如果表格内数据为空，则提示
-        if (this.tableData.length === 0) {
-          this.$message.warning("请添加合同物资科目");
-          return;
-        }
-
-        if (valid) {
-          this.loading = true;
-          const formData = await this.$refs.vFormRef.getFormData();
-          formData.contractStatus = formData.contractStatus ? "2" : "1";
-          // 后端存入嵌套数组
-          const fileList = formData.fileList;
-          formData.fileList = [{ fileList }];
-          await Api[this.type === "update" ? `edit` : `save`](
-            Object.assign({ id: this.type === "update" ? this.id : null }, formData, {
-              materialList: this.tableData.map((x) => ({
-                ...x,
-                id: null,
-              })),
-            })
-          )
-            .then(({ message }) => {
-              this.loading = false;
-              this.$modal.msgSuccess(message);
-              this.cancel();
-            })
-            .finally((err) => {
-              this.loading = false;
-            });
-        }
-      });
-    },
-
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("freightDetail").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
-          // 如果有projectId 则默认赋值归属项目，并且禁用归属线路项目选项
-          if (this.projectId) {
-            this.$refs["vFormRef"].setFormData({
-              projectId: this.projectId,
-              projectName: this.lineOptions.find((item) => item.value === this.projectId)
-                .label,
-            });
-          }
-
-          this.$refs["vFormRef"].setFormData({
-            buyer: this.buyer,
-          });
-
           resolve(true);
         });
       });
-    },
-    // 返回唯一行 key，用于多选保留状态
-    getRowKey(row) {
-      return `${row.id}`;
-    },
-    // 处理表格的勾选变化 - 修改版本
-    handleSelectionChange(selection) {
-      this.selection = selection;
     },
   },
 };

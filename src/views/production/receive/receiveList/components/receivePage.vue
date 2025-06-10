@@ -45,6 +45,7 @@
             style="width: 100%"
             :max-height="600"
             ref="dataTable"
+            :row-class-name="tableRowClassName"
           >
             <el-table-column
               type="index"
@@ -153,7 +154,6 @@
 <script>
 import Vue from "vue";
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
-import * as server from "@/api/prodmgr-inv/project/scm.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
@@ -217,6 +217,9 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
+    supplyId() {
+      return this.$route.query?.supplyId || "";
+    },
   },
   async created() {},
   mounted() {
@@ -225,7 +228,6 @@ export default {
   methods: {
     getDate() {
       let now = new Date();
-
       // 获取年、月、日
       let year = now.getFullYear();
       let month = now.getMonth() + 1;
@@ -261,7 +263,6 @@ export default {
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-              id: x.planDetailId,
               putTotal: x.sendTotal, //默认收货数量=发货数量
             }));
             this.tableData = detail;
@@ -334,16 +335,15 @@ export default {
           // 后端存入嵌套数组
           const fileList = formData.fileList;
           formData.fileList = [{ fileList }];
-          await server.save(
+          await Api.save(
             Object.assign(
               {
-                supplyId: this.type === "create" ? this.id : null,
-                id: this.type === "create" ? null : this.id,
+                supplyId:this.supplyId,
+                id: this.id,
               },
               formData,
               {
                 materialSupplierDetailParams: this.tableData.map((x) => ({
-                  planDetailId: x.id,
                   ...x,
                 })),
               }
@@ -404,6 +404,16 @@ export default {
         this.show = true;
       });
     },
+    //有效期不足30天变红色
+    tableRowClassName({ row, rowIndex }) {
+      var time=20 * 24 * 60 * 60 * 1000;
+      var dateTime = new Date(row.expirationDate).getTime();
+      const timestamp = new Date().getTime();
+      if (Number(dateTime) - Number(timestamp) < time) {
+        return "highlight-row-red";
+      }
+      return "";
+    },
   },
 };
 </script>
@@ -438,5 +448,10 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+</style>
+<style>
+.highlight-row-red {
+  color: red;
 }
 </style>

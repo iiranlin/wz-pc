@@ -66,7 +66,7 @@
           </template>
             <!-- 需求ID -->
           <template #supplyNumber="scope">
-            <el-button type="text" @click="toDemand(scope.data)">
+            <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
             </el-button>
           </template>
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/planRest.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
@@ -197,7 +197,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.sandList(Object.assign({}, this.listQuery, this.formData))
+      Api.itemList(Object.assign({status:2}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -235,10 +235,13 @@ export default {
       this.handleQuery();
     },
     //跳转需求详情
-    toDemand(row) {
+    toGyxq(row) {
       this.$router.push({
-        name: "addSend",
-        query: { id: row.id, type: "view" },
+        name: "requestSupplyDetail",
+        query: {
+          type: "view",
+          id: row.id,
+        },
       });
     },
   },

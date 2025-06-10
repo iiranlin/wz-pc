@@ -79,7 +79,7 @@
           <!-- 物流单号 -->
           <template #oddNumbers="scope">
             <el-button type="text" @click="toWuliu(scope.data)">
-              {{ scope.value }}
+              {{ scope.value||'其它' }}
             </el-button>
           </template>
         </table-index>
@@ -228,9 +228,13 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "receive":
+          if(rowArr[0].takeStatus!='1'){
+            this.$modal.msgError("未收货状态才能收货");
+            return;
+          }
           this.$router.push({
             name: "receivePage",
-            query: { id: idArr[0], type: "create" },
+            query: { id: idArr[0],supplyId:rowArr[0].supplyId, type: "create" },
           });
           break;
       }
@@ -252,7 +256,7 @@ export default {
     toReceive(row) {
       this.$router.push({
         name: "receivePage",
-        query: { id: row.id, type: "create" },
+        query: { id: row.id, type: "view" },
       });
     },
     //跳转货运详情

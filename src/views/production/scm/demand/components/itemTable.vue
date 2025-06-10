@@ -119,7 +119,7 @@ export default {
   methods: {
     //获取需求组织
     findDeptList() {
-      Api.findDeptList({ sellerId: this.sellerId, planId: this.supplyNumber })
+      Api.findDeptList({ sellerId: this.sellerId, supplyId: this.id })
         .then(({ data }) => {
           this.deptList = data;
         })
@@ -129,7 +129,7 @@ export default {
     findWzList() {
       Api.listMaterials({
         sellerId: this.sellerId,
-        planId: this.supplyNumber,
+        supplyId: this.id,
         deptId: this.form.deptId,
         // sellerId: '1928340067179323392',
         // planId: 1,

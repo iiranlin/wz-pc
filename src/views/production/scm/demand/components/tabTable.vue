@@ -31,10 +31,11 @@
       <el-table-column prop="specModel" label="规格型号" width="150"></el-table-column>
 
       <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
-      <el-table-column prop="planAmount" label="数量" width="160">
+      <el-table-column prop="planAmount" label="计划数量" width="140"></el-table-column>
+      <el-table-column prop="sendTotal" label="发货数量" width="160">
         <template slot-scope="scope">
           <el-input-number
-            v-model="scope.row.planAmount"
+            v-model="scope.row.sendTotal"
             :min="0"
             :precision="2"
             size="mini"
@@ -42,7 +43,7 @@
             v-if="type != 'view'"
           ></el-input-number>
           <span v-else>
-            {{ scope.row.planAmount }}
+            {{ scope.row.sendTotal }}
           </span>
         </template>
       </el-table-column>

@@ -41,13 +41,13 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-            <!-- 退货单号 -->
+          <!-- 退货单号 -->
           <template #backNumber="scope">
             <el-button type="text" @click="toThd(scope.data)">
               {{ scope.value }}
             </el-button>
           </template>
-             <!-- 收货单号 -->
+          <!-- 收货单号 -->
           <template #takeNumber="scope">
             <el-button type="text" @click="toShd(scope.data)">
               {{ scope.value }}
@@ -162,7 +162,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.sandList(Object.assign({}, this.listQuery, this.formData))
+      Api.listRetreat(Object.assign({deptId:userInfo.deptId}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -192,7 +192,12 @@ export default {
       this.handleQuery();
     },
     //退货单
-    toThd(){},
+    toThd() {
+      this.$router.push({
+        name: "returnDetail_im",
+        query: { id: row.id, type: "view" },
+      });
+    },
     //跳转货运详情
     toFhd(row) {
       this.$router.push({
@@ -201,7 +206,12 @@ export default {
       });
     },
     //跳转收货单
-    toShd() {},
+    toShd() {
+      this.$router.push({
+        name: "receive",
+        query: { id: row.id, type: "view" },
+      });
+    },
   },
 };
 </script>

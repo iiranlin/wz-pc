@@ -5,14 +5,14 @@
       :buttonShow="buttonShow"
       @newButton="newButton"
     ></button-top>
-    <div :class="{ container_flex_form: type === 'view' }">
+    <div :class="{ container_flex_form: type === 'view' || preview }">
       <VFormRender
         :form-json="formJson"
         :form-data="formData"
         :option-data="optionData"
         ref="vFormRef"
         :global-dsv="globalDsv"
-        :class="{ formRender_view: type === 'view' }"
+        :class="{ formRender_view: type === 'view' || preview }"
       >
         <!-- 附件 -->
         <template #fileSlot="scope">
@@ -27,6 +27,19 @@
           </el-form-item>
         </template>
         <template #detailSlot>
+          <div class="flex">
+            <span class="title">
+              物资明细 共{{ tableData.length }}
+              项）
+            </span>
+            <el-input
+              v-if="type != 'view' && !preview"
+              v-model="materialName"
+              placeholder="请输入物资名称"
+            >
+              <el-button slot="append" icon="el-icon-search" @click="getList"></el-button
+            ></el-input>
+          </div>
           <el-table
             :data="tableData"
             border
@@ -71,9 +84,21 @@
               width="150"
             ></el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-
-            <el-table-column prop="1" label="仓库" width="120"></el-table-column>
-            <el-table-column prop="2" label="出库数量" width="120"></el-table-column>
+            <el-table-column prop="2" label="出库数量" width="120">
+              <template slot-scope="scope">
+                <el-input-number
+                  v-model="scope.row.refundTotal"
+                  :min="0"
+                  @change="changeRefund(scope.row)"
+                  size="mini"
+                  style="width: 100%"
+                  v-if="type != 'view' && !preview && show"
+                ></el-input-number>
+                <span v-else>
+                  {{ scope.row.refundTotal }}
+                </span>
+              </template>
+            </el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -83,6 +108,7 @@
 
 <script>
 import Vue from "vue";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
@@ -124,7 +150,7 @@ export default {
           type: "create, update",
         },
         {
-          buttonName: "确定",
+          buttonName: "预览",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
@@ -135,6 +161,9 @@ export default {
       tableData: [],
       selection: [],
       form: {},
+      show: false,
+      materialName: "",
+      preview: false,//出库页还是预览页
     };
   },
   computed: {
@@ -181,7 +210,6 @@ export default {
             id: x.planDetailId,
           }));
           this.tableData = detail;
-          this.setSelectedItemList(this.tableData);
         });
       });
     },
@@ -196,7 +224,11 @@ export default {
       }
     },
     cancel() {
-      this.$router.go(-1);
+      if (this.preview) {
+        this.preview = false;
+      } else {
+        this.$router.go(-1);
+      }
     },
 
     buttonShow(item) {
@@ -207,62 +239,45 @@ export default {
     },
     //新建
     handleCreate() {
-      this.$refs.vFormRef.validateForm(async (valid) => {
-        if (!valid) {
-          this.$message.warning("请完善信息");
-          return;
-        }
-        const flag = this.tableData.every(
-          (obj) => obj.sectionId === this.tableData[0].sectionId
-        );
-        if (!flag) {
-          this.$modal.msgError("一个发货批次只允许选择一个标段项目的供应物资");
-          return;
-        }
-        if (this.getSelectedItemList().length === 0) {
-          this.$modal.msgError("请选择物资");
-          return;
-        }
-        const isValid = this.onCheck(this.tableData);
-        if (!isValid) {
-          return;
-        }
-
-        if (valid) {
-          this.loading = true;
-          const formData = await this.$refs.vFormRef.getFormData();
-          // 后端存入嵌套数组
-          const fileList = formData.fileList;
-          formData.fileList = [{ fileList }];
-          await Api.save(
-            Object.assign(
-              {
-                supplyId: this.type === "create" ? this.id : null,
-                id: this.type === "create" ? null : this.id,
-              },
-              formData,
-              {
-                materialSupplierDetailParams: this.tableData.map((x) => ({
-                  planDetailId: x.id,
-                  ...x,
-                })),
-              }
-            )
+      this.preview = !this.preview;
+      if (this.preview) {
+        //进行预览
+        this.$refs.vFormRef.validateForm(async (valid) => {
+          if (!valid) {
+            this.$message.warning("请完善信息");
+            return;
+          }
+        });
+      } else {
+        const formData = this.$refs.vFormRef.getFormData();
+        // 后端存入嵌套数组
+        const fileList = formData.fileList;
+        formData.fileList = [{ fileList }];
+        Api.save(
+          Object.assign(
+            {
+              supplyId: this.type === "create" ? this.id : null,
+              id: this.type === "create" ? null : this.id,
+            },
+            formData,
+            {
+              materialSupplierDetailDTOList: this.tableData.map((x) => ({
+                planDetailId: x.id,
+                ...x,
+              })),
+            }
           )
-            .then(({ message }) => {
-              this.loading = false;
-              this.$modal.msgSuccess(message);
-              this.setSelectedItemList([]);
-              this.$router.push({
-                name: "demand",
-              });
-            })
-            .finally((err) => {
-              formData.fileList = fileList;
-              this.loading = false;
-            });
-        }
-      });
+        )
+          .then(({ message }) => {
+            this.loading = false;
+            this.$modal.msgSuccess(message);
+            this.$router.go(-1);
+          })
+          .finally((err) => {
+            formData.fileList = fileList;
+            this.loading = false;
+          });
+      }
     },
     formFillInPage() {
       return new Promise((resolve) => {
