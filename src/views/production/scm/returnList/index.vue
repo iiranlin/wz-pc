@@ -198,7 +198,7 @@ export default {
       const userInfo = getUserInfo();
       console.log(userInfo,'=========')
       this.loading = true;
-      Api.listRetreat(Object.assign({sellerId:userInfo.id}, this.listQuery, this.formData))
+      Api.listGysRetreat(Object.assign({sellerId:userInfo.id}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;

@@ -146,6 +146,42 @@ export const getLogisticsDetail = (id) => {
   })
 }
 /**
+ * 添加货运位置
+ * @param {*} params 
+ * @returns 
+ */
+export const addAdress = (data) => {
+  return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/create`,
+      method: 'post',
+      data
+  })
+}
+/**
+ * 查回货运位置list
+ * @param {*} params 
+ * @returns 
+ */
+export const findAdressList = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTrackMessageRest/list`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 供应商退货列表
+ * @param {*} params 
+ * @returns 
+ */
+export const listGysRetreat = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listGysRetreat`,
+    method: 'get',
+    params
+  })
+}
+/**
  * 退货明细
  * @param {*} params 
  * @returns 

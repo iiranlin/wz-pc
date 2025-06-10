@@ -47,7 +47,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="120"
+              width="150"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
@@ -55,7 +55,7 @@
             <el-table-column
               prop="1"
               label="累计计划量（含本次）"
-              width="120"
+              width="100"
             ></el-table-column>
             <el-table-column
               prop="planAmount"
@@ -94,6 +94,7 @@ import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
+import dayjs from "dayjs";
 export default {
   name: "freightDetail",
   components: {
@@ -147,23 +148,31 @@ export default {
   },
   async created() {},
   mounted() {
-    this.init();
+    this.init(this.id);
+    this.findList(this.id);
   },
   methods: {
     //初始化
-    init() {
+    init(id) {
       this.$nextTick(async () => {
-        await Api.listShippingInformation(id).then(({ data }) => {
+        await Api.detail(id).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
             const newData = {
               ...data,
               fileList: (data.fileList && data.fileList[0]?.fileList) || [],
+              createDate: dayjs(data.createDate).format("YYYY-MM-DD"),
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);
-            this.tableData = data.materialSupplierDetailDTOList;
           });
+        });
+      });
+    },
+    findList(id) {
+      Api.listShippingInformation(id).then(({ data }) => {
+        this.$nextTick(async () => {
+          this.tableData = data.list;
         });
       });
     },
