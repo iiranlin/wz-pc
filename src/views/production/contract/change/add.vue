@@ -138,7 +138,7 @@ export default {
     const userInfo = getUserInfo()
     return {
       maxManualIndex: 1,
-      buyer: userInfo?.deptName,
+      buyer: userInfo?.instituteName,
       loading: false,
       title: '新增',
       checked: false,

@@ -77,10 +77,10 @@
           </el-form-item>
         </template>
         <!-- 买方单位 -->
-        <template #buyerSlot="{ formModel }">
+        <template #buyerSlot>
           <el-form-item prop="buyerId" label="买方" class="label-right-align">
             <template>
-              <span>{{ formModel.buyer }}</span>
+              {{ userInfo.instituteName }}
             </template>
           </el-form-item>
         </template>
@@ -143,8 +143,9 @@ export default {
   data () {
     const userInfo = getUserInfo()
     return {
+      userInfo,
       maxManualIndex: 1,
-      buyer: userInfo?.deptName,
+      buyer: userInfo?.instituteName,
       loading: false,
       title: '新增',
       checked: false,

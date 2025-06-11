@@ -127,7 +127,7 @@
             style="width: 100%"
             @change="handleFieldChange('vatRate', scope.row)"
           ></el-input-number>
-          <span v-else>{{ scope.row.vatRate }}</span>
+          <span v-else>{{ scope.row.vatRate }}%</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -367,7 +367,7 @@ export default {
     }
   },
   created () {
-    this.getItemsOptions()
+    // this.getItemsOptions()
     this.getSectionOptions()
   },
   methods: {

@@ -32,7 +32,7 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <div style="height: 600px;">
+    <div style="height: 450px;">
       <virtual-scroll
         :dynamic="false"
         v-show="show"
@@ -46,7 +46,7 @@
           :data="virtualList"
           border
           style="width: 100%"
-          height="600"
+          height="450"
           v-loading="loading"
           @selection-change="handleSelectionChange"
           ref="dataTable"
@@ -185,13 +185,6 @@
           </el-table-column>
 
           <el-table-column
-            prop="cumulativeAmount"
-            label="累计计划量"
-            width="120"
-            align="center"
-          ></el-table-column>
-
-          <el-table-column
             prop="price"
             label="到站不含税单价(元)"
             width="160"
@@ -226,7 +219,7 @@
                 @change="handleFieldChange('vatRate', scope.row)"
                 style="width: 100%"
               ></el-input-number>
-              <span v-else>{{ scope.row.vatRate }}</span>
+              <span v-else>{{ scope.row.vatRate }}%</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -471,11 +464,12 @@ export default {
     }
   },
   created () {
-    this.getItemsOptions()
+    // this.getItemsOptions()
     this.getSectionOptions()
   },
   methods: {
     onDialogOk (data) {
+      console.log(this.sectionName,'sellerName')
       // 将批量上传的文件，导入到总的数据中
       const newData = data.map(item => ({
         ...item,

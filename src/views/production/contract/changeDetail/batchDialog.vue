@@ -65,7 +65,7 @@
 
     <div slot="footer" class="dialog-footer">
        <el-button round type="primary" @click="onOk">确认</el-button>
-      <el-button round @click="visible = false">取消</el-button>
+      <el-button round @click="visible = false">关闭</el-button>
     </div>
   </Dialog>
 </template>

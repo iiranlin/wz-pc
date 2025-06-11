@@ -128,7 +128,7 @@ export default {
   methods: {
     selectable (row) {
       // 履约比例等于0允许删除
-      console.log(row,'row')
+      console.log(row, 'row')
       return row.materialUsedRatio == 0
     },
     buttonDisable (btn) {
@@ -142,6 +142,9 @@ export default {
        * 已启用只能变更
        */
       if (btn.buttonCode === 'update') {
+        return this.selection[0].contractStatus == 2
+      }
+      if (btn.buttonCode === 'contractStatus') {
         return this.selection[0].contractStatus == 2
       }
       return false
@@ -215,8 +218,22 @@ export default {
         case 'change':
           this.$router.push({ name: 'changeContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })
           break;
+        case 'contractStatus':
+          this.changeStatus(rowArr[0])
+          break;
 
       }
+    },
+    async changeStatus (row) {
+      this.$confirm('确定要启用吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(Api.editStatus({ id:row.id, contractStatus: 2 }))
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("启用成功");
+        })
     },
     handleDelete (ids) {
       this.$modal.confirm("是否确认删除?").then(function () {
@@ -226,6 +243,7 @@ export default {
         this.$modal.msgSuccess("删除成功");
       })
     },
+
 
     clickReset () {
       this.handleQuery();

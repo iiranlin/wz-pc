@@ -77,6 +77,19 @@ export const edit = (data) => {
 }
 
 /**
+ * 修改合同状态
+ * @param {*} params 
+ * @returns 
+ */
+export const editStatus = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/modifyContractStatus`,
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 保存
  * @param {*} params 
  * @returns 
