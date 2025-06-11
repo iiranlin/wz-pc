@@ -271,6 +271,10 @@ export default {
           label: item.projectName
         }
       })
+
+      this.$refs['vFormRef'].setFormData({
+        projectName: this.lineOptions.find(item => item.value === this.projectId).label
+      })
     },
     async getDeptTree (deptCode) {
       const res = await listByDeptCode({
@@ -345,7 +349,7 @@ export default {
           if (this.projectId) {
             this.$refs['vFormRef'].setFormData({
               projectId: this.projectId,
-              projectName: this.lineOptions.find(item => item.value === this.projectId).label
+              // projectName: this.lineOptions.find(item => item.value === this.projectId).label
             })
           }
           resolve(true)
