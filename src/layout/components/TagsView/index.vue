@@ -80,8 +80,9 @@ export default {
     activeStyle(tag) {
       if (!this.isActive(tag)) return {};
       return {
-        "background-color": this.theme,
-        "border-color": this.theme
+        "background-color":'#e6edff !important',
+        "border-color":  '#e6edff !important'
+
       };
     },
     isAffix(tag) {
