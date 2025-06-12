@@ -37,7 +37,7 @@
           <el-input-number
             v-model="scope.row.sendTotal"
             :min="0"
-            :precision="2"
+            :max="Number(scope.row.planAmount)"
             size="mini"
             style="width: 100%"
             v-if="type != 'view'"
@@ -103,31 +103,34 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="合格证附件" width="200">
-        <!-- <template slot-scope="scope">
+      <el-table-column prop="projectShortName" label="合格证附件" width="300">
+        <template slot-scope="scope">
           <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
+            v-model="scope.row.fileList01"
+            :value="scope.row.fileList01"
             :limit="1"
-            :fileSize="50"
+            :preview="type == 'view'"
+            :isShowTip="false"
           />
-        </template> -->
+        </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
-        <!-- <template slot-scope="scope">
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="300">
+        <template slot-scope="scope">
           <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
+            v-model="scope.row.fileList02"
+            :value="scope.row.fileList02"
             :limit="1"
-            :fileSize="50"
+            :preview="type == 'view'"
+            :isShowTip="false"
           />
-        </template> -->
+        </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import fileUpload from "@/components/upload";
 export default {
   name: "tabTable",
   dicts: ["MeasureUnit"],
@@ -139,7 +142,7 @@ export default {
       default: () => [],
     },
   },
-  components: {},
+  components: { fileUpload },
   computed: {
     type() {
       return this.$route.query.type;
@@ -166,6 +169,7 @@ export default {
   created() {},
   methods: {
     selectItem() {
+      this.setSelectedItemList(this.tableData);
       this.$router.push({
         name: "selectItem",
         query: {
@@ -176,6 +180,9 @@ export default {
           sellerId: this.sellerId,
         },
       });
+    },
+    setSelectedItemList(data) {
+      this.$store.dispatch("request/setSelectedItemList", data);
     },
   },
 };

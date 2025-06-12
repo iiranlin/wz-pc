@@ -20,8 +20,6 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
               :preview="type === 'view'"
             />
           </el-form-item>
@@ -195,6 +193,12 @@ export default {
         if (!row.manufactureDate) {
           errors.push(`第${rowNum}行，生产日期未填写 `);
         }
+         if (!row.fileList01) {
+          errors.push(`第${rowNum}行，请上传合格证附件 `);
+        }
+         if (!row.fileList02) {
+          errors.push(`第${rowNum}行，请上传厂检报告附件`);
+        }
       });
 
       if (errors.length > 0) {
@@ -243,6 +247,8 @@ export default {
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
             id: x.planDetailId,
+            fileList01:x.fileList?x.fileList.find(item=>item.businessType=='1').fileList||[]:[],
+            fileList02:x.fileList?x.fileList.find(item=>item.businessType=='2').fileList||[]:[],
           }));
           this.tableData = detail;
           this.setSelectedItemList(this.tableData);
@@ -297,7 +303,7 @@ export default {
           const formData = await this.$refs.vFormRef.getFormData();
           // 后端存入嵌套数组
           const fileList = formData.fileList;
-          formData.fileList = [{ fileList }];
+          formData.fileList =fileList? [{ fileList }]:[];
           await Api.save(
             Object.assign(
               {
@@ -309,6 +315,13 @@ export default {
                 materialSupplierDetailParams: this.tableData.map((x) => ({
                   planDetailId: x.id,
                   ...x,
+                  fileList:[{
+                    businessType:'1',
+                    fileList:x.fileList01
+                  },{
+                    businessType:'2',
+                    fileList:x.fileList02
+                  }]
                 })),
               }
             )

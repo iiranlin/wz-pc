@@ -5,7 +5,7 @@
       :buttonShow="buttonShow"
       @newButton="newButton"
     ></button-top>
-    <div :class="{ container_flex_form: true}">
+    <div :class="{ container_flex_form: true }">
       <VFormRender
         :form-json="formJson"
         :form-data="formData"
@@ -16,52 +16,65 @@
       >
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList" label="检测报告" class="label-right-align">
+          <el-form-item
+            prop="fileList01"
+            label="检测报告"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
+              v-model="scope.formModel.fileList01"
+              :value="scope.formModel.fileList01"
+              :preview="type == 'view'"
             />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
-          <el-form-item prop="fileList" label="质量证明文件" class="label-right-align">
+          <el-form-item
+            prop="fileList02"
+            label="质量证明文件"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
+              v-model="scope.formModel.fileList02"
+              :value="scope.formModel.fileList02"
+              :preview="type == 'view'"
             />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
-          <el-form-item prop="fileList" label="报验结果" class="label-right-align">
+          <el-form-item
+            prop="fileList03"
+            label="报验结果"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
+              v-model="scope.formModel.fileList03"
+              :value="scope.formModel.fileList03"
+              :preview="type == 'view'"
             />
           </el-form-item>
         </template>
         <!-- 详情页显示入库时间 -->
         <template #dateSlot="scope">
-          <el-form-item  label="入库时间" class="label-right-align" v-if="type=='view'">
-            {{ scope.formModel.storeDate}}
+          <el-form-item label="入库时间" class="label-right-align" v-if="type == 'view'">
+            {{ scope.formModel.storeDate }}
           </el-form-item>
         </template>
-          <!-- 物资入库显示收货单号，入库详情显示入库单号 -->
+        <!-- 物资入库显示收货单号，入库详情显示入库单号 -->
         <template #shSlot="scope">
-          <el-form-item  label="收货单号" class="label-right-align" v-if="type=='create'">
+          <el-form-item
+            label="收货单号"
+            class="label-right-align"
+            v-if="type == 'create'"
+          >
             {{ scope.formModel.takeNumber }}
           </el-form-item>
-           <el-form-item  label="入库单号" class="label-right-align" v-else>
+          <el-form-item label="入库单号" class="label-right-align" v-else>
             {{ scope.formModel.storeNumber }}
           </el-form-item>
         </template>
@@ -117,24 +130,22 @@
             ></el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
-              <!-- <template slot-scope="scope">
-          <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
-            :limit="1"
-            :fileSize="50"
-          />
-        </template> -->
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList01"
+                  :preview="true"
+                  :isShowTip="false"
+                />
+              </template>
             </el-table-column>
             <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
-              <!-- <template slot-scope="scope">
-          <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
-            :limit="1"
-            :fileSize="50"
-          />
-        </template> -->
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList02"
+                  :preview="true"
+                  :isShowTip="false"
+                />
+              </template>
             </el-table-column>
             <el-table-column prop="storeTotal" label="入库数量" width="120">
               <template slot-scope="scope">
@@ -164,6 +175,16 @@
                 <span v-else>
                   {{ scope.row.refundTotal }}
                 </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="projectShortName" label="退货附件" width="250">
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList03"
+                  v-model="scope.row.fileList03"
+                  :preview="type == 'view'"
+                  :isShowTip="false"
+                />
               </template>
             </el-table-column>
           </el-table>
@@ -239,6 +260,9 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
+    supplyId() {
+      return this.$route.query?.supplyId || "";
+    },
   },
   async created() {},
   mounted() {
@@ -251,6 +275,15 @@ export default {
         await Api.detailStore(id).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
+            //拆分附件
+            if (data.fileList && data.fileList.length > 0) {
+              data.fileList01 =
+                data.fileList.find((item) => item.businessType == "1").fileList || [];
+              data.fileList02 =
+                data.fileList.find((item) => item.businessType == "2").fileList || [];
+              data.fileList03 =
+                data.fileList.find((item) => item.businessType == "3").fileList || [];
+            }
             // fileList回显
             const newData = {
               ...data,
@@ -263,6 +296,15 @@ export default {
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
               storeTotal: x.putTotal, //默认入库数量=收货数量
+              fileList01: x.fileList
+                ? x.fileList.find((item) => item.businessType == "1").fileList || []
+                : [],
+              fileList02: x.fileList
+                ? x.fileList.find((item) => item.businessType == "2").fileList || []
+                : [],
+              fileList03: x.fileList
+                ? x.fileList.find((item) => item.businessType == "3").fileList || []
+                : [],
             }));
             this.tableData = detail;
           });
@@ -289,6 +331,27 @@ export default {
       }
       return true;
     },
+    onCheck(tableData) {
+      const errors = [];
+      console.log(tableData, "=============tableData");
+      tableData.forEach((row, index) => {
+        const rowNum = index + 1;
+        if (Number(row.refundTotal) > 0 && row.fileList03.length == 0) {
+          errors.push(`第${rowNum}行，有退货数量，请上传退货附件 `);
+        }
+      });
+
+      if (errors.length > 0) {
+        this.$message({
+          message: errors.join("<br/> <br/>"),
+          type: "error",
+          dangerouslyUseHTMLString: true,
+        });
+        return false;
+      }
+      // TODO: 提交逻辑放这里
+      return true;
+    },
     //新建
     handleCreate() {
       this.$refs.vFormRef.validateForm(async (valid) => {
@@ -297,32 +360,58 @@ export default {
           return;
         }
 
-        // const isValid = this.onCheck(this.tableData);
-        // if (!isValid) {
-        //   return;
-        // }
+        const isValid = this.onCheck(this.tableData);
+        if (!isValid) {
+          return;
+        }
 
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
           // 后端存入嵌套数组
-          const fileList = formData.fileList;
-          formData.fileList = fileList?[{ fileList }]:[];
-          await Api
-            .saveStore(
-              Object.assign(
-                {
-                  supplyId:this.supplyId,
-                  id: this.id,
-                },
-                formData,
-                {
-                  materialSupplierDetailDTOList: this.tableData.map((x) => ({
-                    ...x,
-                  })),
-                }
-              )
+          var fileList = [
+            {
+              businessType: "1",
+              fileList: formData.fileList01,
+            },
+            {
+              businessType: "2",
+              fileList: formData.fileList02,
+            },
+            {
+              businessType: "3",
+              fileList: formData.fileList03,
+            },
+          ];
+          formData.fileList = fileList;
+          await Api.saveStore(
+            Object.assign(
+              {
+                supplyId: this.supplyId,
+                id: this.id,
+              },
+              formData,
+              {
+                materialSupplierDetailParams: this.tableData.map((x) => ({
+                  ...x,
+                  fileList: [
+                    {
+                      businessType: "1",
+                      fileList: x.fileList01,
+                    },
+                    {
+                      businessType: "2",
+                      fileList: x.fileList02,
+                    },
+                    {
+                      businessType: "3",
+                      fileList: x.fileList03,
+                    },
+                  ],
+                })),
+              }
             )
+          )
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
@@ -378,15 +467,15 @@ export default {
       });
     },
     //有效期不足30天变红色
-     tableRowClassName({row, rowIndex}) {
-      var time=30 * 24 * 60 * 60 * 1000;
-      var dateTime= new Date(row.expirationDate).getTime(); 
+    tableRowClassName({ row, rowIndex }) {
+      var time = 30 * 24 * 60 * 60 * 1000;
+      var dateTime = new Date(row.expirationDate).getTime();
       const timestamp = new Date().getTime();
-      if (Number(dateTime)-Number(timestamp)<time) { 
-        return 'highlight-row-red'; 
+      if (Number(dateTime) - Number(timestamp) < time) {
+        return "highlight-row-red";
       }
-      return ''; 
-    }
+      return "";
+    },
   },
 };
 </script>
@@ -424,7 +513,7 @@ export default {
 }
 </style>
 <style>
-  .highlight-row-red{
-    color:red;
-  }
+.highlight-row-red {
+  color: red;
+}
 </style>
