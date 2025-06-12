@@ -7,7 +7,7 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  */
 export const listStore = (params) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listStore`,
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listStore`,
         method: 'get',
         params
     })
@@ -19,7 +19,7 @@ export const listStore = (params) => {
  */
 export const detailStore = (id) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailStore/${id}`,
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySend/${id}`,
         method: 'get',
     })
 }
@@ -30,7 +30,7 @@ export const detailStore = (id) => {
  */
 export const saveStore = (data) => {
     return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/saveStore`,
+      url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/saveStore`,
       method: 'post',
       data
     })
@@ -42,7 +42,7 @@ export const saveStore = (data) => {
  */
 export const listCrRetreat = (params) => {
     return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listCrRetreat`,
+      url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listCrRetreat`,
       method: 'get',
       params
     })
@@ -89,7 +89,7 @@ export const outDetail = (id) => {
  */
 export const outSave = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierOutRest/save`,
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierOutRest/saveOut`,
     method: 'post',
     data
   })

@@ -90,19 +90,49 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" width="200">
+      <el-table-column prop="receivingAddress" label="收货地址" width="160">
         <template slot-scope="scope">
           <el-input
-            v-model="scope.row.remark"
+            v-model="scope.row.receivingAddress"
             size="mini"
             style="width: 100%"
             v-if="type != 'view'"
           ></el-input>
           <span v-else>
-            {{ scope.row.remark }}
+            {{ scope.row.receivingAddress }}
           </span>
         </template>
       </el-table-column>
+      <el-table-column prop="supplyDate" label="供应时间" width="160">
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.supplyDate"
+            type="date"
+            size="mini"
+            style="width: 100%"
+            value-format="yyyy-MM-dd"
+            v-if="type != 'view'"
+          ></el-date-picker>
+          <span v-else>
+            {{ scope.row.supplyDate }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="receiver" label="收货人及联系方式" width="160">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.receiver"
+            size="mini"
+            style="width: 100%"
+            v-if="type != 'view'"
+          ></el-input>
+          <span v-else>
+            {{ scope.row.receiver }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="unit" label="投资方" width="180"></el-table-column>
+      <el-table-column prop="unit" label="投资比例" width="120"></el-table-column>
       <el-table-column prop="projectShortName" label="合格证附件" width="300">
         <template slot-scope="scope">
           <fileUpload
@@ -123,6 +153,19 @@
             :preview="type == 'view'"
             :isShowTip="false"
           />
+        </template>
+      </el-table-column>
+      <el-table-column prop="remark" label="备注" width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.remark"
+            size="mini"
+            style="width: 100%"
+            v-if="type != 'view'"
+          ></el-input>
+          <span v-else>
+            {{ scope.row.remark }}
+          </span>
         </template>
       </el-table-column>
     </el-table>

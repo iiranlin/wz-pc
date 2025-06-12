@@ -8,7 +8,7 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  */
 export const demandList = (params) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/list`,
+        url: `${VUE_APP_PRODMGR_INV}//materialDemandPlanRest/listGhs`,
         method: 'get',
         params
     })
@@ -20,7 +20,7 @@ export const demandList = (params) => {
  */
 export const demandEdit = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplyPlanRest/modifyConfirm`,
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/modifyConfirm`,
     method: 'post',
     data
   })
@@ -56,7 +56,7 @@ export const listMaterials = (params) => {
  */
 export const save = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/save`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/saveSendGoods`,
     method: 'post',
     data
   })
@@ -81,7 +81,7 @@ export const detail = (id) => {
  */
 export const sendList = (params) => {
   return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/list`,
+      url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listBySend`,
       method: 'get',
       params
   })
@@ -107,7 +107,7 @@ export const batchRemove = (data) => {
  */
 export const sendDetail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detail/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySend/${id}`,
     method: 'get',
   })
 }
@@ -176,7 +176,7 @@ export const findAdressList = (params) => {
  */
 export const listGysRetreat = (params) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/listGysRetreat`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listGysRetreat`,
     method: 'get',
     params
   })

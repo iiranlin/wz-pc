@@ -14,9 +14,60 @@
         :global-dsv="globalDsv"
         :class="{ formRender_view: type === 'view' }"
       >
+        <!-- 供货商/操作人 -->
+        <template #supplierNameSlot="scope">
+          <el-form-item
+            prop="supplierName"
+            label="供货商"
+            class="label-right-align"
+            v-if="type != 'view'"
+          >
+            <el-input v-model="scope.formModel.supplierName" readonly></el-input>
+          </el-form-item>
+          <el-form-item
+            prop="createUserName"
+            label="操作人"
+            class="label-right-align"
+            v-else
+          >
+            {{ scope.formModel.createUserName }}
+          </el-form-item>
+        </template>
+        <!-- 发货日期/收货日期 -->
+        <template #shippingDateSlot="scope">
+          <el-form-item
+            prop="shippingDate"
+            label="发货日期"
+            class="label-right-align"
+            v-if="type != 'view'"
+          >
+            <el-date-picker
+              v-model="scope.formModel.shippingDate"
+              type="date"
+              style="width: 100%"
+              v-if="type != 'view'"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              readonly
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item prop="takeDate" label="收货时间" class="label-right-align" v-else>
+            {{ scope.formModel.takeDate }}
+          </el-form-item>
+        </template>
+        <template #file3Slot="scope">
+          <el-form-item prop="fileList" label="发货单" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList03" :preview="true" />
+          </el-form-item>
+        </template>
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList01" label="自检单" class="label-right-align"  :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+          <el-form-item
+            prop="fileList01"
+            label="自检单"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload v-model="scope.formModel.fileList01" :preview="type == 'view'" />
           </el-form-item>
         </template>
@@ -27,7 +78,7 @@
           </el-form-item>
         </template>
         <!-- 收货时间 -->
-        <template #dateSlot="scope">
+        <template #dateSlot="scope" v-if="type != 'view'">
           <el-form-item
             prop="takeDate"
             label="收货时间"
@@ -98,7 +149,28 @@
               label="有效期截止日期"
               width="150"
             ></el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column
+              prop="receivingAddress"
+              label="收货地址"
+              width="200"
+            ></el-table-column>
+            <el-table-column
+              prop="supplyDate"
+              label="供应时间"
+              width="160"
+            ></el-table-column>
+
+            <el-table-column
+              prop="receiver"
+              label="收货人及联系方式"
+              width="180"
+            ></el-table-column>
+            <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
+            <el-table-column
+              prop="receiver"
+              label="投资比例"
+              width="180"
+            ></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -157,6 +229,7 @@
                 />
               </template>
             </el-table-column>
+            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -270,12 +343,10 @@ export default {
             await this.formFillInPage();
             //拆分附件
             if (data.fileList && data.fileList.length > 0) {
-              data.fileList01 = data.fileList.find(
-                (item) => item.businessType == "1"
-              ).fileList||[];
-              data.fileList02 = data.fileList.find(
-                (item) => item.businessType == "2"
-              ).fileList||[];
+              data.fileList01 =
+                data.fileList.find((item) => item.businessType == "1").fileList || [];
+              data.fileList02 =
+                data.fileList.find((item) => item.businessType == "2").fileList || [];
             }
             if (this.type == "create") {
               //收货的时候默认本机日期
@@ -332,10 +403,10 @@ export default {
     },
     onCheck(tableData) {
       const errors = [];
-      console.log(tableData,'=============tableData')
+      console.log(tableData, "=============tableData");
       tableData.forEach((row, index) => {
         const rowNum = index + 1;
-        if (Number(row.refundTotal) > 0 && row.fileList03.length==0) {
+        if (Number(row.refundTotal) > 0 && row.fileList03.length == 0) {
           errors.push(`第${rowNum}行，有退货数量，请上传退货附件 `);
         }
       });

@@ -65,7 +65,7 @@
             {{ status[scope.value] }}
           </template>
           <!-- 供应需求ID -->
-          <template #supplyNumber="scope">
+          <template #planNumber="scope">
             <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
             </el-button>
@@ -255,8 +255,8 @@ export default {
             query: {
               id: idArr[0],
               type: "create",
-              supplyName: rowArr[0].supplyName,
-              supplyNumber: rowArr[0].supplyNumber,
+              supplyName: rowArr[0].planName,
+              supplyNumber: rowArr[0].planNumber,
               sellerId: rowArr[0].sellerId,
             },
           });

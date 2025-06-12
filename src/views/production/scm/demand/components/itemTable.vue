@@ -7,7 +7,7 @@
         }}</span
         >项）
       </span>
-      <el-select
+      <!-- <el-select
         class="select-box"
         v-model="form.deptId"
         placeholder="请选择需求组织"
@@ -22,7 +22,7 @@
           :label="item.deptName"
           :value="item.deptId"
         />
-      </el-select>
+      </el-select> -->
     </div>
     <el-table
       :data="tableData"
@@ -61,10 +61,20 @@
         label="收货人及联系方式"
         width="180"
       ></el-table-column>
+         <el-table-column
+        prop="receiver"
+        label="投资方"
+        width="180"
+      ></el-table-column>
+         <el-table-column
+        prop="receiver"
+        label="投资比例"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="remark" label="备注" width="200"></el-table-column>
       <el-table-column
         prop="projectShortName"
-        label="剩余待发货"
+        label="本次需求未发货数量"
         width="120"
       ></el-table-column>
     </el-table>

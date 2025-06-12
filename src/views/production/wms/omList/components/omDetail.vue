@@ -73,9 +73,9 @@
               label="有效期截止日期"
               width="150"
             ></el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-            <el-table-column prop="outTotle" label="出库数量" width="120">
+            <el-table-column prop="outTotle" label="本次出库数量" width="120">
             </el-table-column>
+            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>

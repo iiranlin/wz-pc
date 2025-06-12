@@ -82,7 +82,28 @@
               label="有效期截止日期"
               width="150"
             ></el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column
+              prop="receivingAddress"
+              label="收货地址"
+              width="200"
+            ></el-table-column>
+            <el-table-column
+              prop="supplyDate"
+              label="供应时间"
+              width="160"
+            ></el-table-column>
+
+            <el-table-column
+              prop="receiver"
+              label="收货人及联系方式"
+              width="180"
+            ></el-table-column>
+            <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
+            <el-table-column
+              prop="receiver"
+              label="投资比例"
+              width="180"
+            ></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -115,6 +136,7 @@
                 />
               </template>
             </el-table-column>
+            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
