@@ -1,40 +1,48 @@
 <template>
   <div>
-    <el-table :data="tableData" border style="width: 100%">
-      <!-- 序号 -->
-      <el-table-column type="index" label="序号" align="center" width="80px">
-      </el-table-column>
-      <el-table-column
-        prop="updateContent"
-        label="变更内容"
-        align="center"
-        width="150px"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="updateType"
-        label="变更类型"
-        align="center"
-        width="150px"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="updateBefore"
-        label="变更前"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="updateAfter"
-        label="变更后"
-        align="center"
-      >
-      </el-table-column>
-    </el-table>
+    <virtual-scroll
+      :dynamic="false"
+      ref="virtualScroll"
+      :data="tableData"
+      :item-size="62"
+      key-prop="id"
+      @change="(renderData) => (virtualList = renderData)"
+    >
+      <el-table :data="virtualList" border style="width: 100%" height="400">
+        <!-- 序号 -->
+        <virtual-column
+          label="序号"
+          width="88"
+          align="center"
+          type="index"
+          fixed
+        ></virtual-column>
+        <el-table-column
+          prop="updateContent"
+          label="变更内容"
+          align="center"
+          width="150px"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="updateType"
+          label="变更类型"
+          align="center"
+          width="150px"
+        >
+        </el-table-column>
+        <el-table-column prop="updateBefore" label="变更前(数量/单价)" align="center">
+        </el-table-column>
+        <el-table-column prop="updateAfter" label="变更后(数量/单价)" align="center">
+        </el-table-column>
+      </el-table>
+    </virtual-scroll>
   </div>
 </template>
 
 <script>
+import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
+
 export default {
   // 记录变更表格
   name: "recordTable",
@@ -51,7 +59,12 @@ export default {
   },
   data () {
     return {
+      virtualList:[]
     }
+  },
+  components: {
+    VirtualScroll,
+    VirtualColumn
   },
   methods: {
     handleDetails (row) {

@@ -18,6 +18,8 @@
         :http-request="handleUpload"
         :before-upload="beforeUpload"
         :show-file-list="false"
+        accept=".xlsx,.xls"
+        v-loading="loading"
       >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -30,7 +32,12 @@
         <div>
           1、每次上传一个excel格式文件，不超过100MB。<br />
           2、请严格按模板格式上传。 <br />
-          3、<a style="color: #409eff; cursor: pointer" href="/">模板下载</a>
+          3、<a
+            style="color: #409eff; cursor: pointer"
+            download
+            href="/合同物资导入模板.xlsx"
+            >模板下载</a
+          >
         </div>
       </div>
     </div>
@@ -51,7 +58,7 @@
       v-if="fileList.length > 0 && fileList[0].reason.length > 0"
       title="提示"
       type="warning"
-      style="margin-top: 16px"
+      style="margin-top: 16px; max-height: 300px; overflow-y: scroll"
       :closable="false"
     >
       <template>
@@ -64,7 +71,7 @@
     </el-alert>
 
     <div slot="footer" class="dialog-footer">
-       <el-button round type="primary" @click="onOk">确认</el-button>
+      <el-button round type="primary" @click="onOk">确认</el-button>
       <el-button round @click="visible = false">关闭</el-button>
     </div>
   </Dialog>
@@ -105,7 +112,7 @@ export default {
       this.visible = false;
     },
     onOk () {
-      if(!this.fileList[0]?.list?.length){
+      if (!this.fileList[0]?.list?.length) {
         this.$message.warning('请先上传文件')
         return
       }
@@ -133,9 +140,12 @@ export default {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('projectId ', projectId);
+      this.loading = true;
 
       batchImport(formData).then(res => {
         this.fileList = [res.data]
+      }).finally(() => {
+        this.loading = false;
       })
 
     }

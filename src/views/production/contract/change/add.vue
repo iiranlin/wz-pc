@@ -128,12 +128,13 @@ import fileUpload from '@/components/upload'
 import { listByDeptCode } from '@/api/system/dept.js'
 import { getUserInfo } from '@/utils/user-info'
 export default {
-  name: "SectionAdd",
+  name: "changeContract",
   components: {
     VFormRender,
     fileUpload,
     TabTable
   },
+
   data () {
     const userInfo = getUserInfo()
     return {
@@ -267,7 +268,9 @@ export default {
             ...data,
             contractStatus: data.contractStatus == '2',
             // fileList: data.fileList[0]?.fileList || []
-            fileList:[],
+            fileList: [],
+            complementName: '',
+            updateReason:''
           }
           this.$refs.vFormRef.setFormData(newData)
 
@@ -291,7 +294,7 @@ export default {
     },
     cancel () {
       this.$store.dispatch('setProjectId', '')
-      this.$router.go(-1)
+      this.$tab.closeOpenPage({ name: 'changeContract' });
     },
 
     buttonShow (item) {
@@ -324,13 +327,13 @@ export default {
           const formData = await this.$refs.vFormRef.getFormData();
           formData.contractStatus = formData.contractStatus ? '2' : '1'
           // 后端存入嵌套数组
-          const fileList = formData.fileList
-          formData.fileList = [{ fileList }]
+          const fileList = formData.fileList || []
 
           // 保存变更跳转预览界面,store存当前保存值
           const saveData = Object.assign({ id: this.id }, formData, {
             materialList: this.tableData.map(x => ({
               ...x,
+              fileList:  [{ fileList }] ,
               id: x.type === 'add' || x.id.split('-').length > 1 ? null : x.id,
             })),
             addMaterial: this.tableData.filter(x => x.type === 'add').map(x => ({ ...x, id: null })),
@@ -345,6 +348,7 @@ export default {
               this.loading = false;
               this.$store.dispatch('setContractChangeDetail', res.data)
               this.$store.dispatch('setBackChangeData', saveData)
+              this.$store.dispatch('setSelectList', this.$refs.tabTableRef.currentTableData)
 
               this.onGoView(saveData)
             })
@@ -364,14 +368,6 @@ export default {
           status: '1',
         }
       })
-    },
-    checkoutStatus (flag) {
-      const widgets = ['scrapName', 'sugHandMethod', 'applyDeptId', 'applyUserId', 'comments', 'fileList', 'design_p2', 'projectCode', 'projectName', 'scrapCode', 'grid96921', 'grid45899', 'grid80913']
-      if (flag) {
-        this.$refs.vFormRef.hideWidgets(widgets)
-      } else {
-        this.$refs.vFormRef.showWidgets(widgets)
-      }
     },
     formFillInPage () {
       return new Promise((resolve) => {

@@ -1,45 +1,44 @@
 <template>
   <div class="tab-table-container">
     <!-- Action Button -->
-    <div
-      style="display: flex; justify-content: space-between"
-      v-if="type !== 'view'"
-    >
-      <div>
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
-          >添加物资</el-button
-        >
-        <!-- 批量导入 -->
-        <el-button
-          type="primary"
-          icon="el-icon-upload"
-          size="mini"
-          @click="onBatchUpload"
-          >批量导入</el-button
-        >
-        <!-- 删除 -->
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          @click="onDelete"
-          >删除</el-button
-        >
+    <template v-if="type !== 'view'">
+      <div
+        style="display: flex; justify-content: space-between"
+        v-if="type !== 'view'"
+      >
+        <div>
+          <!-- 批量导入 -->
+          <el-button
+            type="primary"
+            icon="el-icon-upload"
+            size="mini"
+            @click="onBatchUpload"
+            >批量导入</el-button
+          >
+          <!-- 删除 -->
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="onDelete"
+            >删除</el-button
+          >
+        </div>
+        <div>
+          <!-- 按物资名称模糊搜索输入框，有值则自动搜索 -->
+          <el-input
+            v-model="searchKeyword"
+            placeholder="请输入物资名称搜索"
+            size="mini"
+            style="width: 200px"
+            clearable
+            prefix-icon="el-icon-search"
+            @input="handleSearch"
+            @clear="handleClearSearch"
+          ></el-input>
+        </div>
       </div>
-      <div>
-        <!-- 按物资名称模糊搜索输入框，有值则自动搜索 -->
-        <el-input
-          v-model="searchKeyword"
-          placeholder="请输入物资名称搜索"
-          size="mini"
-          style="width: 200px"
-          clearable
-          prefix-icon="el-icon-search"
-          @input="handleSearch"
-          @clear="handleClearSearch"
-        ></el-input>
-      </div>
-    </div>
+    </template>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane label="线路项目" name="total"></el-tab-pane>
       <el-tab-pane
@@ -50,294 +49,313 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <el-table
-      :data="filteredTableData"
-      border
-      style="width: 100%"
-      :max-height="600"
-      v-loading="loading"
-      :row-key="getRowKey"
-      @selection-change="handleSelectionChange"
-      ref="dataTable"
-    >
-      <el-table-column
-        type="index"
-        label="序号"
-        width="55"
-        align="center"
-        fixed="left"
-      />
-      <!-- ✅ 多选框列 -->
-      <el-table-column
-        type="selection"
-        width="55"
-        fixed="left"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="materialName"
-        label="物资名称"
-        width="250"
-        fixed="left"
-        align="center"
+    <div style="height: 450px">
+      <virtual-scroll
+        :dynamic="false"
+        v-show="show"
+        ref="virtualScroll"
+        :data="filteredTableData"
+        :item-size="62"
+        key-prop="id"
+        @change="(renderData) => (virtualList = renderData)"
       >
-        <template slot-scope="scope">
-          <el-select
-            v-if="scope.row.isManual && type !== 'view'"
-            v-model="scope.row.materialId"
-            placeholder="请选择物资名称"
-            size="mini"
-            style="width: 100%"
-            filterable
-            @change="handleFieldChange('materialId', scope.row)"
-          >
-            <el-option
-              v-for="unit of options['itemOptions']"
-              :key="unit.value"
-              :label="unit.label"
-              :value="unit.value"
-            ></el-option>
-          </el-select>
-          <span v-else>{{ scope.row.materialName }} </span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="项目简称"
-        width="120"
-        align="center"
-      ></el-table-column>
-
-      <!-- 条件渲染：仅在总表中显示 -->
-      <el-table-column
-        v-if="activeTab === 'total'"
-        prop="sectionName"
-        label="标段项目名称"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-select
-            v-if="scope.row.isManual && type !== 'view'"
-            v-model="scope.row.sectionId"
-            placeholder="请选择标段项目名称"
-            size="mini"
-            style="width: 100%"
-            filterable
-            @change="handleFieldChange('sectionId', scope.row)"
-          >
-            <el-option
-              v-for="item of options['setcionOptions']"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-          <span v-else>{{ scope.row.sectionName }}</span>
-        </template>
-      </el-table-column>
-
-      <!-- 其他列 -->
-      <el-table-column
-        prop="sellerName"
-        label="卖方名称"
-        width="120"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="specModel"
-        label="规格型号"
-        width="200"
-        align="center"
-      >
-      </el-table-column>
-
-      <!-- 可选择计量单位 -->
-      <el-table-column prop="unit" label="计量单位" width="150" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unit }}</span>
-        </template>
-      </el-table-column>
-
-      <!-- 可编辑amount -->
-      <el-table-column prop="amount" label="数量" width="180" align="center">
-        <template slot-scope="scope">
-          <el-input-number
+        <el-table
+          :data="virtualList"
+          border
+          style="width: 100%"
+          height="450"
+          v-loading="loading"
+          @selection-change="handleSelectionChange"
+          ref="dataTable"
+        >
+          <virtual-column
+            label="序号"
+            width="88"
+            align="center"
+            type="index"
+            fixed
+          ></virtual-column>
+          <!-- 多选 -->
+          <virtual-column
             v-if="type !== 'view'"
-            v-model="scope.row.amount"
-            :min="0"
-            :precision="2"
-            size="mini"
-            @change="handleFieldChange('amount', scope.row)"
-            style="width: 100%"
-          ></el-input-number>
-          <span v-else>{{ scope.row.amount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="cumulativeAmount"
-        label="累计计划量"
-        width="120"
-        align="center"
-      ></el-table-column>
+            width="60"
+            type="selection"
+            align="center"
+            fixed
+          ></virtual-column>
+          <!-- ✅ 多选框列 -->
+          <!-- <el-table-column
+          type="selection"
+          width="55"
+          fixed
+          align="center"
+        ></el-table-column> -->
+          <el-table-column
+            prop="materialName"
+            label="物资名称"
+            width="250"
+            fixed
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-if="scope.row.isManual && type !== 'view'"
+                v-model="scope.row.materialId"
+                placeholder="请选择物资名称"
+                size="mini"
+                @change="handleFieldChange('materialId', scope.row)"
+                style="width: 100%"
+                filterable
+              >
+                <el-option
+                  v-for="unit of options['itemOptions']"
+                  :key="unit.value"
+                  :label="unit.label"
+                  :value="unit.value"
+                ></el-option>
+              </el-select>
+              <span v-else>{{ scope.row.materialName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="projectShortName"
+            label="项目简称"
+            width="120"
+            align="center"
+          ></el-table-column>
 
-      <el-table-column
-        prop="price"
-        label="到站不含税单价(元)"
-        width="160"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input-number
-            v-if="type !== 'view'"
-            v-model="scope.row.price"
-            :min="0"
-            :precision="2"
-            size="mini"
-            @change="handleFieldChange('price', scope.row)"
-            style="width: 100%"
-          ></el-input-number>
-          <span v-else>{{ scope.row.price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="vatRate"
-        label="物资增值税率（%）"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input-number
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
-            v-model="scope.row.vatRate"
-            :min="0"
-            :precision="2"
-            size="mini"
-            style="width: 100%"
-            @change="handleFieldChange('vatRate', scope.row)"
-          ></el-input-number>
-          <span v-else>{{ scope.row.vatRate }} %</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="taxPrice"
-        label="到站含税单价(元)"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="totalAmount"
-        label="到站合价含税(元)"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : '' }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="deliveryLocation"
-        label="交货地点"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
-            v-model="scope.row.deliveryLocation"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
-          <span v-else>{{ scope.row.deliveryLocation }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="receiver"
-        label="收货人"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
-            v-model="scope.row.receiver"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
-          <span v-else>{{ scope.row.receiver }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="deliveryStatus"
-        label="交货状态"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
-            v-model="scope.row.deliveryStatus"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
-          <span v-else>{{ scope.row.deliveryStatus }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="deliveryTerms"
-        label="交货条件"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
-            v-model="scope.row.deliveryTerms"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
-          <span v-else>{{ scope.row.deliveryTerms }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="deliveryDate"
-        label="交货期"
-        width="150"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
-            v-model="scope.row.deliveryDate"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
-          <span v-else>{{ scope.row.deliveryDate }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
+          <!-- 条件渲染：仅在总表中显示 -->
+          <el-table-column
+            v-if="activeTab === 'total'"
+            prop="sectionName"
+            label="标段项目名称"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-select
+                v-if="scope.row.isManual && type !== 'view'"
+                v-model="scope.row.sectionId"
+                placeholder="请选择标段项目名称"
+                size="mini"
+                @change="handleFieldChange('sectionId', scope.row)"
+                style="width: 100%"
+                filterable
+              >
+                <el-option
+                  v-for="item of options['setcionOptions']"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+              <span v-else>{{ scope.row.sectionName }}</span>
+            </template>
+          </el-table-column>
+
+          <!-- 其他列 -->
+          <el-table-column
+            prop="sellerName"
+            label="卖方名称"
+            width="120"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="specModel"
+            label="规格型号"
+            width="200"
+            align="center"
+          >
+          </el-table-column>
+
+          <!-- 可选择计量单位 -->
+          <el-table-column
+            prop="unit"
+            label="计量单位"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.unit }}</span>
+            </template>
+          </el-table-column>
+
+          <!-- 可编辑amount -->
+          <el-table-column
+            prop="amount"
+            label="数量"
+            width="180"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input-number
+                v-if="type !== 'view'"
+                v-model="scope.row.amount"
+                :min="0"
+                :precision="2"
+                size="mini"
+                @change="handleFieldChange('amount', scope.row)"
+                style="width: 100%"
+              ></el-input-number>
+              <span v-else>{{ scope.row.amount }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="cumulativeAmount"
+            label="累计计划量"
+            width="120"
+            align="center"
+            :formatter="(a,b,value)=>value || 0"
+          ></el-table-column>
+
+          <el-table-column
+            prop="price"
+            label="到站不含税单价(元)"
+            width="160"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input-number
+                v-if="type !== 'view'"
+                v-model="scope.row.price"
+                :min="0"
+                :precision="2"
+                size="mini"
+                @change="handleFieldChange('price', scope.row)"
+                style="width: 100%"
+              ></el-input-number>
+              <span v-else>{{ scope.row.price }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="vatRate"
+            label="物资增值税率（%）"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input-number
+                v-if="type !== 'view'"
+                v-model="scope.row.vatRate"
+                :min="0"
+                :precision="2"
+                size="mini"
+                @change="handleFieldChange('vatRate', scope.row)"
+                style="width: 100%"
+              ></el-input-number>
+              <span v-else>{{ scope.row.vatRate }}%</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="taxPrice"
+            label="到站含税单价(元)"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="totalAmount"
+            label="到站合价含税(元)"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              {{
+                scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : ''
+              }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="deliveryLocation"
+            label="交货地点"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="type !== 'view'"
+                v-model="scope.row.deliveryLocation"
+                size="mini"
+                @change="handleFieldChange('deliveryLocation', scope.row)"
+                style="width: 100%"
+              ></el-input>
+              <span v-else>{{ scope.row.deliveryLocation }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="receiver"
+            label="收货人"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="type !== 'view'"
+                v-model="scope.row.receiver"
+                size="mini"
+                @change="handleFieldChange('receiver', scope.row)"
+                style="width: 100%"
+              ></el-input>
+              <span v-else>{{ scope.row.receiver }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="deliveryStatus"
+            label="交货状态"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="type !== 'view'"
+                v-model="scope.row.deliveryStatus"
+                size="mini"
+                @change="handleFieldChange('deliveryStatus', scope.row)"
+                style="width: 100%"
+              ></el-input>
+              <span v-else>{{ scope.row.deliveryStatus }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="deliveryTerms"
+            label="交货条件"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="type !== 'view'"
+                v-model="scope.row.deliveryTerms"
+                size="mini"
+                @change="handleFieldChange('deliveryTerms', scope.row)"
+                style="width: 100%"
+              ></el-input>
+              <span v-else>{{ scope.row.deliveryTerms }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="deliveryDate"
+            label="交货期"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-if="type !== 'view'"
+                v-model="scope.row.deliveryDate"
+                size="mini"
+                @change="handleFieldChange('deliveryDate', scope.row)"
+                style="width: 100%"
+              ></el-input>
+              <span v-else>{{ scope.row.deliveryDate }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </virtual-scroll>
+    </div>
 
     <!-- 统计信息 -->
     <div class="summary-info" v-if="currentTableData.length > 0">
@@ -369,6 +387,7 @@
 import BatchDialog from './batchDialog.vue';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
+import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
 export default {
   name: 'tabTable',
   dicts: ['MeasureUnit'],
@@ -385,20 +404,26 @@ export default {
 
   },
   components: {
-    BatchDialog
+    BatchDialog,
+    VirtualScroll,
+    VirtualColumn
   },
   data () {
     return {
+      virtualList: [],
       activeTab: 'total', // 当前激活的tab
       currentTableData: [], // 当前显示的表格数据
       loading: false,
       selectedRowKeys: { total: [] }, // 用户存储当前选择的数据
       maxManualIndex: 0,
-      options: {},
+      options: {
+
+      },
       params: {
         pageNum: 1,
         pageSize: -1,
       },
+      show: true,
       originalTableData: [], // 原始表格数据备份
       searchKeyword: '', // 添加搜索关键词数据属性
     }
@@ -557,15 +582,24 @@ export default {
         .then(() => {
           // 找到当前tab对应的所有选中行
           // this.tableData = this.tableData.filter(row => !this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)))
+          // 获取所有selectedRowKeys
+          const selectedRowKeys = Object.keys(this.selectedRowKeys).reduce((acc, key) => {
+            return acc.concat(this.selectedRowKeys[key]);
+          }, []);
           this.$emit('data-change', {
             type: 'delete',
-            row: this.selectedRowKeys[this.activeTab],
+            row: selectedRowKeys,
           });
         })
     },
     // 每个字段的变化都触发这个方法
     handleFieldChange (fieldType, row) {
-
+      this.$emit('data-change', {
+        type: fieldType,
+        index: this.getOriginalIndex(row),
+        row: row,
+        newValue: row[fieldType]
+      });
 
       console.log('handleFieldChange', fieldType, row);
 
@@ -637,11 +671,19 @@ export default {
         activeTab: this.activeTab,
         currentData: this.filteredTableData
       });
+
+      this.show = false;
+      setTimeout(() => {
+
+        this.show = true;
+      }, 100)
+
     },
 
     // 切换Tab后恢复选中状态
     restoreSelectionAfterTabChange () {
       const tableRef = this.$refs.dataTable;
+      const vs = this.$refs.virtualScroll;
       if (!tableRef) return;
       // 获取已经选中所有keys
       const allKeys = Object.keys(this.selectedRowKeys).reduce((acc, key) => {
@@ -656,8 +698,8 @@ export default {
       this.currentTableData.forEach(row => {
         const key = this.getRowKey(row);
         const shouldSelect = shouldBeSelectedKeys.includes(key);
-
-        tableRef.toggleRowSelection(row, shouldSelect);
+        // vs.toggleRowSelection(row, shouldSelect);
+        // tableRef.toggleRowSelection(row, shouldSelect);
       });
     },
 

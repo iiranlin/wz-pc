@@ -147,6 +147,10 @@ export default {
       if (btn.buttonCode === 'contractStatus') {
         return this.selection[0].contractStatus == 2
       }
+      // 变更非启用不能变更
+      if(btn.buttonCode === 'change'){
+        return this.selection[0].contractStatus == 1
+      }
       return false
     },
     numberChange (val) {
