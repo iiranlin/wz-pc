@@ -137,7 +137,7 @@ export default {
     const userInfo = getUserInfo()
     return {
       maxManualIndex: 1,
-      buyer: userInfo?.deptName,
+      buyer: userInfo?.instituteName,
       loading: false,
       title: '新增',
       checked: false,
@@ -196,7 +196,7 @@ export default {
   methods: {
     onDataChange (data) {
       if (['delete'].includes(data.type)) {
-       this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
+        this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
         return
       }
 
@@ -309,10 +309,12 @@ export default {
           formData.contractStatus = formData.contractStatus ? '2' : '1'
           // 后端存入嵌套数组
           const fileList = formData.fileList
-          formData.fileList = [{ fileList }]
+          // formData.fileList = [{ fileList }]
+         
           await Api[
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
+           fileList:[{fileList}],
             materialList: this.tableData.map(x => ({
               ...x,
               id: null,
@@ -346,7 +348,7 @@ export default {
           if (this.projectId) {
             this.$refs['vFormRef'].setFormData({
               projectId: this.projectId,
-              projectName: this.lineOptions.find(item => item.value === this.projectId).label
+              // projectName: this.lineOptions.find(item => item.value === this.projectId).label
             })
           }
 
@@ -388,6 +390,10 @@ export default {
           value: item.id,
           label: item.projectName
         }
+      })
+
+      this.$refs['vFormRef'].setFormData({
+        projectName: this.lineOptions.find(item => item.value === this.projectId).label
       })
     },
     async getDeptTree (deptCode) {

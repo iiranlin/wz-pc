@@ -39,7 +39,22 @@
               </el-select>
             </template>
             <template v-else>
-              <span>{{ formModel.constructionUnit }}</span>
+               <el-tooltip
+                :content="formModel.constructionUnit"
+                placement="bottom"
+                effect="light"
+              >
+                <div
+                  style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ formModel.constructionUnit }}
+                </div>
+              </el-tooltip>
+          
             </template>
           </el-form-item>
         </template>

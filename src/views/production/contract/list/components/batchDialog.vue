@@ -18,6 +18,7 @@
         :http-request="handleUpload"
         :before-upload="beforeUpload"
         :show-file-list="false"
+        accept=".xlsx,.xls"
         v-loading="loading"
       >
         <i class="el-icon-upload"></i>
@@ -44,7 +45,7 @@
     <el-table :data="fileList" border style="width: 100%; margin-top: 20px">
       <el-table-column prop="fileName" label="文件名" />
       <el-table-column prop="number" label="物资条数" />
-      <el-table-column prop="totalAmount" label="到站合作总金额" />
+      <el-table-column prop="totalAmount" label="到站合价总金额" />
       <el-table-column
         prop="fileSize"
         label="文件大小"
@@ -71,7 +72,7 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button round type="primary" @click="onOk">确认</el-button>
-      <el-button round @click="visible = false">取消</el-button>
+      <el-button round @click="visible = false">关闭</el-button>
     </div>
   </Dialog>
 </template>

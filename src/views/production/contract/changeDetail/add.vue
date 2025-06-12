@@ -100,8 +100,9 @@ export default {
   data () {
     const userInfo = getUserInfo()
     return {
+      userInfo,
       maxManualIndex: 1,
-      buyer: userInfo?.deptName,
+      buyer: userInfo?.instituteName,
       loading: false,
       title: '新增',
       checked: false,
@@ -152,6 +153,9 @@ export default {
     this.gysOptions = await this.getDeptTree('GYS')
   },
   mounted () {
+      this.$refs['vFormRef'].setFormData({
+            buyer: this.buyer
+          })
 
     if (this.status == '1') {
       this.buttonTop = [

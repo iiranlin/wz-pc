@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :buttonDisable="buttonDisable"
     ></button-top>
     <form-data
       ref="formData"
@@ -14,8 +15,6 @@
       :formData="formData"
     />
     <el-row type="flex" class="container_h">
-   
-
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
         <right-toolbar
@@ -42,7 +41,7 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-         <!-- 供应商数量 -->
+          <!-- 供应商数量 -->
           <template #sellerList="scoped">
             <el-button
               type="text"
@@ -83,7 +82,7 @@ import SellerDialog from './components/sellerDialog.vue'
 export default {
   // 标段项目
   name: "section",
-  components: { Add,SellerDialog },
+  components: { Add, SellerDialog },
   mixins: [indexMixin],
 
   data () {
@@ -126,7 +125,7 @@ export default {
       hasOwn: true,
     };
   },
-  activated(){
+  activated () {
     this.getList();
   },
   created () {
@@ -141,6 +140,13 @@ export default {
     },
   },
   methods: {
+    buttonDisable (btn) {
+      // 没有合同物资才允许删除
+      if (btn.buttonCode === 'delete') {
+        return this.selection.some(x => x.materialList.length != 0)
+      }
+      return false
+    },
     filterNode (value, data) {
       if (!value) return true;
       return !!this.$py.match(data.deptName, value) || data.deptCode.indexOf(value) !== -1;

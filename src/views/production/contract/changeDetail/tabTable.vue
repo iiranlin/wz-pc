@@ -1,45 +1,27 @@
 <template>
   <div class="tab-table-container">
     <!-- Action Button -->
-    <div
-      style="display: flex; justify-content: space-between"
-      v-if="type !== 'view'"
-    >
-      <div>
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
-          >添加物资</el-button
-        >
-        <!-- 批量导入 -->
-        <el-button
-          type="primary"
-          icon="el-icon-upload"
-          size="mini"
-          @click="onBatchUpload"
-          >批量导入</el-button
-        >
-        <!-- 删除 -->
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          @click="onDelete"
-          >删除</el-button
-        >
-      </div>
-      <div>
-        <!-- 按物资名称模糊搜索输入框，有值则自动搜索 -->
-        <el-input
-          v-model="searchKeyword"
-          placeholder="请输入物资名称搜索"
-          size="mini"
-          style="width: 200px"
-          clearable
-          prefix-icon="el-icon-search"
-          @input="handleSearch"
-          @clear="handleClearSearch"
-        ></el-input>
-      </div>
-    </div>
+    <template v-if="type !== 'view'">
+      <!-- <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
+        >添加物资</el-button
+      > -->
+      <!-- 批量导入 -->
+      <el-button
+        type="primary"
+        icon="el-icon-upload"
+        size="mini"
+        @click="onBatchUpload"
+        >批量导入</el-button
+      >
+      <!-- 删除 -->
+      <el-button
+        type="danger"
+        icon="el-icon-delete"
+        size="mini"
+        @click="onDelete"
+        >删除</el-button
+      >
+    </template>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane label="线路项目" name="total"></el-tab-pane>
       <el-tab-pane
@@ -87,9 +69,9 @@
             v-model="scope.row.materialId"
             placeholder="请选择物资名称"
             size="mini"
+            @change="handleFieldChange('materialId', scope.row)"
             style="width: 100%"
             filterable
-            @change="handleFieldChange('materialId', scope.row)"
           >
             <el-option
               v-for="unit of options['itemOptions']"
@@ -98,7 +80,7 @@
               :value="unit.value"
             ></el-option>
           </el-select>
-          <span v-else>{{ scope.row.materialName }} </span>
+          <span v-else>{{ scope.row.materialName }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -122,9 +104,9 @@
             v-model="scope.row.sectionId"
             placeholder="请选择标段项目名称"
             size="mini"
+            @change="handleFieldChange('sectionId', scope.row)"
             style="width: 100%"
             filterable
-            @change="handleFieldChange('sectionId', scope.row)"
           >
             <el-option
               v-for="item of options['setcionOptions']"
@@ -204,18 +186,15 @@
       >
         <template slot-scope="scope">
           <el-input-number
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
+            v-if="type !== 'view'"
             v-model="scope.row.vatRate"
             :min="0"
             :precision="2"
             size="mini"
-            style="width: 100%"
             @change="handleFieldChange('vatRate', scope.row)"
+            style="width: 100%"
           ></el-input-number>
-          <span v-else>{{ scope.row.vatRate }}</span>
+          <span v-else>{{ scope.row.vatRate }}%</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -246,12 +225,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryLocation"
             size="mini"
+            @change="handleFieldChange('deliveryLocation', scope.row)"
             style="width: 100%"
           ></el-input>
           <span v-else>{{ scope.row.deliveryLocation }}</span>
@@ -265,12 +242,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
+            v-if="type !== 'view'"
             v-model="scope.row.receiver"
             size="mini"
+            @change="handleFieldChange('receiver', scope.row)"
             style="width: 100%"
           ></el-input>
           <span v-else>{{ scope.row.receiver }}</span>
@@ -284,12 +259,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryStatus"
             size="mini"
+            @change="handleFieldChange('deliveryStatus', scope.row)"
             style="width: 100%"
           ></el-input>
           <span v-else>{{ scope.row.deliveryStatus }}</span>
@@ -303,12 +276,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryTerms"
             size="mini"
+            @change="handleFieldChange('deliveryTerms', scope.row)"
             style="width: 100%"
           ></el-input>
           <span v-else>{{ scope.row.deliveryTerms }}</span>
@@ -322,12 +293,10 @@
       >
         <template slot-scope="scope">
           <el-input
-            v-if="
-              (type !== 'view' && scope.row.id.split('-').length != 1) ||
-              scope.row.type == 'add'
-            "
+            v-if="type !== 'view'"
             v-model="scope.row.deliveryDate"
             size="mini"
+            @change="handleFieldChange('deliveryDate', scope.row)"
             style="width: 100%"
           ></el-input>
           <span v-else>{{ scope.row.deliveryDate }}</span>
@@ -390,42 +359,29 @@ export default {
       loading: false,
       selectedRowKeys: { total: [] }, // 用户存储当前选择的数据
       maxManualIndex: 0,
-      options: {},
+      options: {
+
+      },
       params: {
         pageNum: 1,
         pageSize: -1,
-      },
-      originalTableData: [], // 原始表格数据备份
-      searchKeyword: '', // 添加搜索关键词数据属性
+      }
     }
   },
   computed: {
     filteredTableData () {
-      let baseData = [];
-
-      // 根据当前tab获取基础数据
       if (this.activeTab === 'total') {
-        baseData = this.tableData;
+        return this.tableData;
       } else {
         const selectedProject = this.projectTabs.find(p => p.name === this.activeTab);
         if (selectedProject) {
-          baseData = this.tableData.filter(item =>
+          return this.tableData.filter(item =>
             item.sectionName === selectedProject.projectName
           );
         } else {
-          baseData = [];
+          return [];
         }
       }
-
-      // 如果有搜索关键词，进行过滤
-      if (this.searchKeyword && this.searchKeyword.trim()) {
-        const keyword = this.searchKeyword.trim().toLowerCase();
-        return baseData.filter(item => {
-          return item.materialName && item.materialName.toLowerCase().includes(keyword);
-        });
-      }
-
-      return baseData;
     },
     // 计算总amount
     totalQuantity () {
@@ -474,29 +430,14 @@ export default {
     }
   },
   created () {
-    this.getItemsOptions()
+    // this.getItemsOptions()
     this.getSectionOptions()
   },
   methods: {
-    // 处理搜索输入
-    handleSearch (value) {
-      // 搜索功能通过computed属性filteredTableData自动实现
-      // 这里可以添加防抖逻辑如果需要的话
-      console.log('搜索关键词:', value);
-    },
-
-    // 处理清空搜索
-    handleClearSearch () {
-      this.searchKeyword = '';
-      console.log('清空搜索');
-      // 数据会通过computed属性自动恢复
-    },
-
     onDialogOk (data) {
       // 将批量上传的文件，导入到总的数据中
       const newData = data.map(item => ({
         ...item,
-        type: 'add',
         sellerName: this.sellerName,
       }))
       this.tableData.push(...newData)
@@ -561,7 +502,12 @@ export default {
     },
     // 每个字段的变化都触发这个方法
     handleFieldChange (fieldType, row) {
-
+      this.$emit('data-change', {
+        type: fieldType,
+        index: this.getOriginalIndex(row),
+        row: row,
+        newValue: row[fieldType]
+      });
 
       console.log('handleFieldChange', fieldType, row);
 
@@ -590,18 +536,10 @@ export default {
           break;
         case 'price':
           this.calculateTaxPrice(row);
-          this.$emit('data-change', {
-            type: fieldType,
-            row
-          });
           break;
         // 数量 * 到站含税单价 = 到站合价含税
         case 'amount':
           this.calculateTotalAmount(row);
-          this.$emit('data-change', {
-            type: fieldType,
-            row
-          });
           break;
         case 'taxPrice':
           this.calculateTotalAmount(row);
@@ -610,7 +548,7 @@ export default {
     },
     calculateTaxPrice (row) {
       if (row.vatRate && row.price) {
-        const taxPrice = (100 + row.vatRate) * row.price / 100
+        const taxPrice = (100 + row.vatRate) * row.price
         row.taxPrice = taxPrice
 
         this.calculateTotalAmount(row)

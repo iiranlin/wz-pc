@@ -95,7 +95,7 @@ export default {
 
     this.constructionCompanyOptions = await this.getDeptTree('SGDW')
     this.supervisionUnitOptions = await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions = await this.getDeptTree('WDGS')
+    this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
   },
   mounted () {
 

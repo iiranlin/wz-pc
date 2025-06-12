@@ -223,7 +223,7 @@ export default {
 
     this.constructionCompanyOptions = await this.getDeptTree('SGDW')
     this.supervisionUnitOptions = await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions = await this.getDeptTree('WDGS')
+    this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
   },
   mounted () {
 
@@ -270,6 +270,10 @@ export default {
           value: item.id,
           label: item.projectName
         }
+      })
+
+      this.$refs['vFormRef'].setFormData({
+        projectName: this.lineOptions.find(item => item.value === this.projectId).label
       })
     },
     async getDeptTree (deptCode) {
@@ -345,7 +349,7 @@ export default {
           if (this.projectId) {
             this.$refs['vFormRef'].setFormData({
               projectId: this.projectId,
-              projectName: this.lineOptions.find(item => item.value === this.projectId).label
+              // projectName: this.lineOptions.find(item => item.value === this.projectId).label
             })
           }
           resolve(true)
