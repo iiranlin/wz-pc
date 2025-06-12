@@ -17,37 +17,19 @@
         <!-- 附件 -->
         <template #file1Slot="scope">
           <el-form-item prop="fileList" label="检测报告" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
-            />
+            <fileUpload :value="scope.formModel.fileList01" :preview="true" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
           <el-form-item prop="fileList" label="质量证明文件" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
-            />
+            <fileUpload :value="scope.formModel.fileList02" :preview="true" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
           <el-form-item prop="fileList" label="报验结果" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
-            />
+            <fileUpload :value="scope.formModel.fileList03" :preview="true" />
           </el-form-item>
         </template>
         <template #returnDetailSlot>
@@ -100,37 +82,61 @@
               label="有效期截止日期"
               width="150"
             ></el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column
+              prop="receivingAddress"
+              label="收货地址"
+              width="200"
+            ></el-table-column>
+            <el-table-column
+              prop="supplyDate"
+              label="供应时间"
+              width="160"
+            ></el-table-column>
+
+            <el-table-column
+              prop="receiver"
+              label="收货人及联系方式"
+              width="180"
+            ></el-table-column>
+            <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
+            <el-table-column
+              prop="receiver"
+              label="投资比例"
+              width="180"
+            ></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
-              <!-- <template slot-scope="scope">
-          <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
-            :limit="1"
-            :fileSize="50"
-          />
-        </template> -->
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList01"
+                  :preview="true"
+                  :isShowTip="false"
+                />
+              </template>
             </el-table-column>
             <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
-              <!-- <template slot-scope="scope">
-          <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
-            :limit="1"
-            :fileSize="50"
-          />
-        </template> -->
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList02"
+                  :preview="true"
+                  :isShowTip="false"
+                />
+              </template>
             </el-table-column>
             <el-table-column
               prop="refundTotal"
               label="退货数量"
               width="120"
             ></el-table-column>
-            <el-table-column
-              prop="projectShortName"
-              label="退货附件"
-              width="200"
-            ></el-table-column>
+            <el-table-column prop="projectShortName" label="退货附件" width="200">
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList03"
+                  :preview="true"
+                  :isShowTip="false"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -207,15 +213,40 @@ export default {
       await Api.detailBack(id).then(({ data }) => {
         this.$nextTick(async () => {
           await this.formFillInPage();
+          //拆分附件
+          if (data.fileList && data.fileList.length > 0) {
+            data.fileList01 = data.fileList.find(
+              (item) => item.businessType == "1"
+            ).fileList;
+            data.fileList02 = data.fileList.find(
+              (item) => item.businessType == "2"
+            ).fileList;
+            data.fileList03 = data.fileList.find(
+              (item) => item.businessType == "3"
+            ).fileList;
+          }
           // fileList回显
           const newData = {
             ...data,
-            fileList: (data.fileList && data.fileList[0]?.fileList) || [],
           };
           this.$refs.vFormRef.setFormData(newData);
           //   form action
           this.$refs.vFormRef.setReadMode(true);
-          this.tableData = data.materialSupplierDetailDTOList;
+          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            ...x,
+            manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
+            expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+            fileList01: x.fileList
+              ? x.fileList.find((item) => item.businessType == "1").fileList || []
+              : [],
+            fileList02: x.fileList
+              ? x.fileList.find((item) => item.businessType == "2").fileList || []
+              : [],
+            fileList03: x.fileList
+              ? x.fileList.find((item) => item.businessType == "3").fileList || []
+              : [],
+          }));
+          this.tableData = detail;
         });
       });
     },

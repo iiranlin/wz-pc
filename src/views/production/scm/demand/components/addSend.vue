@@ -20,14 +20,13 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
               :preview="type === 'view'"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
         <!-- 供应需求ID和需求项目切换 -->
-        <template #slot2="scope">
+        <!-- <template #slot2="scope">
           <el-form-item
             prop="supplyNumber"
             label="供应需求ID"
@@ -44,13 +43,21 @@
           >
           {{scope.formModel.sectionName}}
           </el-form-item>
-        </template>
+        </template> -->
         <template #shippingNumberSlot="scope">
+          <el-form-item
+            prop="htmc"
+            label="合同名称"
+            class="label-right-align"
+            v-if="type != 'view'"
+          >
+            <el-input v-model="scope.formModel.htmc" readonly></el-input>
+          </el-form-item>
           <el-form-item
             prop="shipmentBatchNumber"
             label="发货单号"
             class="label-right-align"
-            v-if="type == 'view'"
+            v-else
           >
             {{ scope.formModel.shipmentBatchNumber }}
           </el-form-item>
@@ -195,6 +202,12 @@ export default {
         if (!row.manufactureDate) {
           errors.push(`第${rowNum}行，生产日期未填写 `);
         }
+        if (!row.fileList01) {
+          errors.push(`第${rowNum}行，请上传合格证附件 `);
+        }
+        if (!row.fileList02) {
+          errors.push(`第${rowNum}行，请上传厂检报告附件`);
+        }
       });
 
       if (errors.length > 0) {
@@ -243,6 +256,12 @@ export default {
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
             id: x.planDetailId,
+            fileList01: x.fileList
+              ? x.fileList.find((item) => item.businessType == "1").fileList || []
+              : [],
+            fileList02: x.fileList
+              ? x.fileList.find((item) => item.businessType == "2").fileList || []
+              : [],
           }));
           this.tableData = detail;
           this.setSelectedItemList(this.tableData);
@@ -276,13 +295,13 @@ export default {
           this.$message.warning("请完善信息");
           return;
         }
-        const flag = this.tableData.every(
-          (obj) => obj.sectionId === this.tableData[0].sectionId
-        );
-        if (!flag) {
-          this.$modal.msgError("一次发货只允许选择一个需求组织（分部）的供应物资");
-          return;
-        }
+        // const flag = this.tableData.every(
+        //   (obj) => obj.sectionId === this.tableData[0].sectionId
+        // );
+        // if (!flag) {
+        //   this.$modal.msgError("一次发货只允许选择一个需求组织（分部）的供应物资");
+        //   return;
+        // }
         if (this.getSelectedItemList().length === 0) {
           this.$modal.msgError("请选择物资");
           return;
@@ -297,7 +316,7 @@ export default {
           const formData = await this.$refs.vFormRef.getFormData();
           // 后端存入嵌套数组
           const fileList = formData.fileList;
-          formData.fileList = [{ fileList }];
+          formData.fileList = fileList ? [{ fileList }] : [];
           await Api.save(
             Object.assign(
               {
@@ -309,6 +328,16 @@ export default {
                 materialSupplierDetailParams: this.tableData.map((x) => ({
                   planDetailId: x.id,
                   ...x,
+                  fileList: [
+                    {
+                      businessType: "1",
+                      fileList: x.fileList01,
+                    },
+                    {
+                      businessType: "2",
+                      fileList: x.fileList02,
+                    },
+                  ],
                 })),
               }
             )

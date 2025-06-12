@@ -238,6 +238,7 @@ export default {
         query: {
           type: "view",
           id: row.id,
+          backNode:row.backNode
         },
       });
     },

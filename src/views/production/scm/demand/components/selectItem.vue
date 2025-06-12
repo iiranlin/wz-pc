@@ -141,13 +141,13 @@ export default {
         this.$message.warning("请选择要添加的物资");
         return;
       }
-      const flag = this.selectRows.every(
-        (obj) => obj.deptId === this.selectRows[0].deptId
-      );
-      if (!flag) {
-        this.$modal.msgError("一次发货只允许选择一个需求组织（分部）的供应物资");
-        return;
-      }
+      // const flag = this.selectRows.every(
+      //   (obj) => obj.deptId === this.selectRows[0].deptId
+      // );
+      // if (!flag) {
+      //   this.$modal.msgError("一次发货只允许选择一个需求组织（分部）的供应物资");
+      //   return;
+      // }
       this.setSelectedItemList(this.selectRows);
       this.cancel();
     },

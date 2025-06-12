@@ -34,7 +34,7 @@
     <!-- 文件列表 -->
     <div
       class="fileList"
-      :style="{ width: !preview ? 'calc(100% - 100px)' : '100%' }"
+      :style="{ width: !preview ? 'calc(100% - 0px)' : '100%' }"
     >
       <div
         :key="index"

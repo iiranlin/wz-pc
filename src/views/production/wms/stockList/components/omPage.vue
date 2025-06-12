@@ -16,13 +16,15 @@
       >
         <!-- 附件 -->
         <template #fileSlot="scope">
-          <el-form-item prop="fileList" label="领料单" class="label-right-align">
+          <el-form-item
+            prop="fileList"
+            label="领料单"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
               v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
+              :preview="type == 'view' && preview"
             />
           </el-form-item>
         </template>
@@ -86,7 +88,6 @@
               label="有效期截止日期"
               width="150"
             ></el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
             <el-table-column prop="2" label="出库数量" width="120">
               <template slot-scope="scope">
                 <el-input-number
@@ -99,6 +100,19 @@
                 ></el-input-number>
                 <span v-else>
                   {{ scope.row.outTotle }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="remark" label="备注" width="200">
+              <template slot-scope="scope">
+                <el-input
+                  v-model="scope.row.remark"
+                  size="mini"
+                  style="width: 100%"
+                  v-if="type != 'view' && !preview"
+                ></el-input>
+                <span v-else>
+                  {{ scope.row.remark }}
                 </span>
               </template>
             </el-table-column>

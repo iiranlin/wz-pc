@@ -37,7 +37,7 @@
           <el-input-number
             v-model="scope.row.sendTotal"
             :min="0"
-            :precision="2"
+            :max="Number(scope.row.planAmount)"
             size="mini"
             style="width: 100%"
             v-if="type != 'view'"
@@ -90,6 +90,71 @@
           </span>
         </template>
       </el-table-column>
+      <el-table-column prop="receivingAddress" label="收货地址" width="160">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.receivingAddress"
+            size="mini"
+            style="width: 100%"
+            v-if="type != 'view'"
+          ></el-input>
+          <span v-else>
+            {{ scope.row.receivingAddress }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="supplyDate" label="供应时间" width="160">
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.supplyDate"
+            type="date"
+            size="mini"
+            style="width: 100%"
+            value-format="yyyy-MM-dd"
+            v-if="type != 'view'"
+          ></el-date-picker>
+          <span v-else>
+            {{ scope.row.supplyDate }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="receiver" label="收货人及联系方式" width="160">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.receiver"
+            size="mini"
+            style="width: 100%"
+            v-if="type != 'view'"
+          ></el-input>
+          <span v-else>
+            {{ scope.row.receiver }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="unit" label="投资方" width="180"></el-table-column>
+      <el-table-column prop="unit" label="投资比例" width="120"></el-table-column>
+      <el-table-column prop="projectShortName" label="合格证附件" width="300">
+        <template slot-scope="scope">
+          <fileUpload
+            v-model="scope.row.fileList01"
+            :value="scope.row.fileList01"
+            :limit="1"
+            :preview="type == 'view'"
+            :isShowTip="false"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="300">
+        <template slot-scope="scope">
+          <fileUpload
+            v-model="scope.row.fileList02"
+            :value="scope.row.fileList02"
+            :limit="1"
+            :preview="type == 'view'"
+            :isShowTip="false"
+          />
+        </template>
+      </el-table-column>
       <el-table-column prop="remark" label="备注" width="200">
         <template slot-scope="scope">
           <el-input
@@ -103,31 +168,12 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="合格证附件" width="200">
-        <!-- <template slot-scope="scope">
-          <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
-            :limit="1"
-            :fileSize="50"
-          />
-        </template> -->
-      </el-table-column>
-      <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
-        <!-- <template slot-scope="scope">
-          <fileUpload
-            v-if="scope.row.fileList[0]"
-            :value="scope.row.fileList[0].fileList"
-            :limit="1"
-            :fileSize="50"
-          />
-        </template> -->
-      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import fileUpload from "@/components/upload";
 export default {
   name: "tabTable",
   dicts: ["MeasureUnit"],
@@ -139,7 +185,7 @@ export default {
       default: () => [],
     },
   },
-  components: {},
+  components: { fileUpload },
   computed: {
     type() {
       return this.$route.query.type;
@@ -166,6 +212,7 @@ export default {
   created() {},
   methods: {
     selectItem() {
+      this.setSelectedItemList(this.tableData);
       this.$router.push({
         name: "selectItem",
         query: {
@@ -176,6 +223,9 @@ export default {
           sellerId: this.sellerId,
         },
       });
+    },
+    setSelectedItemList(data) {
+      this.$store.dispatch("request/setSelectedItemList", data);
     },
   },
 };

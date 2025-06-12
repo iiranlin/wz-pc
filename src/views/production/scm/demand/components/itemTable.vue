@@ -7,7 +7,7 @@
         }}</span
         >项）
       </span>
-      <el-select
+      <!-- <el-select
         class="select-box"
         v-model="form.deptId"
         placeholder="请选择需求组织"
@@ -22,7 +22,7 @@
           :label="item.deptName"
           :value="item.deptId"
         />
-      </el-select>
+      </el-select> -->
     </div>
     <el-table
       :data="tableData"
@@ -55,16 +55,26 @@
         width="120"
       ></el-table-column>
       <el-table-column prop="supplyDate" label="供应时间" width="160"></el-table-column>
-      <el-table-column prop="addr" label="使用地点" width="160"></el-table-column>
+      <el-table-column prop="addr" label="使用地点" width="200"></el-table-column>
       <el-table-column
         prop="receiver"
         label="收货人及联系方式"
         width="180"
       ></el-table-column>
+         <el-table-column
+        prop="receiver"
+        label="投资方"
+        width="180"
+      ></el-table-column>
+         <el-table-column
+        prop="receiver"
+        label="投资比例"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="remark" label="备注" width="200"></el-table-column>
       <el-table-column
         prop="projectShortName"
-        label="剩余待发货"
+        label="本次需求未发货数量"
         width="120"
       ></el-table-column>
     </el-table>
@@ -97,7 +107,7 @@ export default {
     sellerId() {
       return this.$route.query?.sellerId || "";
     },
-    ...mapState(['request'])
+    ...mapState(["request"]),
   },
   data() {
     return {
@@ -112,6 +122,12 @@ export default {
     };
   },
   mounted() {
+    this.findDeptList();
+    this.findWzList();
+  },
+  activated() {
+    this.hasRestoredFromStore=false,
+    this.form={};
     this.findDeptList();
     this.findWzList();
   },
@@ -150,10 +166,15 @@ export default {
     syncStoreSelectedData() {
       if (this.hasRestoredFromStore) return;
       const selected = this.getSelectedItemList();
+      console.log(selected,'=======selected=====')
       if (selected.length > 0) {
         selected.forEach((sel) => {
           const match = this.allData.find((item) => item.id === sel.id);
           if (match) {
+            // ✅ 把 store 中的数据字段 merge 到 allData 的项上（只 merge 附加字段，不覆盖关键字段）
+            Object.keys(sel).forEach((key) => {
+              this.$set(match, key, sel[key]);
+            });
             this.$set(this.selectedMap, match.id, match); // ✅ 必须同步 selectedMap
             this.$nextTick(() => {
               this.$refs.tableRef.toggleRowSelection(match, true); // ✅ 先设置数据再勾选 UI

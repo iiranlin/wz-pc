@@ -224,7 +224,7 @@ export default {
           }
           this.$router.push({
             name: "imPage",
-            query: { id: idArr[0], type: "create" },
+            query: { id: idArr[0],supplyId:rowArr[0].supplyId, type: "create" },
           });
           break;
       }

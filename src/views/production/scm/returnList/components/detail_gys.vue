@@ -16,26 +16,46 @@
       >
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList" label="自检单" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
-            />
+          <el-form-item
+            prop="fileList"
+            label="自检单"
+            class="label-right-align"
+            v-if="backNode == '1'"
+          >
+            <fileUpload :value="scope.formModel.fileList01" :preview="true" />
+          </el-form-item>
+          <el-form-item prop="fileList" label="检测报告" class="label-right-align" v-else>
+            <fileUpload :value="scope.formModel.fileList01" :preview="true" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
-          <el-form-item prop="fileList" label="其他资料" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
-              :preview="true"
-            />
+          <el-form-item
+            prop="fileList"
+            label="其他资料"
+            class="label-right-align"
+            v-if="backNode == '1'"
+          >
+            <fileUpload :value="scope.formModel.fileList02" :preview="true" />
+          </el-form-item>
+          <el-form-item
+            prop="fileList"
+            label="质量证明文件"
+            class="label-right-align"
+            v-else
+          >
+            <fileUpload :value="scope.formModel.fileList02" :preview="true" />
+          </el-form-item>
+        </template>
+        <!-- 附件 -->
+        <template #file3Slot="scope">
+          <el-form-item
+            prop="fileList"
+            label="报验结果"
+            class="label-right-align"
+            v-if="backNode == '2'"
+          >
+            <fileUpload :value="scope.formModel.fileList03" :preview="true" />
           </el-form-item>
         </template>
         <template #returnDetailSlot>
@@ -75,11 +95,15 @@
               label="退货数量"
               width="120"
             ></el-table-column>
-            <el-table-column
-              prop="projectShortName"
-              label="退货附件"
-              width="180"
-            ></el-table-column>
+            <el-table-column prop="projectShortName" label="退货附件" width="180">
+              <template slot-scope="scope">
+                <fileUpload
+                  :value="scope.row.fileList[0].fileList"
+                  :preview="true"
+                  :isShowTip="false"
+                />
+              </template>
+            </el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -145,6 +169,9 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
+    backNode() {
+      return this.$route.query?.backNode || "";
+    },
   },
   async created() {},
   mounted() {
@@ -156,10 +183,18 @@ export default {
       await Api.detailBack(id).then(({ data }) => {
         this.$nextTick(async () => {
           await this.formFillInPage();
+          //拆分附件
+          if (data.fileList && data.fileList.length > 0) {
+            data.fileList01 = data.fileList.find(
+              (item) => item.businessType == "1"
+            ).fileList;
+            data.fileList02 = data.fileList.find(
+              (item) => item.businessType == "2"
+            ).fileList;
+          }
           // fileList回显
           const newData = {
             ...data,
-            fileList: data.fileList&&data.fileList[0]?.fileList || [],
           };
           this.$refs.vFormRef.setFormData(newData);
           //   form action

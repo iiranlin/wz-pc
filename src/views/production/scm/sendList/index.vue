@@ -82,6 +82,10 @@
               {{ scope.value||'其它' }}
             </el-button>
           </template>
+            <!-- 附件 -->
+          <template #fileList="scope">
+            <fileUpload :valve="scope.value" :preview="true" />
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"
@@ -100,10 +104,11 @@
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
 import AddAdress from "./components/addAdress.vue";
+import fileUpload from "@/components/upload";
 export default {
   // 线路项目
   name: "sendList",
-  components: { AddAdress },
+  components: { AddAdress,fileUpload },
   mixins: [indexMixin],
 
   data() {

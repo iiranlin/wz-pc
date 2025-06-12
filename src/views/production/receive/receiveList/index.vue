@@ -79,8 +79,12 @@
           <!-- 物流单号 -->
           <template #oddNumbers="scope">
             <el-button type="text" @click="toWuliu(scope.data)">
-              {{ scope.value||'其它' }}
+              {{ scope.value || "其它" }}
             </el-button>
+          </template>
+          <!-- 附件 -->
+          <template #fileList="scope">
+            <fileUpload :valve="scope.value" :preview="true" />
           </template>
         </table-index>
         <pagination
@@ -98,10 +102,11 @@
 <script>
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
+import fileUpload from "@/components/upload";
 export default {
   // 线路项目
   name: "receive",
-  components: {},
+  components: {fileUpload},
   mixins: [indexMixin],
 
   data() {
@@ -228,13 +233,13 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "receive":
-          if(rowArr[0].takeStatus!='1'){
+          if (rowArr[0].takeStatus != "1") {
             this.$modal.msgError("未收货状态才能收货");
             return;
           }
           this.$router.push({
             name: "receivePage",
-            query: { id: idArr[0],supplyId:rowArr[0].supplyId, type: "create" },
+            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create" },
           });
           break;
       }
@@ -266,7 +271,7 @@ export default {
         query: { id: row.id, type: "view" },
       });
     },
-    //跳转需求供应详情
+    //跳转物流
     toWuliu() {
       this.$router.push({
         name: "logisticsView",

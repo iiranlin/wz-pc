@@ -65,10 +65,14 @@
             {{ status[scope.value] }}
           </template>
           <!-- 供应需求ID -->
-          <template #supplyNumber="scope">
+          <template #planNumber="scope">
             <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
             </el-button>
+          </template>
+          <!-- 附件 -->
+          <template #fileList="scope">
+            <fileUpload :valve="scope.value" :preview="true" />
           </template>
         </table-index>
         <pagination
@@ -88,10 +92,11 @@
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
 import Confirm from "./components/confirm.vue";
+import fileUpload from "@/components/upload";
 export default {
   // 线路项目
   name: "demand",
-  components: { Confirm },
+  components: { Confirm,fileUpload },
   mixins: [indexMixin],
 
   data() {
@@ -250,8 +255,8 @@ export default {
             query: {
               id: idArr[0],
               type: "create",
-              supplyName: rowArr[0].supplyName,
-              supplyNumber: rowArr[0].supplyNumber,
+              supplyName: rowArr[0].planName,
+              supplyNumber: rowArr[0].planNumber,
               sellerId: rowArr[0].sellerId,
             },
           });
