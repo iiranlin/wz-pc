@@ -8,7 +8,7 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  */
 export const demandList = (params) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}//materialDemandPlanRest/listGhs`,
+        url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/listGhs`,
         method: 'get',
         params
     })
@@ -58,6 +58,18 @@ export const modifySend = (data) => {
     url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/modifySend`,
     method: 'post',
     data
+  })
+}
+/**
+ * 供应详情
+ * @param {*} params 
+ * @returns 
+ */
+export const detailGyMx = (params) => {
+  return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailGyMx`,
+      method: 'get',
+      params
   })
 }
 /**

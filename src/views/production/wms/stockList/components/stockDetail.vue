@@ -140,7 +140,7 @@ export default {
     },
     // 编辑初始化
     async updateInit(id) {
-      await Api.sendDetail(id).then(({ data }) => {
+      await Api.detailByOut(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage();

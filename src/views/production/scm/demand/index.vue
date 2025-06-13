@@ -60,6 +60,7 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :button-disable="buttonDisabled"
         >
           <template #status="scope">
             {{ status[scope.value] }}
@@ -96,7 +97,7 @@ import fileUpload from "@/components/upload";
 export default {
   // 建设项目
   name: "demand",
-  components: { Confirm,fileUpload },
+  components: { Confirm, fileUpload },
   mixins: [indexMixin],
 
   data() {
@@ -258,20 +259,6 @@ export default {
             },
           });
           break;
-        case "detail":
-          if (
-            rowArr[0].status != "4" &&
-            rowArr[0].status != "5" &&
-            rowArr[0].status != "6"
-          ) {
-            this.$modal.msgError("状态为供货中|已验收|已完成才可以操作");
-            return;
-          }
-          this.$router.push({
-            name: "freightDetail",
-            query: { id: idArr[0] },
-          });
-          break;
         case "logistics":
           if (
             rowArr[0].status != "4" &&
@@ -301,10 +288,16 @@ export default {
       }
       this.handleQuery();
     },
+    //物流按钮控制
+    buttonDisabled(button, row) {
+      if (button.buttonCode == "logistics" && (row.status == "2" || row.status == "3")) {
+        return true;
+      }
+    },
     //跳转需求供应详情
     toGyxq(row) {
       this.$router.push({
-        name: "requestSupplyDetail",
+        name: "freightDetail",
         query: {
           type: "view",
           id: row.id,

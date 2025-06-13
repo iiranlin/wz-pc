@@ -47,38 +47,44 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="150"
+              width="200"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
-            <el-table-column prop="1" label="合同数量" width="120"></el-table-column>
+            <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
+            <el-table-column prop="amount" label="合同数量" width="150" align="center"></el-table-column>
             <el-table-column
-              prop="1"
+              prop="cumulativeAmount"
               label="累计计划量（含本次）"
-              width="100"
+              width="180"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="planAmount"
               label="本次计划数量"
-              width="120"
+              width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="sendTotal"
               label="已发货"
-              width="120"
+              width="150"
+              align="center"
             ></el-table-column>
-            <el-table-column prop="putTotal" label="已验收" width="120"></el-table-column>
+            <el-table-column prop="putTotal" label="已验收" width="150" align="center"></el-table-column>
             <el-table-column
               prop="storeTotal"
               label="已入库"
-              width="120"
+              width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
-              prop="refundTotal"
+              prop="refundAllTotle"
               label="已退回"
-              width="120"
+              width="150"
+              align="center"
             ></el-table-column>
-            <el-table-column prop="1" label="剩余待发货" width="120"></el-table-column>
+            <el-table-column prop="ssendTotal" label="剩余待发货" width="150" align="center"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -149,30 +155,22 @@ export default {
   async created() {},
   mounted() {
     this.init(this.id);
-    this.findList(this.id);
   },
   methods: {
     //初始化
     init(id) {
       this.$nextTick(async () => {
-        await Api.detail(id).then(({ data }) => {
+        await Api.detailGyMx({id}).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
             const newData = {
               ...data,
-              fileList: (data.fileList && data.fileList[0]?.fileList) || [],
               createDate: dayjs(data.createDate).format("YYYY-MM-DD"),
             };
             this.$refs.vFormRef.setFormData(newData);
+            this.tableData=data.demandPlanDetailsGyDTOList
             this.$refs.vFormRef.setReadMode(true);
           });
-        });
-      });
-    },
-    findList(id) {
-      Api.listShippingInformation(id).then(({ data }) => {
-        this.$nextTick(async () => {
-          this.tableData = data.list;
         });
       });
     },

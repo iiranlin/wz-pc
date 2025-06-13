@@ -16,7 +16,7 @@
       >
         <!-- 附件 -->
         <template #fileSlot="scope">
-          <el-form-item prop="fileList" label="发货单附件附件" class="label-right-align">
+          <el-form-item prop="fileList" label="发货单附件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
@@ -46,12 +46,12 @@
         </template> -->
         <template #shippingNumberSlot="scope">
           <el-form-item
-            prop="htmc"
+            prop="contractName"
             label="合同名称"
             class="label-right-align"
             v-if="type != 'view'"
           >
-            <el-input v-model="scope.formModel.htmc" readonly></el-input>
+            <el-input v-model="scope.formModel.contractName" readonly></el-input>
           </el-form-item>
           <el-form-item
             prop="shipmentBatchNumber"
@@ -194,6 +194,16 @@ export default {
         if (!row.manufactureDate) {
           errors.push(`第${rowNum}行，生产日期未填写 `);
         }
+
+        if (!row.receivingAddress) {
+          errors.push(`第${rowNum}行，收货地址未填写 `);
+        }
+        if (!row.supplyDate) {
+          errors.push(`第${rowNum}行，供应时间未填写 `);
+        }
+        if (!row.receiver) {
+          errors.push(`第${rowNum}行，收货人及联系方式未填写 `);
+        }
         if (!row.fileList01 || row.fileList01.length == 0) {
           errors.push(`第${rowNum}行，请上传合格证附件 `);
         }
@@ -241,8 +251,7 @@ export default {
           // fileList回显
           const newData = {
             ...data,
-              fileList: data.fileByList
-                ? JSON.parse(data.fileByList).fhd||[]: [], //发货单
+            fileList: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
             arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
             shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
           };
@@ -256,10 +265,8 @@ export default {
             expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
             supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
             id: x.planDetailId,
-            fileList01: x.fileByList
-                ? JSON.parse(x.fileByList).hgz||[]: [], //合格证
-              fileList02: x.fileByList
-              ? JSON.parse(x.fileByList).cjbg||[]: [], //厂检报告
+            fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
+            fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
           }));
           this.tableData = detail;
           console.log(this.tableData, "-------this.tableData------");
