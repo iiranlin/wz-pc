@@ -24,11 +24,11 @@
       ref="tableRef"
     >
       <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
-      <el-table-column prop="sectionName" label="标段项目名称" width="250" fixed="left">
-      </el-table-column>
+      <!-- <el-table-column prop="sectionName" label="标段项目名称" width="250" fixed="left">
+      </el-table-column> -->
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="150"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200"></el-table-column>
 
       <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
       <el-table-column prop="planAmount" label="计划数量" width="140"></el-table-column>
@@ -118,7 +118,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="receiver" label="收货人及联系方式" width="160">
+      <el-table-column prop="receiver" label="收货人及联系方式" width="250">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.receiver"

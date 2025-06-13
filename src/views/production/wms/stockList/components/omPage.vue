@@ -64,7 +64,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="120"
+              width="200"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
@@ -88,7 +88,7 @@
               label="有效期截止日期"
               width="150"
             ></el-table-column>
-            <el-table-column prop="2" label="出库数量" width="120">
+            <el-table-column prop="outTotle" label="出库数量" width="120">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.outTotle"
@@ -125,7 +125,7 @@
 
 <script>
 import Vue from "vue";
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
@@ -193,7 +193,7 @@ export default {
   },
   async created() {},
   mounted() {
-    this.init();
+    this.init(this.id);
   },
   methods: {
     //初始化

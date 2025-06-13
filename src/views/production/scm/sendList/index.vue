@@ -71,7 +71,7 @@
             </el-button>
           </template>
           <!-- 供应需求ID -->
-          <template #supplyNumber="scope">
+          <template #planNumber="scope">
             <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
             </el-button>
@@ -286,11 +286,10 @@ export default {
       this.$modal
         .confirm("是否确认发货?")
         .then(function () {
-          return Api.save({ id: ids[0], status: "2" });
+          return Api.modify({ id: ids[0], status: "2" });
         })
         .then(() => {
           this.getList();
-          this.$modal.msgSuccess("已发货");
         });
     },
     clickReset() {

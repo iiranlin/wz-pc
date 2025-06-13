@@ -19,7 +19,7 @@ export const listStore = (params) => {
  */
 export const detailStore = (id) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySend/${id}`,
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByStore/${id}`,
         method: 'get',
     })
 }

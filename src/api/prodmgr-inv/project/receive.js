@@ -19,7 +19,7 @@ export const listTake = (params) => {
  */
 export const detailTake = (id) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySend//${id}`,
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailTake/${id}`,
         method: 'get',
     })
 }

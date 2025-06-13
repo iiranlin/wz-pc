@@ -15,7 +15,7 @@
         class="formRender_view"
       >
         <template #itemSlot>
-          <item-table @onSelectRow="onSelectRow" />
+          <item-table @onSelectRow="onSelectRow" :tableData="tableData" />
         </template>
       </VFormRender>
     </div>
@@ -33,6 +33,7 @@ import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { mapState } from "vuex";
 import ItemTable from "./itemTable.vue";
+import dayjs from "dayjs";
 export default {
   name: "selectItem",
   components: {
@@ -81,6 +82,7 @@ export default {
       gysOptions: [],
 
       selectRows: [],
+      tableData: [],
     };
   },
   computed: {
@@ -89,15 +91,6 @@ export default {
     },
     id() {
       return this.$route.query?.id || "";
-    },
-    supplyName() {
-      return this.$route.query?.supplyName || "";
-    },
-    supplyNumber() {
-      return this.$route.query?.supplyNumber || "";
-    },
-    sellerId() {
-      return this.$route.query?.sellerId || "";
     },
     ...mapState(["request"]),
   },
@@ -111,10 +104,21 @@ export default {
       this.selectRows = rows;
     },
     //初始化
-    init() {
-      this.$nextTick(async () => {
-        await this.formFillInPage();
-        this.$refs.vFormRef.setReadMode(true);
+    async init() {
+      await Api.detailWz(this.id).then(({ data }) => {
+        this.$nextTick(async () => {
+          this.tableData = data.details.map((x) => ({
+            ...x,
+            supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
+          }));
+          await this.formFillInPage();
+          this.$refs["vFormRef"].setFormData({
+            sectionName: data.sectionName,
+            planName: data.planName,
+            contractName: data.contractName,
+          });
+          this.$refs.vFormRef.setReadMode(true);
+        });
       });
     },
     newButton(buttonCode) {
