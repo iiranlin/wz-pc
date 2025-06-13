@@ -171,7 +171,7 @@ export default {
       constructionOptions: [],
       gysOptions: [],
       tableData: [],
-      detailData:[]
+      detailData: []
     }
   },
   computed: {
@@ -205,7 +205,7 @@ export default {
   methods: {
     onDataChange (data) {
       if (['delete'].includes(data.type)) {
-       this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
+        this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
         return
       }
 
@@ -285,7 +285,7 @@ export default {
     },
     cancel () {
       this.$store.dispatch('setProjectId', '')
-      this.$router.go(-1)
+      this.$tab.closeOpenPage({ name: 'detailContract' });
     },
 
     buttonShow (item) {

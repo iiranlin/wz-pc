@@ -153,9 +153,9 @@ export default {
     this.gysOptions = await this.getDeptTree('GYS')
   },
   mounted () {
-      this.$refs['vFormRef'].setFormData({
-            buyer: this.buyer
-          })
+    this.$refs['vFormRef'].setFormData({
+      buyer: this.buyer
+    })
 
     if (this.status == '1') {
       this.buttonTop = [
@@ -245,18 +245,20 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
+          const backChangeData = this.$store.state.project.backChangeData
           // fileList回显
           const newData = {
             ...data,
+            ...backChangeData,
+            fileList: backChangeData?.fileList,
             contractStatus: data.contractStatus == '2',
-            fileList: data.fileList[0]?.fileList || []
           }
           this.$refs.vFormRef.setFormData(newData)
 
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
 
-          this.tableData = data.materialList
+          this.tableData = this.$store.state.project.selectList
           this.recordData = this.status == '1' ? this.$store.state.project.contractChangeDetail : data.updateDetails
         });
       });
@@ -276,7 +278,8 @@ export default {
       this.$store.dispatch('setProjectId', '')
       this.$store.dispatch('setBackChangeData', {})
       this.$store.dispatch('setContractChangeDetail', {})
-      this.$router.go(-1)
+      this.$store.dispatch('setSelectList', [])
+      this.$tab.closeOpenPage({ name: 'changeViewContract' });
     },
 
     buttonShow (item) {
@@ -310,15 +313,19 @@ export default {
           formData.contractStatus = formData.contractStatus ? '2' : '1'
           // 后端存入嵌套数组
           const fileList = formData.fileList
-          formData.fileList = [{ fileList }]
           await Api[
             `changeList`
-          ]({...this.$store.state.project.backChangeData,saveStatus:true})
+          ]({
+            ...this.$store.state.project.backChangeData,
+            fileList:  [{ fileList }] ,
+            saveStatus: true
+          })
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
+               
               this.$router.push({
-                name:'contractList'
+                name: 'contractList'
               })
             })
             .finally((err) => {
