@@ -136,19 +136,11 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
-    supplyName() {
-      return this.$route.query?.supplyName || "";
-    },
-    supplyNumber() {
-      return this.$route.query?.supplyNumber || "";
-    },
-    sellerId() {
-      return this.$route.query?.sellerId || "";
-    },
     ...mapState(["request"]),
   },
   async created() {
     var data = this.getSelectedItemList();
+    console.log(data,'=========')
     this.tableData = data.map((x) => ({
       ...x,
       sendTotal: x.planAmount,
@@ -228,9 +220,17 @@ export default {
       this.$store.dispatch("request/setSelectedItemList", data);
     },
     //初始化
-    init() {
-      this.$nextTick(async () => {
-        await this.formFillInPage();
+   async init() {
+       await Api.detailWz(this.id).then(({ data }) => {
+        this.$nextTick(async () => {
+          await this.formFillInPage();
+            this.$refs["vFormRef"].setFormData({
+            sectionName: data.sectionName,
+            planName: data.planName,
+            contractName:data.contractName,
+          });
+
+        });
       });
     },
     // 编辑初始化
@@ -251,19 +251,21 @@ export default {
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === "view");
 
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+          const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+            supplyDate:dayjs(x.supplyDate).format("YYYY-MM-DD"),
             id: x.planDetailId,
-            fileList01: x.fileList
-              ? x.fileList.find((item) => item.businessType == "1").fileList || []
+            fileList01: x.fileList&&x.fileList.length>0
+              ? x.fileList[0].fileList.filters((item) => item.businessType == "hgz") || []
               : [],
-            fileList02: x.fileList
-              ? x.fileList.find((item) => item.businessType == "2").fileList || []
+            fileList02: x.fileList&&x.fileList.length>0
+              ? x.fileList[0].fileList.filters((item) => item.businessType == "cjbg") || []
               : [],
           }));
           this.tableData = detail;
+          console.log(this.tableData,'-------this.tableData------')
           this.setSelectedItemList(this.tableData);
         });
       });
@@ -317,27 +319,30 @@ export default {
           // 后端存入嵌套数组
           const fileList = formData.fileList;
           formData.fileList = fileList ? [{ fileList }] : [];
+          for(var i in this.tableData){
+             var list=[];
+            if(this.tableData[i].fileList01.length>0){
+                this.tableData[i].fileList01[0].businessType='hgz';
+                list.push(this.tableData[i].fileList01[0])
+            };
+             if(this.tableData[i].fileList02.length>0){
+                this.tableData[i].fileList02[0].businessType='cjbg';
+                list.push(this.tableData[i].fileList02[0])
+            }
+           this.tableData[i].fileList=list?[{
+             fileList:list
+           }]:[]
+          }
           await Api.save(
             Object.assign(
               {
-                supplyId: this.type === "create" ? this.id : null,
-                id: this.type === "create" ? null : this.id,
+                planId: this.id,
               },
               formData,
               {
-                materialSupplierDetailParams: this.tableData.map((x) => ({
+                materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
                   planDetailId: x.id,
                   ...x,
-                  fileList: [
-                    {
-                      businessType: "1",
-                      fileList: x.fileList01,
-                    },
-                    {
-                      businessType: "2",
-                      fileList: x.fileList02,
-                    },
-                  ],
                 })),
               }
             )
@@ -362,10 +367,6 @@ export default {
       return new Promise((resolve) => {
         formFillInPage("addSend").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
-          this.$refs["vFormRef"].setFormData({
-            supplyName: this.supplyName,
-            supplyNumber: this.supplyNumber,
-          });
           resolve(true);
         });
       });

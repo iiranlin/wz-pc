@@ -13,7 +13,7 @@
       @handleQuery="handleQuery"
       :formData="formData"
     >
-      <template #takeStatus="data">
+      <template #status="data">
         <el-select
           class="select-box"
           v-model="formData[data.data.fieldCode]"
@@ -33,7 +33,7 @@
           />
         </el-select>
       </template>
-      <template #takeStatus="data">
+      <template #relatedCount="data">
         <el-select
           class="select-box"
           v-model="formData[data.data.fieldCode]"
@@ -81,14 +81,14 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-          <template #takeStatus="scope">
+          <template #status="scope">
             {{ status[scope.value] }}
           </template>
-          <template #takeStatus="scope">
-            {{ status[scope.value] }}
+          <template #relatedCount="scope">
+            {{ scope.value }}
           </template>
           <!-- 需求ID -->
-          <template #supplyNumber="scope">
+          <template #planNumber="scope">
             <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
             </el-button>
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 线路项目
@@ -118,30 +118,26 @@ export default {
   data() {
     return {
       status: {
-        1: "未完成",
-        2: "已完成",
-      },
-      kucunStatus: {
-        1: "无",
-        2: "有",
+        2: "未完成",
+        6: "已完成",
       },
       options: [
         {
-          code: "1",
+          code: "2",
           name: "为完成",
         },
         {
-          code: "2",
+          code: "6",
           name: "已完成",
         },
       ],
       kucunOptions: [
         {
-          code: "1",
+          code: "无",
           name: "无",
         },
         {
-          code: "2",
+          code: "有",
           name: "有",
         },
       ],

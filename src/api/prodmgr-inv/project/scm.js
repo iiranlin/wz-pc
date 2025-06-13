@@ -26,27 +26,14 @@ export const demandEdit = (data) => {
   })
 }
 /**
- * 查询需求组织列表
+ * 发货查物资
  * @param {*} params 
  * @returns 
  */
-export const findDeptList = (params) => {
+export const detailWz = (id) => {
   return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanDetails/listSection`,
-      method: 'get',
-      params
-  })
-}
-/**
- * 查询物资列表
- * @param {*} params 
- * @returns 
- */
-export const listMaterials = (params) => {
-  return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanDetails/listMaterials`,
-      method: 'get',
-      params
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailWz/${id}`,
+    method: 'get',
   })
 }
 /**
@@ -61,7 +48,18 @@ export const save = (data) => {
     data
   })
 }
-
+/**
+ * 发货列表-确认发货
+ * @param {*} params 
+ * @returns 
+ */
+export const modify = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/modify`,
+    method: 'post',
+    data
+  })
+}
 /**
  * 供应需求详情
  * @param {*} params 
@@ -94,7 +92,7 @@ export const sendList = (params) => {
  */
 export const batchRemove = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/batchRemove`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/batchRemove`,
     method: 'post',
     data
   })
@@ -188,7 +186,7 @@ export const listGysRetreat = (params) => {
  */
 export const detailBack = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailBack/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByBack/${id}`,
     method: 'get',
   })
 }

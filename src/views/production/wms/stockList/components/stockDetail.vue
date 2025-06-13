@@ -37,7 +37,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="120"
+              width="200"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>

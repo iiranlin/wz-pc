@@ -17,12 +17,12 @@
         <!-- 供货商/操作人 -->
         <template #supplierNameSlot="scope">
           <el-form-item
-            prop="supplierName"
+            prop="sellerName"
             label="供货商"
             class="label-right-align"
             v-if="type != 'view'"
           >
-            <el-input v-model="scope.formModel.supplierName" readonly></el-input>
+            <el-input v-model="scope.formModel.sellerName" readonly></el-input>
           </el-form-item>
           <el-form-item
             prop="createUserName"
@@ -57,7 +57,13 @@
         </template>
         <template #file3Slot="scope">
           <el-form-item prop="fileList" label="发货单" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList03" :preview="true" />
+            <fileUpload
+              v-model="scope.formModel.fileList03"
+              :preview="type == 'view'"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
+            />
           </el-form-item>
         </template>
         <!-- 附件 -->
@@ -68,13 +74,25 @@
             class="label-right-align"
             :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
           >
-            <fileUpload v-model="scope.formModel.fileList01" :preview="type == 'view'" />
+            <fileUpload
+              v-model="scope.formModel.fileList01"
+              :preview="type == 'view'"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
+            />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
           <el-form-item prop="fileList" label="其它资料" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList02" :preview="type == 'view'" />
+            <fileUpload
+              v-model="scope.formModel.fileList02"
+              :preview="type == 'view'"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
+            />
           </el-form-item>
         </template>
         <!-- 收货时间 -->
@@ -120,7 +138,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="150"
+              width="200"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
@@ -352,6 +370,7 @@ export default {
               //收货的时候默认本机日期
               data.takeDate = this.getDate();
               this.shippingDate = data.shippingDate;
+              data.shippingDate = dayjs(data.shippingDate).format("YYYY-MM-DD");
             } else {
               data.takeDate = dayjs(data.takeDate).format("YYYY-MM-DD HH:mm");
             }
@@ -361,20 +380,20 @@ export default {
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(this.type === "view");
-            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
               putTotal: x.sendTotal, //默认收货数量=发货数量
-              fileList01: x.fileList
-                ? x.fileList.find((item) => item.businessType == "1").fileList || []
-                : [],
-              fileList02: x.fileList
-                ? x.fileList.find((item) => item.businessType == "2").fileList || []
-                : [],
-              fileList03: x.fileList
-                ? x.fileList.find((item) => item.businessType == "3").fileList || []
-                : [],
+              // fileList01: x.fileList
+              //   ? x.fileList.find((item) => item.businessType == "1").fileList || []
+              //   : [],
+              // fileList02: x.fileList
+              //   ? x.fileList.find((item) => item.businessType == "2").fileList || []
+              //   : [],
+              // fileList03: x.fileList
+              //   ? x.fileList.find((item) => item.businessType == "3").fileList || []
+              //   : [],
             }));
             this.tableData = detail;
           });
@@ -454,12 +473,11 @@ export default {
           await Api.save(
             Object.assign(
               {
-                supplyId: this.supplyId,
                 id: this.id,
               },
               formData,
               {
-                materialSupplierDetailParams: this.tableData.map((x) => ({
+                materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
                   ...x,
                   fileList: [
                     {

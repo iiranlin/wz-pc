@@ -26,6 +26,9 @@
               v-model="scope.formModel.fileList01"
               :value="scope.formModel.fileList01"
               :preview="type == 'view'"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
             />
           </el-form-item>
         </template>
@@ -41,6 +44,9 @@
               v-model="scope.formModel.fileList02"
               :value="scope.formModel.fileList02"
               :preview="type == 'view'"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
             />
           </el-form-item>
         </template>
@@ -56,6 +62,9 @@
               v-model="scope.formModel.fileList03"
               :value="scope.formModel.fileList03"
               :preview="type == 'view'"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
             />
           </el-form-item>
         </template>
@@ -92,7 +101,7 @@
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="150"
+              width="200"
             ></el-table-column>
 
             <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
@@ -290,6 +299,7 @@ export default {
         await Api.detailStore(id).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
+            this.$refs.vFormRef.setReadMode(true);
             //拆分附件
             if (data.fileList && data.fileList.length > 0) {
               data.fileList01 =
@@ -306,20 +316,20 @@ export default {
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);
-            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
               storeTotal: x.putTotal, //默认入库数量=收货数量
-              fileList01: x.fileList
-                ? x.fileList.find((item) => item.businessType == "1").fileList || []
-                : [],
-              fileList02: x.fileList
-                ? x.fileList.find((item) => item.businessType == "2").fileList || []
-                : [],
-              fileList03: x.fileList
-                ? x.fileList.find((item) => item.businessType == "3").fileList || []
-                : [],
+              // fileList01: x.fileList
+              //   ? x.fileList.find((item) => item.businessType == "1").fileList || []
+              //   : [],
+              // fileList02: x.fileList
+              //   ? x.fileList.find((item) => item.businessType == "2").fileList || []
+              //   : [],
+              // fileList03: x.fileList
+              //   ? x.fileList.find((item) => item.businessType == "3").fileList || []
+              //   : [],
             }));
             this.tableData = detail;
           });
@@ -407,7 +417,7 @@ export default {
               },
               formData,
               {
-                materialSupplierDetailParams: this.tableData.map((x) => ({
+                materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
                   ...x,
                   fileList: [
                     {

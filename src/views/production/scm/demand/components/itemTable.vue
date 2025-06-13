@@ -28,7 +28,7 @@
       :data="tableData"
       border
       style="width: 100%"
-      :max-height="600"
+      :max-height="350"
       v-loading="loading"
       @selection-change="noop"
       @select="handleSelect"
@@ -47,7 +47,7 @@
       </el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="150"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200"></el-table-column>
       <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
       <el-table-column
         prop="planAmount"
@@ -61,16 +61,8 @@
         label="收货人及联系方式"
         width="180"
       ></el-table-column>
-         <el-table-column
-        prop="receiver"
-        label="投资方"
-        width="180"
-      ></el-table-column>
-         <el-table-column
-        prop="receiver"
-        label="投资比例"
-        width="180"
-      ></el-table-column>
+      <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
+      <el-table-column prop="receiver" label="投资比例" width="180"></el-table-column>
       <el-table-column prop="remark" label="备注" width="200"></el-table-column>
       <el-table-column
         prop="projectShortName"
@@ -89,7 +81,12 @@ export default {
   name: "itemTable",
   dicts: ["MeasureUnit"],
 
-  props: {},
+  props: {
+    tableData: {
+      type: Array,
+      default: () => [],
+    },
+  },
   components: {},
   computed: {
     type() {
@@ -98,22 +95,13 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
-    supplyName() {
-      return this.$route.query?.supplyName || "";
-    },
-    supplyNumber() {
-      return this.$route.query?.supplyNumber || "";
-    },
-    sellerId() {
-      return this.$route.query?.sellerId || "";
-    },
     ...mapState(["request"]),
   },
   data() {
     return {
       loading: false,
       tableData: [],
-      allData: [],
+      tableData: [],
       selectRows: [],
       form: {},
       deptList: [],
@@ -121,57 +109,32 @@ export default {
       hasRestoredFromStore: false, // ✅ 是否已初始化选中项
     };
   },
-  mounted() {
-    this.findDeptList();
-    this.findWzList();
+  watch: {
+    tableData: {
+      handler(newVal) {
+        if (newVal && newVal.length > 0) {
+          this.syncStoreSelectedData();
+        }
+      },
+      immediate: true, // 组件创建时立即执行一次
+    },
   },
+  mounted() {},
   activated() {
-    this.hasRestoredFromStore=false,
-    this.form={};
-    this.findDeptList();
-    this.findWzList();
+    (this.hasRestoredFromStore = false), (this.form = {});
   },
   created() {},
   methods: {
-    //获取需求组织
-    findDeptList() {
-      Api.findDeptList({ sellerId: this.sellerId, supplyId: this.id })
-        .then(({ data }) => {
-          this.deptList = data;
-        })
-        .finally(() => {});
-    },
-    //获取物资列表
-    findWzList() {
-      Api.listMaterials({
-        sellerId: this.sellerId,
-        supplyId: this.id,
-        deptId: this.form.deptId,
-        // sellerId: '1928340067179323392',
-        // planId: 1,
-        // deptId: 1,
-      })
-        .then(({ data }) => {
-          this.tableData = data.list;
-          if (!this.form.deptId) {
-            this.allData = data.list;
-            this.syncStoreSelectedData();
-          } else {
-            this.restoreSelection();
-          }
-        })
-        .finally(() => {});
-    },
     // 新增方法：同步store中已选中的数据到组件
     syncStoreSelectedData() {
       if (this.hasRestoredFromStore) return;
       const selected = this.getSelectedItemList();
-      console.log(selected,'=======selected=====')
+      console.log(selected, "=======selected=====");
       if (selected.length > 0) {
         selected.forEach((sel) => {
-          const match = this.allData.find((item) => item.id === sel.id);
+          const match = this.tableData.find((item) => item.id === sel.id);
           if (match) {
-            // ✅ 把 store 中的数据字段 merge 到 allData 的项上（只 merge 附加字段，不覆盖关键字段）
+            // ✅ 把 store 中的数据字段 merge 到 tableData 的项上（只 merge 附加字段，不覆盖关键字段）
             Object.keys(sel).forEach((key) => {
               this.$set(match, key, sel[key]);
             });
@@ -201,7 +164,7 @@ export default {
     },
     // 排序函数：已选项置顶
     sortData() {
-      this.allData.sort((a, b) => {
+      this.tableData.sort((a, b) => {
         const aSelected = !!this.selectedMap[a.id];
         const bSelected = !!this.selectedMap[b.id];
         if (aSelected === bSelected) return 0;
@@ -223,7 +186,7 @@ export default {
     handleSelectAll(selection) {
       const currentIds = this.tableData.map((row) => row.id);
       currentIds.forEach((id) => {
-        const row = this.allData.find((r) => r.id === id);
+        const row = this.tableData.find((r) => r.id === id);
         if (selection.find((r) => r.id === id)) {
           this.$set(this.selectedMap, id, row);
         } else {

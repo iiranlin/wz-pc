@@ -255,9 +255,6 @@ export default {
             query: {
               id: idArr[0],
               type: "create",
-              supplyName: rowArr[0].planName,
-              supplyNumber: rowArr[0].planNumber,
-              sellerId: rowArr[0].sellerId,
             },
           });
           break;
