@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container" v-loading="loading">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -16,11 +16,7 @@
       >
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item
-            prop="fileList01"
-            label="检测报告"
-            class="label-right-align"
-          >
+          <el-form-item prop="fileList01" label="检测报告" class="label-right-align">
             <fileUpload
               v-model="scope.formModel.fileList01"
               :value="scope.formModel.fileList01"
@@ -30,11 +26,7 @@
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
-          <el-form-item
-            prop="fileList02"
-            label="质量证明文件"
-            class="label-right-align"
-          >
+          <el-form-item prop="fileList02" label="质量证明文件" class="label-right-align">
             <fileUpload
               v-model="scope.formModel.fileList02"
               :value="scope.formModel.fileList02"
@@ -44,11 +36,7 @@
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
-          <el-form-item
-            prop="fileList03"
-            label="报验结果"
-            class="label-right-align"
-          >
+          <el-form-item prop="fileList03" label="报验结果" class="label-right-align">
             <fileUpload
               v-model="scope.formModel.fileList03"
               :value="scope.formModel.fileList03"
@@ -80,31 +68,41 @@
               width="150"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="putTotal"
               label="本次收货数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="packagingFm"
               label="包装形式"
               width="160"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="receivingAddress"
@@ -115,6 +113,7 @@
               prop="supplyDate"
               label="供应时间"
               width="160"
+              align="center"
             ></el-table-column>
 
             <el-table-column
@@ -122,12 +121,13 @@
               label="收货人及联系方式"
               width="180"
             ></el-table-column>
-            <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
             <el-table-column
-              prop="receiver"
-              label="投资比例"
+              prop="field0"
+              label="投资方"
               width="180"
+              align="center"
             ></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="180"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -146,9 +146,19 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="storeTotal" label="入库数量" width="120">
+            <el-table-column
+              prop="storeTotal"
+              label="入库数量"
+              width="120"
+              align="center"
+            >
             </el-table-column>
-            <el-table-column prop="refundTotal" label="退货数量" width="120">
+            <el-table-column
+              prop="refundTotal"
+              label="退货数量"
+              width="120"
+              align="center"
+            >
             </el-table-column>
             <el-table-column prop="projectShortName" label="退货附件" width="250">
               <template slot-scope="scope">
@@ -177,7 +187,7 @@ import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
-import toBeReviewed from '@/views/audit/components/toBeReviewed'
+import toBeReviewed from "@/views/audit/components/toBeReviewed";
 import dayjs from "dayjs";
 export default {
   name: "imDetail",
@@ -208,10 +218,25 @@ export default {
       lineOptions: [],
       // 菜单按钮、字段等数据
       buttonTop: [
-        { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
-        { buttonName: '同意', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
-        { buttonName: '修改后同意', buttonCode: 'passEdit', buttonIcon: 'Blue-Edit', type: '' },
-        { buttonName: '不同意', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
+        {
+          buttonName: "返回",
+          buttonCode: "cancel",
+          buttonIcon: "Blue-Cancel",
+          type: "create, update",
+        },
+        { buttonName: "同意", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
+        {
+          buttonName: "修改后同意",
+          buttonCode: "passEdit",
+          buttonIcon: "Blue-Edit",
+          type: "",
+        },
+        {
+          buttonName: "不同意",
+          buttonCode: "reject",
+          buttonIcon: "Blue-EditCard",
+          type: "",
+        },
       ],
       constructionOptions: [],
       gysOptions: [],
@@ -231,12 +256,12 @@ export default {
     supplyId() {
       return this.$route.query?.supplyId || "";
     },
-     queryAuditArr () {
-      return JSON.parse(this.$route.query.auditArr || '[]')
+    queryAuditArr() {
+      return JSON.parse(this.$route.query.auditArr || "[]");
     },
-    name () {
-      return this.$route.query?.name || ''
-    }
+    name() {
+      return this.$route.query?.name || "";
+    },
   },
   async created() {},
   mounted() {
@@ -249,18 +274,12 @@ export default {
         await Api.detailStore(id).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
-            //拆分附件
-            if (data.fileList && data.fileList.length > 0) {
-              data.fileList01 =
-                data.fileList.find((item) => item.businessType == "1").fileList || [];
-              data.fileList02 =
-                data.fileList.find((item) => item.businessType == "2").fileList || [];
-              data.fileList03 =
-                data.fileList.find((item) => item.businessType == "3").fileList || [];
-            }
             // fileList回显
             const newData = {
               ...data,
+              fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //自检单
+              fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //其他资料
+              fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //发货单
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);
@@ -268,32 +287,30 @@ export default {
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-              fileList01: x.fileList
-                ? x.fileList.find((item) => item.businessType == "1").fileList || []
-                : [],
-              fileList02: x.fileList
-                ? x.fileList.find((item) => item.businessType == "2").fileList || []
-                : [],
-              fileList03: x.fileList
-                ? x.fileList.find((item) => item.businessType == "3").fileList || []
-                : [],
+              fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
+              fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
+              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
             }));
             this.tableData = detail;
           });
         });
       });
     },
-   newButton (buttonCode) {
-      if (buttonCode === 'cancel') {
-        this.cancel()
-      } else if (buttonCode === 'pass') {
-        this.$refs.toBereview.init('pass', this.queryAuditArr, this.name)
-      } else if (buttonCode === 'reject') {
-        this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
-      } else if (buttonCode === 'passEdit') {
-        this.$refs.toBereview.init('passEdit', this.queryAuditArr, this.name, this.selectRows.map(x => x.planId))
+    newButton(buttonCode) {
+      if (buttonCode === "cancel") {
+        this.cancel();
+      } else if (buttonCode === "pass") {
+        this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
+      } else if (buttonCode === "reject") {
+        this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
+      } else if (buttonCode === "passEdit") {
+        this.$refs.toBereview.init(
+          "passEdit",
+          this.queryAuditArr,
+          this.name,
+          this.selectRows.map((x) => x.planId)
+        );
       }
-
     },
     cancel() {
       this.$router.go(-1);

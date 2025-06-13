@@ -240,7 +240,7 @@ export default {
           }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0], type: "update" },
+            query: { id: idArr[0], type: "update",planId:rowArr[0].planId },
           });
           break;
         case "delete":

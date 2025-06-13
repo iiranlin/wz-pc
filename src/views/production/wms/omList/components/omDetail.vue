@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container" v-loading="loading">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -50,30 +50,45 @@
               prop="specModel"
               label="规格型号"
               width="150"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="storeTotal"
               label="当前库存数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
             ></el-table-column>
-            <el-table-column prop="outTotle" label="本次出库数量" width="120">
+            <el-table-column
+              prop="outTotle"
+              label="本次出库数量"
+              width="120"
+              align="center"
+            >
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
@@ -158,7 +173,7 @@ export default {
             // fileList回显
             const newData = {
               ...data,
-              fileList: (data.fileList && data.fileList[0]?.fileList) || [],
+              fileList: data.fileByList ? JSON.parse(data.fileByList).lld || [] : [], //领料单
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);

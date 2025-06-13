@@ -59,6 +59,18 @@ export const listStock = (params) => {
       params
   })
 }
+//库存明细
+/**
+ * 
+ * @param {*} params 
+ * @returns 
+ */
+export const detailOut = (id) => {
+  return request({
+      url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailOut/${id}`,
+      method: 'get',
+  })
+}
   /**
  * 出库列表
  * @param {*} params 

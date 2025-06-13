@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="app-container container_flex">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -38,24 +38,27 @@
               prop="specModel"
               label="规格型号"
               width="200"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
             ></el-table-column>
-            <el-table-column prop="storeTotal" label="当前库存数量" width="120"></el-table-column>
+            <el-table-column prop="storeTotal" label="当前库存数量" width="120" align="center"></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>

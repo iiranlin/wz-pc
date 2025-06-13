@@ -37,13 +37,25 @@ export const detailWz = (id) => {
   })
 }
 /**
- * 发货-保存
+ * 发货新建-保存
  * @param {*} params 
  * @returns 
  */
 export const save = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/saveSendGoods`,
+    method: 'post',
+    data
+  })
+}
+/**
+ * 发货修改-保存
+ * @param {*} params 
+ * @returns 
+ */
+export const modifySend = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/modifySend`,
     method: 'post',
     data
   })

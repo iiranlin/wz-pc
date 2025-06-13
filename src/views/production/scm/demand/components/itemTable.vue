@@ -28,7 +28,7 @@
       :data="tableData"
       border
       style="width: 100%"
-      :max-height="350"
+      :max-height="600"
       v-loading="loading"
       @selection-change="noop"
       @select="handleSelect"
@@ -47,27 +47,29 @@
       </el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200"></el-table-column>
-      <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
+      <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
       <el-table-column
         prop="planAmount"
         label="本次计划数量"
         width="120"
+        align="center"
       ></el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" width="160"></el-table-column>
-      <el-table-column prop="addr" label="使用地点" width="200"></el-table-column>
+      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center"></el-table-column>
+      <el-table-column prop="addr" label="使用地点" width="200" align="center"></el-table-column>
       <el-table-column
         prop="receiver"
         label="收货人及联系方式"
         width="180"
       ></el-table-column>
-      <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
-      <el-table-column prop="receiver" label="投资比例" width="180"></el-table-column>
+      <el-table-column prop="field0" label="投资方" width="180" align="center"></el-table-column>
+      <el-table-column prop="field1" label="投资比例" width="180" align="center"></el-table-column>
       <el-table-column prop="remark" label="备注" width="200"></el-table-column>
       <el-table-column
         prop="projectShortName"
         label="本次需求未发货数量"
         width="120"
+        align="center"
       ></el-table-column>
     </el-table>
   </div>

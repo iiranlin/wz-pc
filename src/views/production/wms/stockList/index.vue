@@ -82,7 +82,7 @@
           @handleButton="handleButton"
         >
           <template #status="scope">
-            {{ status[scope.value] }}
+            {{ scope.value=='6'?'已完成':'未完成' }}
           </template>
           <template #relatedCount="scope">
             {{ scope.value }}
@@ -117,14 +117,10 @@ export default {
 
   data() {
     return {
-      status: {
-        2: "未完成",
-        6: "已完成",
-      },
       options: [
         {
           code: "2",
-          name: "为完成",
+          name: "未完成",
         },
         {
           code: "6",
@@ -239,13 +235,17 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "om":
-          this.$router.push({
-            name: "omPage",
-            query: {
-              type: "create",
-              id: idArr[0],
-            },
-          });
+          if (rowArr[0].status != "6") {
+            this.$router.push({
+              name: "omPage",
+              query: {
+                type: "create",
+                id: idArr[0],
+              },
+            });
+          } else {
+            this.$modal.msgError("该需求的物资已全部出库");
+          }
           break;
         case "stockDetail":
           this.$router.push({
