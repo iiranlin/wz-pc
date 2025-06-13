@@ -119,3 +119,12 @@ export const changeList = (data) => {
     data
   })
 }
+
+// 根据标段获取合同列表
+export const getContractList = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/getBySectionProject`,
+    method: 'post',
+    data
+  })
+}

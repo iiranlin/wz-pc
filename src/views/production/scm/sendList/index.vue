@@ -106,7 +106,7 @@ import indexMixin from "@/views/mixins";
 import AddAdress from "./components/addAdress.vue";
 import fileUpload from "@/components/upload";
 export default {
-  // 线路项目
+  // 建设项目
   name: "sendList",
   components: { AddAdress,fileUpload },
   mixins: [indexMixin],

@@ -23,7 +23,7 @@
       >
     </template>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane label="线路项目" name="total"></el-tab-pane>
+      <el-tab-pane label="建设项目" name="total"></el-tab-pane>
       <el-tab-pane
         v-for="project in projectTabs"
         :key="project.name"

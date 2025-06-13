@@ -24,8 +24,8 @@
       >
         <el-row :span="24" :gutter="20">
           <el-col :span="24">
-            <el-form-item :label="'供应计划名称'" prop="supplyName">
-              {{ form.supplyName }}
+            <el-form-item :label="'供应计划名称'" prop="planName">
+              {{ form.planName }}
             </el-form-item>
           </el-col>
           <el-col :span="24"> </el-col>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import * as Api from '@/api/prodmgr-inv/project/supplyRest.js'
+import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import fileUpload from '@/components/upload'
 export default {
   name: "ItemAdd",
@@ -109,7 +109,7 @@ export default {
           }
           this.loading = true;
           await Api[
-            `submit`
+            `submitToSeller`
           ](Object.assign({}, data))
             .then(({ message }) => {
               this.loading = false;

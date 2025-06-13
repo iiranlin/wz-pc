@@ -74,7 +74,7 @@ import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
 import { getUserInfo } from "@/utils/user-info";
 export default {
-  // 线路项目
+  // 建设项目
   name: "returnList_sh",
   components: {},
   mixins: [indexMixin],

@@ -76,7 +76,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import { listByDeptCode } from '@/api/system/dept.js'
 export default {
-  // 线路项目
+  // 建设项目
   name: "contractList",
   components: { Add },
   mixins: [indexMixin],
@@ -147,7 +147,7 @@ export default {
       if (btn.buttonCode === 'contractStatus') {
         return this.selection[0].contractStatus == 2
       }
-      // 变更非启用不能变更
+      // 变更 - 非启用不能变更
       if(btn.buttonCode === 'change'){
         return this.selection[0].contractStatus == 1
       }

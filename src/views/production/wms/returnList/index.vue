@@ -76,7 +76,7 @@
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 export default {
-  // 线路项目
+  // 建设项目
   name: "returnList_im",
   components: {},
   mixins: [indexMixin],

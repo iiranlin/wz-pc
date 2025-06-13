@@ -18,7 +18,7 @@
           <el-form-item
             prop="projectId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="归属线路项目"
+            label="归属建设项目"
             class="label-right-align"
           >
             <template v-if="type !== 'view' && !projectId">
@@ -408,7 +408,7 @@ export default {
           //   form action
           this.$refs['vFormRef'].setReadMode(false)
 
-          // 如果有projectId 则默认赋值归属项目，并且禁用归属线路项目选项
+          // 如果有projectId 则默认赋值归属项目，并且禁用归属建设项目选项
           if (this.projectId) {
             this.$refs['vFormRef'].setFormData({
               projectId: this.projectId,

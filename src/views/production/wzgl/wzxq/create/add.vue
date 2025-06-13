@@ -90,12 +90,12 @@ export default {
   },
   async created () {
     // this.getDeptTree()
-    this.getLineOptions()
+    // this.getLineOptions()
 
 
-    this.constructionCompanyOptions = await this.getDeptTree('SGDW')
-    this.supervisionUnitOptions = await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
+    // this.constructionCompanyOptions = await this.getDeptTree('SGDW')
+    // this.supervisionUnitOptions = await this.getDeptTree('JLDW')
+    // this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
   },
   mounted () {
 
@@ -124,11 +124,17 @@ export default {
           errors.push(`第${rowNum}行，供应时间未填写 `);
         }
 
-        if (!row.addr || row.addr.trim()==='') {
+        if (!row.addr || row.addr.trim() === '') {
           errors.push(`第${rowNum}行，使用地点未填写 `);
         }
-          if (!row.receiver || row.receiver.trim()==='') {
+        if (!row.receiver || row.receiver.trim() === '') {
           errors.push(`第${rowNum}行，收货人及联系方式未填写 `);
+        }
+        if(!row.field0 || row.field0.trim() === ''){
+          errors.push(`第${rowNum}行，投资方未填写`)
+        }
+        if(!row.field1 || row.field1.trim() === ''){
+          errors.push(`第${rowNum}行，投资比例未填写`)
         }
 
         const plan = +row.planAmount || 0;
@@ -160,8 +166,9 @@ export default {
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
         sectionName: this.sectionInfo.sectionName,
-        title: this.sectionInfo.constructionCompany + this.sectionInfo.sectionName + dayjs().format('YYYY年MM月') + '甲供物资需求'
-      })
+        title:   dayjs().format('YYYY年MM月') + '甲供物资计划申请表',
+      deptName:this.userInfo?.instituteName
+     })
     },
 
     //初始化
@@ -213,9 +220,10 @@ export default {
     },
     newButton (buttonCode) {
       if (buttonCode === 'cancel') {
-        this.$router.push({
-        name:'wzxqList'
-       })
+        //   this.$router.push({
+        //   name:'wzxqList'
+        //  })
+        this.$tab.closeOpenPage({ name: 'requestAdd' })
         return
       }
       if (buttonCode === 'save') {
@@ -247,17 +255,27 @@ export default {
       }
       this.loading = true;
       const data = {
+        contractId: this.id,
         detailsModifyParams: tableData.map(x => ({
           ...x,
           id: null,
-          allocationUniqueNumber: x.uniqueNumber
+          allocationUniqueNumber: x.uniqueNumber,
         }))
       }
       await Api[`save`](data)
-        .then(({ message }) => {
+        .then(async ({ message }) => {
           this.loading = false;
           this.$modal.msgSuccess(message);
           this.setSelectedMaterialList([])
+
+          this.$tab.closeOpenPage({ name: 'requestView' })
+          // 时间等待10ms
+          await new Promise(resolve => setTimeout(resolve, 10));
+          this.$tab.closeOpenPage({ name: 'requestAdd' });
+          await new Promise(resolve => setTimeout(resolve, 10));
+          this.$tab.closeOpenPage({ name: 'selectContract' });
+
+
           this.$router.push({
             name: 'wzxqList'
           })

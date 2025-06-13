@@ -99,7 +99,7 @@ import Add from './components/add.vue'
 import SectionDialog from './components/sectionDialog.vue'
 import ConstrctDialog from './components/constrctDialog.vue'
 export default {
-  // 线路项目
+  // 建设项目
   name: "line",
   components: { Add, SectionDialog, ConstrctDialog },
   mixins: [indexMixin],

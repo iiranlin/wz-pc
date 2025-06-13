@@ -40,6 +40,7 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :buttonDisable="handleTableButtonDisable"
         >
           <template #planStatus="scope">
             {{ planStatus[scope.value] }}
@@ -72,7 +73,7 @@ import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import indexMixin from "@/views/mixins";
 import workFlowView from '@/components/workFlowView'
 export default {
-  // 线路项目
+  // 需求列表
   name: "wzxqList",
   components: { workFlowView },
   mixins: [indexMixin],
@@ -80,16 +81,16 @@ export default {
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const planStatus = {
-      '0': '已驳回',
+       '0': '已驳回',
       '1': '未提交',
-      '2': '审核中',
-      '3': '审核通过',
+      '2': '已提交',
+      '3': '已生效',
       '4': '修改后同意',
       '5': '已撤回',
-      '6': '发货中',
+      '6': '供应中',
       '7': '收货完成',
       '8': '已入库',
-      '9': '已出库',
+      '9': '已完成',
     }
     return {
       planStatus: planStatus,
@@ -138,13 +139,41 @@ export default {
   },
 
   methods: {
+    handleTableButtonDisable (item, row) {
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      if (item.buttonCode === 'flowSee') {
+        return !['0', '3', '2', '4'].includes(row.planStatus)
+      }
+      // 供应中、收货完成、已入库、已完成允许物流查看
+      if (item.buttonCode === 'logisticsView') {
+        return !['6', '7', '8', '9'].includes(row.planStatus)
+      }
+      // 供应中、收货完成、已入库、已完成允许供应概览
+      if(item.buttonCode === 'supplyView'){
+         return !['6', '7', '8', '9'].includes(row.planStatus)
+      }
+      return false
+    },
     handleButtonDisabled (item) {
-      // 删除按钮，只能未提交和已驳回的才可以删除
+      // 未提交、已驳回、已撤回才可以删除
       if (item.buttonCode === 'delete') {
         return this.selection.some(item => {
-          // return item.planStatus !== '1' && item.planStatus !== '4'
+          return !['0', '1', '5'].includes(item.planStatus)
         })
       }
+      // 未提交、修改后同意、已驳回、已撤回允许修改
+      if (item.buttonCode === 'update') {
+        return this.selection.some(item => {
+          return !['0', '1', '4', '5'].includes(item.planStatus)
+        })
+      }
+      // 未提交、修改后同意、已驳回、已撤回、允许提交审核
+      if (item.buttonCode === 'examine') {
+        return this.selection.some(item => {
+          return !['0', '1', '4', '5'].includes(item.planStatus)
+        })
+      }
+
       return false;
     },
     onGoDetail (row) {
@@ -211,7 +240,7 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
-          this.$router.push({ name: 'requestAdd', query: { type: 'create' } })
+          this.$router.push({ name: 'selectContract', query: { type: 'create' } })
           break;
         case "update":
           // from 用于判断是否是从列表跳转过来的，列表跳转要刷新参数
@@ -224,7 +253,7 @@ export default {
           this.$router.push({ name: 'logisticsView', query: { id: idArr[0], type: 'view' } })
           break;
         case 'examine':
-          this.handleExamine(idArr,rowArr[0].planType)
+          this.handleExamine(idArr, rowArr[0].planType)
           break;
         case 'withdraw':
           this.handleWithdraw({ businessId: idArr[0], businessType: 'FBYLXQ', })
@@ -248,7 +277,7 @@ export default {
     },
     // 提交审核
     handleExamine (ids, planType) {
-        const businessCode = {
+      const businessCode = {
         '1': 'FBYLXQ',
         '2': 'FBYLJH',
         '3': 'YLXQ',

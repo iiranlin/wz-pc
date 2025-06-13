@@ -63,10 +63,20 @@
           <template #status="scope">
             {{ status[scope.value] }}
           </template>
-          <template #supplyNumber="scope">
+          <template #planNumber="scope">
             <el-button type="text" @click="onGoDetail(scope.data)">
               {{ scope.value }}
             </el-button>
+          </template>
+          <template #fileList="scope">
+            <fileUpload
+              v-if="scope.value[0]"
+              :value="scope.value[0].fileList"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
+              :preview="'view'"
+            />
           </template>
         </table-index>
         <pagination
@@ -78,31 +88,29 @@
         />
       </el-col>
     </el-row>
-    <Add ref="addRef" />
+    <Add ref="addRef" @createSuccess="onSuccess" />
   </div>
 </template>
 
 <script>
 
-import * as Api from '@/api/prodmgr-inv/project/supplyRest.js'
+import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
+import fileUpload from '@/components/upload'
 export default {
   // 供应需求列表
   name: "wzxqList",
-  components: { Add },
+  components: { Add,fileUpload },
   mixins: [indexMixin],
 
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const status = {
-      '1': '未提交',
+      '0': '未提交',
       '2': '未确认',
       '3': '已确认',
-      '4': '供货中',
-      '5': '已验收',
-      '6': '已完成',
-      '7': '已撤回',
+      '4': '供货中'
     }
     return {
       status: status,
@@ -149,6 +157,9 @@ export default {
   },
 
   methods: {
+    onSuccess () {
+      this.getList()
+    },
     handleButtonDisabled (item) {
       // 删除按钮，只能未提交和已驳回的才可以删除
       if (item.buttonCode === 'delete') {
@@ -160,7 +171,7 @@ export default {
     },
     onGoDetail (row) {
       this.$router.push({
-        name: 'requestSupplyDetail',
+        name: 'requestDetail',
         query: {
           type: 'view',
           id: row.id
@@ -192,11 +203,6 @@ export default {
       this.handleQuery();
     },
     handleQuery (row = {}, type = '') {
-      if (type === 'queryForm') {
-        this.treeCurrentKey = '';
-        this.formData.parentId = '';
-        this.$refs.tree.setCurrentKey(null);
-      }
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -225,7 +231,7 @@ export default {
           this.$refs['addRef'].updateInit(idArr[0])
           break;
         case "download":
-         this.handleExport(rowArr[0])
+          this.handleExport(rowArr[0])
           break;
       }
     },
