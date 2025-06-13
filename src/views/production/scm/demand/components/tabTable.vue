@@ -28,10 +28,10 @@
       </el-table-column> -->
       <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
 
-      <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
-      <el-table-column prop="planAmount" label="计划数量" width="140"></el-table-column>
+      <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
+      <el-table-column prop="planAmount" label="计划数量" width="140" align="center"></el-table-column>
       <el-table-column prop="sendTotal" label="发货数量" width="160">
         <template slot-scope="scope">
           <el-input-number
@@ -47,7 +47,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="packagingFm" label="包装形式" width="160">
+      <el-table-column prop="packagingFm" label="包装形式" width="160" align="center">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.packagingFm"
@@ -75,7 +75,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="expirationDate" label="有效期截止日期" width="160">
+      <el-table-column prop="expirationDate" label="有效期截止日期" width="160" align="center">
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.expirationDate"
@@ -90,7 +90,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="receivingAddress" label="收货地址" width="160">
+      <el-table-column prop="receivingAddress" label="收货地址" width="160" align="center">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.receivingAddress"
@@ -103,7 +103,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" width="160">
+      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center">
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.supplyDate"
@@ -131,8 +131,8 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="unit" label="投资方" width="180"></el-table-column>
-      <el-table-column prop="unit" label="投资比例" width="120"></el-table-column>
+      <el-table-column prop="field0" label="投资方" width="180" align="center"></el-table-column>
+      <el-table-column prop="field1" label="投资比例" width="120" align="center"></el-table-column>
       <el-table-column prop="projectShortName" label="合格证附件" width="300">
         <template slot-scope="scope">
           <fileUpload
@@ -193,15 +193,9 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
-    supplyName() {
-      return this.$route.query?.supplyName || "";
-    },
-    supplyNumber() {
-      return this.$route.query?.supplyNumber || "";
-    },
-    sellerId() {
-      return this.$route.query?.sellerId || "";
-    },
+    planId() {
+      return this.$route.query?.planId || "";
+    }
   },
   data() {
     return {
@@ -217,10 +211,8 @@ export default {
         name: "selectItem",
         query: {
           id: this.id,
-          type: "create",
-          supplyName: this.supplyName,
-          supplyNumber: this.supplyNumber,
-          sellerId: this.sellerId,
+          type: this.type,
+          planId: this.planId,
         },
       });
     },

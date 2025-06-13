@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="app-container container_flex">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -25,7 +25,7 @@
             <fileUpload :value="scope.formModel.fileList01" :preview="true" />
           </el-form-item>
           <el-form-item prop="fileList" label="检测报告" class="label-right-align" v-else>
-            <fileUpload :value="scope.formModel.fileList01" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList03" :preview="true" />
           </el-form-item>
         </template>
         <!-- 附件 -->
@@ -44,7 +44,7 @@
             class="label-right-align"
             v-else
           >
-            <fileUpload :value="scope.formModel.fileList02" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList04" :preview="true" />
           </el-form-item>
         </template>
         <!-- 附件 -->
@@ -55,7 +55,7 @@
             class="label-right-align"
             v-if="backNode == '2'"
           >
-            <fileUpload :value="scope.formModel.fileList03" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList05" :preview="true" />
           </el-form-item>
         </template>
         <template #returnDetailSlot>
@@ -82,18 +82,26 @@
               prop="specModel"
               label="规格型号"
               width="150"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="sendTotal"
               label="发货数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="refundTotal"
               label="退货数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column prop="projectShortName" label="退货附件" width="180">
               <template slot-scope="scope">
@@ -183,23 +191,22 @@ export default {
       await Api.detailBack(id).then(({ data }) => {
         this.$nextTick(async () => {
           await this.formFillInPage();
-          //拆分附件
-          if (data.fileList && data.fileList.length > 0) {
-            data.fileList01 = data.fileList.find(
-              (item) => item.businessType == "1"
-            ).fileList;
-            data.fileList02 = data.fileList.find(
-              (item) => item.businessType == "2"
-            ).fileList;
-          }
-          // fileList回显
           const newData = {
             ...data,
+            fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
+            fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
+            fileList03: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
+            fileList04: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //质量证明文件
+            fileList05: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
           };
           this.$refs.vFormRef.setFormData(newData);
           //   form action
           this.$refs.vFormRef.setReadMode(true);
-          this.tableData = data.materialSupplierDetailDTOList;
+          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            ...x,
+            fileList: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
+          }));
+          this.tableData = detail;
         });
       });
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container" v-loading="loading">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -139,43 +139,56 @@
               prop="specModel"
               label="规格型号"
               width="200"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="sendTotal"
               label="本次发货数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="packagingFm"
               label="包装形式"
               width="160"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="receivingAddress"
               label="收货地址"
               width="200"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="supplyDate"
               label="供应时间"
               width="160"
+              align="center"
             ></el-table-column>
 
             <el-table-column
@@ -183,12 +196,13 @@
               label="收货人及联系方式"
               width="180"
             ></el-table-column>
-            <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
             <el-table-column
-              prop="receiver"
-              label="投资比例"
+              prop="field0"
+              label="投资方"
               width="180"
+              align="center"
             ></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="180"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -207,7 +221,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="putTotal" label="收货数量" width="120">
+            <el-table-column prop="putTotal" label="收货数量" width="150">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.putTotal"
@@ -222,7 +236,7 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="refundTotal" label="退货数量" width="120">
+            <el-table-column prop="refundTotal" label="退货数量" width="150">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.refundTotal"
@@ -359,13 +373,6 @@ export default {
         await Api.detailTake(id).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
-            //拆分附件
-            if (data.fileList && data.fileList.length > 0) {
-              data.fileList01 =
-                data.fileList.find((item) => item.businessType == "1").fileList || [];
-              data.fileList02 =
-                data.fileList.find((item) => item.businessType == "2").fileList || [];
-            }
             if (this.type == "create") {
               //收货的时候默认本机日期
               data.takeDate = this.getDate();
@@ -377,6 +384,12 @@ export default {
             // fileList回显
             const newData = {
               ...data,
+              fileList01: data.fileByList
+                ? JSON.parse(data.fileByList).zjd||[]: [], //自检单
+              fileList02: data.fileByList
+                ? JSON.parse(data.fileByList).qtzl||[]: [], //其他资料
+              fileList03: data.fileByList
+                ? JSON.parse(data.fileByList).fhd||[]: [], //发货单
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(this.type === "view");
@@ -384,16 +397,13 @@ export default {
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-              putTotal: x.sendTotal, //默认收货数量=发货数量
-              // fileList01: x.fileList
-              //   ? x.fileList.find((item) => item.businessType == "1").fileList || []
-              //   : [],
-              // fileList02: x.fileList
-              //   ? x.fileList.find((item) => item.businessType == "2").fileList || []
-              //   : [],
-              // fileList03: x.fileList
-              //   ? x.fileList.find((item) => item.businessType == "3").fileList || []
-              //   : [],
+              putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认收货数量=发货数量
+              fileList01: x.fileByList
+                ? JSON.parse(x.fileByList).hgz||[]: [], //合格证
+              fileList02: x.fileByList
+              ? JSON.parse(x.fileByList).cjbg||[]: [], //厂检报告
+              fileList03: x.fileByList
+                ? JSON.parse(x.fileByList).thfj||[]: [], //退货附件
             }));
             this.tableData = detail;
           });
@@ -457,18 +467,25 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
-          // 后端存入嵌套数组
-          var fileList = [
-            {
-              businessType: "1",
-              fileList: formData.fileList01,
-            },
-            {
-              businessType: "2",
-              fileList: formData.fileList02,
-            },
-          ];
-          formData.fileList = fileList;
+          //组装附件
+          var fileByList = formData.fileByList ? JSON.parse(formData.fileByList) : {};
+          //自检单
+          if (formData.fileList01.length > 0) {
+            this.$set(fileByList, "zjd", formData.fileList01);
+          }
+          //其他资料
+          if (formData.fileList02.length > 0) {
+            this.$set(fileByList, "qtzl", formData.fileList02);
+          }
+          formData.fileByList = JSON.stringify(fileByList);
+          for (var i in this.tableData) {
+            var fileByList = this.tableData[i].fileByList ? JSON.parse(this.tableData[i].fileByList) : {};
+            //退货附件
+            if (this.tableData[i].fileList03.length > 0) {
+              this.$set(fileByList, "thfj", this.tableData[i].fileList03);
+            }
+            this.tableData[i].fileByList = JSON.stringify(fileByList);
+          }
           formData.takeDate = new Date(formData.takeDate).toISOString();
           await Api.save(
             Object.assign(
@@ -479,20 +496,6 @@ export default {
               {
                 materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
                   ...x,
-                  fileList: [
-                    {
-                      businessType: "1",
-                      fileList: x.fileList01,
-                    },
-                    {
-                      businessType: "2",
-                      fileList: x.fileList02,
-                    },
-                    {
-                      businessType: "3",
-                      fileList: x.fileList03,
-                    },
-                  ],
                 })),
               }
             )

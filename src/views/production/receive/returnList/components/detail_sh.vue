@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="app-container container_flex">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -48,43 +48,56 @@
               prop="specModel"
               label="规格型号"
               width="150"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="putTotal"
               label="本次收货数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="packagingFm"
               label="包装形式"
               width="160"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="receivingAddress"
               label="收货地址"
               width="200"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="supplyDate"
               label="供应时间"
               width="160"
+              align="center"
             ></el-table-column>
 
             <el-table-column
@@ -92,11 +105,17 @@
               label="收货人及联系方式"
               width="180"
             ></el-table-column>
-            <el-table-column prop="receiver" label="投资方" width="180"></el-table-column>
             <el-table-column
-              prop="receiver"
+              prop="field0"
+              label="投资方"
+              width="180"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="field1"
               label="投资比例"
               width="180"
+              align="center"
             ></el-table-column>
 
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
@@ -209,18 +228,11 @@ export default {
       await Api.detailBack(id).then(({ data }) => {
         this.$nextTick(async () => {
           await this.formFillInPage();
-          //拆分附件
-          if (data.fileList && data.fileList.length > 0) {
-            data.fileList01 = data.fileList.find(
-              (item) => item.businessType == "1"
-            ).fileList;
-            data.fileList02 = data.fileList.find(
-              (item) => item.businessType == "2"
-            ).fileList;
-          }
           // fileList回显
           const newData = {
             ...data,
+            fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
+            fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
           };
           this.$refs.vFormRef.setFormData(newData);
           //   form action
@@ -229,15 +241,9 @@ export default {
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
-            fileList01: x.fileList
-              ? x.fileList.find((item) => item.businessType == "1").fileList || []
-              : [],
-            fileList02: x.fileList
-              ? x.fileList.find((item) => item.businessType == "2").fileList || []
-              : [],
-            fileList03: x.fileList
-              ? x.fileList.find((item) => item.businessType == "3").fileList || []
-              : [],
+            fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
+            fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
+            fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
           }));
           this.tableData = detail;
         });

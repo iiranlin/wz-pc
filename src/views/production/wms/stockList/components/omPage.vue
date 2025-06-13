@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="app-container container_flex">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -24,7 +24,10 @@
           >
             <fileUpload
               v-model="scope.formModel.fileList"
-              :preview="type == 'view' && preview"
+              :preview="type == 'view' || preview"
+              :limit="1"
+              :fileSize="50"
+              :fileType="['pdf']"
             />
           </el-form-item>
         </template>
@@ -38,8 +41,9 @@
               v-if="type != 'view' && !preview"
               v-model="materialName"
               placeholder="请输入物资名称"
+              style="width: 300px"
             >
-              <el-button slot="append" icon="el-icon-search" @click="getList"></el-button
+              <el-button slot="append" icon="el-icon-search"></el-button
             ></el-input>
           </div>
           <el-table
@@ -65,38 +69,48 @@
               prop="specModel"
               label="规格型号"
               width="200"
+              align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="storeTotal"
               label="当前库存数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
             ></el-table-column>
-            <el-table-column prop="outTotle" label="出库数量" width="120">
+            <el-table-column prop="outTotle" label="出库数量" width="150" align="center">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.outTotle"
                   :min="0"
-                  @change="changeOut(scope.row)"
+                  :max="scope.row.storeTotal"
                   size="mini"
                   style="width: 100%"
-                  v-if="type != 'view' && !preview && show"
+                  v-if="type != 'view' && !preview"
                 ></el-input-number>
                 <span v-else>
                   {{ scope.row.outTotle }}
@@ -131,6 +145,7 @@ import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
+import dayjs from "dayjs";
 export default {
   name: "omPage",
   components: {
@@ -178,7 +193,6 @@ export default {
       tableData: [],
       selection: [],
       form: {},
-      show: false,
       materialName: "",
       preview: false, //出库页还是预览页
     };
@@ -191,6 +205,19 @@ export default {
       return this.$route.query?.id || "";
     },
   },
+  watch: {
+    preview: {
+      handler(newVal) {
+        if (newVal) {
+          this.buttonTop[1].buttonName = "确定";
+          this.$refs.vFormRef.setReadMode(true);
+        } else {
+          this.buttonTop[1].buttonName = "预览";
+          this.$refs.vFormRef.setReadMode(false);
+        }
+      },
+    },
+  },
   async created() {},
   mounted() {
     this.init(this.id);
@@ -199,17 +226,15 @@ export default {
     //初始化
     init(id) {
       this.$nextTick(async () => {
-        await Api.outDetail(id).then(({ data }) => {
+        await Api.detailOut(id).then(({ data }) => {
           this.$nextTick(async () => {
             await this.formFillInPage();
-            // fileList回显
-            const newData = {
-              ...data,
-              fileList: (data.fileList && data.fileList[0]?.fileList) || [],
-            };
-            this.$refs.vFormRef.setFormData(newData);
-            this.$refs.vFormRef.setReadMode(true);
-            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            this.$refs.vFormRef.setFormData({
+              sectionName: data.sectionName,
+              planName: data.planName,
+              deptName: data.deptName,
+            });
+            const detail = data.details.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
@@ -245,21 +270,27 @@ export default {
       return true;
     },
     //新建
-    handleCreate() {
-      this.preview = !this.preview;
-      if (this.preview) {
+    async handleCreate() {
+      console.log(this.preview, "=====this.preview====");
+      if (!this.preview) {
         //进行预览
         this.$refs.vFormRef.validateForm(async (valid) => {
           if (!valid) {
             this.$message.warning("请完善信息");
             return;
           }
+          this.preview = !this.preview;
         });
       } else {
-        const formData = this.$refs.vFormRef.getFormData();
-        // 后端存入嵌套数组
-        const fileList = formData.fileList;
-        formData.fileList = [{ fileList }];
+        const formData = await this.$refs.vFormRef.getFormData();
+        //组装附件
+        var fileByList = formData.fileByList ? JSON.parse(formData.fileByList) : {};
+        //领料单
+        if (formData.fileList.length > 0) {
+          this.$set(fileByList, "lld", formData.fileList);
+        }
+
+        formData.fileByList = JSON.stringify(fileByList);
         Api.outSave(
           Object.assign(
             {
@@ -267,7 +298,7 @@ export default {
             },
             formData,
             {
-              materialSupplierDetailDTOList: this.tableData.map((x) => ({
+              materialSupplierOutDetailParams: this.tableData.map((x) => ({
                 ...x,
               })),
             }
@@ -288,25 +319,8 @@ export default {
       return new Promise((resolve) => {
         formFillInPage("om").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
-
-          this.$refs["vFormRef"].setFormData({
-            buyer: this.buyer,
-          });
-
           resolve(true);
         });
-      });
-    },
-    //填写出库数量
-    changeOut(row) {
-      //出库不能超过库存
-      if (Number(row.outTotle) > Number(row.storeTotal)) {
-        this.$modal.msgError("出库数量不能大于库存数量！");
-        row.outTotle = row.storeTotal;
-      }
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
       });
     },
   },

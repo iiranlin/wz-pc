@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="app-container container_flex">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -92,6 +92,9 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
+    planId() {
+      return this.$route.query?.planId || "";
+    },
     ...mapState(["request"]),
   },
   async created() {},
@@ -105,7 +108,7 @@ export default {
     },
     //初始化
     async init() {
-      await Api.detailWz(this.id).then(({ data }) => {
+      await Api.detailWz(this.type=='create'?this.id:this.planId).then(({ data }) => {
         this.$nextTick(async () => {
           this.tableData = data.details.map((x) => ({
             ...x,

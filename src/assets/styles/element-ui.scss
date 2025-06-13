@@ -622,3 +622,6 @@
     white-space: pre-line;
   }
 }
+.app-container > div + div {
+	overflow: auto;
+  }
