@@ -49,8 +49,9 @@
             prop="plannedDuration"
             :rules="[
               {
-                pattern: /^(100(\.0{1,2})?|([0-9]{1,2})(\.\d{1,4})?)$/,
-                message: '请输入正确的数字',
+                pattern:
+                  /^(?:[1-9]\d{0,4})(?:\.\d{1,2})?$|^0\.(?:0[1-9]|[1-9]\d?)$/,
+                message: '请输入正确的月份数量',
                 trigger: 'blur',
               },
             ]"
@@ -64,7 +65,7 @@
                 placeholder="请输入"
               >
                 <template #append>
-                  <span>年</span>
+                  <span>月</span>
                 </template>
               </el-input>
             </template>

@@ -15,7 +15,10 @@
         :class="{ formRender_view: true }"
       >
         <template #table>
-          <detailTable ref="itemTableRef" :tableData="tableData" />
+          <detailTable ref="itemTableRef" :tableData="tableData"  />
+        </template>
+        <template #logTable>
+          <detailLogs />
         </template>
       </VFormRender>
     </div>
@@ -24,9 +27,8 @@
 
 <script>
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
-import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
-
+import detailLogs from './detailLogs.vue'
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
@@ -42,6 +44,7 @@ export default {
     VFormRender,
     attachmentTable,
     detailTable,
+    detailLogs
   },
   data () {
     return {
@@ -103,6 +106,7 @@ export default {
 
   },
   methods: {
+  
     async getCurrentSection () {
       const res = await SectionApi.getCurrentSection()
       this.sectionInfo = res.data

@@ -177,7 +177,7 @@ export default {
     },
   },
   async created () {
-    this.getLineOptions()
+    // this.getLineOptions()
     this.gysOptions = await this.getDeptTree('GYS')
   },
   mounted () {
@@ -238,6 +238,7 @@ export default {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
+        this.getLineOptions()
       });
     },
     // 编辑初始化
@@ -247,6 +248,8 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
+          this.getLineOptions()
+
           // fileList回显
           const newData = {
             ...data,
@@ -310,11 +313,11 @@ export default {
           // 后端存入嵌套数组
           const fileList = formData.fileList
           // formData.fileList = [{ fileList }]
-         
+
           await Api[
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
-           fileList:[{fileList}],
+            fileList: [{ fileList }],
             materialList: this.tableData.map(x => ({
               ...x,
               id: null,
@@ -344,13 +347,7 @@ export default {
         formFillInPage('contractList').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
 
-          // 如果有projectId 则默认赋值归属项目，并且禁用归属建设项目选项
-          if (this.projectId) {
-            this.$refs['vFormRef'].setFormData({
-              projectId: this.projectId,
-              // projectName: this.lineOptions.find(item => item.value === this.projectId).label
-            })
-          }
+
 
           this.$refs['vFormRef'].setFormData({
             buyer: this.buyer
@@ -395,6 +392,14 @@ export default {
       this.$refs['vFormRef'].setFormData({
         projectName: this.lineOptions.find(item => item.value === this.projectId).label
       })
+
+      // 如果有projectId 则默认赋值归属项目，并且禁用归属建设项目选项
+      if (this.projectId) {
+        this.$refs['vFormRef'].setFormData({
+          projectId: this.projectId,
+          // projectName: this.lineOptions.find(item => item.value === this.projectId).label
+        })
+      }
     },
     async getDeptTree (deptCode) {
       const res = await listByDeptCode({

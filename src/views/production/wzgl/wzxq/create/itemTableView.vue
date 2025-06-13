@@ -8,7 +8,7 @@
       </div>
       <el-input
         v-model="searchKeyword"
-        placeholder="请输入物资名称搜索"
+        placeholder="请输入规格型号搜索"
         clearable
         prefix-icon="el-icon-search"
         size="small"
@@ -74,13 +74,13 @@
         width="150"
       ></el-table-column>
       <el-table-column
-        prop="supplyDate"
+        prop="deliveryDate"
         label="供应时间"
         align="center"
         width="200"
       ></el-table-column>
       <el-table-column
-        prop="addr"
+        prop="deliveryLocation"
         label="使用地点"
         align="center"
         width="200"
@@ -118,7 +118,7 @@ export default {
     filteredData () {
       if (!this.searchKeyword) return this.allData;
       return this.allData.filter(row =>
-        row.materialName.includes(this.searchKeyword)
+        row.specModel.toLowerCase().includes(this.searchKeyword.toLowerCase())
       );
     }
   },

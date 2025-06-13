@@ -39,7 +39,7 @@
               </el-select>
             </template>
             <template v-else>
-               <el-tooltip
+              <el-tooltip
                 :content="formModel.constructionUnit"
                 placement="bottom"
                 effect="light"
@@ -54,7 +54,6 @@
                   {{ formModel.constructionUnit }}
                 </div>
               </el-tooltip>
-          
             </template>
           </el-form-item>
         </template>
@@ -64,7 +63,8 @@
             prop="plannedDuration"
             :rules="[
               {
-                pattern: /^(100(\.0{1,2})?|([0-9]{1,2})(\.\d{1,4})?)$/,
+                pattern:
+                  /^(?:[1-9]\d{0,4})(?:\.\d{1,2})?$|^0\.(?:0[1-9]|[1-9]\d?)$/,
                 message: '请输入正确的数字',
                 trigger: 'blur',
               },
@@ -79,13 +79,13 @@
                 placeholder="请输入"
               >
                 <template #append>
-                  <span>年</span>
+                  <span>月</span>
                 </template>
               </el-input>
             </template>
             <template v-else>
               <span>{{ formModel.plannedDuration }} </span>
-              <span v-if="formModel.plannedDuration">年</span>
+              <span v-if="formModel.plannedDuration">月</span>
             </template>
           </el-form-item>
         </template>
@@ -224,7 +224,7 @@ export default {
           await this.formFillInPage()
           this.$refs.vFormRef.setFormData(data)
 
-            this.tableData = data.materialList
+          this.tableData = data.materialList
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
         });
