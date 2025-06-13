@@ -94,7 +94,7 @@ import indexMixin from "@/views/mixins";
 import Confirm from "./components/confirm.vue";
 import fileUpload from "@/components/upload";
 export default {
-  // 线路项目
+  // 建设项目
   name: "demand",
   components: { Confirm,fileUpload },
   mixins: [indexMixin],

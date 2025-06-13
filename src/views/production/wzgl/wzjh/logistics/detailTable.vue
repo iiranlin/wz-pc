@@ -15,14 +15,14 @@
             label-class-name="my-label"
             content-class-name="my-content"
           >
-            归属线路项目
+            归属建设项目
           </el-descriptions-item>
           <el-descriptions-item
             label="发货事件"
             label-class-name="my-label"
             content-class-name="my-content"
           >
-            归属线路项目
+            归属建设项目
           </el-descriptions-item>
           <el-descriptions-item
             label="发货地址"
@@ -37,7 +37,7 @@
               <!-- 超出隐藏 -->
               <!-- ellips -->
               <div style="width: 300px; overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
-                归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目
+                归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目
               </div>
             </el-tooltip>
           </el-descriptions-item>
@@ -54,7 +54,7 @@
               <!-- 超出隐藏 -->
               <!-- ellips -->
               <div style="width: 300px; overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
-                归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目归属线路项目
+                归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目归属建设项目
               </div>
             </el-tooltip>
           </el-descriptions-item>
@@ -71,7 +71,7 @@
               <!-- 超出隐藏 -->
               <!-- ellips -->
               <div style="width: 300px;;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
-                归属线路项目归属线路
+                归属建设项目归属建设
               </div>
             </el-tooltip>
           </el-descriptions-item>
@@ -80,21 +80,21 @@
             label-class-name="my-label"
             content-class-name="my-content"
           >
-            归属线路项目
+            归属建设项目
           </el-descriptions-item>
           <el-descriptions-item
             label="联系人"
             label-class-name="my-label"
             content-class-name="my-content"
           >
-            归属线路项目
+            归属建设项目
           </el-descriptions-item>
           <el-descriptions-item
             label="联系电话"
             label-class-name="my-label"
             content-class-name="my-content"
           >
-            归属线路项目
+            归属建设项目
           </el-descriptions-item>
         </el-descriptions>
         <wuliu />

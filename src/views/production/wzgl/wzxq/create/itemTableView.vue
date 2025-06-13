@@ -31,28 +31,30 @@
         align="center"
         type="selection"
         width="55"
+        fixed
       ></el-table-column>
       <el-table-column
         type="index"
         align="center"
         label="序号"
         width="60"
-      ></el-table-column>
-      <el-table-column
-        prop="sellerName"
-        align="center"
-        label="供应商"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="materialName"
         align="center"
         label="物资名称"
+        width="250"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="specModel"
         align="center"
         label="规格型号"
+        width="250"
+        fixed
       ></el-table-column>
+
       <el-table-column
         prop="unit"
         label="计量单位"
@@ -64,6 +66,30 @@
         label="合同数量"
         align="center"
         width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="cumulativeAmount"
+        label="已累计计划数量"
+        align="center"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="supplyDate"
+        label="供应时间"
+        align="center"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="addr"
+        label="使用地点"
+        align="center"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="receiver"
+        label="收货人及联系方式"
+        align="center"
+        width="200"
       ></el-table-column>
     </el-table>
   </div>
@@ -203,4 +229,23 @@ export default {
     align-items: center;
   }
 }
+
+// 修复固定列滚动条点击问题
+  ::v-deep .el-table {
+    .el-table__fixed,
+    .el-table__fixed-right {
+      pointer-events: none; // 禁用固定列的鼠标事件
+      
+      // 但保留固定列内容的交互能力
+      .el-table__fixed-body-wrapper,
+      .el-table__fixed-header-wrapper {
+        pointer-events: auto;
+      }
+    }
+    
+    // 确保滚动条区域可以接收事件
+    .el-table__body-wrapper {
+      pointer-events: auto;
+    }
+  }
 </style>

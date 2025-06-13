@@ -10,30 +10,40 @@
     </div>
 
     <!-- 表格 -->
-    <el-table ref="tableRef" :data="tableData" style="width: 100%" border height="500">
+    <el-table
+      ref="tableRef"
+      :data="tableData"
+      style="width: 100%"
+      border
+      height="500"
+    >
       <el-table-column
         type="index"
         align="center"
         label="序号"
         width="60"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="sellerName"
         label="供应商"
         align="center"
         width="120"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
         width="120"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="specModel"
         label="规格型号"
         align="center"
         width="150"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="unit"
@@ -102,6 +112,24 @@
           ></el-input>
         </template>
       </el-table-column>
+      <el-table-column prop="field0" label="投资方" min-width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.field0"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="field1" label="投资比例" min-width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.field1"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -116,7 +144,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(['request'])
+    ...mapState(['request']),
+    id () {
+      return this.$route.query?.id || ''
+    },
   },
   mounted () {
     this.tableData = this.getSelectedMaterialList()
@@ -126,7 +157,8 @@ export default {
       this.$router.push({
         name: 'requestView',
         query: {
-          type: 'create'
+          type: 'create',
+          id: this.id
         }
       })
     },

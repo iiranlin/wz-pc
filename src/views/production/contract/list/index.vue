@@ -76,7 +76,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import { listByDeptCode } from '@/api/system/dept.js'
 export default {
-  // 线路项目
+  // 建设项目
   name: "contractList",
   components: { Add },
   mixins: [indexMixin],

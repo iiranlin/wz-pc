@@ -127,7 +127,7 @@ export default {
     handleUpload ({ file }) {
       const projectId = this.$store.state.project.projectId || this.$route.query.projectId
       if (!projectId) {
-        this.$message.warning('请先选择归属线路项目')
+        this.$message.warning('请先选择归属建设项目')
         return
       }
       const formData = new FormData();

@@ -25,6 +25,7 @@
 <script>
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
+import * as ContractApi from '@/api/prodmgr-inv/project/contract.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
@@ -35,7 +36,6 @@ import { extractSelectOptions } from '@/utils/index'
 import ItemTableView from './itemTableView.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
-import dayjs from 'dayjs'
 export default {
   // 需求填报物资选择-页面
   components: {
@@ -112,12 +112,13 @@ export default {
       })
       this.allData = res.data
     },
-    async getCurrentSection () {
-      const res = await SectionApi.getCurrentSection()
+    async getContract () {
+      const res = await ContractApi.detail(this.id)
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
-        sectionName: this.sectionInfo.sectionName,
-        title:this.sectionInfo.constructionCompany  + this.sectionInfo.sectionName + dayjs().format('YYYY年MM月') +'甲供物资需求'
+        contractName: this.sectionInfo.contractName,
+        itemName: this.sectionInfo.itemName,
+        contractNo:this.sectionInfo.contractNo
       })
     },
     onSelectRow (rows) {
@@ -129,7 +130,7 @@ export default {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
-        this.getCurrentSection()
+        this.getContract()
         this.getCurrentProduction()
       });
     },
@@ -212,7 +213,7 @@ export default {
     },
     formFillInPage () {
       return new Promise((resolve) => {
-        formFillInPage('addRequest').then(res => {
+        formFillInPage('selectItemRequest').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
           //   form action
           this.$refs['vFormRef'].setReadMode(true)
