@@ -155,3 +155,12 @@ export const submitTodo = (data) => {
         data
     })
 }
+
+// 提交给供应商
+export const submitToSeller = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/submitSeller`,
+    method: 'post',
+    data
+  })
+}

@@ -107,7 +107,9 @@ export default {
   },
   methods: {
     async getCurrentProduction () {
-      const res = await SectionApi.getCurrentSectionMaterial()
+      const res = await SectionApi.getCurrentSectionMaterial({
+        contractId:this.id
+      })
       this.allData = res.data
     },
     async getCurrentSection () {
@@ -203,6 +205,7 @@ export default {
         name: 'requestAdd',
         query: {
           type: 'create',
+          id:this.id,
         }
       })
 

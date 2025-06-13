@@ -25,6 +25,7 @@
       @selection-change="noop"
       @select="handleSelect"
       @select-all="handleSelectAll"
+      height="500"
     >
       <el-table-column
         align="center"
@@ -170,7 +171,7 @@ export default {
       } else {
         this.$delete(this.selectedMap, row.id);
       }
-      this.sortData(); // 排序
+      // this.sortData(); // 排序
     },
 
     // 用户点击“全选”或“取消全选”

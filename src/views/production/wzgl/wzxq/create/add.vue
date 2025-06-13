@@ -213,9 +213,10 @@ export default {
     },
     newButton (buttonCode) {
       if (buttonCode === 'cancel') {
-        this.$router.push({
-        name:'wzxqList'
-       })
+      //   this.$router.push({
+      //   name:'wzxqList'
+      //  })
+      this.$tab.closeOpenPage({name:'requestAdd'})
         return
       }
       if (buttonCode === 'save') {
@@ -247,17 +248,27 @@ export default {
       }
       this.loading = true;
       const data = {
+        contractId:this.id,
         detailsModifyParams: tableData.map(x => ({
           ...x,
           id: null,
-          allocationUniqueNumber: x.uniqueNumber
+          allocationUniqueNumber: x.uniqueNumber,
         }))
       }
       await Api[`save`](data)
-        .then(({ message }) => {
+        .then(async ({ message }) => {
           this.loading = false;
           this.$modal.msgSuccess(message);
           this.setSelectedMaterialList([])
+          
+          this.$tab.closeOpenPage({name:'requestView'})
+          // 时间等待10ms
+          await new Promise(resolve => setTimeout(resolve, 10));
+          this.$tab.closeOpenPage({ name:'requestAdd' });
+          await new Promise(resolve => setTimeout(resolve, 10));
+          this.$tab.closeOpenPage({ name:'selectContract' });
+          
+
           this.$router.push({
             name: 'wzxqList'
           })

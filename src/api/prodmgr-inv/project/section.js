@@ -107,9 +107,10 @@ export function getCurrentSection() {
 }
 
 // 获取当前标段所有物料
-export function getCurrentSectionMaterial() {
+export function getCurrentSectionMaterial(params) {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getListBySectionId`,
-    method: 'get'
+    method: 'get',
+    params
   })
 }
