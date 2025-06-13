@@ -81,16 +81,16 @@ export default {
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const planStatus = {
-      '0': '已驳回',
+       '0': '已驳回',
       '1': '未提交',
-      '2': '审核中',
-      '3': '审核通过',
+      '2': '已提交',
+      '3': '已生效',
       '4': '修改后同意',
       '5': '已撤回',
-      '6': '发货中',
+      '6': '供应中',
       '7': '收货完成',
       '8': '已入库',
-      '9': '已出库',
+      '9': '已完成',
     }
     return {
       planStatus: planStatus,
@@ -142,7 +142,15 @@ export default {
     handleTableButtonDisable (item, row) {
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       if (item.buttonCode === 'flowSee') {
-        return !['0','3' ,'2', '4'].includes(row.planStatus)
+        return !['0', '3', '2', '4'].includes(row.planStatus)
+      }
+      // 供应中、收货完成、已入库、已完成允许物流查看
+      if (item.buttonCode === 'logisticsView') {
+        return !['6', '7', '8', '9'].includes(row.planStatus)
+      }
+      // 供应中、收货完成、已入库、已完成允许供应概览
+      if(item.buttonCode === 'supplyView'){
+         return !['6', '7', '8', '9'].includes(row.planStatus)
       }
       return false
     },
@@ -165,6 +173,7 @@ export default {
           return !['0', '1', '4', '5'].includes(item.planStatus)
         })
       }
+
       return false;
     },
     onGoDetail (row) {

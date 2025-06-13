@@ -218,10 +218,10 @@ export default {
   },
   async created () {
     // this.getDeptTree()
-    this.getLineOptions()
+    // this.getLineOptions()
 
 
-    this.constructionCompanyOptions = await this.getDeptTree('SGDW')
+    this.constructionCompanyOptions = await this.getDeptTree('SGDW',1)
     this.supervisionUnitOptions = await this.getDeptTree('JLDW')
     this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
   },
@@ -244,6 +244,8 @@ export default {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
+        this.getLineOptions()
+
       });
     },
     // 编辑初始化
@@ -252,6 +254,7 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
+          this.getLineOptions()
           this.$refs.vFormRef.setFormData(data)
 
           //   form action
@@ -275,10 +278,18 @@ export default {
       this.$refs['vFormRef'].setFormData({
         projectName: this.lineOptions.find(item => item.value === this.projectId).label
       })
+
+      // 如果有projectId 则默认赋值归属项目，并且禁用归属线路项目选项
+      if (this.projectId) {
+        this.$refs['vFormRef'].setFormData({
+          projectId: this.projectId,
+        })
+      }
     },
-    async getDeptTree (deptCode) {
+    async getDeptTree (deptCode ,status = '') {
       const res = await listByDeptCode({
-        deptCode
+        deptCode,
+        status
       })
       const data = res.data.map(item => {
         return {
@@ -345,13 +356,7 @@ export default {
           //   form action
           this.$refs['vFormRef'].setReadMode(false)
 
-          // 如果有projectId 则默认赋值归属项目，并且禁用归属线路项目选项
-          if (this.projectId) {
-            this.$refs['vFormRef'].setFormData({
-              projectId: this.projectId,
-              // projectName: this.lineOptions.find(item => item.value === this.projectId).label
-            })
-          }
+
           resolve(true)
         })
       })

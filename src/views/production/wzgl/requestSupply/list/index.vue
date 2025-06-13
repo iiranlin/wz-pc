@@ -171,7 +171,7 @@ export default {
     },
     onGoDetail (row) {
       this.$router.push({
-        name: 'requestSupplyDetail',
+        name: 'requestDetail',
         query: {
           type: 'view',
           id: row.id

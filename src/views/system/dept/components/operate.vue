@@ -76,8 +76,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="级别:" prop="unitFlag"  >
-            <el-radio-group v-model="form.unitFlag" :disabled="type === 'update'">
+          <el-form-item label="级别:" prop="unitFlag">
+            <el-radio-group
+              v-model="form.unitFlag"
+              :disabled="type === 'update'"
+            >
               <el-radio
                 v-for="dict in [
                   { label: '部门', value: 0 },
@@ -132,7 +135,8 @@ export default {
         seq: 0,
         deptAlias: "",
         flag: 1,
-        status: 0
+        status: 0,
+        unitFlag: 0
       },
       // 表单校验
       rules: {
@@ -191,9 +195,9 @@ export default {
       this.id = id;
       this.openDataScope = true;
       this.loading = false;
-      this.form.unitFlag = 0
       this.$nextTick(() => {
         this.$refs.elForm.resetFields();
+        this.form.unitFlag = 0
         if (type === "update") {
           this.title = "修改部门";
           this.deptDetail(id);

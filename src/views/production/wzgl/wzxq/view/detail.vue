@@ -144,7 +144,7 @@ export default {
 
     },
     cancel () {
-      this.$router.go(-1)
+      this.$tab.closeOpenPage({ name: 'requestDetail' });
     },
 
     buttonShow (item) {
