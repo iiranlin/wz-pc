@@ -237,7 +237,7 @@ export default {
             const detail = data.details.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+              expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
               outTotle: x.storeTotal, //默认出库数量=库存数量
             }));
             this.tableData = detail;

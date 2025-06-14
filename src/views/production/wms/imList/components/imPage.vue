@@ -332,6 +332,16 @@ export default {
   async created() {},
   mounted() {
     this.init(this.id);
+    if (this.type == "view") {
+      this.$nextTick(() => {
+        this.$tab.updatePage({
+          path: "/wms/imPage",
+          meta: {
+            title: "入库详情",
+          },
+        });
+      });
+    }
   },
   methods: {
     //初始化
@@ -354,7 +364,9 @@ export default {
             const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+              expirationDate: x.expirationDate
+                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+                : "",
               storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=收货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告

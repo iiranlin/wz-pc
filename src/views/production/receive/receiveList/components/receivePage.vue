@@ -69,6 +69,7 @@
         <!-- 附件 -->
         <template #file1Slot="scope">
           <el-form-item
+            v-if="type != 'view'"
             prop="fileList01"
             label="自检单"
             class="label-right-align"
@@ -83,9 +84,19 @@
               :isShowTip="false"
             />
           </el-form-item>
+          <el-form-item prop="fileList" label="其它资料" class="label-right-align" v-else>
+            <fileUpload
+              v-model="scope.formModel.fileList02"
+              :preview="type == 'view'"
+              :limit="1"
+              :fileSize="200"
+              :fileType="['pdf']"
+              :isShowTip="false"
+            />
+          </el-form-item>
         </template>
         <!-- 附件 -->
-        <template #file2Slot="scope">
+        <template #file2Slot="scope" v-if="type != 'view'">
           <el-form-item prop="fileList" label="其它资料" class="label-right-align">
             <fileUpload
               v-model="scope.formModel.fileList02"
@@ -98,8 +109,9 @@
           </el-form-item>
         </template>
         <!-- 收货时间 -->
-        <template #dateSlot="scope" v-if="type != 'view'">
+        <template #dateSlot="scope">
           <el-form-item
+            v-if="type != 'view'"
             prop="takeDate"
             label="收货时间"
             class="label-right-align"
@@ -117,6 +129,22 @@
             <span v-else>
               {{ scope.formModel.takeDate }}
             </span>
+          </el-form-item>
+          <el-form-item
+            v-else
+            prop="fileList01"
+            label="自检单"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList01"
+              :preview="type == 'view'"
+              :limit="1"
+              :fileSize="200"
+              :fileType="['pdf']"
+              :isShowTip="false"
+            />
           </el-form-item>
         </template>
         <template #detailSlot>
@@ -193,13 +221,6 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="supplyDate"
-              label="供应时间"
-              width="160"
-              align="center"
-            ></el-table-column>
-
-            <el-table-column
               prop="receiver"
               label="收货人及联系方式"
               width="180"
@@ -268,7 +289,7 @@
             <el-table-column
               prop="projectShortName"
               label="退货附件"
-              width="200"
+              width="180"
               fixed="right"
             >
               <template slot-scope="scope">
@@ -371,6 +392,16 @@ export default {
   async created() {},
   mounted() {
     this.init(this.id);
+    if (this.type == "view") {
+      this.$nextTick(() => {
+        this.$tab.updatePage({
+          path: "/receive/receivePage",
+          meta: {
+            title: "收货详情",
+          },
+        });
+      });
+    }
   },
   methods: {
     getDate() {
@@ -415,7 +446,9 @@ export default {
             const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+              expirationDate: x.expirationDate
+                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+                : "",
               putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认收货数量=发货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告

@@ -74,7 +74,7 @@
           <!-- 收货单号 -->
           <template #takeNumber="scope">
             <!-- <el-button type="text" @click="toReceive(scope.data)"> -->
-              {{ scope.value }}
+            {{ scope.value }}
             <!-- </el-button> -->
           </template>
         </table-index>
@@ -224,7 +224,7 @@ export default {
           }
           this.$router.push({
             name: "imPage",
-            query: { id: idArr[0],supplyId:rowArr[0].supplyId, type: "create" },
+            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create" },
           });
           break;
       }
@@ -258,7 +258,7 @@ export default {
     },
     //收货超过20天未入库显示红色
     tableRowClassName({ row, rowIndex }) {
-      var time=20 * 24 * 60 * 60 * 1000;
+      var time = 20 * 24 * 60 * 60 * 1000;
       var dateTime = new Date(row.takeDate).getTime();
       const timestamp = new Date().getTime();
       if (Number(timestamp) - Number(dateTime) > time && row.storeStatus == "1") {
