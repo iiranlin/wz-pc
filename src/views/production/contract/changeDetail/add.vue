@@ -36,7 +36,7 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
-              :fileSize="50"
+              :fileSize="200"
               :fileType="['pdf']"
               :preview="type === 'view'"
             />
