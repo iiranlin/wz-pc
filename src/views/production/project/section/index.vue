@@ -41,22 +41,20 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-          <!-- 供应商数量 -->
-          <template #sellerList="scoped">
+          <!-- 合同数量 -->
+          <template #contractIdList="scoped">
             <el-button
               type="text"
               @click="
                 () => {
-                  if (scoped.data.sellerList.length)
+                  if (scoped.data.contractIdList.length)
                     $refs.sellerDialogRef.open(
-                      scoped.data.sellerList.map((x) => ({
-                        name: x.contractName,
-                      }))
+                     scoped.data.contractIdList
                     );
                 }
               "
             >
-              {{ scoped.data.sellerList.length }}
+              {{ scoped.data.contractIdList.length }}
             </el-button>
           </template>
         </table-index>

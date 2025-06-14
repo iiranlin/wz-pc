@@ -130,10 +130,14 @@ export default {
         if (!row.receiver || row.receiver.trim() === '') {
           errors.push(`第${rowNum}行，收货人及联系方式未填写 `);
         }
-        if(!row.field0 || row.field0.trim() === ''){
+        if (!row.field2 || row.field2.trim() === '') {
+          errors.push(`第${rowNum}行，收货地址未填写`)
+        }
+
+        if (!row.field0 || row.field0.trim() === '') {
           errors.push(`第${rowNum}行，投资方未填写`)
         }
-        if(!row.field1 || row.field1.trim() === ''){
+        if (!row.field1 || row.field1.trim() === '') {
           errors.push(`第${rowNum}行，投资比例未填写`)
         }
 
@@ -166,9 +170,9 @@ export default {
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
         sectionName: this.sectionInfo.sectionName,
-        title:   dayjs().format('YYYY年MM月') + '甲供物资计划申请表',
-      deptName:this.userInfo?.instituteName
-     })
+        title: dayjs().format('YYYY年MM月') + '甲供物资计划申请表',
+        deptName: this.userInfo?.instituteName
+      })
     },
 
     //初始化
@@ -268,14 +272,9 @@ export default {
           this.$modal.msgSuccess(message);
           this.setSelectedMaterialList([])
 
-          this.$tab.closeOpenPage({ name: 'requestView' })
-          // 时间等待10ms
-          await new Promise(resolve => setTimeout(resolve, 10));
-          this.$tab.closeOpenPage({ name: 'requestAdd' });
-          await new Promise(resolve => setTimeout(resolve, 10));
-          this.$tab.closeOpenPage({ name: 'selectContract' });
-
-
+          this.$tab.closePage({ path: '/wzgljh/wzxq/requestView' })
+          this.$tab.closePage({ path: '/wzgljh/wzxq/requestAdd' })
+          this.$tab.closePage({ path: '/wzgljh/wzxq/selectContract' })
           this.$router.push({
             name: 'wzxqList'
           })

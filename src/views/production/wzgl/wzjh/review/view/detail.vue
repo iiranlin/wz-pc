@@ -180,9 +180,9 @@ export default {
       return true
     },
     buttonDisabled (item) {
-      if (item.buttonCode === 'passEdit') {
-        return this.selectRows.length === 0
-      }
+      // if (item.buttonCode === 'passEdit') {
+      //   return this.selectRows.length === 0
+      // }
       return false
     },
     formFillInPage () {

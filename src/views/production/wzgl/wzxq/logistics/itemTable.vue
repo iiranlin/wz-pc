@@ -54,42 +54,63 @@
       >
       </el-table-column>
       <el-table-column
-        prop="updateBefore"
+        prop="cumulativeAmount"
         label="累计发货数量（含本次）"
         align="center"
         width="150px"
       >
       </el-table-column>
       <el-table-column
-        prop="updateBefore"
+        prop="planAmount"
         label="本批次发货数量"
         align="center"
         width="150px"
       >
       </el-table-column>
       <el-table-column
-        prop="updateBefore"
+        prop="supplyDate"
         label="供应时间"
         align="center"
         width="200px"
       >
       </el-table-column>
       <el-table-column
-        prop="updateBefore"
+        prop="addr"
         label="使用地点"
         align="center"
         width="200px"
       >
       </el-table-column>
-      <el-table-column
-        prop="updateBefore"
-        label="收货人及联系方式"
+        <el-table-column
+        prop="field2"
+        label="收货地址"
         align="center"
         width="200px"
       >
       </el-table-column>
       <el-table-column
-        prop="updateBefore"
+        prop="receiver"
+        label="收货人及联系方式"
+        align="center"
+        width="200px"
+      >
+      </el-table-column>
+       <el-table-column
+        prop="field0"
+        label="投资方"
+        align="center"
+        width="200px"
+      >
+      </el-table-column>
+       <el-table-column
+        prop="field1"
+        label="投资比例"
+        align="center"
+        width="200px"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="remark"
         label="备注"
         align="center"
         width="200px"

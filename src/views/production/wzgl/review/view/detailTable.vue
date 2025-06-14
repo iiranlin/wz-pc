@@ -95,6 +95,13 @@
       >
       </el-table-column>
       <el-table-column
+        prop="field2"
+        label="收货地址"
+        align="center"
+        min-width="200"
+      >
+      </el-table-column>
+      <el-table-column
         prop="receiver"
         label="收货人及联系方式"
         align="center"

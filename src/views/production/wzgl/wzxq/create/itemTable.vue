@@ -15,7 +15,7 @@
       :data="tableData"
       style="width: 100%"
       border
-      height="500"
+      max-height="500"
     >
       <el-table-column
         type="index"
@@ -103,6 +103,15 @@
           ></el-input>
         </template>
       </el-table-column>
+      <el-table-column prop="field2" label="收货地址" min-width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.field2"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
       <el-table-column prop="receiver" label="收货人及联系方式" min-width="250">
         <template slot-scope="scope">
           <el-input
@@ -125,6 +134,15 @@
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.field1"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
+        <el-table-column prop="remark" label="备注" min-width="200">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.remark"
             size="mini"
             style="width: 100%"
           ></el-input>
