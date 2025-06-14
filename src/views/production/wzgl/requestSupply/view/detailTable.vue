@@ -89,7 +89,7 @@
         :key="index"
         align="center"
         width="200"
-        :prop="`filed${index}`"
+        :prop="`field${index}`"
       >
         <template v-slot:header>
           <span>{{ cols[index].title }}</span>

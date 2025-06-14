@@ -10,30 +10,40 @@
     </div>
 
     <!-- 表格 -->
-    <el-table ref="tableRef" :data="tableData" style="width: 100%" border>
+    <el-table
+      ref="tableRef"
+      :data="tableData"
+      style="width: 100%"
+      border
+      max-height="400"
+    >
       <el-table-column
         type="index"
         align="center"
         label="序号"
         width="60"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="sellerName"
         label="供应商"
         align="center"
         width="120"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
         width="120"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="specModel"
         label="规格型号"
         align="center"
         width="150"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="unit"
@@ -57,7 +67,7 @@
           {{
             +scope.row.cumulativeAmount -
             +scope.row.backPlanAmount +
-            +(scope.row.planAmount||0)
+            +(scope.row.planAmount || 0)
           }}
         </template>
       </el-table-column>
@@ -102,6 +112,33 @@
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.receiver"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="field0" label="投资方" min-width="250">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.field0"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="field1" label="投资比例" min-width="250">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.field1"
+            size="mini"
+            style="width: 100%"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column prop="remark" label="备注" min-width="250">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.remark"
             size="mini"
             style="width: 100%"
           ></el-input>

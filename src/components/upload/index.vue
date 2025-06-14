@@ -22,12 +22,12 @@
       <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
         <template v-if="fileSize">
-          大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b>
+          不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b>
         </template>
         <template v-if="fileType">
           格式为 <b style="color: #f56c6c">{{ fileType.join('/') }}</b>
         </template>
-        的文件
+        格式
       </div>
     </el-upload>
 

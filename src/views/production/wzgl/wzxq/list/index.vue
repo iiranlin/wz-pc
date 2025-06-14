@@ -173,6 +173,12 @@ export default {
           return !['0', '1', '4', '5'].includes(item.planStatus)
         })
       }
+      // 已提交、允许撤回
+      if (item.buttonCode === 'withdraw') {
+        return this.selection.some(item => {
+          return !['2'].includes(item.planStatus)
+        })
+      }
 
       return false;
     },
@@ -255,8 +261,10 @@ export default {
         case 'examine':
           this.handleExamine(idArr, rowArr[0].planType)
           break;
+        // 撤回
         case 'withdraw':
-          this.handleWithdraw({ businessId: idArr[0], businessType: 'FBYLXQ', })
+          // this.handleRecall(idArr[0])
+          this.handleWithdraw({ businessId: idArr[0], businessType: rowArr[0].planType == 1 ? 'FBYLXQ' : 'YLXQ', })
           break;
         case 'supplyView':
           this.$router.push({
@@ -272,7 +280,6 @@ export default {
           this.workFlowViewVisible = true
           this.selectedRow = { businessId: idArr[0] }
           break;
-
       }
     },
     // 提交审核

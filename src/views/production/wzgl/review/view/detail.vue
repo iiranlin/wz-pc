@@ -42,6 +42,8 @@ import detailTable from './detailTable.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
+import router from '@/router';
+
 export default {
   // 需求审核详情
   components: {
@@ -78,11 +80,13 @@ export default {
         { buttonName: '同意', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
         { buttonName: '修改后同意', buttonCode: 'passEdit', buttonIcon: 'Blue-Edit', type: '' },
         { buttonName: '不同意', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
+        { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
       ],
       constructionOptions: [],
       selectRows: [],
       userInfo: getUserInfo(),
       tableData: [],
+      detail: {}
     }
   },
   computed: {
@@ -147,7 +151,7 @@ export default {
           await this.formFillInPage()
           this.tableData = data.details
           this.$refs.vFormRef.setFormData({ ...data, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
-
+          this.detail = data
           //   form action
           this.$refs.vFormRef.setReadMode(true)
 
@@ -155,7 +159,7 @@ export default {
       });
     },
 
-    newButton (buttonCode) {
+    async newButton (buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
       } else if (buttonCode === 'pass') {
@@ -164,18 +168,51 @@ export default {
         this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
       } else if (buttonCode === 'passEdit') {
         this.$refs.toBereview.init('passEdit', this.queryAuditArr, this.name, [this.id])
+      } else if (buttonCode === 'edit') {
+        this.$tab.closePage(router.currentRoute)
+        this.$router.push({
+          name: 'requestUpdate',
+          query: {
+            id: this.id,
+            type: 'update',
+            from: 'list'
+          }
+        })
+
       }
 
     },
     cancel () {
-      this.$router.go(-1)
+      this.$tab.closeOpenPage(true)
     },
 
     buttonShow (item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
-      return true
+
+      if (item.buttonCode === 'cancel') {
+        return true
+      }
+      // 修改
+      if (item.buttonCode === 'edit') {
+        return ['0', '4'].includes(this.detail.planStatus)
+      }
+      // 同意
+      if (item.buttonCode === 'pass') {
+        return ['2'].includes(this.detail.planStatus)
+      }
+      // 修改后同意
+      if (item.buttonCode === 'passEdit') {
+        return ['2'].includes(this.detail.planStatus)
+      }
+      // 不同意
+      if (item.buttonCode === 'reject') {
+        return ['2'].includes(this.detail.planStatus)
+      }
+
+
+      return false
     },
     formFillInPage () {
       return new Promise((resolve) => {

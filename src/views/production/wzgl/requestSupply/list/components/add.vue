@@ -38,7 +38,7 @@
               <fileUpload
                 v-model="form.fileList"
                 :limit="1"
-                :fileSize="50"
+                :fileSize="200"
                 :fileType="['pdf']"
                 :preview="false"
               />

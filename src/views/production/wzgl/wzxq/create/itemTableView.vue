@@ -25,13 +25,14 @@
       @selection-change="noop"
       @select="handleSelect"
       @select-all="handleSelectAll"
-      height="500"
+      max-height="500"
     >
       <el-table-column
         align="center"
         type="selection"
         width="55"
         fixed
+        :selectable="selectable"
       ></el-table-column>
       <el-table-column
         type="index"
@@ -137,6 +138,10 @@ export default {
     },
   },
   methods: {
+    selectable (row) {
+      // 合同数量 不等于 已累计计划数量
+      return +row.amount !== +row.cumulativeAmount
+    },
     // 新增方法：同步store中已选中的数据到组件
     syncStoreSelectedData () {
       if (this.hasRestoredFromStore) return;
@@ -158,7 +163,7 @@ export default {
           }
         });
 
-        this.sortData(); // 排序
+        // this.sortData(); // 排序
       }
       this.hasRestoredFromStore = true; // ✅ 防止后续重新勾选
     },
@@ -211,7 +216,7 @@ export default {
           this.$delete(this.selectedMap, id);
         }
       });
-      this.sortData(); // 排序
+      // this.sortData(); // 排序
     },
   },
   mounted () {
@@ -231,21 +236,21 @@ export default {
 }
 
 // 修复固定列滚动条点击问题
-  ::v-deep .el-table {
-    .el-table__fixed,
-    .el-table__fixed-right {
-      pointer-events: none; // 禁用固定列的鼠标事件
-      
-      // 但保留固定列内容的交互能力
-      .el-table__fixed-body-wrapper,
-      .el-table__fixed-header-wrapper {
-        pointer-events: auto;
-      }
-    }
-    
-    // 确保滚动条区域可以接收事件
-    .el-table__body-wrapper {
+::v-deep .el-table {
+  .el-table__fixed,
+  .el-table__fixed-right {
+    pointer-events: none; // 禁用固定列的鼠标事件
+
+    // 但保留固定列内容的交互能力
+    .el-table__fixed-body-wrapper,
+    .el-table__fixed-header-wrapper {
       pointer-events: auto;
     }
   }
+
+  // 确保滚动条区域可以接收事件
+  .el-table__body-wrapper {
+    pointer-events: auto;
+  }
+}
 </style>

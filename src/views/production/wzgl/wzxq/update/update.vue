@@ -127,6 +127,12 @@ export default {
         if (!row.receiver || row.receiver.trim() === '') {
           errors.push(`第${rowNum}行，收货人及联系方式未填写 `);
         }
+        if(!row.field0 || row.field0.trim() === ''){
+          errors.push(`第${rowNum}行，投资方未填写 `)
+        }
+        if(!row.field1 || row.field1.trim() === ''){
+          errors.push(`第${rowNum}行，投资比例未填写 `)
+        }
 
         const plan = +row.planAmount || 0;
         const cumulative = +row.cumulativeAmount - +(row.backPlanAmount || 0)
