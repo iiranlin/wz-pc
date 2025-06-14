@@ -60,6 +60,7 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :button-disable="buttonDisabled"
         >
           <template #status="scope">
             {{ status[scope.value] }}
@@ -79,12 +80,12 @@
           <!-- 物流单号 -->
           <template #oddNumbers="scope">
             <el-button type="text" @click="toWuliu(scope.data)">
-              {{ scope.value||'其它' }}
+              {{ scope.value || "其它" }}
             </el-button>
           </template>
-            <!-- 附件 -->
+          <!-- 附件 -->
           <template #fileList="scope">
-            <fileUpload :valve="scope.value" :preview="true" />
+            <fileUpload v-model="scope.data.fileList" :preview="true" />
           </template>
         </table-index>
         <pagination
@@ -108,7 +109,7 @@ import fileUpload from "@/components/upload";
 export default {
   // 建设项目
   name: "sendList",
-  components: { AddAdress,fileUpload },
+  components: { AddAdress, fileUpload },
   mixins: [indexMixin],
 
   data() {
@@ -214,8 +215,12 @@ export default {
       this.loading = true;
       Api.sendList(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
-          this.list = data.list;
           this.total = data.total;
+          this.list = data.list.map((x) => ({
+            ...x,
+            fileList: x.fileByList ? JSON.parse(x.fileByList).fhd || [] : [], //发货单
+          }));
+          console.log(this.list)
         })
         .finally(() => {
           this.loading = false;
@@ -240,21 +245,17 @@ export default {
           }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0], type: "update",planId:rowArr[0].planId },
+            query: { id: idArr[0], type: "update", planId: rowArr[0].planId },
           });
           break;
         case "delete":
           this.handleDelete(idArr, rowArr);
           break;
         case "addAdress":
-          if (!rowArr[0].oddNumbers && rowArr[0].status == "2") {
-            this.shipmentBatchNumber = rowArr[0].shipmentBatchNumber;
-            this.$nextTick(() => {
-              this.$refs.addAdress.init();
-            });
-          } else {
-            this.$modal.msgError("没有物流单号且状态为货运中的才能添加货运位置");
-          }
+          this.shipmentBatchNumber = rowArr[0].shipmentBatchNumber;
+          this.$nextTick(() => {
+            this.$refs.addAdress.init();
+          });
           break;
       }
     },
@@ -307,10 +308,10 @@ export default {
     //跳转需求供应详情
     toGyxq(row) {
       this.$router.push({
-        name: "requestSupplyDetail",
+        name: "freightDetail",
         query: {
           type: "view",
-          id: row.id,
+          id: row.planId,
         },
       });
     },
@@ -330,6 +331,12 @@ export default {
           id: row.id,
         },
       });
+    },
+    //物流按钮控制
+    buttonDisabled(button, row) {
+      if (button.buttonCode == "addAdress" && (row.oddNumbers || row.status != "2")) {
+        return true;
+      }
     },
   },
 };

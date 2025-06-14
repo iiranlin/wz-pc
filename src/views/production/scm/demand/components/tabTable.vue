@@ -26,13 +26,34 @@
       <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
       <!-- <el-table-column prop="sectionName" label="标段项目名称" width="250" fixed="left">
       </el-table-column> -->
-      <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
+      <el-table-column prop="materialName" label="物资名称" width="200" fixed="left">
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
+      <el-table-column
+        prop="specModel"
+        label="规格型号"
+        width="200"
+        align="center"
+      ></el-table-column>
 
-      <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
-      <el-table-column prop="planAmount" label="计划数量" width="140" align="center"></el-table-column>
-      <el-table-column prop="sendTotal" label="发货数量" width="160">
+      <el-table-column
+        prop="unit"
+        label="计量单位"
+        width="100"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="planAmount"
+        label="本次计划数量"
+        width="120"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="ssendTotal"
+        label="本次需求未发货数量"
+        width="120"
+        align="center"
+      ></el-table-column>
+      <el-table-column prop="sendTotal" label="发货数量" width="140">
         <template slot-scope="scope">
           <el-input-number
             v-model="scope.row.sendTotal"
@@ -75,7 +96,12 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="expirationDate" label="有效期截止日期" width="160" align="center">
+      <el-table-column
+        prop="expirationDate"
+        label="有效期截止日期"
+        width="160"
+        align="center"
+      >
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.expirationDate"
@@ -90,7 +116,12 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="receivingAddress" label="收货地址" width="160" align="center">
+      <el-table-column
+        prop="receivingAddress"
+        label="收货地址"
+        width="160"
+        align="center"
+      >
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.receivingAddress"
@@ -131,8 +162,18 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="field0" label="投资方" width="180" align="center"></el-table-column>
-      <el-table-column prop="field1" label="投资比例" width="120" align="center"></el-table-column>
+      <el-table-column
+        prop="field0"
+        label="投资方"
+        width="150"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="field1"
+        label="投资比例"
+        width="150"
+        align="center"
+      ></el-table-column>
       <el-table-column prop="projectShortName" label="合格证附件" width="300">
         <template slot-scope="scope">
           <fileUpload
@@ -195,7 +236,7 @@ export default {
     },
     planId() {
       return this.$route.query?.planId || "";
-    }
+    },
   },
   data() {
     return {

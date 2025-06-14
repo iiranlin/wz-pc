@@ -6,11 +6,11 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  * @returns 
  */
 export const listStore = (params) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listStore`,
-        method: 'get',
-        params
-    })
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listStore`,
+    method: 'get',
+    params
+  })
 }
 /**
  * 入库明细
@@ -18,10 +18,10 @@ export const listStore = (params) => {
  * @returns 
  */
 export const detailStore = (id) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByStore/${id}`,
-        method: 'get',
-    })
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByStore/${id}`,
+    method: 'get',
+  })
 }
 /**
  * 入库-保存
@@ -29,34 +29,34 @@ export const detailStore = (id) => {
  * @returns 
  */
 export const saveStore = (data) => {
-    return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/saveStore`,
-      method: 'post',
-      data
-    })
-  }
-  /**
- * 入库退货列表
- * @param {*} params 
- * @returns 
- */
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/saveStore`,
+    method: 'post',
+    data
+  })
+}
+/**
+* 入库退货列表
+* @param {*} params 
+* @returns 
+*/
 export const listCrRetreat = (params) => {
-    return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listCrRetreat`,
-      method: 'get',
-      params
-    })
-  }
-  //库存列表
-  /**
- * @param {*} params 
- * @returns 
- */
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listCrRetreat`,
+    method: 'get',
+    params
+  })
+}
+//库存列表
+/**
+* @param {*} params 
+* @returns 
+*/
 export const listStock = (params) => {
   return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/listStock`,
-      method: 'get',
-      params
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/listStock`,
+    method: 'get',
+    params
   })
 }
 //库存明细
@@ -67,20 +67,32 @@ export const listStock = (params) => {
  */
 export const detailOut = (id) => {
   return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailOut/${id}`,
-      method: 'get',
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailOut/${id}`,
+    method: 'get',
   })
 }
-  /**
- * 出库列表
+//库存详情
+/**
+ * 
  * @param {*} params 
  * @returns 
  */
-export const listOut= (params) => {
+export const detailByOut = (id) => {
   return request({
-      url: `${VUE_APP_PRODMGR_INV}/materialSupplierOutRest/list`,
-      method: 'get',
-      params
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByOut/${id}`,
+    method: 'get',
+  })
+}
+/**
+* 出库列表
+* @param {*} params 
+* @returns 
+*/
+export const listOut = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierOutRest/list`,
+    method: 'get',
+    params
   })
 }
 /**
@@ -89,10 +101,10 @@ export const listOut= (params) => {
  * @returns 
  */
 export const outDetail = (id) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialSupplierOutRest/detail/${id}`,
-        method: 'get',
-    })
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSupplierOutRest/detail/${id}`,
+    method: 'get',
+  })
 }
 /**
  * 出库-保存
