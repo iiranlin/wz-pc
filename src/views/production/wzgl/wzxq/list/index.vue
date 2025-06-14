@@ -81,7 +81,7 @@ export default {
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const planStatus = {
-       '0': '已驳回',
+      '0': '已驳回',
       '1': '未提交',
       '2': '已提交',
       '3': '已生效',
@@ -149,8 +149,8 @@ export default {
         return !['6', '7', '8', '9'].includes(row.planStatus)
       }
       // 供应中、收货完成、已入库、已完成允许供应概览
-      if(item.buttonCode === 'supplyView'){
-         return !['6', '7', '8', '9'].includes(row.planStatus)
+      if (item.buttonCode === 'supplyView') {
+        return !['6', '7', '8', '9'].includes(row.planStatus)
       }
       return false
     },
@@ -288,7 +288,7 @@ export default {
           type: businessCode[planType],
           multiple: false,
           success: async (assignee) => {
-            await Api.submitTodo({ ids, planType })
+            await Api.submitTodo({ ids, planType, assignee })
 
             this.$modal.msgSuccess("提交审核成功");
             this.getList();

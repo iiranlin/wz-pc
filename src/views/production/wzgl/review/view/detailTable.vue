@@ -3,10 +3,9 @@
     <!-- 搜索框 -->
     <div class="search-container">
       <div style="font-size: 20px; font-weight: bold">
-        选择需要修改的物资科目（系统会对应到提报人，请线下联系提报人进行修改操作）
+        <!-- 选择需要修改的物资科目（系统会对应到提报人，请线下联系提报人进行修改操作） -->
       </div>
     </div>
-
     <!-- 表格 -->
     <el-table
       ref="tableRef"
@@ -14,6 +13,7 @@
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
+      max-height="400"
     >
       <!-- 增加多选 -->
       <!-- <el-table-column
@@ -28,24 +28,28 @@
         align="center"
         label="序号"
         width="60"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="sellerName"
         label="供应商"
         align="center"
         width="120"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
         width="120"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="specModel"
         label="规格型号"
         align="center"
         width="150"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="unit"
@@ -95,6 +99,27 @@
         label="收货人及联系方式"
         align="center"
         min-width="250"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="field0"
+        label="投资方"
+        align="center"
+        min-width="200"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="field1"
+        label="投资比例"
+        align="center"
+        min-width="200"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="remark"
+        label="备注"
+        align="center"
+        min-width="200"
       >
       </el-table-column>
     </el-table>

@@ -258,7 +258,7 @@ export default {
           type: businessCode[planType],
           multiple: false,
           success: async (assignee) => {
-            await Api.submitTodo({ ids, planType })
+            await Api.submitTodo({ ids, planType,assignee })
 
             this.$modal.msgSuccess("提交审核成功");
             this.getList();
