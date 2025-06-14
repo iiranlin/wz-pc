@@ -61,7 +61,7 @@
         content-class-name="my-content"
       >
         <el-tooltip
-          :content="detail.receivingAddress"
+          :content="detail.field2"
           placement="bottom"
           effect="light"
         >
@@ -75,7 +75,7 @@
               text-overflow: ellipsis;
             "
           >
-            {{ detail.receivingAddress }}
+            {{ detail.field2 }}
           </div>
         </el-tooltip>
       </el-descriptions-item>

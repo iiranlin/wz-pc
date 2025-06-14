@@ -215,7 +215,7 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="receivingAddress"
+              prop="field2"
               label="收货地址"
               width="200"
               align="center"

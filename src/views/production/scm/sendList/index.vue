@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :button-disable="buttonDisabledTop"
     ></button-top>
     <form-data
       ref="formData"
@@ -220,7 +221,7 @@ export default {
             ...x,
             fileList: x.fileByList ? JSON.parse(x.fileByList).fhd || [] : [], //发货单
           }));
-          console.log(this.list)
+          console.log(this.list);
         })
         .finally(() => {
           this.loading = false;
@@ -337,6 +338,11 @@ export default {
       if (button.buttonCode == "addAdress" && (row.oddNumbers || row.status != "2")) {
         return true;
       }
+    },
+    //上方按钮控制
+    buttonDisabledTop(button) {
+      //状态不是未发货，按钮全不能操作
+      return this.selection[0].status != 1;
     },
   },
 };

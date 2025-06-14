@@ -42,6 +42,7 @@
         width="55"
         fixed="left"
         align="center"
+        :selectable="selectable"
       ></el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="200" fixed="left">
       </el-table-column>
@@ -110,6 +111,7 @@
         label="本次需求未发货数量"
         width="120"
         align="center"
+        fixed="right"
       ></el-table-column>
     </el-table>
   </div>
@@ -242,6 +244,13 @@ export default {
     },
     getSelectedItemList() {
       return this.request.selectedItemList;
+    },
+    selectable(row) {
+      if(!row.ssendTotal||row.ssendTotal==0){
+         return false;
+      }else{
+        return true;
+      }
     },
   },
 };

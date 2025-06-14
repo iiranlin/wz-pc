@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :buttonDisable="buttonDisabledTop"
     ></button-top>
     <form-data
       ref="formData"
@@ -73,7 +74,7 @@
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
             <!-- <el-button type="text" @click="toFhd(scope.data)"> -->
-              {{ scope.value }}
+            {{ scope.value }}
             <!-- </el-button> -->
           </template>
           <!-- 物流单号 -->
@@ -106,7 +107,7 @@ import fileUpload from "@/components/upload";
 export default {
   // 建设项目
   name: "receive",
-  components: {fileUpload},
+  components: { fileUpload },
   mixins: [indexMixin],
 
   data() {
@@ -277,6 +278,11 @@ export default {
         name: "logisticsView",
         query: { id: row.id, type: "view" },
       });
+    },
+    //上方按钮控制
+    buttonDisabledTop(button) {
+      //状态不是未收货，按钮全不能操作
+      return this.selection[0].takeStatus != 1;
     },
   },
 };

@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :button-disable="buttonDisabledTop"
     ></button-top>
     <form-data
       ref="formData"
@@ -295,6 +296,17 @@ export default {
     buttonDisabled(button, row) {
       if (button.buttonCode == "logistics" && (row.status == "2" || row.status == "3")) {
         return true;
+      }
+    },
+    //上方按钮控制
+    buttonDisabledTop(button) {
+      //未确认状态才能点击确认按钮
+      if (button.buttonCode == "confirm") {
+        return this.selection[0].status != "2";
+      }
+      //已确认或供货中才能点击发货按钮
+      if (button.buttonCode == "send") {
+        return this.selection[0].status != "2" && this.selection[0].status != "3";
       }
     },
     //跳转需求供应详情

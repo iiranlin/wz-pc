@@ -123,20 +123,20 @@
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="receivingAddress"
+        prop="field2"
         label="收货地址"
         width="160"
         align="center"
       >
         <template slot-scope="scope">
           <el-input
-            v-model="scope.row.receivingAddress"
+            v-model="scope.row.field2"
             size="mini"
             style="width: 100%"
             v-if="type != 'view'"
           ></el-input>
           <span v-else>
-            {{ scope.row.receivingAddress }}
+            {{ scope.row.field2 }}
           </span>
         </template>
       </el-table-column>

@@ -143,14 +143,7 @@ export default {
     },
     ...mapState(["request"]),
   },
-  async created() {
-    var data = this.getSelectedItemList();
-    console.log(data, "=========");
-    this.tableData = data.map((x) => ({
-      ...x,
-      sendTotal: x.ssendTotal,
-    }));
-  },
+  async created() {},
   activated() {
     if (this.type == "view") {
       this.$nextTick(() => {
@@ -162,26 +155,39 @@ export default {
         });
       });
     }
-    //选择物资，发货数量默认带过来计划数量
-    var data = this.getSelectedItemList();
-    this.tableData = data.map((x) => ({
-      ...x,
-      sendTotal: x.ssendTotal,
-    }));
+    if (this.type == "update") {
+      this.$nextTick(() => {
+        this.$tab.updatePage({
+          path: "/scm/addSend",
+          meta: {
+            title: "修改发货信息",
+          },
+        });
+      });
+    }
   },
   watch: {
-    // $route(to, from) {
-    //   if (from.path != "/scm/selectItem" && from.path != "/scm/addSend") {
-    //     if (["view", "update"].includes(this.type)) {
-    //       this.updateInit(this.id);
-    //       return;
-    //     }
-    //     if (this.type === "create") {
-    //       this.init();
-    //       return;
-    //     }
-    //   }
-    // },
+    $route(to, from) {
+      //只有从选择物资页面过来，才从缓存里取值
+      if (from.path == "/scm/selectItem") {
+        //选择物资，发货数量默认带过来计划数量
+        var data = this.getSelectedItemList();
+        this.tableData = data.map((x) => ({
+          ...x,
+          sendTotal: x.ssendTotal,
+        }));
+      }
+      // if (from.path != "/scm/selectItem" && from.path != "/scm/addSend") {
+      //   if (["view", "update"].includes(this.type)) {
+      //     this.updateInit(this.id);
+      //     return;
+      //   }
+      //   if (this.type === "create") {
+      //     this.init();
+      //     return;
+      //   }
+      // }
+    },
   },
   mounted() {
     if (["view", "update"].includes(this.type)) {
@@ -209,7 +215,7 @@ export default {
           errors.push(`第${rowNum}行，生产日期未填写 `);
         }
 
-        if (!row.receivingAddress) {
+        if (!row.field2) {
           errors.push(`第${rowNum}行，收货地址未填写 `);
         }
         if (!row.supplyDate) {
@@ -380,6 +386,11 @@ export default {
               this.loading = false;
               this.$modal.msgSuccess(message);
               this.setSelectedItemList([]);
+              //保存成功关闭tab，防止缓存bug
+              this.$tab.closePage({
+                path: "/scm/addSend",
+                meta: {},
+              });
               this.$router.push({
                 name: "sendList",
               });

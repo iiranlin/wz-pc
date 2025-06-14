@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :buttonDisable="buttonDisabledTop"
     ></button-top>
     <form-data
       ref="formData"
@@ -280,6 +281,11 @@ export default {
           id: row.id,
         },
       });
+    },
+     //上方按钮控制
+    buttonDisabledTop(button) {
+      //状态为已完成，不能操作出库
+      return this.selection[0].status == '6';
     },
   },
 };
