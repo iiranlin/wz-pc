@@ -53,7 +53,7 @@
         width="120"
         align="center"
       ></el-table-column>
-      <el-table-column prop="sendTotal" label="发货数量" width="140">
+      <el-table-column prop="sendTotal" label="发货数量" width="140" align="center">
         <template slot-scope="scope">
           <el-input-number
             v-model="scope.row.sendTotal"
@@ -81,7 +81,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="manufactureDate" label="生产日期" width="160">
+      <el-table-column prop="manufactureDate" label="生产日期" width="160" align="center">
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.manufactureDate"

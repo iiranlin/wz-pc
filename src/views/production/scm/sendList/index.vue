@@ -320,7 +320,7 @@ export default {
     toWuliu(row) {
       this.$router.push({
         name: "logisticsView",
-        query: { id: row.id, type: "view" },
+        query: { id: row.planId, type: "view" },
       });
     },
     //发货单

@@ -92,7 +92,7 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="receivingAddress"
+              prop="field1"
               label="收货地址"
               width="200"
               align="center"
@@ -144,6 +144,7 @@
               prop="refundTotal"
               label="退货数量"
               width="120"
+              align="center"
             ></el-table-column>
             <el-table-column prop="projectShortName" label="退货附件" width="200">
               <template slot-scope="scope">

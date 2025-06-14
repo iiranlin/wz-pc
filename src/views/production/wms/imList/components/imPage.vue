@@ -200,7 +200,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-            <el-table-column prop="storeTotal" label="入库数量" width="150" align="right">
+            <el-table-column prop="storeTotal" label="入库数量" width="150" fixed="right" align="center">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.storeTotal"
@@ -219,7 +219,8 @@
               prop="refundTotal"
               label="退货数量"
               width="150"
-              align="right"
+              fixed="right"
+              align="center"
             >
               <template slot-scope="scope">
                 <el-input-number
@@ -238,8 +239,8 @@
             <el-table-column
               prop="projectShortName"
               label="退货附件"
-              width="250"
-              align="right"
+              width="200"
+              fixed="right"
             >
               <template slot-scope="scope">
                 <fileUpload

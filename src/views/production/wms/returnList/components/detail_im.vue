@@ -53,6 +53,7 @@
               prop="specModel"
               label="规格型号"
               width="200"
+              align="center"
             ></el-table-column>
             <el-table-column
               prop="unit"
@@ -120,7 +121,7 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="field1" label="投资比例" width="150"></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload

@@ -276,7 +276,7 @@ export default {
     toWuliu(row) {
       this.$router.push({
         name: "logisticsView",
-        query: { id: row.id, type: "view" },
+        query: { id: row.plaId, type: "view" },
       });
     },
     //上方按钮控制

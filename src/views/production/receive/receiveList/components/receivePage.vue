@@ -231,7 +231,7 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="field1" label="投资比例" width="150"></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -251,7 +251,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-            <el-table-column prop="putTotal" label="收货数量" width="120" fixed="right">
+            <el-table-column prop="putTotal" label="收货数量" width="120" fixed="right" align="center">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.putTotal"
@@ -271,6 +271,7 @@
               label="退货数量"
               width="120"
               fixed="right"
+              align="center"
             >
               <template slot-scope="scope">
                 <el-input-number

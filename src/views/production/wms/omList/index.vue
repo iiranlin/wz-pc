@@ -192,7 +192,7 @@ export default {
         name: "requestSupplyDetail",
         query: {
           type: "view",
-          id: row.id,
+          id: row.planId,
         },
       });
     },
