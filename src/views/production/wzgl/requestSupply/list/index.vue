@@ -101,7 +101,7 @@ import fileUpload from '@/components/upload'
 export default {
   // 供应需求列表
   name: "wzxqList",
-  components: { Add,fileUpload },
+  components: { Add, fileUpload },
   mixins: [indexMixin],
 
   data () {
@@ -165,6 +165,12 @@ export default {
       if (item.buttonCode === 'delete') {
         return this.selection.some(item => {
           // return item.status !== '1' && item.status !== '4'
+        })
+      }
+      // 已提交允许退回
+      if (item.buttonCode === 'backup') {
+        return this.selection.some(item => {
+          return item.status != 0
         })
       }
       return false;
@@ -235,7 +241,17 @@ export default {
         case "download":
           this.handleExport(rowArr[0])
           break;
+        case "backup":
+          this.demandBack(rowArr[0].id)
+          break;
       }
+    },
+    demandBack (id) {
+      this.$modal.confirm("是否确认退回？").then(() => {
+        return Api.demandBack({ id })
+      }).then(() => {
+        this.getList()
+      })
     },
     // 提交审核
     handleExamine (id) {

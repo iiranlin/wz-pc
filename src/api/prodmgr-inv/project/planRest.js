@@ -169,3 +169,12 @@ export const submitToSeller = (data) => {
 export const downloadPlan = (data) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/export`, data)
 }
+
+// 需求退回
+export const demandBack = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/backUp`,
+    method: 'get',
+    params
+  })
+}

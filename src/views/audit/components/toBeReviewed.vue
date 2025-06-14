@@ -51,7 +51,7 @@
 
 <script>
 import activitiAssignee from './activitiAssignee'
-import { passWorkFlow,passEditWorkFlow, rejectWorkFlow, activitiAssigneeList } from '@/api/system/workflow.js'
+import { passWorkFlow, passEditWorkFlow, rejectWorkFlow, activitiAssigneeList } from '@/api/system/workflow.js'
 export default {
   components: { activitiAssignee },
   data () {
@@ -84,7 +84,7 @@ export default {
     init (type, row, queryName, numArr = []) {
       this.selected = row;
       this.type = type
-      this.title = type === 'pass' ? '同意' : type ==='passEdit' ? '修改后同意': '不同意'
+      this.title = type === 'pass' ? '同意' : type === 'passEdit' ? '修改后同意' : '不同意'
       this.queryName = queryName || ''
       this.numArr = numArr;
       this.visible = true
@@ -95,8 +95,8 @@ export default {
     },
     submitForm () {
       if (this.type === 'pass') {
-        this.getActivitiAssigneeList();
-      } else if (this.type === 'passEdit') { 
+        this.getActivitiAssigneeList('pass');
+      } else if (this.type === 'passEdit') {
         this.getActivitiAssigneeList('passEdit');
       } else {
         this.handleReject()
@@ -110,8 +110,8 @@ export default {
         if (!!assigneeList && assigneeList.length !== 0) {
           this.$refs.activitiAssignee.init(assigneeList);
         } else if (type === 'passEdit') {
-           this.activitiCompleteWithEdit();
-        }else {
+          this.activitiCompleteWithEdit();
+        } else {
           this.activitiComplete();
         }
       })
@@ -150,7 +150,7 @@ export default {
         businessType: this.selected[0].businessType,
         businessId: this.selected[0].businessId,
         message: this.toBeReviewedForm.comment || "修改后同意",
-        modifyIds: this.numArr // 添加勾选的参数
+        modifyIds: this.numArr.length === 0 ? [this.selected[0].businessId] : this.numArr  // 添加勾选的参数
       }
       passEditWorkFlow(params).then(res => {
         if (res.success) {
@@ -203,7 +203,12 @@ export default {
     activitiAssigneeSelected (assignee) {
       // this.candidateUsers = assignee;
       this.candidateUsers = Array.isArray(assignee) ? assignee : [assignee];
-      this.activitiComplete()
+      //  修改后同意走修改后同意接口，否则同意
+      if (this.type === 'passEdit') {
+        this.activitiCompleteWithEdit()
+      } else {
+        this.activitiComplete()
+      }
     },
   },
 }

@@ -5,8 +5,11 @@ import { commitNextAssignee } from '@/api/system/workflow'
 const reviewerDialog = async (options) => {
   const businessType = options.type
   const multiple = options.multiple !== undefined ? options.multiple : true
+  const needSelectAssignee = !options.needSelectAssignee  // 默认为 true
+  console.log(needSelectAssignee,'needSelectAssignee')
   const res = await commitNextAssignee({ businessType })
-  if (res.data.length > 1) {
+  
+  if (res.data.length > 1 && needSelectAssignee) {
     const Assignee = Vue.extend(activitiAssignee)
     const msg = new Assignee()
     msg.$mount(msg.$el)

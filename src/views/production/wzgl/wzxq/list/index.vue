@@ -261,7 +261,7 @@ export default {
           this.$router.push({ name: 'logisticsView', query: { id: idArr[0], type: 'view' } })
           break;
         case 'examine':
-          this.handleExamine(idArr, rowArr[0].planType)
+          this.handleExamine(idArr, rowArr[0].planType,rowArr[0].planStatus)
           break;
         // 撤回
         case 'withdraw':
@@ -285,7 +285,7 @@ export default {
       }
     },
     // 提交审核
-    handleExamine (ids, planType) {
+    handleExamine (ids, planType ,planStatus ) {
       const businessCode = {
         '1': 'FBYLXQ',
         '2': 'FBYLJH',
@@ -296,6 +296,7 @@ export default {
         this.$reviewerDialog({
           type: businessCode[planType],
           multiple: false,
+          needSelectAssignee: planStatus === '4',
           success: async (assignee) => {
             await Api.submitTodo({ ids, planType, assignee })
 
