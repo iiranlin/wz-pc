@@ -42,14 +42,14 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="supplierName" label="供应商" min-width="250">
+            <el-table-column prop="supplierName" label="供应商" width="200">
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" min-width="250">
+            <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="150"
+              width="200"
               align="center"
             ></el-table-column>
 
@@ -166,8 +166,10 @@ export default {
   methods: {
     //初始化
     init(id) {
+      this.loading = true;
       this.$nextTick(async () => {
         await Api.outDetail(id).then(({ data }) => {
+          this.loading = false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             // fileList回显

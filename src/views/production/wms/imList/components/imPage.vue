@@ -27,7 +27,7 @@
               :value="scope.formModel.fileList01"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="50"
+              :fileSize="200"
               :fileType="['pdf']"
             />
           </el-form-item>
@@ -45,7 +45,7 @@
               :value="scope.formModel.fileList02"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="50"
+              :fileSize="200"
               :fileType="['pdf']"
             />
           </el-form-item>
@@ -63,7 +63,7 @@
               :value="scope.formModel.fileList03"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="50"
+              :fileSize="200"
               :fileType="['pdf']"
             />
           </el-form-item>
@@ -96,7 +96,7 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="materialName" label="物资名称" min-width="250">
+            <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -108,7 +108,7 @@
             <el-table-column
               prop="unit"
               label="计量单位"
-              width="120"
+              width="100"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -163,13 +163,13 @@
             <el-table-column
               prop="field0"
               label="投资方"
-              width="180"
+              width="150"
               align="center"
             ></el-table-column>
             <el-table-column
               prop="field1"
               label="投资比例"
-              width="180"
+              width="150"
               align="center"
             ></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
@@ -190,7 +190,8 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="storeTotal" label="入库数量" width="150">
+            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column prop="storeTotal" label="入库数量" width="150" align="right">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.storeTotal"
@@ -205,7 +206,12 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="refundTotal" label="退货数量" width="150">
+            <el-table-column
+              prop="refundTotal"
+              label="退货数量"
+              width="150"
+              align="right"
+            >
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.refundTotal"
@@ -220,17 +226,23 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="projectShortName" label="退货附件" width="250">
+            <el-table-column
+              prop="projectShortName"
+              label="退货附件"
+              width="250"
+              align="right"
+            >
               <template slot-scope="scope">
                 <fileUpload
                   :value="scope.row.fileList03"
                   v-model="scope.row.fileList03"
                   :preview="type == 'view'"
                   :isShowTip="false"
+                  :limit="1"
+                  :fileSize="200"
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -315,8 +327,10 @@ export default {
   methods: {
     //初始化
     init(id) {
+      this.loading=true;
       this.$nextTick(async () => {
         await Api.detailStore(id).then(({ data }) => {
+          this.loading=false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             this.$refs.vFormRef.setReadMode(true);

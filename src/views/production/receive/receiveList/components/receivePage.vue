@@ -78,8 +78,9 @@
               v-model="scope.formModel.fileList01"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="50"
+              :fileSize="200"
               :fileType="['pdf']"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
@@ -90,8 +91,9 @@
               v-model="scope.formModel.fileList02"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="50"
+              :fileSize="200"
               :fileType="['pdf']"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
@@ -133,7 +135,7 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="materialName" label="物资名称" min-width="250">
+            <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -145,7 +147,7 @@
             <el-table-column
               prop="unit"
               label="计量单位"
-              width="120"
+              width="100"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -199,10 +201,10 @@
             <el-table-column
               prop="field0"
               label="投资方"
-              width="180"
+              width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="field1" label="投资比例" width="180"></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="150"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -221,7 +223,8 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="putTotal" label="收货数量" width="150">
+            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column prop="putTotal" label="收货数量" width="120" fixed="right">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.putTotal"
@@ -236,7 +239,12 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="refundTotal" label="退货数量" width="150">
+            <el-table-column
+              prop="refundTotal"
+              label="退货数量"
+              width="120"
+              fixed="right"
+            >
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.refundTotal"
@@ -251,17 +259,23 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="projectShortName" label="退货附件" width="250">
+            <el-table-column
+              prop="projectShortName"
+              label="退货附件"
+              width="200"
+              fixed="right"
+            >
               <template slot-scope="scope">
                 <fileUpload
                   :value="scope.row.fileList03"
                   v-model="scope.row.fileList03"
                   :preview="type == 'view'"
                   :isShowTip="false"
+                  :limit="1"
+                  :fileSize="200"
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -370,8 +384,10 @@ export default {
     //初始化
     init(id) {
       this.$nextTick(async () => {
+        this.loading=true;
         await Api.detailTake(id).then(({ data }) => {
           this.$nextTick(async () => {
+            this.loading=false;
             await this.formFillInPage();
             if (this.type == "create") {
               //收货的时候默认本机日期
@@ -384,12 +400,9 @@ export default {
             // fileList回显
             const newData = {
               ...data,
-              fileList01: data.fileByList
-                ? JSON.parse(data.fileByList).zjd||[]: [], //自检单
-              fileList02: data.fileByList
-                ? JSON.parse(data.fileByList).qtzl||[]: [], //其他资料
-              fileList03: data.fileByList
-                ? JSON.parse(data.fileByList).fhd||[]: [], //发货单
+              fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
+              fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
+              fileList03: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(this.type === "view");
@@ -398,12 +411,9 @@ export default {
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
               putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认收货数量=发货数量
-              fileList01: x.fileByList
-                ? JSON.parse(x.fileByList).hgz||[]: [], //合格证
-              fileList02: x.fileByList
-              ? JSON.parse(x.fileByList).cjbg||[]: [], //厂检报告
-              fileList03: x.fileByList
-                ? JSON.parse(x.fileByList).thfj||[]: [], //退货附件
+              fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
+              fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
+              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
             }));
             this.tableData = detail;
           });
@@ -479,7 +489,9 @@ export default {
           }
           formData.fileByList = JSON.stringify(fileByList);
           for (var i in this.tableData) {
-            var fileByList = this.tableData[i].fileByList ? JSON.parse(this.tableData[i].fileByList) : {};
+            var fileByList = this.tableData[i].fileByList
+              ? JSON.parse(this.tableData[i].fileByList)
+              : {};
             //退货附件
             if (this.tableData[i].fileList03.length > 0) {
               this.$set(fileByList, "thfj", this.tableData[i].fileList03);

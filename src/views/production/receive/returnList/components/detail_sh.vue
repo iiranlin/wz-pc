@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container container_flex">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -32,7 +32,6 @@
             border
             style="width: 100%"
             :max-height="600"
-            v-loading="loading"
             ref="dataTable"
           >
             <el-table-column
@@ -42,7 +41,7 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="materialName" label="物资名称" min-width="250">
+            <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -50,11 +49,10 @@
               width="150"
               align="center"
             ></el-table-column>
-
             <el-table-column
               prop="unit"
               label="计量单位"
-              width="120"
+              width="100"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -108,13 +106,13 @@
             <el-table-column
               prop="field0"
               label="投资方"
-              width="180"
+              width="150"
               align="center"
             ></el-table-column>
             <el-table-column
               prop="field1"
               label="投资比例"
-              width="180"
+              width="150"
               align="center"
             ></el-table-column>
 
@@ -225,7 +223,9 @@ export default {
   methods: {
     //初始化
     async init(id) {
+      this.loading=true;
       await Api.detailBack(id).then(({ data }) => {
+        this.loading=false;
         this.$nextTick(async () => {
           await this.formFillInPage();
           // fileList回显

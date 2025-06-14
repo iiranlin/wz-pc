@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-table-container">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -20,7 +20,6 @@
             border
             style="width: 100%"
             :max-height="600"
-            v-loading="loading"
             ref="dataTable"
           >
             <el-table-column
@@ -30,13 +29,6 @@
               align="center"
               fixed="left"
             />
-            <el-table-column
-              prop="sectionName"
-              label="标段项目名称"
-              width="250"
-              fixed="left"
-            >
-            </el-table-column>
             <el-table-column
               prop="materialName"
               label="物资名称"
@@ -160,7 +152,9 @@ export default {
     //初始化
     init(id) {
       this.$nextTick(async () => {
+        this.loading=true;
         await Api.detailGyMx({id}).then(({ data }) => {
+          this.loading=false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             const newData = {

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container container_flex">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -26,8 +26,7 @@
               v-model="scope.formModel.fileList"
               :preview="type == 'view' || preview"
               :limit="1"
-              :fileSize="50"
-              :fileType="['pdf']"
+              :fileSize="200"
             />
           </el-form-item>
         </template>
@@ -51,7 +50,6 @@
             border
             style="width: 100%"
             :max-height="600"
-            v-loading="loading"
             ref="dataTable"
           >
             <el-table-column
@@ -61,9 +59,9 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="sellerName" label="供应商" min-width="250">
+            <el-table-column prop="sellerName" label="供应商" width="200">
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" min-width="250">
+            <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -71,11 +69,10 @@
               width="200"
               align="center"
             ></el-table-column>
-
             <el-table-column
               prop="unit"
               label="计量单位"
-              width="120"
+              width="100"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -225,8 +222,10 @@ export default {
   methods: {
     //初始化
     init(id) {
+      this.loading=true;
       this.$nextTick(async () => {
         await Api.detailOut(id).then(({ data }) => {
+          this.loading=false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             this.$refs.vFormRef.setFormData({
@@ -291,6 +290,7 @@ export default {
         }
 
         formData.fileByList = JSON.stringify(fileByList);
+        this.loading=true;
         Api.outSave(
           Object.assign(
             {

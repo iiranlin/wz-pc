@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container container_flex">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -22,6 +22,7 @@
               :limit="1"
               :preview="type === 'view'"
               :isShowTip="false"
+              :size="200"
             />
           </el-form-item>
         </template>
@@ -231,7 +232,9 @@ export default {
     },
     //初始化
     async init() {
+      this.loading=true;
       await Api.detailWz(this.id).then(({ data }) => {
+        this.loading=false;
         this.$nextTick(async () => {
           await this.formFillInPage();
           this.$refs["vFormRef"].setFormData({
@@ -244,8 +247,10 @@ export default {
     },
     // 编辑初始化
     async updateInit(id) {
+      this.loading=true;
       await Api.sendDetail(id).then(({ data }) => {
         this.$nextTick(async () => {
+          this.loading=false;
           this.title = "编辑";
           await this.formFillInPage();
           // fileList回显

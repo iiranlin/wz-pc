@@ -174,7 +174,7 @@
         width="150"
         align="center"
       ></el-table-column>
-      <el-table-column prop="projectShortName" label="合格证附件" width="300">
+      <el-table-column prop="projectShortName" label="合格证附件" width="200">
         <template slot-scope="scope">
           <fileUpload
             v-model="scope.row.fileList01"
@@ -182,10 +182,11 @@
             :limit="1"
             :preview="type == 'view'"
             :isShowTip="false"
+            :size="200"
           />
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="厂检报告附件" width="300">
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
         <template slot-scope="scope">
           <fileUpload
             v-model="scope.row.fileList02"
@@ -193,6 +194,7 @@
             :limit="1"
             :preview="type == 'view'"
             :isShowTip="false"
+            :size="200"
           />
         </template>
       </el-table-column>

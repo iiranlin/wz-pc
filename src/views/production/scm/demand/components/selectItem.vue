@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container container_flex">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -108,7 +108,9 @@ export default {
     },
     //初始化
     async init() {
+      this.loading=true;
       await Api.detailWz(this.type=='create'?this.id:this.planId).then(({ data }) => {
+        this.loading=false;
         this.$nextTick(async () => {
           this.tableData = data.details.map((x) => ({
             ...x,

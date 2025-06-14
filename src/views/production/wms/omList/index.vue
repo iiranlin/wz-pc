@@ -40,7 +40,6 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
-          :row-class-name="tableRowClassName"
         >
           <!-- 出库单号 -->
           <template #outNumber="scope">
@@ -78,25 +77,6 @@ export default {
 
   data() {
     return {
-      storeStatus: {
-        1: "未入库",
-        2: "部分退货",
-        3: "已入库",
-      },
-      options: [
-        {
-          code: "1",
-          name: "未入库",
-        },
-        {
-          code: "2",
-          name: "部分退货",
-        },
-        {
-          code: "3",
-          name: "已入库",
-        },
-      ],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -192,19 +172,6 @@ export default {
       this.selection = selection;
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
-      this.proxyPrint(buttonCode, rowArr, buttonData);
-      switch (buttonCode) {
-        case "ruku":
-          if (rowArr[0].storeStatus != "1") {
-            this.$modal.msgError("未入库状态才能入库");
-            return;
-          }
-          this.$router.push({
-            name: "imPage",
-            query: { id: idArr[0], type: "create" },
-          });
-          break;
-      }
     },
 
     clickReset() {
@@ -218,30 +185,6 @@ export default {
         this.formData[key] = null;
       }
       this.handleQuery();
-    },
-    //入库单号
-    toIm(row) {
-      this.$router.push({
-        name: "imPage",
-        query: { id: row.id, type: "view" },
-      });
-    },
-    //收货单
-    toReceive(row) {
-      this.$router.push({
-        name: "receivePage",
-        query: { id: row.id, type: "view" },
-      });
-    },
-    //收货超过20天未入库显示红色
-    tableRowClassName({ row, rowIndex }) {
-      var time = 20 * 24 * 60 * 60 * 1000;
-      var dateTime = new Date(row.takeDate).getTime();
-      const timestamp = new Date().getTime();
-      if (Number(timestamp) - Number(dateTime) > time && row.storeStatus == "1") {
-        return "highlight-row-red";
-      }
-      return "";
     },
     //跳转需求供应详情
     toGyxq(row) {
