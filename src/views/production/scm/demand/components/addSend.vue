@@ -16,7 +16,12 @@
       >
         <!-- 附件 -->
         <template #fileSlot="scope">
-          <el-form-item prop="fileList" label="发货单附件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+          <el-form-item
+            prop="fileList"
+            label="发货单附件"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
@@ -143,15 +148,25 @@ export default {
     console.log(data, "=========");
     this.tableData = data.map((x) => ({
       ...x,
-      sendTotal: x.planAmount,
+      sendTotal: x.ssendTotal,
     }));
   },
   activated() {
+    if (this.type == "view") {
+      this.$nextTick(() => {
+        this.$tab.updatePage({
+          path: "/scm/addSend",
+          meta: {
+            title: "货运详情",
+          },
+        });
+      });
+    }
     //选择物资，发货数量默认带过来计划数量
     var data = this.getSelectedItemList();
     this.tableData = data.map((x) => ({
       ...x,
-      sendTotal: x.planAmount,
+      sendTotal: x.ssendTotal,
     }));
   },
   watch: {
@@ -161,7 +176,6 @@ export default {
     //       this.updateInit(this.id);
     //       return;
     //     }
-
     //     if (this.type === "create") {
     //       this.init();
     //       return;
@@ -231,9 +245,9 @@ export default {
     },
     //初始化
     async init() {
-      this.loading=true;
+      this.loading = true;
       await Api.detailWz(this.id).then(({ data }) => {
-        this.loading=false;
+        this.loading = false;
         this.$nextTick(async () => {
           await this.formFillInPage();
           this.$refs["vFormRef"].setFormData({
@@ -246,10 +260,10 @@ export default {
     },
     // 编辑初始化
     async updateInit(id) {
-      this.loading=true;
+      this.loading = true;
       await Api.sendDetail(id).then(({ data }) => {
         this.$nextTick(async () => {
-          this.loading=false;
+          this.loading = false;
           this.title = "编辑";
           await this.formFillInPage();
           // fileList回显
@@ -266,7 +280,9 @@ export default {
           const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-            expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+            expirationDate: x.expirationDate
+              ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+              : "",
             supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
             id: x.planDetailId,
             fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
@@ -365,7 +381,7 @@ export default {
               this.$modal.msgSuccess(message);
               this.setSelectedItemList([]);
               this.$router.push({
-                name: "demand",
+                name: "sendList",
               });
             })
             .finally((err) => {
