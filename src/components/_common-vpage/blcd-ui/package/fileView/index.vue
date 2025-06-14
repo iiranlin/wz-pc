@@ -1,0 +1,293 @@
+<template>
+    <div class="fileView">
+        <div @click.stop="handlePreview" class="fileViewLink">
+            <span class="fileNameWarp">
+                <slot></slot>
+            </span>
+        </div>
+        <Dialog v-if="visible" custom-class="fileViewDialog" :show-close="false"
+            :visible="true" :destroy-on-close="true" @close="handleClose" :close-on-click-modal="false" 
+            :modal-append-to-body="true" @full="handleFullChange" :append-to-body="true">
+            <template slot="title">
+                <div class="filePreviewTitle">
+                    <div class="title">{{ title }}</div>
+                </div>
+            </template>
+            <div v-loading="loading" :key="key"
+                class="filePreview">
+                <vue-office-docx v-if="isSuccess && ['docx'].includes(fileType)" :src="url" @rendered="handleRendered"
+                    @error="handleError" />
+                <vue-office-pptx v-else-if="isSuccess && ['pptx'].includes(fileType)"
+                    :src="url" @loaded="handleRendered" @error="handleError" />
+                <vue-office-excel v-else-if="isSuccess && ['xlsx', 'xls'].includes(fileType)" :src="url"
+                    :options="excelOptions" @rendered="handleRendered" @error="handleError" />
+                <vue-office-pdf v-else-if="isSuccess && ['pdf'].includes(fileType)" :src="url"
+                    @loaded="handleRendered" />
+                <div v-else-if="isSuccess && pngTypes.includes(fileType)" class="gifFile">
+                    <img :src="url" />
+                </div>
+                <div v-else class="filePreviewError">
+                    {{ errorMsg }}
+                </div>
+            </div>
+            <div slot="footer" class="filePreviewFooter">
+                <el-button plain round @click="handleDownload" style="margin-right: 5px;">下 载</el-button>
+                <el-button plain round @click="handleClose">关 闭</el-button>
+            </div>
+        </Dialog>
+    </div>
+</template>
+
+<script>
+import '@vue-office/docx/lib/index.css'
+import '@vue-office/excel/lib/index.css'
+const minioDownload = `/blcd-base/minio/download`;
+import { saveAs } from 'file-saver'
+export default {
+    name: "fileView",
+    components: {
+        VueOfficeDocx: () => import('@vue-office/docx'),
+        VueOfficePptx: () => import('./pptx.vue'),
+        VueOfficeExcel: () => import('@vue-office/excel'),
+        VueOfficePdf: () => import('vue-pdf'),
+        Dialog: () => import('../Dialog'),
+    },
+    props: {
+        file: Object,
+        icon: {
+            type: Boolean,
+            default: false
+        }
+    },
+    watch: {
+        file: {
+            immediate: true,
+            handler(val) {
+                if ('response' in val) {
+                    this.fileObject = val.response.data
+                } else {
+                    this.fileObject = val
+                }
+                this.title = this.fileObject.fileName
+                if (this.title) {
+                    const fileType = this.title.split('.').pop()
+                    this.fileType = fileType
+                }
+
+            }
+        },
+    },
+    data() {
+        return {
+            fileObject: {},
+            key: `${Date.now()}`,
+            isSuccess: true,
+            fileTypes: ['png', 'jpg', 'docx', 'xlsx', 'xls', 'pdf', 'gif', 'jpeg', 'pptx'],
+            pngTypes: ['png', 'gif', 'jpg', 'jpeg'],
+            fileType: '',
+            visible: false,
+            title: '附件预览',
+            loading: false,
+            url: '',
+            errorMsg: '',
+            excelOptions: {
+                xls: false,
+                minColLength: 0,
+                minRowLength: 0,
+                widthOffset: 10,
+                heightOffset: 10,
+                beforeTransformData: (workbookData) => { return workbookData },
+                transformData: (workbookData) => { return workbookData },
+            }
+        }
+    },
+    methods: {
+        handleFullChange() {
+            this.key = `${Date.now()}`
+        },
+        async handlePreview() {
+            if (['xlsx', 'xls'].includes(this.fileType)) {
+                this.excelOptions.xls = this.fileType == 'xls'
+            }
+            this.visible = true
+            if (!this.fileTypes.includes(this.fileType)) {
+                this.isSuccess = false
+                this.errorMsg = '该文件类型目前不支持预览'
+                return
+            }
+            this.loadSource()
+        },
+        handleClose() {
+            this.visible = false
+        },
+        
+        handleRendered(res) {
+            this.isSuccess = true
+            this.loading = false
+        },
+        handleError(err) {
+            this.loading = false
+            this.isSuccess = false
+            this.errorMsg = '该文件预览失败请重新尝试'
+        },
+        renderImg() {
+            const imgEl = new Image()
+            imgEl.src = this.url
+            imgEl.onload = () => {
+                this.handleRendered()
+            }
+            imgEl.onerror = () => {
+                this.handleError()
+            }
+        },
+      async  handleDownload() {
+          await  this.loadSource()
+            const { fileName } = this.fileObject
+            this.saveAs(this._blob, decodeURI(fileName))
+        },
+        saveAs(text, name, opts) {
+            saveAs(text, name, opts);
+        },
+        async loadSource() {
+            try {
+                this.loading = true
+                const { filePath, fileName } = this.fileObject
+                const res = await this.$download.fileSource(
+                    `${minioDownload}?filePath=${encodeURI(filePath)}&fileName=${encodeURI(fileName)}`);
+                const blob = new Blob([res.data])
+                this._blob = blob
+                this.url = window.URL.createObjectURL(blob);
+                if (this.pngTypes.includes(this.fileType)) {
+                    this.renderImg()
+                }
+            } catch (err) {
+                this.isSuccess = false
+                this.errorMsg = '该文件加载失败请重新尝试'
+                this.loading = false
+                console.error('加载失败', err)
+            }
+        }
+    },
+};
+</script>
+<style lang="scss">
+.fileView {
+    display: inline-block;
+    width: 100%;
+
+    .fileViewLink {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+
+        .fileIcon:hover {
+            cursor: pointer;
+        }
+
+        .fileNameWarp {
+            padding-left: 5px;
+            display: inline-block;
+            max-width: calc(100%);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 20px;
+            line-height: 20px;
+        }
+    }
+
+    .fileViewLink:hover {
+        color: #1890ff;
+        cursor: pointer;
+    }
+
+    .el-link--inner {
+        width: 100% !important;
+        display: inline-block !important;
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+    }
+
+    .el-link.is-underline:hover:after {
+        border-bottom: 0 !important;
+    }
+
+
+
+
+}
+
+.fileViewDialog {
+    height: 60vh;
+    .el-dialog__body,
+    .el-dialog__footer,
+    .el-dialog__header {
+        padding: 0 0px;
+        box-sizing: border-box;
+    }
+    .el-dialog__body {
+        height: calc(100% - 100px);
+    }
+    .filePreviewTitle {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f0f0f0;
+        padding: 0 20px;
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .action {
+            padding: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .action:hover {
+            color: #1890ff;
+        }
+    }
+
+    .filePreviewFooter {
+        height: 50px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px;
+    }
+
+
+    .filePreview {
+        height: 100%;
+        min-height: 400px;
+        overflow-y: auto;
+        background-color: #fff;
+        .gifFile {
+            height: 100%;
+            width: 100%;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        .filePreviewError {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+        }
+    }
+}
+</style>
