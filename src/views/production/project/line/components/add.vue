@@ -21,7 +21,7 @@
             label="建设单位"
             class="label-right-align"
           >
-            <template v-if="type !== 'view'">
+            <template v-if="false">
               <el-select
                 v-model="formModel.constructionUnitId"
                 filterable
@@ -120,6 +120,8 @@ import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
 import attachmentTable from '@/views/components/attachmentTable'
 import { extractSelectOptions } from '@/utils/index'
+import { getUserInfo } from '@/utils/user-info'
+
 export default {
   name: "SectionAdd",
   dicts: ['JLDW'],
@@ -129,6 +131,7 @@ export default {
   },
   data () {
     return {
+      userInfo:getUserInfo(),
       loading: false,
       title: '新增',
       checked: false,
@@ -163,7 +166,7 @@ export default {
     }
   },
   created () {
-    this.getDeptTree()
+    // this.getDeptTree()
   },
   mounted () {
 
@@ -260,6 +263,11 @@ export default {
       return new Promise((resolve) => {
         formFillInPage('lineProject').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
+
+          this.$refs['vFormRef'].setFormData({
+            constructionUnitId: this.userInfo.instituteId,
+            constructionUnit: this.userInfo.instituteName
+          })
 
 
           resolve(true)

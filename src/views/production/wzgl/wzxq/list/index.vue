@@ -229,7 +229,9 @@ export default {
     /** 查询菜单列表 */
     getList () {
       this.loading = true
-      Api.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+      Api.itemList(Object.assign({
+        pageStatus: '0'
+      }, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list
         this.total = data.total
       }).finally(() => {

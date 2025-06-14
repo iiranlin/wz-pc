@@ -16,8 +16,8 @@
       >
         <template #table>
           <detailTable :projectId="projectId" ref="detailTable"></detailTable>
-          <!-- 没有订单号显示表格 -->
-          <table />
+          
+          <!-- <table /> -->
         </template>
       </VFormRender>
     </div>

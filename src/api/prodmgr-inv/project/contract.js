@@ -128,3 +128,12 @@ export const getContractList = (data) => {
     data
   })
 }
+
+// 查询所有合同名称
+export const getContractNameList = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/getNameByIds`,
+    method: 'post',
+    data
+  })
+}

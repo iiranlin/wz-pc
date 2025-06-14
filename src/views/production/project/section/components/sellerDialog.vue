@@ -11,11 +11,10 @@
     class="dialog-route"
     width="60%"
   >
-    <el-table :data="tableData" style="width: 100%;margin-top: 16px;">
+    <el-table :data="tableData" height="400" style="width: 100%;margin-top: 16px;">
       <el-table-column
         type="index"
         label="序号"
-        :index="indexMethod"
         width="120px"
         align="center"
       >
@@ -30,7 +29,9 @@
 </template>
 
 <script>
+import * as Api from '@/api/prodmgr-inv/project/contract.js'
 export default {
+  // 合同数量弹窗 
     name: "sellerDialog",
     data () {
         return {
@@ -42,7 +43,8 @@ export default {
     },
     methods: {
         open (data) {
-            this.tableData = data;
+         this.getContractNameList(data)
+            // this.tableData = data;
             this.visible = true;
         },
         indexMethod (index) {
@@ -52,6 +54,10 @@ export default {
         handleCancel () {
             this.visible = false;
         },
+        async getContractNameList (ids){
+          const res = await Api.getContractNameList(ids)
+          this.tableData = res.data.map(x => ({name:x}))
+        }
     }
 }
 </script>

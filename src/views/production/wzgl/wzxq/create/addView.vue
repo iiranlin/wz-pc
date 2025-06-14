@@ -36,6 +36,7 @@ import { extractSelectOptions } from '@/utils/index'
 import ItemTableView from './itemTableView.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
+import router from '@/router';
 export default {
   // 需求填报物资选择-页面
   components: {
@@ -65,7 +66,7 @@ export default {
 
       // 菜单按钮、字段等数据
       buttonTop: [
-       
+
         { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
       ],
       constructionOptions: [],
@@ -93,7 +94,6 @@ export default {
 
   },
   mounted () {
-
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
       return
@@ -108,7 +108,7 @@ export default {
   methods: {
     async getCurrentProduction () {
       const res = await SectionApi.getCurrentSectionMaterial({
-        contractId:this.id
+        contractId: this.id
       })
       this.allData = res.data
     },
@@ -118,11 +118,11 @@ export default {
       this.$refs.vFormRef.setFormData({
         contractName: this.sectionInfo.contractName,
         itemName: this.sectionInfo.itemName,
-        contractNo:this.sectionInfo.contractNo
+        contractNo: this.sectionInfo.contractNo
       })
     },
     onSelectRow (rows) {
-      console.log(rows,'rowssss')
+      console.log(rows, 'rowssss')
       this.selectRows = rows;
     },
     //初始化
@@ -195,18 +195,18 @@ export default {
     },
     //新建
     handleCreate () {
-    console.log(this.selectRows,'rows')
+      console.log(this.selectRows, 'rows')
       // 判断当前是否选择了数据
       if (this.selectRows.length === 0) {
         this.$message.warning('请选择要添加的物资')
         return
       }
-      this.setSelectedMaterialList(this.selectRows)
+      this.setSelectedMaterialList(this.selectRows.map(x => ({ ...x, addr: x.deliveryLocation })))
       this.$router.push({
         name: 'requestAdd',
         query: {
           type: 'create',
-          id:this.id,
+          id: this.id,
         }
       })
 

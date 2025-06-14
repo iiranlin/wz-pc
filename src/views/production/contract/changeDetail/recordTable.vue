@@ -8,7 +8,7 @@
       key-prop="id"
       @change="(renderData) => (virtualList = renderData)"
     >
-      <el-table :data="virtualList" border style="width: 100%" height="400">
+      <el-table :data="virtualList" border style="width: 100%" max-height="400">
         <!-- 序号 -->
         <virtual-column
           label="序号"
