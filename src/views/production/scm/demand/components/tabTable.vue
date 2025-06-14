@@ -117,6 +117,12 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="addr"
+        label="使用地点"
+        width="200"
+        align="center"
+      ></el-table-column>
+      <el-table-column
         prop="receivingAddress"
         label="收货地址"
         width="160"
@@ -182,7 +188,6 @@
             :limit="1"
             :preview="type == 'view'"
             :isShowTip="false"
-            :size="200"
           />
         </template>
       </el-table-column>
@@ -194,7 +199,6 @@
             :limit="1"
             :preview="type == 'view'"
             :isShowTip="false"
-            :size="200"
           />
         </template>
       </el-table-column>

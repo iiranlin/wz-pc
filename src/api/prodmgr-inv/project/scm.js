@@ -79,7 +79,7 @@ export const detailGyMx = (params) => {
  */
 export const modify = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/modify`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/modifyQrfh`,
     method: 'post',
     data
   })

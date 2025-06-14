@@ -101,6 +101,9 @@ export default {
   mounted() {
     this.init();
   },
+  activated() {
+    this.init();
+  },
   methods: {
     onSelectRow(rows) {
       console.log(rows, "rowssss");
@@ -108,23 +111,25 @@ export default {
     },
     //初始化
     async init() {
-      this.loading=true;
-      await Api.detailWz(this.type=='create'?this.id:this.planId).then(({ data }) => {
-        this.loading=false;
-        this.$nextTick(async () => {
-          this.tableData = data.details.map((x) => ({
-            ...x,
-            supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
-          }));
-          await this.formFillInPage();
-          this.$refs["vFormRef"].setFormData({
-            sectionName: data.sectionName,
-            planName: data.planName,
-            contractName: data.contractName,
+      this.loading = true;
+      await Api.detailWz(this.type == "create" ? this.id : this.planId).then(
+        ({ data }) => {
+          this.loading = false;
+          this.$nextTick(async () => {
+            this.tableData = data.details.map((x) => ({
+              ...x,
+              supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
+            }));
+            await this.formFillInPage();
+            this.$refs["vFormRef"].setFormData({
+              sectionName: data.sectionName,
+              planName: data.planName,
+              contractName: data.contractName,
+            });
+            this.$refs.vFormRef.setReadMode(true);
           });
-          this.$refs.vFormRef.setReadMode(true);
-        });
-      });
+        }
+      );
     },
     newButton(buttonCode) {
       if (buttonCode === "cancel") {

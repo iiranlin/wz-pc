@@ -29,6 +29,7 @@
               :limit="1"
               :fileSize="200"
               :fileType="['pdf']"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
@@ -47,6 +48,7 @@
               :limit="1"
               :fileSize="200"
               :fileType="['pdf']"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
@@ -65,6 +67,7 @@
               :limit="1"
               :fileSize="200"
               :fileType="['pdf']"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
@@ -139,6 +142,12 @@
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="addr"
+              label="使用地点"
+              width="200"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -327,10 +336,10 @@ export default {
   methods: {
     //初始化
     init(id) {
-      this.loading=true;
+      this.loading = true;
       this.$nextTick(async () => {
         await Api.detailStore(id).then(({ data }) => {
-          this.loading=false;
+          this.loading = false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             this.$refs.vFormRef.setReadMode(true);
@@ -349,7 +358,7 @@ export default {
               storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=收货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
-              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
+              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
             }));
             this.tableData = detail;
           });
@@ -434,7 +443,7 @@ export default {
               : {};
             //退货附件
             if (this.tableData[i].fileList03.length > 0) {
-              this.$set(fileByList, "thfj", this.tableData[i].fileList03);
+              this.$set(fileByList, "thfj_im", this.tableData[i].fileList03);
             }
             this.tableData[i].fileByList = JSON.stringify(fileByList);
           }

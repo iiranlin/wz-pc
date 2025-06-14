@@ -105,7 +105,7 @@
             <el-table-column prop="projectShortName" label="退货附件" width="180">
               <template slot-scope="scope">
                 <fileUpload
-                  :value="scope.row.fileList[0].fileList"
+                  :value="scope.row.fileList"
                   :preview="true"
                   :isShowTip="false"
                 />
@@ -205,7 +205,7 @@ export default {
           this.$refs.vFormRef.setReadMode(true);
           const detail = data.materialSupplierDetailDTOList.map((x) => ({
             ...x,
-            fileList: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
+            fileList: x.fileByList ? JSON.parse(x.fileByList)[this.backNode=='1'?'thfj_sh':'thfj_im'] || [] : [], //退货附件(thfj_sh收货退货的附件、thfj_im入库退货的附件)
           }));
           this.tableData = detail;
         });

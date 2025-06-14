@@ -72,9 +72,9 @@
           </template>
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
-            <el-button type="text" @click="toFhd(scope.data)">
+            <!-- <el-button type="text" @click="toFhd(scope.data)"> -->
               {{ scope.value }}
-            </el-button>
+            <!-- </el-button> -->
           </template>
           <!-- 物流单号 -->
           <template #oddNumbers="scope">
@@ -272,7 +272,7 @@ export default {
       });
     },
     //跳转物流
-    toWuliu() {
+    toWuliu(row) {
       this.$router.push({
         name: "logisticsView",
         query: { id: row.id, type: "view" },

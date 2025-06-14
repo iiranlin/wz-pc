@@ -22,7 +22,6 @@
               :limit="1"
               :preview="type === 'view'"
               :isShowTip="false"
-              :size="200"
             />
           </el-form-item>
         </template>
@@ -156,19 +155,19 @@ export default {
     }));
   },
   watch: {
-    $route(to, from) {
-      if (from.path != "/scm/selectItem" && from.path != "/scm/addSend") {
-        if (["view", "update"].includes(this.type)) {
-          this.updateInit(this.id);
-          return;
-        }
+    // $route(to, from) {
+    //   if (from.path != "/scm/selectItem" && from.path != "/scm/addSend") {
+    //     if (["view", "update"].includes(this.type)) {
+    //       this.updateInit(this.id);
+    //       return;
+    //     }
 
-        if (this.type === "create") {
-          this.init();
-          return;
-        }
-      }
-    },
+    //     if (this.type === "create") {
+    //       this.init();
+    //       return;
+    //     }
+    //   }
+    // },
   },
   mounted() {
     if (["view", "update"].includes(this.type)) {

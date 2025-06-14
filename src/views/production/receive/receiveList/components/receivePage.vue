@@ -59,7 +59,7 @@
           <el-form-item prop="fileList" label="发货单" class="label-right-align">
             <fileUpload
               v-model="scope.formModel.fileList03"
-              :preview="type == 'view'"
+              :preview="true"
               :limit="1"
               :fileSize="50"
               :fileType="['pdf']"
@@ -178,6 +178,12 @@
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="addr"
+              label="使用地点"
+              width="200"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -384,10 +390,10 @@ export default {
     //初始化
     init(id) {
       this.$nextTick(async () => {
-        this.loading=true;
+        this.loading = true;
         await Api.detailTake(id).then(({ data }) => {
           this.$nextTick(async () => {
-            this.loading=false;
+            this.loading = false;
             await this.formFillInPage();
             if (this.type == "create") {
               //收货的时候默认本机日期
@@ -413,7 +419,7 @@ export default {
               putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认收货数量=发货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
-              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
+              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_sh || [] : [], //退货附件
             }));
             this.tableData = detail;
           });
@@ -494,7 +500,7 @@ export default {
               : {};
             //退货附件
             if (this.tableData[i].fileList03.length > 0) {
-              this.$set(fileByList, "thfj", this.tableData[i].fileList03);
+              this.$set(fileByList, "thfj_sh", this.tableData[i].fileList03);
             }
             this.tableData[i].fileByList = JSON.stringify(fileByList);
           }

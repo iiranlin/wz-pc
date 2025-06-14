@@ -27,6 +27,7 @@
               :preview="type == 'view' || preview"
               :limit="1"
               :fileSize="200"
+              :isShowTip="false"
             />
           </el-form-item>
         </template>
@@ -99,12 +100,12 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="outTotle" label="出库数量" width="150" align="center">
+            <el-table-column prop="outTotle" label="出库数量" width="150" align="center" fixed="right">
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.outTotle"
                   :min="0"
-                  :max="scope.row.storeTotal"
+                  :max="scope.row.storeTotal||0"
                   size="mini"
                   style="width: 100%"
                   v-if="type != 'view' && !preview"
@@ -114,7 +115,7 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200">
+            <el-table-column prop="remark" label="备注" width="200" fixed="right">
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.remark"
@@ -278,6 +279,11 @@ export default {
             this.$message.warning("请完善信息");
             return;
           }
+          const flag = this.tableData.every(item => !item.outTotle);
+           if (flag) {
+            this.$message.error("未选择出库物资！");
+            return;
+          }
           this.preview = !this.preview;
         });
       } else {
@@ -310,7 +316,6 @@ export default {
             this.$router.go(-1);
           })
           .finally((err) => {
-            formData.fileList = fileList;
             this.loading = false;
           });
       }

@@ -73,7 +73,7 @@
           </template>
           <!-- 附件 -->
           <template #fileList="scope">
-            <fileUpload :valve="scope.value" :preview="true" />
+            <fileUpload v-model="scope.data.fileList" :preview="true" />
           </template>
         </table-index>
         <pagination
@@ -213,8 +213,11 @@ export default {
       this.loading = true;
       Api.demandList(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
-          this.list = data.list;
           this.total = data.total;
+          this.list = data.list.map((x) => ({
+            ...x,
+            fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
+          }));
         })
         .finally(() => {
           this.loading = false;

@@ -105,6 +105,12 @@
               align="center"
             ></el-table-column>
             <el-table-column
+              prop="addr"
+              label="使用地点"
+              width="200"
+              align="center"
+            ></el-table-column>
+            <el-table-column
               prop="receivingAddress"
               label="收货地址"
               width="200"
@@ -270,10 +276,10 @@ export default {
   methods: {
     //初始化
     init(id) {
-      this.loading=true;
+      this.loading = true;
       this.$nextTick(async () => {
         await Api.detailStore(id).then(({ data }) => {
-          this.loading=false;
+          this.loading = false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             // fileList回显
@@ -291,7 +297,7 @@ export default {
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
-              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj || [] : [], //退货附件
+              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
             }));
             this.tableData = detail;
           });

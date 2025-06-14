@@ -179,7 +179,7 @@ export default {
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);
-            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            const detail = data.materialSupplierOutDetailDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
               expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
@@ -205,7 +205,7 @@ export default {
 
     formFillInPage() {
       return new Promise((resolve) => {
-        formFillInPage("im").then((res) => {
+        formFillInPage("omDetail").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
 
           resolve(true);
