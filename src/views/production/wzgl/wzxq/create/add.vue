@@ -171,7 +171,7 @@ export default {
       this.$refs.vFormRef.setFormData({
         sectionName: this.sectionInfo.sectionName,
         title: dayjs().format('YYYY年MM月') + '甲供物资计划申请表',
-        deptName: this.userInfo?.instituteName
+        deptName: this.userInfo?.unitName
       })
     },
 

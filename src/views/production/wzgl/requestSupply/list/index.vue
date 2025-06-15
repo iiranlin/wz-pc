@@ -173,6 +173,12 @@ export default {
           return item.status != 0
         })
       }
+      // 未确认允许撤回
+      if(item.buttonCode === 'recall'){
+        return this.selection.some(item => {
+          return item.status != '2'
+        })
+      }
       return false;
     },
     onGoDetail (row) {
@@ -243,6 +249,9 @@ export default {
           break;
         case "backup":
           this.demandBack(rowArr[0].id)
+          break;
+        case 'recall':
+          this.handleRecall(rowArr[0].id)
           break;
       }
     },

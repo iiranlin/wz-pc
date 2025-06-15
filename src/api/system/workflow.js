@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { Loading } from 'element-ui'
 let VUE_APP_BASE_SERVER = process.env.VUE_APP_BASE_SERVER;
 let VUE_APP_WORK_FLOW_SERVER = process.env.VUE_APP_WORK_FLOW_SERVER;
 let VUE_APP_PRODMGR_SA = process.env.VUE_APP_PRODMGR_SA;
@@ -6,6 +7,16 @@ let VUE_APP_PRODMGR_MM = process.env.VUE_APP_PRODMGR_MM;
 let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
 let VUE_APP_PRODMGR_PU = process.env.VUE_APP_PRODMGR_PU;
 let VUE_APP_PRODMGR_FA = process.env.VUE_APP_PRODMGR_FA;
+
+let loadingInstance = null;
+
+function loading(){
+    loadingInstance = Loading.service({  spinner: "el-icon-loading", background: "rgba(0, 0, 0, 0.7)", })
+}
+
+function closeLoading(){
+  loadingInstance.close();
+}
 
 const businessType = (data) => {
     let type = '';
@@ -32,11 +43,12 @@ const businessType = (data) => {
  * @returns 
  */
 export const passWorkFlow = (data) => {
+    loading()
     return request({
         url: `${businessType(data)}/audit/approve`,
         method: 'post',
         data
-    })
+    }).finally(()=>closeLoading())
 }
 
 /**
@@ -58,11 +70,12 @@ export const passEditWorkFlow = (data) => {
  * @returns 
  */
 export const rejectWorkFlow = (data) => {
+    loading()
     return request({
         url: `${businessType(data)}/audit/reject`,
         method: 'post',
         data
-    })
+    }).finally(closeLoading())
 }
 
 /**
