@@ -223,7 +223,7 @@ export default {
       } else {
         this.$delete(this.selectedMap, row.id);
       }
-      this.sortData(); // 排序
+      // this.sortData(); // 排序
     },
 
     // 用户点击“全选”或“取消全选”
@@ -237,7 +237,7 @@ export default {
           this.$delete(this.selectedMap, id);
         }
       });
-      this.sortData(); // 排序
+      // this.sortData(); // 排序
     },
     setSelectedItemList(data) {
       this.$store.dispatch("request/setSelectedItemList", data);

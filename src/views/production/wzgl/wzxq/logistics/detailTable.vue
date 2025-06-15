@@ -9,7 +9,7 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <el-descriptions style="margin: 0 12px;" :column="3" size="small" border>
+    <el-descriptions style="margin: 0 12px" :column="3" size="small" border>
       <el-descriptions-item
         label="发货单号"
         label-class-name="my-label"
@@ -36,11 +36,7 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip
-          :content="detail.shippingAddress"
-          placement="bottom"
-          effect="light"
-        >
+        <el-tooltip :content="detail.shippingAddress" placement="bottom" effect="light">
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -60,11 +56,7 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip
-          :content="detail.field2"
-          placement="bottom"
-          effect="light"
-        >
+        <el-tooltip :content="detail.field2" placement="bottom" effect="light">
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -125,7 +117,7 @@
     <template v-if="detail.materialTrackMessageDTOS.length === 0">
       <wuliu :courierNumber="detail.oddNumbers" style="height: 500px" />
     </template>
-    <template v-else >
+    <template v-else>
       <!-- 没有订单号则展示普通表格 -->
       <wuliuTable :tableData="detail.materialTrackMessageDTOS" />
     </template>
@@ -136,11 +128,11 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
-import wuliu from '@/views/components/wuliu'
-import itemTable from './itemTable'
-import wuliuTable from './table.vue'
-import * as Api from '@/api/prodmgr-inv/project/scm.js'
+import dayjs from "dayjs";
+import wuliu from "@/views/components/wuliu";
+import itemTable from "./itemTable";
+import wuliuTable from "./table.vue";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 export default {
   // 需求详情表格数据
   props: {
@@ -151,61 +143,67 @@ export default {
   },
   filters: {
     // 日期格式化过滤器
-    formatDate (value, format = 'YYYY-MM-DD') {
-      if (!value) return '';
+    formatDate(value, format = "YYYY-MM-DD") {
+      if (!value) return "";
       return dayjs(value).format(format);
-    }
+    },
   },
   components: {
     wuliu,
     itemTable,
-    wuliuTable
+    wuliuTable,
   },
   computed: {
-    id () {
-      return this.$route.query.id
-    }
+    id() {
+      return this.$route.query.id;
+    },
+    batch() {
+      return this.$route.query.batch;
+    },
   },
-  data () {
+  data() {
     // 状态（1.未发货 2.货运中 3.已完成）
     const status = {
-      '1': '未发货',
-      '2': '货运中',
-      '3': '已完成'
-    }
+      1: "未发货",
+      2: "货运中",
+      3: "已完成",
+    };
     return {
       status,
-      courierNumber: '',
+      courierNumber: "",
       detail: {},
       tabList: [],
-      activeTab: ''
-    }
+      activeTab: "",
+    };
   },
-  created () {
-    this.getBatch()
+  created() {
+    //有batch批次号，直接用批次号获取详情，不再调取批次数组接口
+    if (this.batch) {
+      this.getLogistics(this.batch);
+    } else {
+      this.getBatch();
+    }
   },
   methods: {
-    async getLogistics (id) {
-      const res = await Api.getLogisticsDetail(id)
-      this.detail = res.data
+    async getLogistics(id) {
+      const res = await Api.getLogisticsDetail(id);
+      this.detail = res.data;
     },
-    async getBatch () {
-      const res = await Api.getBatch(this.id)
+    async getBatch() {
+      const res = await Api.getBatch(this.id);
       this.tabList = res.data.map((x, idx) => ({
         label: `发货批次${idx + 1}`,
-        name: x.shipmentBatchNumber
-      }))
+        name: x.shipmentBatchNumber,
+      }));
 
       if (this.tabList.length) {
-        this.activeTab = this.tabList[0].name
-        this.handleTabClick(this.tabList[0])
+        this.activeTab = this.tabList[0].name;
+        this.handleTabClick(this.tabList[0]);
       }
     },
-    handleTabClick (tab) {
-      this.getLogistics(tab.name)
-    }
-
-
+    handleTabClick(tab) {
+      this.getLogistics(tab.name);
+    },
   },
 };
 </script>

@@ -189,7 +189,7 @@ export default {
     //跳转需求供应详情
     toGyxq(row) {
       this.$router.push({
-        name: "requestSupplyDetail",
+        name: "requestDetail",
         query: {
           type: "view",
           id: row.planId,
