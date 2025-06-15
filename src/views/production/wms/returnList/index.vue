@@ -162,6 +162,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
+      const userInfo = getUserInfo();
       Api.listCrRetreat(Object.assign({deptId:userInfo.deptId}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;

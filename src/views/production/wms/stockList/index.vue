@@ -275,10 +275,10 @@ export default {
     //跳转需求详情
     toGyxq(row) {
       this.$router.push({
-        name: "requestSupplyDetail",
+        name: "requestDetail",
         query: {
           type: "view",
-          id: row.id,
+          id: row.planId,
         },
       });
     },
