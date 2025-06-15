@@ -13,13 +13,24 @@ export const listStore = (params) => {
   })
 }
 /**
- * 入库明细
+ * 入库明细（未入库、已退货、已入库、部分入库）
  * @param {*} params 
  * @returns 
  */
 export const detailStore = (id) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByStore/${id}`,
+    method: 'get',
+  })
+}
+/**
+ * 入库明细（审核中、已驳回）
+ * @param {*} params 
+ * @returns 
+ */
+export const detailStoreBack = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialStoreTableRest/detailByStore/${id}`,
     method: 'get',
   })
 }
@@ -31,6 +42,26 @@ export const detailStore = (id) => {
 export const saveStore = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/saveStore`,
+    method: 'post',
+    data
+  })
+}
+/**
+ * 入库审核
+ * @param {*} params
+ * @returns
+ */
+export const submitTodo = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialStoreTableRest/submit`,
+    method: 'post',
+    data
+  })
+}
+//撤回
+export const recall = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/audit/stop`,
     method: 'post',
     data
   })

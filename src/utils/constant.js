@@ -90,6 +90,7 @@ export const FLOW_ROUTE = {
     YLXQ: 'requestReviewDetail',//总部用料需求审核详情
     FBYLJH: 'planReviewDetail',//分部甲供计划审核详情
     YLJH:'planReviewDetail',//总部甲供计划审核详情
+    RK:'imDetail'
     
 }
 

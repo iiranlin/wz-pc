@@ -39,6 +39,7 @@
       @selectChange="selectChange"
       @emitAblFilter="emitAblFilter"
       @clickLink="clickLink"
+      :button-disable="buttonDisabled"
     />
     <pagination
       v-show="total > 0"
@@ -59,18 +60,18 @@
 </template>
 
 <script>
-import { auditList } from '@/api/system/workflow.js'
+import { auditList } from "@/api/system/workflow.js";
 import operate from "./components/operate";
-import review from './components/toBeReviewed'
-import indexMixin from '@/views/mixins';
-import workFlowView from '@/components/workFlowView'
-import { FLOW_ROUTE } from '@/utils/constant'
+import review from "./components/toBeReviewed";
+import indexMixin from "@/views/mixins";
+import workFlowView from "@/components/workFlowView";
+import { FLOW_ROUTE } from "@/utils/constant";
 export default {
   name: "audit",
-  dicts: ['flowBusinessType'],
+  dicts: ["flowBusinessType"],
   mixins: [indexMixin],
   components: { operate, review, workFlowView },
-  data () {
+  data() {
     return {
       formDataClick: {},
       // 遮罩层
@@ -97,100 +98,100 @@ export default {
         pageSize: 30,
       },
       formData: {
-        status: '2',
+        status: "2",
       },
       visible: false,
       metaId: this.$route.meta.id,
       selected: [],
       workFlowViewVisible: false,
-      selectedRow: null
+      selectedRow: null,
     };
   },
-  created () {
-    this.$store.dispatch('menuProperty', this.metaId).then((data) => {
-      this.listQuery.pageSize = data.defaultPageSize || 30
+  created() {
+    this.$store.dispatch("menuProperty", this.metaId).then((data) => {
+      this.listQuery.pageSize = data.defaultPageSize || 30;
       this.property = data;
     });
   },
   methods: {
-    numberChange (val) {
+    numberChange(val) {
       this.numberShow = val;
     },
-    newButton (buttonCode, formId, buttonData) {
-      this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData)
+    newButton(buttonCode, formId, buttonData) {
+      this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData);
     },
-    handleCheckAllChange (columns) {
+    handleCheckAllChange(columns) {
       this.$refs.tableIndex.init(columns);
     },
-    clickReset () {
+    clickReset() {
       this.handleQuery();
     },
-    clearSearch () {
+    clearSearch() {
       this.getList();
     },
-    handleQuery (row = {}) {
-      this.listQuery.pageNum = 1
-      this.formData = Object.assign({}, this.formData, row)
+    handleQuery(row = {}) {
+      this.listQuery.pageNum = 1;
+      this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
       this.getList();
     },
-    emitAblFilter (listQuery) {
+    emitAblFilter(listQuery) {
       // this.dateRange = [];
       // this.getList();
-      this.listQuery = Object.assign({}, this.listQuery, listQuery)
-      this.handleQuery()
-    },
-    menuSuccess () {
+      this.listQuery = Object.assign({}, this.listQuery, listQuery);
       this.handleQuery();
     },
-    handleSelectionChange (ids, single, multiple, selected) {
-      this.single = single
-      this.multiple = multiple
-      this.selected = selected
+    menuSuccess() {
+      this.handleQuery();
+    },
+    handleSelectionChange(ids, single, multiple, selected) {
+      this.single = single;
+      this.multiple = multiple;
+      this.selected = selected;
     },
     /** 查询菜单列表 */
-    getList () {
+    getList() {
       this.loading = true;
       auditList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list;
         this.total = data.total;
         this.loading = false;
-      })
+      });
     },
-    handleButton (buttonCode, idArr, rowArr, { buttonData }) {
-      this.proxyPrint(buttonCode, rowArr, buttonData)
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
+      this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
-        case 'create':
-          this.$refs.operate.init('create', this.formData.parentId);
+        case "create":
+          this.$refs.operate.init("create", this.formData.parentId);
           break;
-        case 'update':
-          this.$refs.operate.init('update', idArr[0]);
+        case "update":
+          this.$refs.operate.init("update", idArr[0]);
           break;
-        case 'delete':
+        case "delete":
           break;
-        case 'submit':
-          this.submitHandle()
+        case "submit":
+          this.submitHandle();
           break;
-        case 'flowSee':
-          this.workFlowViewVisible = true
-          this.selectedRow = rowArr[0]
+        case "flowSee":
+          this.workFlowViewVisible = true;
+          this.selectedRow = rowArr[0];
           break;
-        case 'pass':
-          this.$refs.toBereview.init('pass', rowArr)
+        case "pass":
+          this.$refs.toBereview.init("pass", rowArr);
           break;
-        case 'reject':
-          this.$refs.toBereview.init('reject', rowArr)
+        case "reject":
+          this.$refs.toBereview.init("reject", rowArr);
           break;
-        case 'passEdit':
+        case "passEdit":
           // 修改后同意直接跳转详情
-          this.$refs.toBereview.init('passEdit', rowArr )
+          this.$refs.toBereview.init("passEdit", rowArr);
           break;
         default:
           break;
       }
     },
     //选择框回调
-    selectChange (row) {
+    selectChange(row) {
       let { formData, isWatch } = row;
       if (!isWatch) {
         this.handleQuery(formData);
@@ -198,24 +199,24 @@ export default {
         this.formData = Object.assign({}, this.formData, formData);
       }
     },
-    submitHandle () {
+    submitHandle() {
       this.$modal
-        .confirm('确定提交所选的缺陷记录?')
+        .confirm("确定提交所选的缺陷记录?")
         .then(() => {
           this.$ajax
-            .post('submitDefectRecord', { ids: this.ids })
+            .post("submitDefectRecord", { ids: this.ids })
             .then((res) => {
-              let status = res.success ? 'success' : 'error'
-              this.$message[status](res.message)
+              let status = res.success ? "success" : "error";
+              this.$message[status](res.message);
               if (res.success) {
-                this.getList()
+                this.getList();
               }
             })
-            .catch(() => { })
+            .catch(() => {});
         })
-        .catch(() => { })
+        .catch(() => {});
     },
-    clickLink (row) {
+    clickLink(row) {
       const name = FLOW_ROUTE[row.businessType];
       const auditArr = [
         {
@@ -223,11 +224,25 @@ export default {
           businessType: row.businessType,
           businessCode: row.businessCode,
           taskId: row.taskId,
-          procInstId: row.procInstId
-        }
+          procInstId: row.procInstId,
+        },
       ];
-      this.$router.push({ name, query: { type: 'view', name: 'audit', id: row.businessId, auditArr: JSON.stringify(auditArr) } });
+      this.$router.push({
+        name,
+        query: {
+          type: "view",
+          name: "audit",
+          id: row.businessId,
+          auditArr: JSON.stringify(auditArr),
+        },
+      });
     },
-  }
+    //入库审核不能操作修改后同意
+    buttonDisabled(button, row) {
+      if (button.buttonCode == "passEdit" && row.businessType == "RK") {
+        return true;
+      }
+    },
+  },
 };
 </script>

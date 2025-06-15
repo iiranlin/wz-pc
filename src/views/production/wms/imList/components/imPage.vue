@@ -200,7 +200,13 @@
               </template>
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-            <el-table-column prop="storeTotal" label="入库数量" width="150" fixed="right" align="center">
+            <el-table-column
+              prop="storeTotal"
+              label="入库数量"
+              width="150"
+              fixed="right"
+              align="center"
+            >
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.storeTotal"
@@ -305,7 +311,7 @@ export default {
           type: "create, update",
         },
         {
-          buttonName: "确定",
+          buttonName: "提交入库资料",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
@@ -329,6 +335,9 @@ export default {
     supplyId() {
       return this.$route.query?.supplyId || "";
     },
+    storeStatus() {
+      return this.$route.query?.storeStatus || "";
+    },
   },
   async created() {},
   mounted() {
@@ -348,8 +357,13 @@ export default {
     //初始化
     init(id) {
       this.loading = true;
+      //不同的状态调用不同的明细接口
+      var name =
+        this.storeStatus == "5" || this.storeStatus == "6"
+          ? "detailStoreBack"
+          : "detailStore";
       this.$nextTick(async () => {
-        await Api.detailStore(id).then(({ data }) => {
+        await Api[name](id).then(({ data }) => {
           this.loading = false;
           this.$nextTick(async () => {
             await this.formFillInPage();
@@ -431,59 +445,93 @@ export default {
         if (!isValid) {
           return;
         }
-
+        const formData = await this.$refs.vFormRef.getFormData();
+        //组装附件
+        var fileByList = formData.fileByList ? JSON.parse(formData.fileByList) : {};
+        //检测报告
+        if (formData.fileList01.length > 0) {
+          this.$set(fileByList, "jcbg", formData.fileList01);
+        }
+        //质量证明文件
+        if (formData.fileList02.length > 0) {
+          this.$set(fileByList, "zlzm", formData.fileList02);
+        }
+        //报验结果
+        if (formData.fileList03.length > 0) {
+          this.$set(fileByList, "byjg", formData.fileList03);
+        }
+        formData.fileByList = JSON.stringify(fileByList);
+        for (var i in this.tableData) {
+          var fileByList = this.tableData[i].fileByList
+            ? JSON.parse(this.tableData[i].fileByList)
+            : {};
+          //退货附件
+          if (this.tableData[i].fileList03.length > 0) {
+            this.$set(fileByList, "thfj_im", this.tableData[i].fileList03);
+          }
+          this.tableData[i].fileByList = JSON.stringify(fileByList);
+        }
         if (valid) {
-          this.loading = true;
-          const formData = await this.$refs.vFormRef.getFormData();
-          //组装附件
-          var fileByList = formData.fileByList ? JSON.parse(formData.fileByList) : {};
-          //检测报告
-          if (formData.fileList01.length > 0) {
-            this.$set(fileByList, "jcbg", formData.fileList01);
-          }
-          //质量证明文件
-          if (formData.fileList02.length > 0) {
-            this.$set(fileByList, "zlzm", formData.fileList02);
-          }
-          //报验结果
-          if (formData.fileList03.length > 0) {
-            this.$set(fileByList, "byjg", formData.fileList03);
-          }
-          formData.fileByList = JSON.stringify(fileByList);
-          for (var i in this.tableData) {
-            var fileByList = this.tableData[i].fileByList
-              ? JSON.parse(this.tableData[i].fileByList)
-              : {};
-            //退货附件
-            if (this.tableData[i].fileList03.length > 0) {
-              this.$set(fileByList, "thfj_im", this.tableData[i].fileList03);
-            }
-            this.tableData[i].fileByList = JSON.stringify(fileByList);
-          }
-          await Api.saveStore(
-            Object.assign(
-              {
-                supplyId: this.supplyId,
-                id: this.id,
+          this.$modal.confirm("是否确认提交审核?").then(() => {
+            this.$reviewerDialog({
+              type: "RK",
+              multiple: false,
+              success: async (assignee) => {
+                this.loading = true;
+                await Api.submitTodo(
+                  Object.assign(
+                    {
+                      supplyId: this.supplyId,
+                      id: this.id,
+                      planType: "RK",
+                      assignee,
+                    },
+                    formData,
+                    {
+                      materialCirculationDetailsTableParamList: this.tableData.map(
+                        (x) => ({
+                          ...x,
+                        })
+                      ),
+                    }
+                  )
+                )
+                  .then(({ message }) => {
+                    this.$modal.msgSuccess("提交审核成功");
+                    this.cancel();
+                  })
+                  .finally((err) => {
+                    this.loading = false;
+                  });
               },
-              formData,
-              {
-                materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
-                  ...x,
-                })),
-              }
-            )
-          )
-            .then(({ message }) => {
-              this.loading = false;
-              this.$modal.msgSuccess(message);
-
-              this.cancel();
-            })
-            .finally((err) => {
-              formData.fileList = fileList;
-              this.loading = false;
             });
+          });
+          // this.loading = true;
+
+          // await Api.saveStore(
+          //   Object.assign(
+          //     {
+          //       supplyId: this.supplyId,
+          //       id: this.id,
+          //     },
+          //     formData,
+          //     {
+          //       materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
+          //         ...x,
+          //       })),
+          //     }
+          //   )
+          // )
+          //   .then(({ message }) => {
+          //     this.loading = false;
+          //     this.$modal.msgSuccess(message);
+
+          //     this.cancel();
+          //   })
+          //   .finally((err) => {
+          //     formData.fileList = fileList;
+          //     this.loading = false;
+          //   });
         }
       });
     },

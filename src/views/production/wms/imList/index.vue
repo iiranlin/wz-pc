@@ -5,6 +5,7 @@
       :multiple="multiple"
       :single="single"
       @newButton="newButton"
+      :buttonDisable="buttonDisabledTop"
     ></button-top>
     <form-data
       ref="formData"
@@ -61,6 +62,7 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
           :row-class-name="tableRowClassName"
+          :button-disable="buttonDisabled"
         >
           <template #storeStatus="scope">
             {{ storeStatus[scope.value] }}
@@ -87,16 +89,22 @@
         />
       </el-col>
     </el-row>
+    <workFlowView
+      :bill-data="selectedRow"
+      :work-flow-view-visible.sync="workFlowViewVisible"
+    />
   </div>
 </template>
 
 <script>
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
+import workFlowView from "@/components/workFlowView";
+
 export default {
   // 建设项目
   name: "imList",
-  components: {},
+  components: {workFlowView},
   mixins: [indexMixin],
 
   data() {
@@ -105,6 +113,9 @@ export default {
         1: "未入库",
         2: "部分退货",
         3: "已入库",
+        4: "已退货",
+        5: "审核中",
+        6: "已驳回",
       },
       options: [
         {
@@ -118,6 +129,18 @@ export default {
         {
           code: "3",
           name: "已入库",
+        },
+        {
+          code: "4",
+          name: "已退货",
+        },
+        {
+          code: "5",
+          name: "审核中",
+        },
+        {
+          code: "6",
+          name: "已驳回",
         },
       ],
       treeCurrentKey: "",
@@ -152,6 +175,8 @@ export default {
       total: 0,
       selection: [],
       hasOwn: true,
+      workFlowViewVisible: false,
+      selectedRow: null,
     };
   },
   async created() {
@@ -186,11 +211,6 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
-      if (type === "queryForm") {
-        this.treeCurrentKey = "";
-        this.formData.parentId = "";
-        this.$refs.tree.setCurrentKey(null);
-      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -218,18 +238,39 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "ruku":
-          if (rowArr[0].storeStatus != "1") {
-            this.$modal.msgError("未入库状态才能入库");
-            return;
-          }
           this.$router.push({
             name: "imPage",
-            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create" },
+            query: {
+              id: idArr[0],
+              supplyId: rowArr[0].planId,
+              type: "create",
+              storeStatus: rowArr[0].storeStatus,
+            },
           });
+          //撤回
+          break;
+        case "withdraw":
+          this.handleRecall(idArr[0]);
+          //流程查看
+          break;
+        case "process":
+          this.workFlowViewVisible = true;
+          this.selectedRow = { businessId: idArr[0] };
           break;
       }
     },
-
+    // 撤回
+    handleRecall(id) {
+      this.$modal
+        .confirm("是否确认撤回?")
+        .then(function () {
+          return Api.recall({ businessId:id,businessType:'RK' });
+        })
+        .then(() => {
+          this.$modal.msgSuccess("撤回成功");
+          this.getList();
+        });
+    },
     clickReset() {
       this.handleQuery();
     },
@@ -246,7 +287,7 @@ export default {
     toIm(row) {
       this.$router.push({
         name: "imPage",
-        query: { id: row.id, type: "view" },
+        query: { id: row.id, type: "view",storeStatus: row.storeStatus },
       });
     },
     //收货单
@@ -265,6 +306,27 @@ export default {
         return "highlight-row-red";
       }
       return "";
+    },
+    //上方按钮控制
+    buttonDisabledTop(button) {
+      //入库审核按钮控制  （未入库和已驳回才能点击）
+      if (button.buttonCode == "ruku") {
+        return (
+          this.selection[0].storeStatus != "1" && this.selection[0].storeStatus != "6"
+        );
+      }
+      //撤回按钮控制（审核中才能撤回）
+      if (button.buttonCode == "withdraw") {
+        return (
+         this.selection[0].storeStatus != "5"
+        );
+      }
+    },
+    //查看流程按钮控制
+    buttonDisabled(button, row) {
+      if (button.buttonCode == "process" && row.storeStatus == "1") {
+        return true;
+      }
     },
   },
 };

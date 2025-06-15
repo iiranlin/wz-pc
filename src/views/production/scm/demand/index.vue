@@ -199,11 +199,6 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
-      if (type === "queryForm") {
-        this.treeCurrentKey = "";
-        this.formData.parentId = "";
-        this.$refs.tree.setCurrentKey(null);
-      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -273,7 +268,7 @@ export default {
             return;
           }
           this.$router.push({
-            name: "logisticsView",
+            name: "logisticsView_scm",
             query: { id: idArr[0], type: "view" },
           });
           break;
