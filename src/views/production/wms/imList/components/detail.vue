@@ -200,6 +200,7 @@ export default {
   components: {
     VFormRender,
     fileUpload,
+    toBeReviewed
   },
   data() {
     const userInfo = getUserInfo();
@@ -231,12 +232,12 @@ export default {
           type: "create, update",
         },
         { buttonName: "同意", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
-        {
-          buttonName: "修改后同意",
-          buttonCode: "passEdit",
-          buttonIcon: "Blue-Edit",
-          type: "",
-        },
+        // {
+        //   buttonName: "修改后同意",
+        //   buttonCode: "passEdit",
+        //   buttonIcon: "Blue-Edit",
+        //   type: "",
+        // },
         {
           buttonName: "不同意",
           buttonCode: "reject",
@@ -278,23 +279,23 @@ export default {
     init(id) {
       this.loading = true;
       this.$nextTick(async () => {
-        await Api.detailStore(id).then(({ data }) => {
+        await Api.detailStoreBack(id).then(({ data }) => {
           this.loading = false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             // fileList回显
             const newData = {
               ...data,
-              fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //自检单
-              fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //其他资料
-              fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //发货单
+              fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
+              fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //证明文件
+              fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);
-            const detail = data.materialSupplierDetailDTOList.map((x) => ({
+            const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: dayjs(x.expirationDate).format("YYYY-MM-DD"),
+              expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
@@ -316,7 +317,6 @@ export default {
           "passEdit",
           this.queryAuditArr,
           this.name,
-          this.selectRows.map((x) => x.planId)
         );
       }
     },
@@ -325,20 +325,12 @@ export default {
     },
 
     buttonShow(item) {
-      if (item.buttonCode === "save") {
-        return this.type !== "view";
-      }
       return true;
     },
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("imDetail").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
-
-          this.$refs["vFormRef"].setFormData({
-            buyer: this.buyer,
-          });
-
           resolve(true);
         });
       });

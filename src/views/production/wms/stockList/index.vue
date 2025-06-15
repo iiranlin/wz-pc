@@ -83,7 +83,7 @@
           @handleButton="handleButton"
         >
           <template #status="scope">
-            {{ scope.value=='6'?'已完成':'未完成' }}
+            {{ scope.value == "6" ? "已完成" : "未完成" }}
           </template>
           <template #relatedCount="scope">
             {{ scope.value }}
@@ -204,11 +204,6 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
-      if (type === "queryForm") {
-        this.treeCurrentKey = "";
-        this.formData.parentId = "";
-        this.$refs.tree.setCurrentKey(null);
-      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -275,17 +270,17 @@ export default {
     //跳转需求详情
     toGyxq(row) {
       this.$router.push({
-        name: "requestDetail",
+        name: "stockDetail",
         query: {
           type: "view",
-          id: row.planId,
+          id: row.id,
         },
       });
     },
-     //上方按钮控制
+    //上方按钮控制
     buttonDisabledTop(button) {
       //状态为已完成，不能操作出库
-      return this.selection[0].status == '6';
+      return this.selection[0].status == "6";
     },
   },
 };

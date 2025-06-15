@@ -143,11 +143,6 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
-      if (type === "queryForm") {
-        this.treeCurrentKey = "";
-        this.formData.parentId = "";
-        this.$refs.tree.setCurrentKey(null);
-      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -189,7 +184,7 @@ export default {
     //跳转需求供应详情
     toGyxq(row) {
       this.$router.push({
-        name: "requestDetail",
+        name: "requestDetail_wms",
         query: {
           type: "view",
           id: row.planId,
