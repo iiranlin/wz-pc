@@ -92,7 +92,7 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="field1"
+              prop="field2"
               label="收货地址"
               width="200"
               align="center"
@@ -238,13 +238,14 @@ export default {
           // fileList回显
           const newData = {
             ...data,
+            backDate: data.backDate?dayjs(data.backDate).format("YYYY-MM-DD"):'',
             fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
             fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
           };
           this.$refs.vFormRef.setFormData(newData);
           //   form action
           this.$refs.vFormRef.setReadMode(true);
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+          const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',

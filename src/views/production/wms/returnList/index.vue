@@ -75,6 +75,7 @@
 <script>
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
+import { getUserInfo } from "@/utils/user-info";
 export default {
   // 建设项目
   name: "returnList_im",

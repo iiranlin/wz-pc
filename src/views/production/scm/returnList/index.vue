@@ -77,7 +77,7 @@
             </el-button>
           </template>
           <!-- 供应需求ID -->
-          <template #supplyNumber="scope">
+          <template #planNumber="scope">
             <el-button type="text" @click="toGyxq(scope.data)">
               {{ scope.value }}
             </el-button>

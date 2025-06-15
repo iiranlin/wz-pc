@@ -73,14 +73,14 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="deptName" label="施工单位名称" width="200">
+            <el-table-column prop="deptName" label="施工单位名称" min-width="200">
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" width="200">
+            <el-table-column prop="materialName" label="物资名称" min-width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
               label="规格型号"
-              width="150"
+              width="200"
               align="center"
             ></el-table-column>
 
@@ -126,6 +126,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import dayjs from "dayjs";
 export default {
   name: "returnDetail_gys",
   components: {
@@ -194,6 +195,7 @@ export default {
           await this.formFillInPage();
           const newData = {
             ...data,
+            backDate: data.backDate?dayjs(data.backDate).format("YYYY-MM-DD"):'',
             fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
             fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
             fileList03: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
@@ -203,7 +205,7 @@ export default {
           this.$refs.vFormRef.setFormData(newData);
           //   form action
           this.$refs.vFormRef.setReadMode(true);
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+          const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
             ...x,
             fileList: x.fileByList ? JSON.parse(x.fileByList)[this.backNode=='1'?'thfj_sh':'thfj_im'] || [] : [], //退货附件(thfj_sh收货退货的附件、thfj_im入库退货的附件)
           }));
