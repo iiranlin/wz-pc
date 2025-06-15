@@ -76,6 +76,9 @@
               {{ scoped.data.contractList.length }}
             </el-button>
           </template>
+          <template #materialUsedRatio="scoped">
+            {{scoped.data.materialUsedRatio || 0}}%
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"

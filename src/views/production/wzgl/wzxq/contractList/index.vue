@@ -52,6 +52,9 @@
               :icon-class="iconEnableStautsClass({ 0: 3, 1: 0 }[scope.value])"
             />{{ scope.value | fieldFormat(scope.fieldFormatArr) }}
           </template>
+          <template #materialUsedRatio="scoped">
+            {{ scoped.data.materialUsedRatio || 0 }}%
+          </template>
         </table-index>
         <pagination
           v-show="total > 0"
@@ -204,7 +207,7 @@ export default {
           name: 'requestView',
           query: {
             type: 'create',
-            id:idArr[0]
+            id: idArr[0]
           }
         })
       }

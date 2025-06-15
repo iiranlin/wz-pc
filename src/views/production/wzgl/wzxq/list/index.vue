@@ -13,7 +13,19 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       :formData="formData"
-    />
+    >
+     <!-- 日期范围搜索 -->
+      <template #date>
+        <el-date-picker
+          v-model="formData.dateRange"
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </template>
+    </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
@@ -91,6 +103,7 @@ export default {
       '7': '收货完成',
       '8': '已入库',
       '9': '已完成',
+      '10':'已退回'
     }
     return {
       planStatus: planStatus,
@@ -158,19 +171,19 @@ export default {
       // 未提交、已驳回、已撤回才可以删除
       if (item.buttonCode === 'delete') {
         return this.selection.some(item => {
-          return !['0', '1', '5'].includes(item.planStatus)
+          return !['0', '1', '5','10'].includes(item.planStatus)
         })
       }
       // 未提交、修改后同意、已驳回、已撤回允许修改
       if (item.buttonCode === 'update') {
         return this.selection.some(item => {
-          return !['0', '1', '4', '5'].includes(item.planStatus)
+          return !['0', '1', '4', '5','10'].includes(item.planStatus)
         })
       }
       // 未提交、修改后同意、已驳回、已撤回、允许提交审核
       if (item.buttonCode === 'examine') {
         return this.selection.some(item => {
-          return !['0', '1', '4', '5'].includes(item.planStatus)
+          return !['0', '1', '4', '5','10'].includes(item.planStatus)
         })
       }
       // 已提交、允许撤回
@@ -216,10 +229,9 @@ export default {
       this.handleQuery();
     },
     handleQuery (row = {}, type = '') {
-      if (type === 'queryForm') {
-        this.treeCurrentKey = '';
-        this.formData.parentId = '';
-        this.$refs.tree.setCurrentKey(null);
+      if(this.formData.dateRange && this.formData.dateRange.length > 0){
+        this.formData.starDate = this.formData.dateRange[0]
+        this.formData.endDate = this.formData.dateRange[1]
       }
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
