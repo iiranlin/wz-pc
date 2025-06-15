@@ -15,7 +15,6 @@
       <el-table-column
         type="index"
         label="序号"
-        :index="indexMethod"
         width="120px"
         align="center"
       >
@@ -44,9 +43,6 @@ export default {
         open (data) {
             this.tableData = data;
             this.visible = true;
-        },
-        indexMethod (index) {
-            return '标段' + (index + 1);
         },
         //取消
         handleCancel () {

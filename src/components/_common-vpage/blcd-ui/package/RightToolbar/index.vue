@@ -5,10 +5,10 @@
         </div>
         <div class="container-tools">
             <div class="title-left">
-                <div class="title-left-a" v-if="!isEmpty()">
+                <div class="title-left-a" v-if="!isEmpty() && false">
                     <span class="search-item" style="background: none;max-width: 56px;padding: 6px 0px;">搜索条件：</span>
                 </div>
-                <div class="title-left-b" v-if="searchArr && searchArr.length > 0">
+                <div class="title-left-b" v-if="searchArr && searchArr.length > 0 && false">
                     <template v-for="item in searchArr">
                         <span v-if="item.fieldType && item.fieldType.indexOf('date') != -1" :key="item.fieldCode"
                             class="search-item-warp">

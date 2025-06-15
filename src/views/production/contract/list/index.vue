@@ -13,7 +13,28 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       :formData="formData"
-    />
+    >
+      <template #contractStatus>
+        <el-select
+          v-model="formData.contractStatus"
+          filterable
+          required
+          style="width: 100%"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in [
+              { label: '启用', value: '2' },
+              { label: '未启用', value: '1'}
+            ]"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </template>
+    </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
@@ -148,7 +169,7 @@ export default {
         return this.selection[0].contractStatus == 2
       }
       // 变更 - 非启用不能变更
-      if(btn.buttonCode === 'change'){
+      if (btn.buttonCode === 'change') {
         return this.selection[0].contractStatus == 1
       }
       return false
@@ -178,11 +199,7 @@ export default {
       this.handleQuery();
     },
     handleQuery (row = {}, type = '') {
-      if (type === 'queryForm') {
-        this.treeCurrentKey = '';
-        this.formData.parentId = '';
-        this.$refs.tree.setCurrentKey(null);
-      }
+   
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -233,7 +250,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(Api.editStatus({ id:row.id, contractStatus: 2 }))
+      }).then(Api.editStatus({ id: row.id, contractStatus: 2 }))
         .then(() => {
           this.getList();
           this.$modal.msgSuccess("启用成功");

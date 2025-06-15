@@ -233,3 +233,11 @@ export const getBatch = (id) => {
     method: 'get',
   })
 }
+
+// 获取供应商发货批次
+export const getBatchList = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialcirculationTableRest/detailWlgz/${id}`,
+    method: 'get',
+  })
+}

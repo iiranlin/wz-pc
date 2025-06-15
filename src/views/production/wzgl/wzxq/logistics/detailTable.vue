@@ -190,7 +190,7 @@ export default {
       this.detail = res.data
     },
     async getBatch () {
-      const res = await Api.getBatch(this.id)
+      const res = await Api.getBatchList(this.id)
       this.tabList = res.data.map((x, idx) => ({
         label: `发货批次${idx + 1}`,
         name: x.shipmentBatchNumber

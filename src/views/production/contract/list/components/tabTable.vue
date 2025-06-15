@@ -32,7 +32,7 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <div style="height: 450px;">
+    <div style="max-height: 450px;">
       <virtual-scroll
         :dynamic="false"
         v-show="show"
@@ -46,7 +46,7 @@
           :data="virtualList"
           border
           style="width: 100%"
-          height="450"
+          max-height="450"
           v-loading="loading"
           @selection-change="handleSelectionChange"
           ref="dataTable"
@@ -355,7 +355,7 @@
       </el-row>
     </div>
 
-    <BatchDialog ref="batchDialogRef" @onOk="onDialogOk" />
+    <BatchDialog ref="batchDialogRef"  />
   </div>
 </template>
 
@@ -466,10 +466,15 @@ export default {
   created () {
     // this.getItemsOptions()
     this.getSectionOptions()
+
+  },
+  mounted(){
+    this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
+
   },
   methods: {
     onDialogOk (data) {
-      console.log(this.sectionName,'sellerName')
+      console.log('props sellerName',this.sellerName)
       // 将批量上传的文件，导入到总的数据中
       const newData = data.map(item => ({
         ...item,

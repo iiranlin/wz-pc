@@ -107,7 +107,7 @@
             ref="tabTableRef"
             :tableData="tableData"
             @data-change="onDataChange"
-            :sellerName="$refs.vFormRef.getFieldValue('seller')"
+            :sellerName="currentSellerName"
           />
         </template>
 
@@ -171,7 +171,8 @@ export default {
       constructionOptions: [],
       gysOptions: [],
       tableData: [],
-      detailData: []
+      detailData: [],
+      sellerName: '' // 添加sellerName数据属性
     }
   },
   computed: {
@@ -184,6 +185,9 @@ export default {
     projectId () {
       return this.$route.query?.projectId || ''
     },
+    currentSellerName () {
+      return this.sellerName || this.$refs.vFormRef?.getFieldValue('seller') || ''
+    }
   },
   async created () {
     this.getLineOptions()
@@ -380,6 +384,8 @@ export default {
       if (key === 'seller') {
         const selectedSeller = options.find(item => item.value === val)
         if (selectedSeller) {
+          // 更新sellerName数据属性
+          this.sellerName = selectedSeller.label
           // 更新tableData中所有行的卖方信息
           this.tableData.forEach(row => {
             row.sellerName = selectedSeller.label

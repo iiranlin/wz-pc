@@ -71,7 +71,7 @@
     </el-alert>
 
     <div slot="footer" class="dialog-footer">
-      <el-button round type="primary" @click="onOk">确认</el-button>
+      <el-button round type="primary" @click="onConfirm">确认</el-button>
       <el-button round @click="visible = false">关闭</el-button>
     </div>
   </Dialog>
@@ -111,7 +111,7 @@ export default {
     handleCancel () {
       this.visible = false;
     },
-    onOk () {
+    onConfirm () {
       if (!this.fileList[0]?.list?.length) {
         this.$message.warning('请先上传文件')
         return
