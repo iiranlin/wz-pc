@@ -50,8 +50,12 @@
             :data="tableData"
             border
             style="width: 100%"
-            :max-height="600"
+            :max-height="400"
             ref="dataTable"
+            :lazy="true"
+            :load="load"
+            row-key="id"
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
           >
             <el-table-column
               type="index"
@@ -60,9 +64,14 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="sellerName" label="供应商" width="200">
+            <el-table-column prop="sellerName" label="供应商" width="250" fixed>
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" width="200">
+            <el-table-column
+              prop="materialName"
+              label="物资名称"
+              width="200"
+              fixed
+            >
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -81,11 +90,23 @@
               label="需求数量"
               width="120"
               align="center"
-            ></el-table-column>
+            >
+              <template slot-scope="scope">
+                <span v-if="isParentRow(scope.row)">
+                  {{ scope.row.planAmount || '' }}
+                </span>
+              </template>
+            </el-table-column>
             <el-table-column
-              prop="storeTotal"
+              prop="stockStatus"
               label="当前库存数量"
               width="120"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="storeNumber"
+              label="入库单号"
+              width="150"
               align="center"
             ></el-table-column>
             <el-table-column
@@ -100,28 +121,39 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="outTotle" label="出库数量" width="150" align="center" fixed="right">
+            <el-table-column
+              prop="outTotal"
+              label="出库数量"
+              width="150"
+              align="center"
+              fixed="right"
+            >
               <template slot-scope="scope">
                 <el-input-number
-                  v-model="scope.row.outTotle"
+                  v-model="scope.row.outTotal"
                   :min="0"
-                  :max="scope.row.storeTotal||0"
+                  :max="+scope.row.storeTotal || 0"
                   size="mini"
                   style="width: 100%"
-                  v-if="type != 'view' && !preview"
+                  v-if="type != 'view' && !preview && !isParentRow(scope.row)"
                 ></el-input-number>
                 <span v-else>
-                  {{ scope.row.outTotle }}
+                  {{ scope.row.outTotal || '' }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200" fixed="right">
+            <el-table-column
+              prop="remark"
+              label="备注"
+              width="200"
+              fixed="right"
+            >
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.remark"
                   size="mini"
                   style="width: 100%"
-                  v-if="type != 'view' && !preview"
+                  v-if="type != 'view' && !preview && !isParentRow(scope.row)"
                 ></el-input>
                 <span v-else>
                   {{ scope.row.remark }}
@@ -138,6 +170,7 @@
 <script>
 import Vue from "vue";
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
+import * as Lzmx from "@/api/prodmgr-inv/project/lzmx.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
@@ -150,7 +183,7 @@ export default {
     VFormRender,
     fileUpload,
   },
-  data() {
+  data () {
     const userInfo = getUserInfo();
     return {
       maxManualIndex: 1,
@@ -196,37 +229,53 @@ export default {
     };
   },
   computed: {
-    type() {
+    type () {
       return this.$route.query.type;
     },
-    id() {
+    id () {
       return this.$route.query?.id || "";
     },
   },
   watch: {
     preview: {
-      handler(newVal) {
+      handler (newVal) {
         if (newVal) {
-          this.buttonTop[1].buttonName = "确定";
+          // 预览模式
+          this.buttonTop[1].buttonName = "确定出库";
           this.$refs.vFormRef.setReadMode(true);
+
+          // 隐藏折叠按钮
+          this.tableData = this.tableData.map(x => {
+            x.hasChildren = x.children.length > 0
+            return x
+          })
+
         } else {
+          // 填写模式
           this.buttonTop[1].buttonName = "预览";
           this.$refs.vFormRef.setReadMode(false);
+
+          //恢复折叠按钮
+          this.tableData = this.tableData.map(x => {
+            x.hasChildren = +x.stockStatus > 0
+            return x
+          })
+
         }
       },
     },
   },
-  async created() {},
-  mounted() {
+  async created () { },
+  mounted () {
     this.init(this.id);
   },
   methods: {
     //初始化
-    init(id) {
-      this.loading=true;
+    init (id) {
+      this.loading = true;
       this.$nextTick(async () => {
         await Api.detailOut(id).then(({ data }) => {
-          this.loading=false;
+          this.loading = false;
           this.$nextTick(async () => {
             await this.formFillInPage();
             this.$refs.vFormRef.setFormData({
@@ -236,16 +285,19 @@ export default {
             });
             const detail = data.details.map((x) => ({
               ...x,
-              manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
-              outTotle: x.storeTotal, //默认出库数量=库存数量
+              hasChildren: +x.stockStatus > 0,
+              children: [],
+              expirationDate: x.expirationDate ? dayjs(x.expirationDate).format("YYYY-MM-DD") : '',
+              outTotal: x.storeTotal, //默认出库数量=库存数量
+              // 父级不展示字段
+              manufactureDate: '',
             }));
-            this.tableData = detail;
+            this.tableData = detail
           });
         });
       });
     },
-    newButton(buttonCode) {
+    newButton (buttonCode) {
       if (buttonCode === "cancel") {
         this.cancel();
         return;
@@ -255,7 +307,7 @@ export default {
         return;
       }
     },
-    cancel() {
+    cancel () {
       if (this.preview) {
         this.preview = false;
       } else {
@@ -263,14 +315,14 @@ export default {
       }
     },
 
-    buttonShow(item) {
+    buttonShow (item) {
       if (item.buttonCode === "save") {
         return this.type !== "view";
       }
       return true;
     },
     //新建
-    async handleCreate() {
+    async handleCreate () {
       console.log(this.preview, "=====this.preview====");
       if (!this.preview) {
         //进行预览
@@ -279,8 +331,11 @@ export default {
             this.$message.warning("请完善信息");
             return;
           }
-          const flag = this.tableData.every(item => !item.outTotle);
-           if (flag) {
+
+          const childrenList = this.getChildrenList(this.tableData)
+
+          // 如果出库数量没有或者为0 则提示
+          if (childrenList.length === 0) {
             this.$message.error("未选择出库物资！");
             return;
           }
@@ -296,7 +351,7 @@ export default {
         }
 
         formData.fileByList = JSON.stringify(fileByList);
-        this.loading=true;
+        this.loading = true;
         Api.outSave(
           Object.assign(
             {
@@ -304,9 +359,7 @@ export default {
             },
             formData,
             {
-              materialSupplierOutDetailParams: this.tableData.map((x) => ({
-                ...x,
-              })),
+              materialSupplierOutDetailParams: this.getChildrenList(this.tableData)
             }
           )
         )
@@ -320,7 +373,7 @@ export default {
           });
       }
     },
-    formFillInPage() {
+    formFillInPage () {
       return new Promise((resolve) => {
         formFillInPage("om").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
@@ -328,6 +381,34 @@ export default {
         });
       });
     },
+    getChildrenList (arr) {
+      return arr.reduce((acc, item) => {
+        // 如果有 children
+        if (Array.isArray(item.children)) {
+          // 遍历 children，筛选出 outTotal > 0 的子项
+          const validChildren = item.children.filter(child => Number(child.outTotal) > 0)
+          acc.push(...validChildren)
+        }
+        return acc
+      }, [])
+    },
+    async load (tree, treeNode, resolve) {
+      const res = await Lzmx.detail(tree.id)
+      const data = res.data.map(x => ({
+        ...x,
+        isChildren: true,
+        manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
+        expirationDate: x.expirationDate ? dayjs(x.expirationDate).format("YYYY-MM-DD") : '',
+        outTotal: +x.storeTotal, //默认出库数量=库存数量
+        stockStatus: x.storeTotal,
+      }))
+      tree.children = data
+      resolve(data)
+    },
+    isParentRow (row) {
+      return !row.isChildren
+    }
+
   },
 };
 </script>
