@@ -370,6 +370,7 @@ export default {
             this.$refs.vFormRef.setReadMode(true);
             const newData = {
               ...data,
+              storeDate: data.storeDate?dayjs(data.storeDate).format("YYYY-MM-DD"):'',
               fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
               fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //证明文件
               fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果

@@ -84,7 +84,7 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="outTotle"
+              prop="outTotal"
               label="本次出库数量"
               width="120"
               align="center"

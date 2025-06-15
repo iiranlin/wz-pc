@@ -90,6 +90,7 @@
             style="width: 100%"
             value-format="yyyy-MM-dd"
             v-if="type != 'view'"
+            :picker-options="pickerOptions"
           ></el-date-picker>
           <span v-else>
             {{ scope.row.manufactureDate }}
@@ -122,12 +123,7 @@
         width="200"
         align="center"
       ></el-table-column>
-      <el-table-column
-        prop="field2"
-        label="收货地址"
-        width="160"
-        align="center"
-      >
+      <el-table-column prop="field2" label="收货地址" width="160" align="center">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.field2"
@@ -247,6 +243,14 @@ export default {
   data() {
     return {
       loading: false,
+      pickerOptions: {
+        disabledDate: (time) => {
+          let now = new Date();
+          now.setHours(0, 0, 0, 0);
+          let timestamp = now.getTime();
+          return time.getTime() > timestamp;
+        },
+      },
     };
   },
 
