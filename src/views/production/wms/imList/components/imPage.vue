@@ -222,7 +222,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="refundTotal"
+              prop="refundZjTotal"
               label="退货数量"
               width="150"
               fixed="right"
@@ -230,7 +230,7 @@
             >
               <template slot-scope="scope">
                 <el-input-number
-                  v-model="scope.row.refundTotal"
+                  v-model="scope.row.refundZjTotal"
                   :min="0"
                   @change="changeRefund(scope.row)"
                   size="mini"
@@ -238,7 +238,7 @@
                   v-if="type != 'view' && show"
                 ></el-input-number>
                 <span v-else>
-                  {{ scope.row.refundTotal }}
+                  {{ scope.row.refundZjTotal }}
                 </span>
               </template>
             </el-table-column>
@@ -418,7 +418,7 @@ export default {
       console.log(tableData, "=============tableData");
       tableData.forEach((row, index) => {
         const rowNum = index + 1;
-        if (Number(row.refundTotal) > 0 && row.fileList03.length == 0) {
+        if (Number(row.refundZjTotal) > 0 && row.fileList03.length == 0) {
           errors.push(`第${rowNum}行，有退货数量，请上传退货附件 `);
         }
       });
@@ -556,7 +556,7 @@ export default {
         this.$modal.msgError("入库数量不能大于收货数量！");
         row.storeTotal = row.putTotal;
       } else {
-        row.refundTotal = Number(row.putTotal) - Number(row.storeTotal);
+        row.refundZjTotal = Number(row.putTotal) - Number(row.storeTotal);
       }
       this.show = false;
       this.$nextTick(() => {
@@ -566,11 +566,11 @@ export default {
     //填写退货数量
     changeRefund(row) {
       //退货不能超过收货，最终算出入库
-      if (Number(row.refundTotal) > Number(row.putTotal)) {
+      if (Number(row.refundZjTotal) > Number(row.putTotal)) {
         this.$modal.msgError("退货数量不能大于收货数量！");
-        row.refundTotal = Number(row.putTotal) - Number(row.storeTotal);
+        row.refundZjTotal = Number(row.putTotal) - Number(row.storeTotal);
       } else {
-        row.storeTotal = Number(row.putTotal) - Number(row.refundTotal);
+        row.storeTotal = Number(row.putTotal) - Number(row.refundZjTotal);
       }
       this.show = false;
       this.$nextTick(() => {

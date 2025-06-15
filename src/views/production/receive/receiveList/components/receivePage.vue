@@ -221,6 +221,12 @@
               align="center"
             ></el-table-column>
             <el-table-column
+              prop="supplyDate"
+              label="供应时间"
+              width="160"
+              align="center"
+            ></el-table-column>
+            <el-table-column
               prop="receiver"
               label="收货人及联系方式"
               width="180"
@@ -231,7 +237,12 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
+            <el-table-column
+              prop="field1"
+              label="投资比例"
+              width="150"
+              align="center"
+            ></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -251,7 +262,13 @@
               </template>
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-            <el-table-column prop="putTotal" label="收货数量" width="120" fixed="right" align="center">
+            <el-table-column
+              prop="putTotal"
+              label="收货数量"
+              width="120"
+              fixed="right"
+              align="center"
+            >
               <template slot-scope="scope">
                 <el-input-number
                   v-model="scope.row.putTotal"
@@ -431,6 +448,10 @@ export default {
               //收货的时候默认本机日期
               data.takeDate = this.getDate();
               this.shippingDate = data.shippingDate;
+              console.log(
+                this.shippingDate,
+                "--------------this.shippingDate-------------"
+              );
               data.shippingDate = dayjs(data.shippingDate).format("YYYY-MM-DD");
             } else {
               data.takeDate = dayjs(data.takeDate).format("YYYY-MM-DD HH:mm");

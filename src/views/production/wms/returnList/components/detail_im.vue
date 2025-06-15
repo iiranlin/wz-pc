@@ -141,7 +141,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="refundTotal"
+              prop="refundZjTotal"
               label="退货数量"
               width="120"
               align="center"
