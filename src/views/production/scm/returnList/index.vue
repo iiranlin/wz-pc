@@ -250,7 +250,7 @@ export default {
         name: "freightDetail",
         query: {
           type: "view",
-          id: row.id,
+          id: row.planId,
         },
       });
     },

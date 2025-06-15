@@ -311,7 +311,7 @@ export default {
           type: "create, update",
         },
         {
-          buttonName: "提交入库资料",
+          buttonName: "提交入库审核",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
