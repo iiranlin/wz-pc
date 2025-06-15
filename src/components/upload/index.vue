@@ -99,6 +99,10 @@ export default {
       type: Array,
       default: () => ["docx", "xls", "pptx", "xlsx", "pdf", "png", "jpg", "jpeg", "gif", 'GIF'],
     },
+    fileSize:{
+      type: Number,
+      default: 200
+    },
     // 是否显示提示
     isShowTip: {
       type: Boolean,
@@ -107,7 +111,6 @@ export default {
   },
   data () {
     return {
-      fileSize: process.env.VUE_APP_FILE_SIZE,
       baseUrl: process.env.VUE_APP_BASE_API,
       fileList: [],
       formData: {

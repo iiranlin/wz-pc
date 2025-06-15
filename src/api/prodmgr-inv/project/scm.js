@@ -163,7 +163,7 @@ export const getMaterialCount = (params) => {
 // 物流跟踪明细查询
 export const getLogisticsDetail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialSupplierSendRest/detailWlgz/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailWlgz/${id}`,
     method: 'get',
   })
 }
@@ -237,7 +237,7 @@ export const getBatch = (id) => {
 // 获取供应商发货批次
 export const getBatchList = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialcirculationTableRest/detailWlgz/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/listPc/${id}`,
     method: 'get',
   })
 }

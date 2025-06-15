@@ -15,7 +15,24 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        {{ detail.shippingNumber }}
+        <el-tooltip
+          :content="detail.shippingNumber"
+          placement="bottom"
+          effect="light"
+        >
+          <!-- 超出隐藏 -->
+          <!-- ellips -->
+          <div
+            style="
+              width: 300px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            "
+          >
+            {{ detail.shippingNumber }}
+          </div>
+        </el-tooltip>
       </el-descriptions-item>
       <el-descriptions-item
         label="物流单号"
@@ -25,18 +42,29 @@
         {{ detail.oddNumbers }}
       </el-descriptions-item>
       <el-descriptions-item
-        label="发货事件"
+        label="发货时间"
         label-class-name="my-label"
         content-class-name="my-content"
       >
         {{ status[detail.status] }}
       </el-descriptions-item>
       <el-descriptions-item
+        label="车牌号"
+        label-class-name="my-label"
+        content-class-name="my-content"
+      >
+        {{ detail.carNumber }}
+      </el-descriptions-item>
+      <el-descriptions-item
         label="发货地址"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip :content="detail.shippingAddress" placement="bottom" effect="light">
+        <el-tooltip
+          :content="detail.shippingAddress"
+          placement="bottom"
+          effect="light"
+        >
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -51,32 +79,17 @@
           </div>
         </el-tooltip>
       </el-descriptions-item>
-      <el-descriptions-item
-        label="收货地址"
-        label-class-name="my-label"
-        content-class-name="my-content"
-      >
-        <el-tooltip :content="detail.field2" placement="bottom" effect="light">
-          <!-- 超出隐藏 -->
-          <!-- ellips -->
-          <div
-            style="
-              width: 300px;
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-            "
-          >
-            {{ detail.field2 }}
-          </div>
-        </el-tooltip>
-      </el-descriptions-item>
+
       <el-descriptions-item
         label="预计到达时间"
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        <el-tooltip content="" placement="bottom" effect="light">
+        <el-tooltip
+          :content="detail.arrivalDate | formatDate"
+          placement="bottom"
+          effect="light"
+        >
           <!-- 超出隐藏 -->
           <!-- ellips -->
           <div
@@ -91,13 +104,7 @@
           </div>
         </el-tooltip>
       </el-descriptions-item>
-      <el-descriptions-item
-        label="车牌号"
-        label-class-name="my-label"
-        content-class-name="my-content"
-      >
-        {{ detail.carNumber }}
-      </el-descriptions-item>
+
       <el-descriptions-item
         label="联系人"
         label-class-name="my-label"
@@ -115,7 +122,7 @@
     </el-descriptions>
     <div style="height: 10px"></div>
     <template v-if="detail.materialTrackMessageDTOS.length === 0">
-      <wuliu :courierNumber="detail.oddNumbers" style="height: 500px" />
+      <wuliu :courierNumber="detail.oddNumbers" style="height: 450px" />
     </template>
     <template v-else>
       <!-- 没有订单号则展示普通表格 -->
@@ -143,7 +150,7 @@ export default {
   },
   filters: {
     // 日期格式化过滤器
-    formatDate(value, format = "YYYY-MM-DD") {
+    formatDate (value, format = "YYYY年MM月DD日") {
       if (!value) return "";
       return dayjs(value).format(format);
     },
@@ -154,14 +161,14 @@ export default {
     wuliuTable,
   },
   computed: {
-    id() {
+    id () {
       return this.$route.query.id;
     },
-    batch() {
+    batch () {
       return this.$route.query.batch;
     },
   },
-  data() {
+  data () {
     // 状态（1.未发货 2.货运中 3.已完成）
     const status = {
       1: "未发货",
@@ -176,7 +183,7 @@ export default {
       activeTab: "",
     };
   },
-  created() {
+  created () {
     //有batch批次号，直接用批次号获取详情，不再调取批次数组接口
     if (this.batch) {
       this.getLogistics(this.batch);
@@ -185,7 +192,7 @@ export default {
     }
   },
   methods: {
-    async getLogistics(id) {
+    async getLogistics (id) {
       const res = await Api.getLogisticsDetail(id);
       this.detail = res.data;
     },
@@ -201,7 +208,7 @@ export default {
         this.handleTabClick(this.tabList[0]);
       }
     },
-    handleTabClick(tab) {
+    handleTabClick (tab) {
       this.getLogistics(tab.name);
     },
   },
@@ -223,13 +230,15 @@ export default {
 .my-label {
   background: #f2f2f2 !important;
   min-height: 38px !important;
-  width: 150px !important;
+  width: 100px !important;
   font-size: 14px !important;
   color: #1b1e22 !important;
+  display: block;
+  padding-right:0 !important;
 }
 
 .my-content {
   background: #fff;
-  width: calc(33.33%-150px) !important;
+  width: calc(30%-100px) !important;
 }
 </style>
