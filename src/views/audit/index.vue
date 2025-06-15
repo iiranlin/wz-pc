@@ -183,7 +183,7 @@ export default {
           break;
         case 'passEdit':
           // 修改后同意直接跳转详情
-          this.$refs.toBereview.init('passEdit', rowArr)
+          this.$refs.toBereview.init('passEdit', rowArr )
           break;
         default:
           break;
