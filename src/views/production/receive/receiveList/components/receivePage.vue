@@ -471,6 +471,7 @@ export default {
               expirationDate: x.expirationDate
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
+              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
               putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认收货数量=发货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告

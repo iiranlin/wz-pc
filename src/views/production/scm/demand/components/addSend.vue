@@ -289,7 +289,7 @@ export default {
             expirationDate: x.expirationDate
               ? dayjs(x.expirationDate).format("YYYY-MM-DD")
               : "",
-            supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
+            supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
             id: x.planDetailId,
             fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
             fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
