@@ -1,16 +1,23 @@
 <template>
     <section class="login-container">
         <div id="leftvedio">
-            <video id="banner" src="../assets/Login-G.mp4" width="2560" height="1400" autoplay="autoplay" loop="loop"
-                muted></video>
+            <el-image
+                :src="logoBg"
+                class="background-image"
+                fit="cover">
+            </el-image>
         </div>
         <div class="login-form">
             <header>
-                <div class="login-logo">
+                <!-- <div class="login-logo">
                     <img :src="logo" />
-                </div>
-                <h1>{{ title }}</h1>
-                <h3>请输入账号信息</h3>
+                </div> -->
+                <!-- <h1>{{ title }}</h1> -->
+                 <el-image
+                :src="loginTitle"
+                fit="cover">
+            </el-image>
+                <!-- <h3>请输入账号信息</h3> -->
             </header>
             <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="hz-form" inline>
                 <el-form-item prop="username" label="用户名：">
@@ -51,6 +58,8 @@ import { getVerificationCode } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
 import logo from "@/assets/logo/logo.png";
+import logoBg from '../assets/loginBg.png';
+import loginTitle from '../assets/loginTitle.png';
 
 export default {
     name: "Login",
@@ -59,6 +68,8 @@ export default {
     },
     data() {
         return {
+            loginTitle,
+            logoBg,
             logo,
             title: process.env.VUE_APP_TITLE,
             testFlag: process.env.VUE_APP_TEST_FLAG,
@@ -229,6 +240,13 @@ export default {
         width: 100%;
         height: 100%;
         z-index: 2;
+        overflow: hidden;
+    }
+
+    .background-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     #banner {
@@ -242,7 +260,7 @@ export default {
 
     .login-form {
         position: fixed;
-        left: 50%;
+        left: 75%;
         top: 50%;
         transform: translate(-50%, -56%);
         width: 350px;
@@ -291,7 +309,7 @@ export default {
         }
 
         .hz-form {
-            margin-top: 14px;
+            // margin-top: 14px;
             padding: 0 40px;
 
             .el-form-item__error {

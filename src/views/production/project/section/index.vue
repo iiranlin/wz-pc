@@ -48,14 +48,15 @@
               @click="
                 () => {
                   if (scoped.data.contractIdList.length)
-                    $refs.sellerDialogRef.open(
-                     scoped.data.contractIdList
-                    );
+                    $refs.sellerDialogRef.open(scoped.data.contractIdList);
                 }
               "
             >
               {{ scoped.data.contractIdList.length }}
             </el-button>
+          </template>
+          <template #materialUsedRatio="scoped">
+            {{ scoped.data.materialUsedRatio || 0 }}%
           </template>
         </table-index>
         <pagination
