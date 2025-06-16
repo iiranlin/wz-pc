@@ -29,9 +29,9 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="sellerName" label="供应商名称" width="200">
+            <el-table-column prop="sellerName" label="供应商名称" min-width="200">
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" width="200">
+            <el-table-column prop="materialName" label="物资名称" min-width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -40,27 +40,30 @@
               align="center"
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
+            <el-table-column
+              prop="unit"
+              label="计量单位"
+              width="100"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="planAmount"
-              label="需求数量"
+              label="本次计划数量"
               width="120"
               align="center"
             ></el-table-column>
-            <el-table-column prop="storeTotal" label="当前库存数量" width="120" align="center"></el-table-column>
             <el-table-column
-              prop="manufactureDate"
-              label="生产日期"
-              width="150"
+              prop="storeTotal"
+              label="累计入库数量"
+              width="120"
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="expirationDate"
-              label="有效期截止日期"
-              width="150"
+              prop="stockStatus"
+              label="当前库存"
+              width="120"
               align="center"
             ></el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
       </VFormRender>
@@ -135,9 +138,9 @@ export default {
   methods: {
     // 编辑初始化
     async updateInit() {
-      this.loading=true;
-      await Api.detailGyMx({id:this.id}).then(({ data }) => {
-      this.loading=false;
+      this.loading = true;
+      await Api.detailGyMx({ id: this.id }).then(({ data }) => {
+        this.loading = false;
         this.$nextTick(async () => {
           await this.formFillInPage();
           const newData = {
@@ -147,8 +150,12 @@ export default {
           this.$refs.vFormRef.setReadMode(true);
           const detail = data.demandPlanDetailsGyDTOList.map((x) => ({
             ...x,
-            manufactureDate: x.manufactureDate?dayjs(x.manufactureDate).format("YYYY-MM-DD"):'',
-            expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
+            manufactureDate: x.manufactureDate
+              ? dayjs(x.manufactureDate).format("YYYY-MM-DD")
+              : "",
+            expirationDate: x.expirationDate
+              ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+              : "",
           }));
           this.tableData = detail;
         });

@@ -195,6 +195,7 @@ export default {
           await this.formFillInPage();
           const newData = {
             ...data,
+            issueType:this.backNode,
             backDate: data.backDate?dayjs(data.backDate).format("YYYY-MM-DD"):'',
             fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
             fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料

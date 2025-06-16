@@ -42,9 +42,9 @@
               align="center"
               fixed="left"
             />
-            <el-table-column prop="supplierName" label="供应商" width="200">
+            <el-table-column prop="sellerName" label="供应商" min-width="200">
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" width="200">
+            <el-table-column prop="materialName" label="物资名称" min-width="200">
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -56,18 +56,6 @@
             <el-table-column
               prop="unit"
               label="计量单位"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="planAmount"
-              label="需求数量"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="storeTotal"
-              label="当前库存数量"
               width="120"
               align="center"
             ></el-table-column>
