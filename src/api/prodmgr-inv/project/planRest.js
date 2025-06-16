@@ -178,3 +178,12 @@ export const demandBack = (params) => {
     params
   })
 }
+
+// 供应概览查询
+export const overview = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailGyMx`,
+    method: 'get',
+    params
+  })
+}

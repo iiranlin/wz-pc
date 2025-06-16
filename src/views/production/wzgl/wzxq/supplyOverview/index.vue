@@ -119,10 +119,10 @@ export default {
       const params = {
         pageNum: 1,
         pageSize: -1,
-        // planDetailDd:this.id
+        id:this.id
       }
-      const res = await Scm.getMaterialCount(params)
-      this.tableData = res.data
+      const res = await Api.overview(params)
+      this.tableData = res.data.demandPlanDetailsGyDTOList
     },
 
     //初始化

@@ -244,6 +244,12 @@ export default {
           this.buttonTop[1].buttonName = "确定出库";
           this.$refs.vFormRef.setReadMode(true);
 
+          this.$tab.updatePage({
+            path: "/wms/omPage", meta: {
+              title: '出库预览'
+            }
+          })
+
           // 隐藏折叠按钮
           this.tableData = this.tableData.map(x => {
             x.hasChildren = x.children.length > 0
@@ -254,6 +260,12 @@ export default {
           // 填写模式
           this.buttonTop[1].buttonName = "预览";
           this.$refs.vFormRef.setReadMode(false);
+
+          this.$tab.updatePage({
+            path: "/wms/omPage", meta: {
+              title: '物资出库'
+            }
+          })
 
           //恢复折叠按钮
           this.tableData = this.tableData.map(x => {

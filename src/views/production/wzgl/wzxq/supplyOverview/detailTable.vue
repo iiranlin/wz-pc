@@ -1,44 +1,45 @@
 <template>
   <div class="material-search-table">
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%" max-height="500">
       <!-- 序号 -->
       <el-table-column type="index" label="序号" align="center" width="80px">
       </el-table-column>
       <el-table-column
-        prop="updateContent"
+        prop="sellerName"
         label="供应商"
         align="center"
-        width="150px"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
-        width="150px"
+        width="200"
       >
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" align="center">
+      <el-table-column prop="specModel" label="规格型号" align="center" width="200">
       </el-table-column>
       <el-table-column prop="unit" label="计量单位" align="center">
       </el-table-column>
-      <el-table-column prop="planAmount" label="合同数量" align="center">
+      <el-table-column prop="amount" label="合同数量" align="center">
       </el-table-column>
       <el-table-column
-        prop="updateAfter"
+        prop="cumulativeAmount"
         label="累计计划量（含本次）"
         align="center"
+        width="200px"
       >
       </el-table-column>
-      <el-table-column prop="suppingAmount" label="本次计划数量" align="center">
+      <el-table-column prop="planAmount" label="本次计划数量" align="center" width="200">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已发货" align="center">
+      <el-table-column prop="sendTotal" label="已发货" align="center">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已验收" align="center">
+      <el-table-column prop="putTotal" label="已验收" align="center">
       </el-table-column>
-      <el-table-column prop="putTotal" label="已入库" align="center">
+      <el-table-column prop="storeTotal" label="已入库" align="center">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已出库" align="center">
+      <el-table-column prop="outCkTotal" label="已出库" align="center">
       </el-table-column>
     </el-table>
   </div>

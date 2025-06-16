@@ -14,9 +14,10 @@
         label="发货单号"
         label-class-name="my-label"
         content-class-name="my-content"
+        class="my-descriptions"
       >
         <el-tooltip
-          :content="detail.shippingNumber"
+          :content="detail.shipmentBatchNumber"
           placement="bottom"
           effect="light"
         >
@@ -24,13 +25,13 @@
           <!-- ellips -->
           <div
             style="
-              width: 300px;
+              min-width: 206px;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
             "
           >
-            {{ detail.shippingNumber }}
+            {{ detail.shipmentBatchNumber }}
           </div>
         </el-tooltip>
       </el-descriptions-item>
@@ -46,7 +47,7 @@
         label-class-name="my-label"
         content-class-name="my-content"
       >
-        {{ status[detail.status] }}
+        {{detail.shippingDate | formatDate }}
       </el-descriptions-item>
       <el-descriptions-item
         label="车牌号"
@@ -69,7 +70,7 @@
           <!-- ellips -->
           <div
             style="
-              width: 300px;
+              min-width: 206px;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
@@ -94,7 +95,7 @@
           <!-- ellips -->
           <div
             style="
-              width: 300px;
+              min-width: 206px;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
@@ -121,7 +122,7 @@
       </el-descriptions-item>
     </el-descriptions>
     <div style="height: 10px"></div>
-    <template v-if="detail.materialTrackMessageDTOS.length === 0">
+    <template v-if="detail.oddNumbers">
       <wuliu :courierNumber="detail.oddNumbers" style="height: 450px" />
     </template>
     <template v-else>
@@ -130,7 +131,7 @@
     </template>
     <!-- 物资明细 -->
     <div style="height: 10px"></div>
-    <itemTable :tableData="detail.materialSupplierDetailDTOList" />
+    <itemTable :tableData="detail.materialCirculationDetailsTableDTOS" />
   </div>
 </template>
 
@@ -234,11 +235,11 @@ export default {
   font-size: 14px !important;
   color: #1b1e22 !important;
   display: block;
-  padding-right:0 !important;
+  padding-right: 0 !important;
 }
 
 .my-content {
   background: #fff;
-  width: calc(30%-100px) !important;
+  width: calc(100% / 3) !important;
 }
 </style>

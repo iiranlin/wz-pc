@@ -32,7 +32,7 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <div style="max-height: 450px;">
+    <div style="max-height: 450px">
       <virtual-scroll
         :dynamic="false"
         v-show="show"
@@ -49,7 +49,9 @@
           max-height="450"
           v-loading="loading"
           @selection-change="handleSelectionChange"
+          @select="onSelect"
           ref="dataTable"
+          row-key="id"
         >
           <virtual-column
             label="序号"
@@ -60,7 +62,7 @@
           ></virtual-column>
           <!-- 多选 -->
           <virtual-column
-          v-if="type !== 'view'"
+            v-if="type !== 'view'"
             width="60"
             type="selection"
             align="center"
@@ -355,7 +357,7 @@
       </el-row>
     </div>
 
-    <BatchDialog ref="batchDialogRef"  />
+    <BatchDialog ref="batchDialogRef" />
   </div>
 </template>
 
@@ -400,6 +402,8 @@ export default {
         pageSize: -1,
       },
       show: true,
+      currentTableSelect: [],
+      firstSelectAll: true,
     }
   },
   computed: {
@@ -468,13 +472,13 @@ export default {
     this.getSectionOptions()
 
   },
-  mounted(){
+  mounted () {
     this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
 
   },
   methods: {
     onDialogOk (data) {
-      console.log('props sellerName',this.sellerName)
+      console.log('props sellerName', this.sellerName)
       // 将批量上传的文件，导入到总的数据中
       const newData = data.map(item => ({
         ...item,
@@ -538,9 +542,12 @@ export default {
           const selectedRowKeys = Object.keys(this.selectedRowKeys).reduce((acc, key) => {
             return acc.concat(this.selectedRowKeys[key]);
           }, []);
+
+          // 获取当前table选择的数据
+
           this.$emit('data-change', {
             type: 'delete',
-            row: selectedRowKeys,
+            row: this.currentTableSelect.map(x => x.id),
           });
         })
     },
@@ -662,13 +669,30 @@ export default {
     getRowKey (row) {
       return `${row.id}`;
     },
+    onSelect (selection, row, checked) {
+      this.currentTableSelect = selection
+      console.log('single select', selection)
+    },
+
     // 处理表格的勾选变化 - 修改版本
     handleSelectionChange (selection) {
+      // 若是空数据且已有正确选项，说明是虚拟滚动触发的伪事件
+      if (selection.length === 0 && this.currentTableSelect.length > 0) {
+        // 忽略这次空事件
+        return
+      }
+
+      // 全选判断（注意是 length 拼写）
+      if (selection.length === this.filteredTableData.length) {
+        this.currentTableSelect = selection
+      }
       // 第一次进入时，将selectedRowKeys备份
       const currentSelectedKeys = selection.map(row => this.getRowKey(row));
       // 再添加当前选中的key
       this.selectedRowKeys[this.activeTab] = currentSelectedKeys
       this.emitSelectionChange();
+
+
     },
     // 新增方法：向父组件发送选中变化事件
     emitSelectionChange () {
