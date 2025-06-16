@@ -134,7 +134,7 @@ export default {
     // 编辑初始化
     async updateInit() {
       this.loading=true;
-      await Api.detailGyMx(this.id).then(({ data }) => {
+      await Api.detailGyMx({id:this.id}).then(({ data }) => {
       this.loading=false;
         this.$nextTick(async () => {
           await this.formFillInPage();
@@ -143,7 +143,7 @@ export default {
           };
           this.$refs.vFormRef.setFormData(newData);
           this.$refs.vFormRef.setReadMode(true);
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+          const detail = data.demandPlanDetailsGyDTOList.map((x) => ({
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',

@@ -386,11 +386,12 @@ export default {
               this.loading = false;
               this.$modal.msgSuccess(message);
               this.setSelectedItemList([]);
-              //保存成功关闭tab，防止缓存bug
+              //保存成功关闭tab，清除缓存
               this.$tab.closePage({
                 path: "/scm/addSend",
                 meta: {},
               });
+              this.$store.dispatch("tagsView/delCachedView", { name: 'addSend' });
               this.$router.push({
                 name: "sendList",
               });
