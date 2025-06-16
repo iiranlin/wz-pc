@@ -13,7 +13,7 @@
       @handleQuery="handleQuery"
       :formData="formData"
     >
-      <template #backNode="data">
+      <template #issueType="data">
         <el-select
           class="select-box"
           v-model="formData[data.data.fieldCode]"
@@ -61,7 +61,7 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-          <template #backNode="scope">
+          <template #issueType="scope">
             {{ status[scope.value] }}
           </template>
           <!-- 退货单号 -->
@@ -233,7 +233,7 @@ export default {
         query: {
           type: "view",
           id: row.id,
-          backNode:row.backNode
+          backNode:row.issueType
         },
       });
     },

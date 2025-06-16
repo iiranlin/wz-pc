@@ -69,7 +69,7 @@
 
 <script>
 import Vue from "vue";
-import * as Api from "@/api/prodmgr-inv/project/wms.js";
+import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
@@ -134,7 +134,7 @@ export default {
     // 编辑初始化
     async updateInit() {
       this.loading=true;
-      await Api.detailByOut(this.id).then(({ data }) => {
+      await Api.detailGyMx(this.id).then(({ data }) => {
       this.loading=false;
         this.$nextTick(async () => {
           await this.formFillInPage();
