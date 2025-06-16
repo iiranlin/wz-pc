@@ -301,7 +301,7 @@ export default {
       }
       //已确认或供货中才能点击发货按钮
       if (button.buttonCode == "send") {
-        return this.selection[0].status != "2" && this.selection[0].status != "3";
+        return this.selection[0].status != "4" && this.selection[0].status != "3";
       }
     },
     //跳转需求供应详情
