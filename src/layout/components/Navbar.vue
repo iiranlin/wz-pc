@@ -49,10 +49,10 @@
             <el-tooltip content="意见反馈" placement="bottom">
                 <i class="el-icon-edit-outline" @click="goFeedback()"></i>
             </el-tooltip> -->
-            <el-tooltip content="消息通知" placement="bottom">
+            <!-- <el-tooltip content="消息通知" placement="bottom">
                 <i class="el-icon-chat-dot-round"></i>
-            </el-tooltip>
-            <el-divider direction="vertical"></el-divider>
+            </el-tooltip> -->
+            <!-- <el-divider direction="vertical"></el-divider> -->
             <screenfull id="screenfull" />
             <el-divider direction="vertical"></el-divider>
         </div>
