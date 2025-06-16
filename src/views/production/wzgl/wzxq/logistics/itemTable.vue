@@ -2,20 +2,21 @@
   <div class="">
     <el-table :data="tableData" border style="width: 100%">
       <!-- 序号 -->
-      <el-table-column type="index" label="序号" align="center" width="80px">
-      </el-table-column>
       <el-table-column
-        prop="sectionName"
-        label="标段项目名称"
+        type="index"
+        label="序号"
         align="center"
-        width="200px"
+        width="80px"
+        fixed
       >
       </el-table-column>
+
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
         min-width="250px"
+        fixed
       >
       </el-table-column>
       <el-table-column
@@ -23,6 +24,7 @@
         label="规格型号"
         align="center"
         width="200px"
+        fixed
       >
       </el-table-column>
       <el-table-column
@@ -33,36 +35,49 @@
       >
       </el-table-column>
       <el-table-column
-        prop="amount"
-        label="合同数量"
-        align="center"
-        width="150px"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="cumulativeAmount"
-        label="累计计划量（含本次）"
-        align="center"
-        width="150px"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="updateBefore"
+        prop="planAmount"
         label="本次计划数量"
         align="center"
-        width="150px"
+        width="120px"
       >
       </el-table-column>
       <el-table-column
-        prop="cumulativeAmount"
-        label="累计发货数量（含本次）"
+        prop="sendTotal"
+        label="发货数量"
+        align="center"
+        width="120px"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="packagingFm"
+        label="包装形式"
         align="center"
         width="150px"
       >
       </el-table-column>
       <el-table-column
-        prop="planAmount"
-        label="本批次发货数量"
+        prop="manufactureDate"
+        label="生产日期"
+        align="center"
+        width="150px"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.manufactureDate | formatDate }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="expirationDate"
+        label="有效期截止日期"
+        align="center"
+        width="150"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.expirationDate | formatDate }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="addr"
+        label="使用地点"
         align="center"
         width="150px"
       >
@@ -71,23 +86,20 @@
         prop="supplyDate"
         label="供应时间"
         align="center"
-        width="200px"
+        width="150px"
       >
+        <template slot-scope="scope">
+          {{ scope.row.supplyDate | formatDate }}
+        </template>
       </el-table-column>
       <el-table-column
-        prop="addr"
-        label="使用地点"
-        align="center"
-        width="200px"
-      >
-      </el-table-column>
-        <el-table-column
         prop="field2"
         label="收货地址"
         align="center"
         width="200px"
       >
       </el-table-column>
+
       <el-table-column
         prop="receiver"
         label="收货人及联系方式"
@@ -95,14 +107,14 @@
         width="200px"
       >
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="field0"
         label="投资方"
         align="center"
         width="200px"
       >
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="field1"
         label="投资比例"
         align="center"
@@ -110,17 +122,39 @@
       >
       </el-table-column>
       <el-table-column
-        prop="remark"
-        label="备注"
+        prop="field1"
+        label="合格证附件"
         align="center"
         width="200px"
       >
+        <template slot-scope="scope">
+          <fileUpload
+            :value="scope.row.fileByList | filterFiles('hgz')"
+            :preview="true"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="field1"
+        label="厂检报告附件"
+        align="center"
+        width="200px"
+      >
+        <template slot-scope="scope">
+          <fileUpload
+            :value="scope.row.fileByList | filterFiles('cjbg')"
+            :preview="true"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column prop="remark" label="备注" align="center" width="200px">
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import fileUpload from "@/components/upload";
 import dayjs from 'dayjs';
 export default {
   // 需求详情表格数据
@@ -132,10 +166,19 @@ export default {
   },
   filters: {
     // 日期格式化过滤器
-    formatDate (value, format = 'YYYY-MM-DD') {
+    formatDate (value, format = 'YYYY年MM月DD日') {
       if (!value) return '';
       return dayjs(value).format(format);
+    },
+    filterFiles (files, name) {
+      if (!files) return []
+      
+      const parseFiles = JSON.parse(files);
+      return parseFiles[name]
     }
+  },
+  components: {
+    fileUpload
   },
   methods: {
 

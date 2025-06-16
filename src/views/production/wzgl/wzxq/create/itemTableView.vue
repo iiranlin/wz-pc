@@ -3,7 +3,7 @@
     <!-- 搜索框 -->
     <div class="search-container">
       <div style="font-size: 20px; font-weight: bold">
-        请选择用料物资科目（已选择
+        请选择用料物资（已选择
         <i style="color: red">{{ Object.keys(selectedMap).length }}</i> 项）
       </div>
       <el-input

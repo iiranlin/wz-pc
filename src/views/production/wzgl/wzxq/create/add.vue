@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container container_flex">
+  <div class="app-container container_flex" v-loading="loading">
     <button-top
       :buttonTopData="buttonTop"
       :buttonShow="buttonShow"
@@ -68,7 +68,7 @@ export default {
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
-        { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
+        { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update'},
       ],
       constructionOptions: [],
       selectRows: [],

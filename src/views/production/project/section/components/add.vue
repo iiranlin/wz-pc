@@ -18,7 +18,7 @@
           <el-form-item
             prop="projectId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="归属线路项目"
+            label="归属建设项目"
             class="label-right-align"
           >
             <template v-if="type !== 'view' && !projectId">

@@ -73,11 +73,15 @@
         align="center"
         width="150"
       >
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>本次计划数量</span>
+        </template>
         <template slot-scope="scope">
           <el-input-number
             v-model="scope.row.planAmount"
             :min="0"
-            :max="+scope.row.amount - +scope.row.cumulativeAmount  "
+            :max="+scope.row.amount - +scope.row.cumulativeAmount"
             :precision="2"
             size="mini"
             style="width: 100%"
@@ -85,6 +89,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="supplyDate" label="供应时间" min-width="200">
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>供应时间</span>
+        </template>
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.supplyDate"
@@ -96,6 +104,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="addr" label="使用地点" min-width="200">
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>使用地点</span>
+        </template>
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.addr"
@@ -105,6 +117,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="field2" label="收货地址" min-width="200">
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>收货地址</span>
+        </template>
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.field2"
@@ -114,6 +130,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="receiver" label="收货人及联系方式" min-width="250">
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>收货人及联系方式</span>
+        </template>
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.receiver"
@@ -123,6 +143,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="field0" label="投资方" min-width="200">
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>投资方</span>
+        </template>
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.field0"
@@ -132,6 +156,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="field1" label="投资比例" min-width="200">
+        <template slot="header">
+          <span style="color: red; margin-right: 5px">*</span>
+          <span>投资比例</span>
+        </template>
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.field1"
@@ -140,7 +168,7 @@
           ></el-input>
         </template>
       </el-table-column>
-        <el-table-column prop="remark" label="备注" min-width="200">
+      <el-table-column prop="remark" label="备注" min-width="200">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.remark"

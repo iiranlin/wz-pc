@@ -172,6 +172,10 @@
             width="180"
             align="center"
           >
+            <template slot="header">
+              <span style="color: red; margin-right: 5px">*</span>
+              <span>数量</span>
+            </template>
             <template slot-scope="scope">
               <el-input-number
                 v-if="type !== 'view'"
@@ -189,9 +193,13 @@
           <el-table-column
             prop="price"
             label="到站不含税单价(元)"
-            width="160"
+            width="200"
             align="center"
           >
+            <template slot="header">
+              <span style="color: red; margin-right: 5px">*</span>
+              <span>到站不含税单价(元)</span>
+            </template>
             <template slot-scope="scope">
               <el-input-number
                 v-if="type !== 'view'"
@@ -208,9 +216,13 @@
           <el-table-column
             prop="vatRate"
             label="物资增值税率（%）"
-            width="150"
+            width="200"
             align="center"
           >
+            <template slot="header">
+              <span style="color: red; margin-right: 5px">*</span>
+              <span>物资增值税率（%）</span>
+            </template>
             <template slot-scope="scope">
               <el-input-number
                 v-if="type !== 'view'"
