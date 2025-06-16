@@ -66,12 +66,7 @@
             />
             <el-table-column prop="sellerName" label="供应商" width="250" fixed>
             </el-table-column>
-            <el-table-column
-              prop="materialName"
-              label="物资名称"
-              width="200"
-              fixed
-            >
+            <el-table-column prop="materialName" label="物资名称" width="200" fixed>
             </el-table-column>
             <el-table-column
               prop="specModel"
@@ -93,7 +88,7 @@
             >
               <template slot-scope="scope">
                 <span v-if="isParentRow(scope.row)">
-                  {{ scope.row.planAmount || '' }}
+                  {{ scope.row.planAmount || "" }}
                 </span>
               </template>
             </el-table-column>
@@ -138,16 +133,11 @@
                   v-if="type != 'view' && !preview && !isParentRow(scope.row)"
                 ></el-input-number>
                 <span v-else>
-                  {{ scope.row.outTotal || '' }}
+                  {{ scope.row.outTotal || "" }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="remark"
-              label="备注"
-              width="200"
-              fixed="right"
-            >
+            <el-table-column prop="remark" label="备注" width="200" fixed="right">
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.remark"
@@ -183,7 +173,7 @@ export default {
     VFormRender,
     fileUpload,
   },
-  data () {
+  data() {
     const userInfo = getUserInfo();
     return {
       maxManualIndex: 1,
@@ -229,61 +219,61 @@ export default {
     };
   },
   computed: {
-    type () {
+    type() {
       return this.$route.query.type;
     },
-    id () {
+    id() {
       return this.$route.query?.id || "";
     },
   },
   watch: {
     preview: {
-      handler (newVal) {
+      handler(newVal) {
         if (newVal) {
           // 预览模式
           this.buttonTop[1].buttonName = "确定出库";
           this.$refs.vFormRef.setReadMode(true);
 
           this.$tab.updatePage({
-            path: "/wms/omPage", meta: {
-              title: '出库预览'
-            }
-          })
+            path: "/wms/omPage",
+            meta: {
+              title: "出库预览",
+            },
+          });
 
           // 隐藏折叠按钮
-          this.tableData = this.tableData.map(x => {
-            x.hasChildren = x.children.length > 0
-            return x
-          })
-
+          this.tableData = this.tableData.map((x) => {
+            x.hasChildren = x.children.length > 0;
+            return x;
+          });
         } else {
           // 填写模式
           this.buttonTop[1].buttonName = "预览";
           this.$refs.vFormRef.setReadMode(false);
 
           this.$tab.updatePage({
-            path: "/wms/omPage", meta: {
-              title: '物资出库'
-            }
-          })
+            path: "/wms/omPage",
+            meta: {
+              title: "物资出库",
+            },
+          });
 
           //恢复折叠按钮
-          this.tableData = this.tableData.map(x => {
-            x.hasChildren = +x.stockStatus > 0
-            return x
-          })
-
+          this.tableData = this.tableData.map((x) => {
+            x.hasChildren = +x.stockStatus > 0;
+            return x;
+          });
         }
       },
     },
   },
-  async created () { },
-  mounted () {
+  async created() {},
+  mounted() {
     this.init(this.id);
   },
   methods: {
     //初始化
-    init (id) {
+    init(id) {
       this.loading = true;
       this.$nextTick(async () => {
         await Api.detailOut(id).then(({ data }) => {
@@ -299,17 +289,19 @@ export default {
               ...x,
               hasChildren: +x.stockStatus > 0,
               children: [],
-              expirationDate: x.expirationDate ? dayjs(x.expirationDate).format("YYYY-MM-DD") : '',
+              expirationDate: x.expirationDate
+                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+                : "",
               outTotal: x.storeTotal, //默认出库数量=库存数量
               // 父级不展示字段
-              manufactureDate: '',
+              manufactureDate: "",
             }));
-            this.tableData = detail
+            this.tableData = detail;
           });
         });
       });
     },
-    newButton (buttonCode) {
+    newButton(buttonCode) {
       if (buttonCode === "cancel") {
         this.cancel();
         return;
@@ -319,7 +311,7 @@ export default {
         return;
       }
     },
-    cancel () {
+    cancel() {
       if (this.preview) {
         this.preview = false;
       } else {
@@ -327,14 +319,14 @@ export default {
       }
     },
 
-    buttonShow (item) {
+    buttonShow(item) {
       if (item.buttonCode === "save") {
         return this.type !== "view";
       }
       return true;
     },
     //新建
-    async handleCreate () {
+    async handleCreate() {
       console.log(this.preview, "=====this.preview====");
       if (!this.preview) {
         //进行预览
@@ -344,7 +336,7 @@ export default {
             return;
           }
 
-          const childrenList = this.getChildrenList(this.tableData)
+          const childrenList = this.getChildrenList(this.tableData);
 
           // 如果出库数量没有或者为0 则提示
           if (childrenList.length === 0) {
@@ -371,21 +363,24 @@ export default {
             },
             formData,
             {
-              materialSupplierOutDetailParams: this.getChildrenList(this.tableData)
+              materialSupplierOutDetailParams: this.getChildrenList(this.tableData),
             }
           )
         )
           .then(({ message }) => {
             this.loading = false;
             this.$modal.msgSuccess(message);
-            this.$router.go(-1);
+            //出完库跳到出库列表
+            this.$router.push({
+              name: "omList",
+            });
           })
           .finally((err) => {
             this.loading = false;
           });
       }
     },
-    formFillInPage () {
+    formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("om").then((res) => {
           this.$refs["vFormRef"].setFormJson(res.data);
@@ -393,34 +388,37 @@ export default {
         });
       });
     },
-    getChildrenList (arr) {
+    getChildrenList(arr) {
       return arr.reduce((acc, item) => {
         // 如果有 children
         if (Array.isArray(item.children)) {
           // 遍历 children，筛选出 outTotal > 0 的子项
-          const validChildren = item.children.filter(child => Number(child.outTotal) > 0)
-          acc.push(...validChildren)
+          const validChildren = item.children.filter(
+            (child) => Number(child.outTotal) > 0
+          );
+          acc.push(...validChildren);
         }
-        return acc
-      }, [])
+        return acc;
+      }, []);
     },
-    async load (tree, treeNode, resolve) {
-      const res = await Lzmx.detail(tree.id)
-      const data = res.data.map(x => ({
+    async load(tree, treeNode, resolve) {
+      const res = await Lzmx.detail(tree.id);
+      const data = res.data.map((x) => ({
         ...x,
         isChildren: true,
         manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-        expirationDate: x.expirationDate ? dayjs(x.expirationDate).format("YYYY-MM-DD") : '',
+        expirationDate: x.expirationDate
+          ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+          : "",
         outTotal: +x.storeTotal, //默认出库数量=库存数量
         stockStatus: x.storeTotal,
-      }))
-      tree.children = data
-      resolve(data)
+      }));
+      tree.children = data;
+      resolve(data);
     },
-    isParentRow (row) {
-      return !row.isChildren
-    }
-
+    isParentRow(row) {
+      return !row.isChildren;
+    },
   },
 };
 </script>

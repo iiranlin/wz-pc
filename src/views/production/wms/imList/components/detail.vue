@@ -110,11 +110,7 @@
               width="200"
               align="center"
             ></el-table-column>
-            <el-table-column
-              prop="field2"
-              label="收货地址"
-              width="200"
-            ></el-table-column>
+            <el-table-column prop="field2" label="收货地址" width="200"></el-table-column>
             <el-table-column
               prop="supplyDate"
               label="供应时间"
@@ -133,7 +129,12 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
+            <el-table-column
+              prop="field1"
+              label="投资比例"
+              width="150"
+              align="center"
+            ></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
                 <fileUpload
@@ -200,7 +201,7 @@ export default {
   components: {
     VFormRender,
     fileUpload,
-    toBeReviewed
+    toBeReviewed,
   },
   data() {
     const userInfo = getUserInfo();
@@ -251,6 +252,7 @@ export default {
       selection: [],
       form: {},
       show: true,
+      storeStatus: "",
     };
   },
   computed: {
@@ -281,12 +283,13 @@ export default {
       this.$nextTick(async () => {
         await Api.detailStoreBack(id).then(({ data }) => {
           this.loading = false;
+          this.storeStatus = data.storeStatus;
           this.$nextTick(async () => {
             await this.formFillInPage();
             // fileList回显
             const newData = {
               ...data,
-              storeDate: data.storeDate?dayjs(data.storeDate).format("YYYY-MM-DD"):'',
+              storeDate: data.storeDate ? dayjs(data.storeDate).format("YYYY-MM-DD") : "",
               fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
               fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //证明文件
               fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
@@ -296,7 +299,9 @@ export default {
             const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
+              expirationDate: x.expirationDate
+                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+                : "",
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
@@ -314,11 +319,7 @@ export default {
       } else if (buttonCode === "reject") {
         this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
       } else if (buttonCode === "passEdit") {
-        this.$refs.toBereview.init(
-          "passEdit",
-          this.queryAuditArr,
-          this.name,
-        );
+        this.$refs.toBereview.init("passEdit", this.queryAuditArr, this.name);
       }
     },
     cancel() {
@@ -326,7 +327,14 @@ export default {
     },
 
     buttonShow(item) {
-      return true;
+      // 审核中才能显示同意和不同意按钮
+      if (item.buttonCode === "pass" || item.buttonCode === "reject") {
+        return this.storeStatus == "5";
+      }
+
+      if (item.buttonCode === "cancel") {
+        return true;
+      }
     },
     formFillInPage() {
       return new Promise((resolve) => {
