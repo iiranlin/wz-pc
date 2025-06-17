@@ -86,7 +86,7 @@
             {{ scope.value == "5" ? "已完成" : "未完成" }}
           </template>
           <template #relatedCount="scope">
-            {{ scope.value }}
+            {{ scope.value=='0'?'无':'有' }}
           </template>
           <!-- 需求ID -->
           <template #planNumber="scope">
@@ -130,11 +130,11 @@ export default {
       ],
       kucunOptions: [
         {
-          code: "无",
+          code: "0",
           name: "无",
         },
         {
-          code: "有",
+          code: "1",
           name: "有",
         },
       ],

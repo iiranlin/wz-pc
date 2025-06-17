@@ -34,17 +34,17 @@
         <template #detailSlot>
           <div class="flex">
             <span class="title">
-              物资明细 共{{ tableData.length }}
+              物资明细 （共{{ tableData.length }}
               项）
             </span>
-            <el-input
+            <!-- <el-input
               v-if="type != 'view' && !preview"
               v-model="materialName"
               placeholder="请输入物资名称"
               style="width: 300px"
             >
               <el-button slot="append" icon="el-icon-search"></el-button
-            ></el-input>
+            ></el-input> -->
           </div>
           <el-table
             :data="tableData"
@@ -434,6 +434,7 @@ export default {
   font-weight: 600;
   color: #000;
   padding-left: 12px;
+  font-size: 16px;
 }
 .slotIcon-color-content {
   color: red;

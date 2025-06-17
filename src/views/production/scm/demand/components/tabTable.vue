@@ -48,6 +48,7 @@
         align="center"
       ></el-table-column>
       <el-table-column
+        v-if="type!='view'"
         prop="ssendTotal"
         label="本次需求未发货数量"
         width="120"

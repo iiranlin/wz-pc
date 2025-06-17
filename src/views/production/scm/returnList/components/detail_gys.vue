@@ -97,7 +97,7 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="refundTotal"
+              :prop="backNode=='1'?'refundTotal':'refundZjTotal'"
               label="退货数量"
               width="120"
               align="center"

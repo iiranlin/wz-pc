@@ -255,7 +255,7 @@ export default {
           break;
         case "process":
           this.workFlowViewVisible = true;
-          this.selectedRow = { businessId: rowArr[0].storeMiddleId };
+          this.selectedRow = { businessId: rowArr[0].storeMiddleId?rowArr[0].storeMiddleId:idArr[0]};
           break;
       }
     },
