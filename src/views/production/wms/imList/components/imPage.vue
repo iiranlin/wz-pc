@@ -383,6 +383,7 @@ export default {
               expirationDate: x.expirationDate
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
+              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
               storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=收货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告

@@ -302,6 +302,7 @@ export default {
               expirationDate: x.expirationDate
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
+              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件

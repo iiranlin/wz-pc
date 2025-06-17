@@ -249,6 +249,7 @@ export default {
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
+            supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
             fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
             fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
             fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_sh || [] : [], //退货附件

@@ -53,7 +53,13 @@
         width="120"
         align="center"
       ></el-table-column>
-      <el-table-column prop="sendTotal" label="发货数量" width="140" align="center">
+      <el-table-column
+        prop="sendTotal"
+        label="发货数量"
+        width="140"
+        align="center"
+        :render-header="renderHeader"
+      >
         <template slot-scope="scope">
           <el-input-number
             v-model="scope.row.sendTotal"
@@ -68,7 +74,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="packagingFm" label="包装形式" width="160" align="center">
+      <el-table-column prop="packagingFm" label="包装形式" width="160" align="center" :render-header="renderHeader">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.packagingFm"
@@ -81,7 +87,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="manufactureDate" label="生产日期" width="160" align="center">
+      <el-table-column prop="manufactureDate" label="生产日期" width="160" align="center" :render-header="renderHeader">
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.manufactureDate"
@@ -123,7 +129,7 @@
         width="200"
         align="center"
       ></el-table-column>
-      <el-table-column prop="field2" label="收货地址" width="160" align="center">
+      <el-table-column prop="field2" label="收货地址" width="160" align="center" :render-header="renderHeader">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.field2"
@@ -136,7 +142,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center">
+      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center" :render-header="renderHeader">
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.supplyDate"
@@ -151,7 +157,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="receiver" label="收货人及联系方式" width="250">
+      <el-table-column prop="receiver" label="收货人及联系方式" width="250" :render-header="renderHeader">
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.receiver"
@@ -176,7 +182,7 @@
         width="150"
         align="center"
       ></el-table-column>
-      <el-table-column prop="projectShortName" label="合格证附件" width="200">
+      <el-table-column prop="projectShortName" label="合格证附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
           <fileUpload
             v-model="scope.row.fileList01"
@@ -187,7 +193,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
           <fileUpload
             v-model="scope.row.fileList02"
@@ -269,6 +275,12 @@ export default {
     },
     setSelectedItemList(data) {
       this.$store.dispatch("request/setSelectedItemList", data);
+    },
+    renderHeader(h, { column, $index }) {
+      return h("div", [
+        h("span", { style: { color: "red", marginRight: "4px" } }, "*"),
+        column.label,
+      ]);
     },
   },
 };

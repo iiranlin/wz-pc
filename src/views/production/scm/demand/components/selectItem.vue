@@ -118,7 +118,7 @@ export default {
           this.$nextTick(async () => {
             this.tableData = data.details.map((x) => ({
               ...x,
-              supplyDate: dayjs(x.supplyDate).format("YYYY-MM-DD"),
+              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
             }));
             await this.formFillInPage();
             this.$refs["vFormRef"].setFormData({
