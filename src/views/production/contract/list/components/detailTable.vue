@@ -7,6 +7,9 @@
         align="center"
         width="80px"
       >
+        <template #default="{ row }">
+          {{ row.contractVersion | numberToVersion }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="contractName"
@@ -38,12 +41,15 @@
         width="120px"
       >
         <template slot-scope="scope">
-          <div
-            style="color: #2196f3; cursor: pointer"
-            @click="handleDetails(scope.row)"
+          <template v-if="scope.row.contractVersion == 1"> 新增 </template>
+          <template v-else>
+            <div
+              style="color: #2196f3; cursor: pointer"
+              @click="handleDetails(scope.row)"
+            >
+              查看
+            </div></template
           >
-            查看
-          </div>
         </template>
       </el-table-column>
       <el-table-column
@@ -98,6 +104,11 @@ export default {
   computed: {
     id () {
       return this.$route.query.id;
+    }
+  },
+  filters: {
+    numberToVersion (value) {
+      return `V${value}.0`
     }
   },
   data () {

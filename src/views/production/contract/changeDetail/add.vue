@@ -250,15 +250,15 @@ export default {
           const newData = {
             ...data,
             ...backChangeData,
-            fileList: backChangeData?.fileList,
+            fileList: this.status == '1' ? backChangeData?.fileList : data.fileList[0].fileList,
             contractStatus: data.contractStatus == '2',
           }
           this.$refs.vFormRef.setFormData(newData)
 
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
-
-          this.tableData = this.$store.state.project.selectList
+       
+          this.tableData = this.status == '1'? this.$store.state?.project?.selectList : data?.materialList
           this.recordData = this.status == '1' ? this.$store.state.project.contractChangeDetail : data.updateDetails
         });
       });
@@ -317,13 +317,13 @@ export default {
             `changeList`
           ]({
             ...this.$store.state.project.backChangeData,
-            fileList:  [{ fileList }] ,
+            fileList: [{ fileList }],
             saveStatus: true
           })
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
-               
+
               this.$router.push({
                 name: 'contractList'
               })
