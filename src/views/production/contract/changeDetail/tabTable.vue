@@ -30,7 +30,7 @@
       ></el-tab-pane>
     </el-tabs>
 
-    <div style="height: 450px">
+    <div style="max-height: 450px">
       <virtual-scroll
         :dynamic="false"
         v-show="show"
@@ -44,7 +44,7 @@
           :data="virtualList"
           border
           style="width: 100%"
-          height="450"
+          max-height="450"
           v-loading="loading"
           @selection-change="handleSelectionChange"
           ref="dataTable"

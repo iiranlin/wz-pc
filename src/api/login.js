@@ -13,6 +13,14 @@ export function login(data) {
         data
     })
 }
+// 用url username 自动登录
+export function autoLogin (params) {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/auth/loginByUserName`,
+    method: 'get',
+    params
+  })
+}
 
 // 用户信息
 export function info() {
