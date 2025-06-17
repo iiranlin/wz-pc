@@ -683,7 +683,6 @@ export default {
     },
     onSelect (selection, row, checked) {
       this.currentTableSelect = selection
-      console.log('single select', selection)
     },
 
     // 处理表格的勾选变化 - 修改版本
@@ -693,11 +692,11 @@ export default {
         // 忽略这次空事件
         return
       }
-
-      // 全选判断（注意是 length 拼写）
+      // 全选判断
       if (selection.length === this.filteredTableData.length) {
         this.currentTableSelect = selection
       }
+
       // 第一次进入时，将selectedRowKeys备份
       const currentSelectedKeys = selection.map(row => this.getRowKey(row));
       // 再添加当前选中的key

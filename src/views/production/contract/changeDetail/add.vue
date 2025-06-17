@@ -185,7 +185,7 @@ export default {
     onDataChange (data) {
       if (data.type === 'delete') {
         this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
-        this.removeMaterial.push(...data.row.map(x => ({ id: x })))
+        this.removeMaterial.push(...data.row.map(x => ({ id: x ,...x})))
         return
       }
 

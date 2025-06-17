@@ -31,9 +31,40 @@
           width="150px"
         >
         </el-table-column>
-        <el-table-column prop="updateBefore" label="变更前(数量/单价)" align="center">
+        <el-table-column
+          prop="materialName"
+          label="物资名称"
+          align="center"
+          width="200"
+        >
         </el-table-column>
-        <el-table-column prop="updateAfter" label="变更后(数量/单价)" align="center">
+        <el-table-column
+          prop="specModel"
+          label="规格型号"
+          align="center"
+          width="180"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="unit"
+          label="计量单位"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="updateBefore"
+          label="变更前(数量/单价)"
+          align="center"
+          min-width="180"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="updateAfter"
+          label="变更后(数量/单价)"
+          align="center"
+          min-width="180"
+        >
         </el-table-column>
       </el-table>
     </virtual-scroll>
@@ -59,7 +90,7 @@ export default {
   },
   data () {
     return {
-      virtualList:[]
+      virtualList: []
     }
   },
   components: {

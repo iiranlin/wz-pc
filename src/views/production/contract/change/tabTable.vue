@@ -66,6 +66,7 @@
           height="450"
           v-loading="loading"
           @selection-change="handleSelectionChange"
+          @select="onSelect"
           ref="dataTable"
         >
           <virtual-column
@@ -205,7 +206,7 @@
             label="累计计划量"
             width="120"
             align="center"
-            :formatter="(a,b,value)=>value || 0"
+            :formatter="(a, b, value) => value || 0"
           ></el-table-column>
 
           <el-table-column
@@ -426,6 +427,8 @@ export default {
       show: true,
       originalTableData: [], // 原始表格数据备份
       searchKeyword: '', // 添加搜索关键词数据属性
+      currentTableSelect: [],
+
     }
   },
   computed: {
@@ -588,7 +591,7 @@ export default {
           }, []);
           this.$emit('data-change', {
             type: 'delete',
-            row: selectedRowKeys,
+            row: this.currentTableSelect
           });
         })
     },
@@ -716,8 +719,21 @@ export default {
     getRowKey (row) {
       return `${row.id}`;
     },
+    onSelect (selection, row, checked) {
+      console.log(selection,'select')
+      this.currentTableSelect = selection
+    },
     // 处理表格的勾选变化 - 修改版本
     handleSelectionChange (selection) {
+      // 若是空数据且已有正确选项，说明是虚拟滚动触发的伪事件
+      if (selection.length === 0 && this.currentTableSelect.length > 0) {
+        // 忽略这次空事件
+        return
+      }
+      // 全选判断
+      if (selection.length === this.filteredTableData.length) {
+        this.currentTableSelect = selection
+      }
       // 第一次进入时，将selectedRowKeys备份
       const currentSelectedKeys = selection.map(row => this.getRowKey(row));
       // 再添加当前选中的key

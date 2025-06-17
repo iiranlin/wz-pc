@@ -165,7 +165,7 @@ export default {
       lineOptions: [],
       // 菜单按钮、字段等数据
       buttonTop: [
-        { buttonName: '取消', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
+        { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
         { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
       ],
       constructionOptions: [],

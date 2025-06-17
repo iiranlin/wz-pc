@@ -201,8 +201,9 @@ export default {
       console.log(data, 'datas')
 
       if (data.type === 'delete') {
-        this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
-        this.removeMaterial.push(...data.row.map(x => ({ id: x })))
+        const dataKys = data.row.map(x => x.id)
+        this.tableData = this.tableData.filter(item => !dataKys.includes(item.id + ''))
+        this.removeMaterial.push(...data.row)
         return
       }
 

@@ -59,6 +59,7 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :buttonDisable="handleTableButtonDisable"
         >
           <template #status="scope">
             {{ status[scope.value] }}
@@ -157,6 +158,21 @@ export default {
   },
 
   methods: {
+    handleTableButtonDisable (item, row) {
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      if (item.buttonCode === 'flowSee') {
+        return !['0', '3', '2', '4'].includes(row.planStatus)
+      }
+      // 供应中、收货完成、已入库、已完成允许物流查看
+      if (item.buttonCode === 'logisticsView') {
+        return !['6', '7', '8', '9'].includes(row.planStatus)
+      }
+      // 供应中、收货完成、已入库、已完成允许供应概览
+      if (item.buttonCode === 'supplyView') {
+        return !['6', '7', '8', '9'].includes(row.planStatus)
+      }
+      return false
+    },
     onSuccess () {
       this.getList()
     },
@@ -174,7 +190,7 @@ export default {
         })
       }
       // 未确认允许撤回
-      if(item.buttonCode === 'recall'){
+      if (item.buttonCode === 'recall') {
         return this.selection.some(item => {
           return item.status != '2'
         })
@@ -252,6 +268,23 @@ export default {
           break;
         case 'recall':
           this.handleRecall(rowArr[0].id)
+          break;
+        case 'supplyView':
+          this.$router.push({
+            name: 'supplyOverview',
+            query: {
+              id: idArr[0],
+              type: 'view'
+
+            }
+          })
+          break;
+        case 'flowSee':
+          this.workFlowViewVisible = true
+          this.selectedRow = { businessId: idArr[0] }
+          break;
+        case 'logisticsView':
+          this.$router.push({ name: 'logisticsView', query: { id: idArr[0], type: 'view' } })
           break;
       }
     },
