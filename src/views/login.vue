@@ -1,5 +1,5 @@
 <template>
-    <section class="login-container">
+    <section class="login-container" v-loading="loading && username">
         <div id="leftvedio">
             <el-image
                 :src="logoBg"
@@ -7,7 +7,7 @@
                 fit="cover">
             </el-image>
         </div>
-        <div class="login-form">
+        <div class="login-form"  v-if="!username">
             <header>
                 <!-- <div class="login-logo">
                     <img :src="logo" />
@@ -54,12 +54,13 @@
 
 <script>
 import { getCookie, setCookie, removeCookie } from "@/utils/auth";
-import { getVerificationCode } from "@/api/login";
+import { getVerificationCode, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
 import logo from "@/assets/logo/logo.png";
 import logoBg from '../assets/loginBg.png';
 import loginTitle from '../assets/loginTitle.png';
+import { setToken } from "@/utils/auth";
 
 export default {
     name: "Login",
@@ -98,6 +99,11 @@ export default {
             verificationCode: "",
         };
     },
+    computed:{
+        username(){
+            return this.$route.query.username
+        }
+    },
     watch: {
         $route: {
             handler: function (route) {
@@ -117,6 +123,15 @@ export default {
         // }
     },
     created() {
+        // 检查URL参数中是否有username，如果有则自动登录
+        const urlParams = new URLSearchParams(window.location.search);
+        const usernameFromUrl = urlParams.get('username');
+        
+        if (usernameFromUrl) {
+            this.handleAutoLogin(usernameFromUrl);
+            return;
+        }
+        
         const username = getCookie("username");
         const password = getCookie("password");
         this.loginForm = {
@@ -161,6 +176,9 @@ export default {
                         .then((res) => {
                             this.loading = false;
                             if (res.success) {
+                                // 标记为普通登录
+                                sessionStorage.setItem('loginType', 'normal');
+                                
                                 let route = { path: '/' }
                                 if (this.redirect) {
                                     const query = this.redirect.search ? Object.fromEntries(
@@ -220,6 +238,60 @@ export default {
         },
         watchUpdatePasswordClose() {
             this.getVerificationCode();
+        },
+        /**
+         * 处理自动登录
+         * @param {string} username - 从URL参数获取的用户名
+         */
+        handleAutoLogin(username) {
+            this.loading = true;
+            autoLogin({ username })
+                .then((res) => {
+                    this.loading = false;
+                    if (res.success && res.data && res.data.token) {
+                        // 设置token
+                        setToken(res.data.token);
+                        this.$store.commit('SET_TOKEN', res.data.token);
+                        
+                        // 标记为通过username自动登录
+                        sessionStorage.setItem('loginType', 'username');
+                        
+                        // 获取用户信息
+                        this.$store.dispatch('GetInfo').then(() => {
+                            // 生成动态路由
+                            this.$store.dispatch('GenerateRoutes').then(accessRoutes => {
+                                this.$router.addRoutes(accessRoutes); // 动态添加可访问路由表
+                                
+                                // 处理重定向
+                                let route = { path: '/' };
+                                if (this.redirect) {
+                                    const query = this.redirect.search ? Object.fromEntries(
+                                        new URLSearchParams(this.redirect.search)
+                                    ) : {};
+                                    route = {
+                                        path: this.redirect.pathname,
+                                        query: query
+                                    };
+                                }
+                                this.loading = false; // 关闭loading
+                                this.$router.push(route).catch(() => {});
+                            }).catch(() => {
+                                this.$modal.msgError('生成路由失败');
+                                this.loading = false;
+                            });
+                        }).catch(() => {
+                            this.$modal.msgError('获取用户信息失败');
+                            this.loading = false;
+                        });
+                    } else {
+                        this.$modal.msgError(res.message || '自动登录失败');
+                    }
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    this.$modal.msgError('自动登录失败，请手动登录');
+                    console.error('Auto login error:', error);
+                });
         },
     },
     beforeDestroy() {

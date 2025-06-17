@@ -10,6 +10,8 @@ const clearStorage =() => {
   sessionStorage.removeItem('user_info')
   sessionStorage.removeItem('sessionObj')
   sessionStorage.removeItem('username')
+  // 保留loginType，用于退出时判断登录方式
+  // sessionStorage.removeItem('loginType')
   localStorage.removeItem('UNIT_ID')
   localStorage.removeItem('UNIT_NAME')
 }
@@ -101,15 +103,32 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', null)
           removeToken()
+          
+          // 获取登录方式
+          const loginType = sessionStorage.getItem('loginType')
+          
           clearStorage()
-          if(state.logoutMode == 0){
-            const redirect = location.href
-            location.href = `/login?redirect=${encodeURIComponent(redirect)}`
-          } else if(state.logoutMode == 1){
-            // 跳转地址
-            location.href = state.logoutReturnUrl
+          
+          // 根据登录方式决定跳转页面
+          if (loginType === 'username') {
+            // 通过username登录的，跳转到固定页面
+            sessionStorage.removeItem('loginType')
+            location.href = 'http://10.128.239.85:80/login'
             return
+          } else {
+            // 普通登录的，按原逻辑处理
+            if(state.logoutMode == 0){
+              const redirect = location.href
+              location.href = `/login?redirect=${encodeURIComponent(redirect)}`
+            } else if(state.logoutMode == 1){
+              // 跳转地址
+              location.href = state.logoutReturnUrl
+              return
+            }
           }
+          
+          // 清除登录方式标识
+          sessionStorage.removeItem('loginType')
           resolve()
         })
       })
