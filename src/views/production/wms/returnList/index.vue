@@ -55,9 +55,9 @@
           </template>
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
-            <el-button type="text" @click="toFhd(scope.data)">
+            <!-- <el-button type="text" @click="toFhd(scope.data)"> -->
               {{ scope.value }}
-            </el-button>
+            <!-- </el-button> -->
           </template>
         </table-index>
         <pagination
@@ -150,11 +150,6 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
-      if (type === "queryForm") {
-        this.treeCurrentKey = "";
-        this.formData.parentId = "";
-        this.$refs.tree.setCurrentKey(null);
-      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -194,7 +189,7 @@ export default {
       this.handleQuery();
     },
     //退货单
-    toThd() {
+    toThd(row) {
       this.$router.push({
         name: "returnDetail_im",
         query: { id: row.id, type: "view" },
@@ -208,9 +203,9 @@ export default {
       });
     },
     //跳转收货单
-    toShd() {
+    toShd(row) {
       this.$router.push({
-        name: "receive",
+        name: "receivePage",
         query: { id: row.id, type: "view" },
       });
     },

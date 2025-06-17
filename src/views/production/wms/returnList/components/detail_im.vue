@@ -171,6 +171,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
+import dayjs from "dayjs";
 export default {
   name: "returnDetail_im",
   components: {
@@ -224,7 +225,7 @@ export default {
   },
   async created() {},
   mounted() {
-    this.init();
+    this.init(this.id);
   },
   methods: {
     //初始化
@@ -236,6 +237,7 @@ export default {
           await this.formFillInPage();
           const newData = {
             ...data,
+            backDate: data.backDate?dayjs(data.backDate).format("YYYY-MM-DD"):'',
             fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
             fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //质量证明文件
             fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
@@ -243,7 +245,7 @@ export default {
           this.$refs.vFormRef.setFormData(newData);
           //   form action
           this.$refs.vFormRef.setReadMode(true);
-          const detail = data.materialSupplierDetailDTOList.map((x) => ({
+          const detail = data.materialCirculationDetailsTableDTOS.map((x) => ({
             ...x,
             manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
             expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
