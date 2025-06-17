@@ -118,8 +118,8 @@ const user = {
           } else {
             // 普通登录的，按原逻辑处理
             if(state.logoutMode == 0){
-              const redirect = location.href
-              location.href = `/login?redirect=${encodeURIComponent(redirect)}`
+              // const redirect = location.href
+              location.href = `/login` // 移除redirect参数
             } else if(state.logoutMode == 1){
               // 跳转地址
               location.href = state.logoutReturnUrl

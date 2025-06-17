@@ -123,8 +123,8 @@ router.beforeEach(async (to, from, next) => {
                     location.href = returnUrl
                 }
             } else {
-                const redirect = location.href
-                next(`/login?redirect=${encodeURIComponent(redirect)}`) // 否则全部重定向到登录页
+                // const redirect = location.href
+                next(`/login`) // 移除redirect参数，否则全部重定向到登录页
             }
             NProgress.done()
         }
