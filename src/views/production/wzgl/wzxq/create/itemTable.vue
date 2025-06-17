@@ -92,6 +92,13 @@
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>供应时间</span>
+          <el-button
+            type="text"
+            icon="el-icon-document-copy"
+            @click="copyLast('supplyDate')"
+            style="margin-left: 8px; font-size: 14px"
+            >填充</el-button
+          >
         </template>
         <template slot-scope="scope">
           <el-date-picker
@@ -107,6 +114,13 @@
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>使用地点</span>
+          <el-button
+            type="text"
+            icon="el-icon-document-copy"
+            @click="copyLast('addr')"
+            style="margin-left: 8px; font-size: 14px"
+            >填充</el-button
+          >
         </template>
         <template slot-scope="scope">
           <el-input
@@ -120,6 +134,13 @@
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>收货地址</span>
+          <el-button
+            type="text"
+            icon="el-icon-document-copy"
+            @click="copyLast('field2')"
+            style="margin-left: 8px; font-size: 14px"
+            >填充</el-button
+          >
         </template>
         <template slot-scope="scope">
           <el-input
@@ -133,6 +154,13 @@
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>收货人及联系方式</span>
+          <el-button
+            type="text"
+            icon="el-icon-document-copy"
+            @click="copyLast('receiver')"
+            style="margin-left: 8px; font-size: 14px"
+            >填充</el-button
+          >
         </template>
         <template slot-scope="scope">
           <el-input
@@ -146,6 +174,13 @@
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>投资方</span>
+          <el-button
+            type="text"
+            icon="el-icon-document-copy"
+            @click="copyLast('field0')"
+            style="margin-left: 8px; font-size: 14px"
+            >填充</el-button
+          >
         </template>
         <template slot-scope="scope">
           <el-input
@@ -159,6 +194,13 @@
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>投资比例</span>
+          <el-button
+            type="text"
+            icon="el-icon-document-copy"
+            @click="copyLast('field1')"
+            style="margin-left: 8px; font-size: 14px"
+            >填充</el-button
+          >
         </template>
         <template slot-scope="scope">
           <el-input
@@ -197,9 +239,35 @@ export default {
     },
   },
   mounted () {
-    this.tableData = this.getSelectedMaterialList()
+    this.tableData = this.getSelectedMaterialList().map(x => ({
+      ...x,
+      // 合同数量 - 累计数量
+      planAmount: +x.amount - +x.cumulativeAmount
+    }))
   },
   methods: {
+    copyLast (name) {
+      if (!this.tableData || this.tableData.length === 0) return;
+
+      let lastIndex = -1;
+      let lastDate = null;
+
+      for (let i = this.tableData.length - 1; i >= 0; i--) {
+        if (this.tableData[i][name]) {
+          lastIndex = i;
+          lastDate = this.tableData[i][name];
+          break;
+        }
+      }
+
+      if (lastDate === null) return;
+
+      for (let i = lastIndex + 1; i < this.tableData.length; i++) {
+        if (!this.tableData[i][name]) {
+          this.$set(this.tableData[i], name, lastDate);
+        }
+      }
+    },
     onGoView () {
       this.$router.push({
         name: 'requestView',
