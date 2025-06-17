@@ -189,7 +189,7 @@ export default {
     //初始化
     async init(id) {
       this.loading=true;
-      await Api.detailBack(id).then(({ data }) => {
+      await Api[this.backNode=='1'?'detailBack':'detailBySBack'](id).then(({ data }) => {
         this.loading=false;
         this.$nextTick(async () => {
           await this.formFillInPage();

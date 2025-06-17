@@ -215,6 +215,17 @@ export const detailBack = (id) => {
   })
 }
 /**
+ * 入库退货明细
+ * @param {*} params 
+ * @returns 
+ */
+export const detailBySBack = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySBack/${id}`,
+    method: 'get',
+  })
+}
+/**
  * 供应需求详情
  * @param {*} params 
  * @returns 
