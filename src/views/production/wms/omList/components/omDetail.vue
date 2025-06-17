@@ -163,6 +163,7 @@ export default {
             // fileList回显
             const newData = {
               ...data,
+              pickDate: data.pickDate ? dayjs(data.pickDate).format("YYYY-MM-DD") : "",
               fileList: data.fileByList ? JSON.parse(data.fileByList).lld || [] : [], //领料单
             };
             this.$refs.vFormRef.setFormData(newData);
@@ -170,7 +171,9 @@ export default {
             const detail = data.materialSupplierOutDetailDTOS.map((x) => ({
               ...x,
               manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-              expirationDate: x.expirationDate?dayjs(x.expirationDate).format("YYYY-MM-DD"):'',
+              expirationDate: x.expirationDate
+                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+                : "",
             }));
             this.tableData = detail;
           });
