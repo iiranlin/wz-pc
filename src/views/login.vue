@@ -101,7 +101,7 @@ export default {
     },
     computed:{
         username(){
-            return this.$route.query.username
+            return this.$route.query?.username || ''
         }
     },
     watch: {

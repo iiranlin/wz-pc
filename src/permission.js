@@ -77,40 +77,40 @@ router.beforeEach(async (to, from, next) => {
     if (hasToken) {
         to.meta.title && store.dispatch('settings/setTitle', to.meta.title)
         /* has token*/
-        if (to.path === '/login') {
-            next({ path: '/' })
+        // if (to.path === '/login') {
+        //     next({ path: '/' })
+        //     NProgress.done()
+        // } else {
+        const roles = store.getters.roles;   // 是否有菜单权限
+        if (roles) {        // 动态路由状态请求状态
+            if (!to.meta.hidden) {
+                menuRecordFunc({ "funcIcon": to.meta.icon, "funcName": to.meta.title, "funcUrl": to.path })
+            }
+            next()
             NProgress.done()
         } else {
-            const roles = store.getters.roles;	// 是否有菜单权限
-            if (roles) {		// 动态路由状态请求状态
-                if (!to.meta.hidden) {
-                    menuRecordFunc({ "funcIcon": to.meta.icon, "funcName": to.meta.title, "funcUrl": to.path })
-                }
-                next()
-                NProgress.done()
-            } else {
-                store.dispatch('GetI18nMessages')
+            store.dispatch('GetI18nMessages')
                 
-                await store.dispatch('getSysConfig')
-                try {
-                    store.dispatch('GetInfo').then(() => {
-                        store.dispatch('GenerateRoutes').then(accessRoutes => {
-                            router.addRoutes(accessRoutes) // 动态添加可访问路由表
-                            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
-                        })
-                    }).catch(err => {
-                        // store.dispatch('LogOut').then(() => {
-                        //   Message.error(err)
-                        //   // next({ path: '/' })
-                        // })
+            await store.dispatch('getSysConfig')
+            try {
+                store.dispatch('GetInfo').then(() => {
+                    store.dispatch('GenerateRoutes').then(accessRoutes => {
+                        router.addRoutes(accessRoutes) // 动态添加可访问路由表
+                        next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
                     })
-                } catch (error) {
-                    next(`/`)
-                    NProgress.done()
-                }
-                next();
+                }).catch(err => {
+                    // store.dispatch('LogOut').then(() => {
+                    //   Message.error(err)
+                    //   // next({ path: '/' })
+                    // })
+                })
+            } catch (error) {
+                next(`/`)
+                NProgress.done()
             }
+            next();
         }
+        // }
     } else {
         // 没有token
         if (whiteList.indexOf(to.path) !== -1) {
