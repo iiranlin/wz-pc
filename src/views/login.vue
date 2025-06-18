@@ -102,6 +102,9 @@ export default {
     computed:{
         username(){
             return this.$route.query?.username || ''
+        },
+        userkey(){
+            return this.$route.query?.userkey || ''
         }
     },
     watch: {
@@ -255,6 +258,7 @@ export default {
                         
                         // 标记为通过username自动登录
                         sessionStorage.setItem('loginType', 'username');
+                        sessionStorage.setItem('userkey',this.userkey)
                         
                         // 获取用户信息
                         this.$store.dispatch('GetInfo').then(() => {
