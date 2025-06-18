@@ -3,6 +3,7 @@ import { login, logout, info } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { systemConfig } from '@/api/system'
 import { setUserInfo } from '@/utils/user-info'
+import axios from 'axios'
 
 const clearStorage =() => {
   sessionStorage.removeItem('logoutMode')
@@ -112,8 +113,17 @@ const user = {
           // 根据登录方式决定跳转页面
           if (loginType === 'username') {
             // 通过username登录的，跳转到固定页面
-            sessionStorage.removeItem('loginType')
-            location.href = 'http://10.128.239.85:80/login'
+            axios({
+              method: 'get',
+              url: 'http://10.128.239.85/prod-api/monitor/online/tuichu',
+              params: {
+                userkey: sessionStorage.getItem('userkey')
+              }
+            }).then(() => {    
+              sessionStorage.removeItem('loginType')
+              sessionStorage.removeItem('userkey')
+              location.href = 'http://10.128.239.85:80/login'
+            })
             return
           } else {
             // 普通登录的，按原逻辑处理
