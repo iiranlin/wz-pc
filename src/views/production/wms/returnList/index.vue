@@ -42,7 +42,7 @@
           @handleButton="handleButton"
         >
           <!-- 退货单号 -->
-          <template #backNumber="scope">
+          <template #backQualNumber="scope">
             <el-button type="text" @click="toThd(scope.data)">
               {{ scope.value }}
             </el-button>
