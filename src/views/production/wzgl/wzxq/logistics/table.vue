@@ -39,7 +39,7 @@ export default {
   },
   filters: {
     // 日期格式化过滤器
-    formatDate (value, format = 'YYYY-MM-DD') {
+    formatDate (value, format = 'YYYY年MM月DD日 HH:mm') {
       if (!value) return '';
       return dayjs(value).format(format);
     }

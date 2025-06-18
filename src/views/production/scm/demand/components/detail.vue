@@ -63,7 +63,7 @@
               width="150"
               align="center"
             ></el-table-column>
-            <el-table-column prop="putTotal" label="已验收" width="150" align="center"></el-table-column>
+            <el-table-column prop="putTotal" label="已收货" width="150" align="center"></el-table-column>
             <el-table-column
               prop="storeTotal"
               label="已入库"
