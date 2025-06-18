@@ -212,7 +212,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.listStock(Object.assign({ status: 2 }, this.listQuery, this.formData))
+      Api.listStock(Object.assign({ }, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;

@@ -203,7 +203,7 @@ export default {
           type: "create, update",
         },
         {
-          buttonName: "预览",
+          buttonName: "出库预览",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
@@ -248,7 +248,7 @@ export default {
           });
         } else {
           // 填写模式
-          this.buttonTop[1].buttonName = "预览";
+          this.buttonTop[1].buttonName = "出库预览";
           this.$refs.vFormRef.setReadMode(false);
 
           this.$tab.updatePage({
