@@ -276,7 +276,9 @@ export default {
     //上方按钮控制
     buttonDisabledTop(button) {
       //状态为已完成，不能操作出库
-      return this.selection[0].status == "5";
+      // return this.selection[0].status == "5";
+      //无库存不能出库
+      return this.selection[0].relatedCount == "0";
     },
   },
 };
