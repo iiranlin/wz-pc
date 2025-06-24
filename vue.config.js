@@ -121,7 +121,10 @@ module.exports = {
             alias: {
             '@': resolve('src'),
             'public': resolve('public'),
-            'blcd-ui': resolve("src/components/_common-vpage/blcd-ui")
+            'blcd-ui': resolve("src/plugins/blcd/blcd-ui"),
+            'blcd-icons': resolve("src/plugins/blcd/blcd-icons"),
+            'blcd-ui': resolve("src/plugins/blcd/blcd-ui"),
+            'blcd-hiprint': resolve("src/plugins/blcd/blcd-hiprint"),
             }
         },
         plugins: [

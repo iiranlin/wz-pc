@@ -1,0 +1,1031 @@
+{
+  "id": "4832085",
+  "name": "左侧菜单 - 线性图标",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "24px大小的线性图标",
+  "glyphs": [
+    {
+      "icon_id": "43445092",
+      "name": "仓储基础 - 货位",
+      "font_class": "a-cangchujichu-huowei",
+      "unicode": "e7d9",
+      "unicode_decimal": 59353
+    },
+    {
+      "icon_id": "43445090",
+      "name": "仓储基础 - 储区",
+      "font_class": "a-cangchujichu-chuqu",
+      "unicode": "e7da",
+      "unicode_decimal": 59354
+    },
+    {
+      "icon_id": "43445089",
+      "name": "仓储基础 - 地区",
+      "font_class": "a-cangchujichu-diqu",
+      "unicode": "e7db",
+      "unicode_decimal": 59355
+    },
+    {
+      "icon_id": "43445088",
+      "name": "仓储基础 - 通道",
+      "font_class": "a-cangchujichu-tongdao",
+      "unicode": "e7dc",
+      "unicode_decimal": 59356
+    },
+    {
+      "icon_id": "43445087",
+      "name": "仓储基础 - 仓库",
+      "font_class": "a-cangchujichu-cangku",
+      "unicode": "e7dd",
+      "unicode_decimal": 59357
+    },
+    {
+      "icon_id": "43445095",
+      "name": "借还管理 - 借出单查询",
+      "font_class": "a-jiehuanguanli-jiechudanchaxun",
+      "unicode": "e7d5",
+      "unicode_decimal": 59349
+    },
+    {
+      "icon_id": "43445094",
+      "name": "借还管理 - 借出单维护",
+      "font_class": "a-jiehuanguanli-jiechudanweihu",
+      "unicode": "e7d6",
+      "unicode_decimal": 59350
+    },
+    {
+      "icon_id": "43445091",
+      "name": "借还管理 - 归还单维护",
+      "font_class": "a-jiehuanguanli-guihuandanweihu",
+      "unicode": "e7d7",
+      "unicode_decimal": 59351
+    },
+    {
+      "icon_id": "43445093",
+      "name": "借还管理 - 归还单查询",
+      "font_class": "a-jiehuanguanli-guihuandanchaxun",
+      "unicode": "e7d8",
+      "unicode_decimal": 59352
+    },
+    {
+      "icon_id": "43427259",
+      "name": "生产管理 - 领料单查询",
+      "font_class": "a-shengchanguanli-lingliaodanchaxun",
+      "unicode": "e7c7",
+      "unicode_decimal": 59335
+    },
+    {
+      "icon_id": "43427253",
+      "name": "库存管理 - 库存查询",
+      "font_class": "a-kucunguanli-kucunchaxun",
+      "unicode": "e7c8",
+      "unicode_decimal": 59336
+    },
+    {
+      "icon_id": "43427254",
+      "name": "调拨管理 - 调出单维护",
+      "font_class": "a-tiaoboguanli-tiaochudanweihu",
+      "unicode": "e7c9",
+      "unicode_decimal": 59337
+    },
+    {
+      "icon_id": "43427249",
+      "name": "调拨管理 - 调入单查询",
+      "font_class": "a-tiaoboguanli-tiaorudanchaxun",
+      "unicode": "e7ca",
+      "unicode_decimal": 59338
+    },
+    {
+      "icon_id": "43427251",
+      "name": "库存管理 - 调整单审核",
+      "font_class": "a-kucunguanli-tiaozhengdanshenhe",
+      "unicode": "e7cb",
+      "unicode_decimal": 59339
+    },
+    {
+      "icon_id": "43427248",
+      "name": "出库管理 - 出库单维护",
+      "font_class": "a-chukuguanli-chukudanweihu",
+      "unicode": "e7cc",
+      "unicode_decimal": 59340
+    },
+    {
+      "icon_id": "43427246",
+      "name": "调拨管理 - 调出单查询",
+      "font_class": "a-tiaoboguanli-tiaochudanchaxun",
+      "unicode": "e7cd",
+      "unicode_decimal": 59341
+    },
+    {
+      "icon_id": "43427247",
+      "name": "出库管理 - 出库单明细",
+      "font_class": "a-chukuguanli-chukudanmingxi",
+      "unicode": "e7ce",
+      "unicode_decimal": 59342
+    },
+    {
+      "icon_id": "43427245",
+      "name": "采购管理 - 采购查询",
+      "font_class": "a-caigouguanli-caigouchaxun1",
+      "unicode": "e7cf",
+      "unicode_decimal": 59343
+    },
+    {
+      "icon_id": "43427243",
+      "name": "车间管理 - 工序流转卡",
+      "font_class": "a-chejianguanli-gongxuliuzhuanka",
+      "unicode": "e7d0",
+      "unicode_decimal": 59344
+    },
+    {
+      "icon_id": "43427242",
+      "name": "车间管理 - 车间参数",
+      "font_class": "a-chejianguanli-chejiancanshu",
+      "unicode": "e7d1",
+      "unicode_decimal": 59345
+    },
+    {
+      "icon_id": "43427239",
+      "name": "报废管理 - 报废查询",
+      "font_class": "a-baofeiguanli-baofeichaxun",
+      "unicode": "e7d2",
+      "unicode_decimal": 59346
+    },
+    {
+      "icon_id": "43427241",
+      "name": "报废管理 - 报废申请",
+      "font_class": "a-baofeiguanli-baofeishenqing",
+      "unicode": "e7d3",
+      "unicode_decimal": 59347
+    },
+    {
+      "icon_id": "43427240",
+      "name": "报废管理 - 报废台账",
+      "font_class": "a-baofeiguanli-baofeitaizhang",
+      "unicode": "e7d4",
+      "unicode_decimal": 59348
+    },
+    {
+      "icon_id": "43427262",
+      "name": "生产管理 - 领料追溯查询",
+      "font_class": "a-shengchanguanli-lingliaozhuisuchaxun",
+      "unicode": "e7b7",
+      "unicode_decimal": 59319
+    },
+    {
+      "icon_id": "43427270",
+      "name": "销售查询 - 销售退货查询",
+      "font_class": "a-xiaoshouchaxun-xiaoshoutuihuochaxun",
+      "unicode": "e7b8",
+      "unicode_decimal": 59320
+    },
+    {
+      "icon_id": "43427261",
+      "name": "生产管理 - 计时计件统计",
+      "font_class": "a-shengchanguanli-jishijijiantongji",
+      "unicode": "e7b9",
+      "unicode_decimal": 59321
+    },
+    {
+      "icon_id": "43427269",
+      "name": "生产管理 - 退料单维护",
+      "font_class": "a-shengchanguanli-tuiliaodanweihu",
+      "unicode": "e7ba",
+      "unicode_decimal": 59322
+    },
+    {
+      "icon_id": "43427268",
+      "name": "生产管理 - 完工报告审核",
+      "font_class": "a-shengchanguanli-wangongbaogaoshenhe",
+      "unicode": "e7bb",
+      "unicode_decimal": 59323
+    },
+    {
+      "icon_id": "43427263",
+      "name": "库存管理 - 盘点单维护",
+      "font_class": "a-kucunguanli-pandiandanweihu",
+      "unicode": "e7bc",
+      "unicode_decimal": 59324
+    },
+    {
+      "icon_id": "43427266",
+      "name": "生产管理 - 生产参数",
+      "font_class": "a-shengchanguanli-shengchancanshu",
+      "unicode": "e7bd",
+      "unicode_decimal": 59325
+    },
+    {
+      "icon_id": "43427265",
+      "name": "生产管理 - 制损单审核",
+      "font_class": "a-shengchanguanli-zhisundanshenhe",
+      "unicode": "e7be",
+      "unicode_decimal": 59326
+    },
+    {
+      "icon_id": "43427256",
+      "name": "库存管理 - 批次号查询",
+      "font_class": "a-kucunguanli-picihaochaxun",
+      "unicode": "e7bf",
+      "unicode_decimal": 59327
+    },
+    {
+      "icon_id": "43427258",
+      "name": "调拨管理 - 调入单维护",
+      "font_class": "a-tiaoboguanli-tiaorudanweihu",
+      "unicode": "e7c0",
+      "unicode_decimal": 59328
+    },
+    {
+      "icon_id": "43427257",
+      "name": "入库管理 - 入库单维护",
+      "font_class": "a-rukuguanli-rukudanweihu",
+      "unicode": "e7c1",
+      "unicode_decimal": 59329
+    },
+    {
+      "icon_id": "43427250",
+      "name": "报废管理 - 报废处置",
+      "font_class": "a-baofeiguanli-baofeichuzhi",
+      "unicode": "e7c2",
+      "unicode_decimal": 59330
+    },
+    {
+      "icon_id": "43427244",
+      "name": "采购查询 - 采购订单查询",
+      "font_class": "a-caigouchaxun-caigoudingdanchaxun",
+      "unicode": "e7c3",
+      "unicode_decimal": 59331
+    },
+    {
+      "icon_id": "43427260",
+      "name": "生产管理 - 生产订单工作台",
+      "font_class": "a-shengchanguanli-shengchandingdangongzuotai",
+      "unicode": "e7c4",
+      "unicode_decimal": 59332
+    },
+    {
+      "icon_id": "43427252",
+      "name": "采购查询 - 退供单查询",
+      "font_class": "a-caigouchaxun-tuigongdanchaxun",
+      "unicode": "e7c5",
+      "unicode_decimal": 59333
+    },
+    {
+      "icon_id": "43427255",
+      "name": "入库管理 - 到货确认",
+      "font_class": "a-rukuguanli-daohuoqueren",
+      "unicode": "e7c6",
+      "unicode_decimal": 59334
+    },
+    {
+      "icon_id": "43427279",
+      "name": "制造基础 - BOM管理",
+      "font_class": "a-zhizaojichu-BOMguanli",
+      "unicode": "e7ac",
+      "unicode_decimal": 59308
+    },
+    {
+      "icon_id": "43427276",
+      "name": "需求计划 - 物料需求计划",
+      "font_class": "a-xuqiujihua-wuliaoxuqiujihua",
+      "unicode": "e7ad",
+      "unicode_decimal": 59309
+    },
+    {
+      "icon_id": "43427278",
+      "name": "生产管理 - 领料单维护",
+      "font_class": "a-shengchanguanli-lingliaodanweihu",
+      "unicode": "e7ae",
+      "unicode_decimal": 59310
+    },
+    {
+      "icon_id": "43427277",
+      "name": "销售查询 - 报价单查询",
+      "font_class": "a-xiaoshouchaxun-baojiadanchaxun",
+      "unicode": "e7af",
+      "unicode_decimal": 59311
+    },
+    {
+      "icon_id": "43427275",
+      "name": "销售查询 - 预投单查询",
+      "font_class": "a-xiaoshouchaxun-yutoudanchaxun",
+      "unicode": "e7b0",
+      "unicode_decimal": 59312
+    },
+    {
+      "icon_id": "43427264",
+      "name": "生产管理 - 退料单查询",
+      "font_class": "a-shengchanguanli-tuiliaodanchaxun",
+      "unicode": "e7b1",
+      "unicode_decimal": 59313
+    },
+    {
+      "icon_id": "43427267",
+      "name": "入库管理 - 入库单明细",
+      "font_class": "a-rukuguanli-rukudanmingxi",
+      "unicode": "e7b2",
+      "unicode_decimal": 59314
+    },
+    {
+      "icon_id": "43427273",
+      "name": "需求计划 - 自研管理",
+      "font_class": "a-xuqiujihua-ziyanguanli",
+      "unicode": "e7b3",
+      "unicode_decimal": 59315
+    },
+    {
+      "icon_id": "43427274",
+      "name": "制造基础 - 工艺管理",
+      "font_class": "a-zhizaojichu-gongyiguanli",
+      "unicode": "e7b4",
+      "unicode_decimal": 59316
+    },
+    {
+      "icon_id": "43427271",
+      "name": "销售查询 - 销售出货查询",
+      "font_class": "a-xiaoshouchaxun-xiaoshouchuhuochaxun",
+      "unicode": "e7b5",
+      "unicode_decimal": 59317
+    },
+    {
+      "icon_id": "43427272",
+      "name": "销售查询 - 销售订单查询",
+      "font_class": "a-xiaoshouchaxun-xiaoshoudingdanchaxun",
+      "unicode": "e7b6",
+      "unicode_decimal": 59318
+    },
+    {
+      "icon_id": "43392573",
+      "name": "仓储管理 - 库存事物 - 台账",
+      "font_class": "a-cangchuguanli-kucunshiwu-taizhang",
+      "unicode": "e79c",
+      "unicode_decimal": 59292
+    },
+    {
+      "icon_id": "43392577",
+      "name": "待办事项 - 已审核",
+      "font_class": "a-daibanshixiang-yishenhe",
+      "unicode": "e79d",
+      "unicode_decimal": 59293
+    },
+    {
+      "icon_id": "43392576",
+      "name": "存货核算",
+      "font_class": "cunhuohesuan",
+      "unicode": "e79e",
+      "unicode_decimal": 59294
+    },
+    {
+      "icon_id": "43392575",
+      "name": "待办事项 - 待处理",
+      "font_class": "a-daibanshixiang-daichuli",
+      "unicode": "e79f",
+      "unicode_decimal": 59295
+    },
+    {
+      "icon_id": "43392572",
+      "name": "存货核算 - 存货参数",
+      "font_class": "a-cunhuohesuan-cunhuocanshu",
+      "unicode": "e7a0",
+      "unicode_decimal": 59296
+    },
+    {
+      "icon_id": "43392571",
+      "name": "存货核算 - 采购事物",
+      "font_class": "a-cunhuohesuan-caigoushiwu",
+      "unicode": "e7a1",
+      "unicode_decimal": 59297
+    },
+    {
+      "icon_id": "43392570",
+      "name": "仓储管理 - 生产事物  - 产品入库",
+      "font_class": "a-cangchuguanli-shengchanshiwu-chanpinruku",
+      "unicode": "e7a2",
+      "unicode_decimal": 59298
+    },
+    {
+      "icon_id": "43392568",
+      "name": "仓储管理 - 生产事物",
+      "font_class": "a-cangchuguanli-shengchanshiwu",
+      "unicode": "e7a3",
+      "unicode_decimal": 59299
+    },
+    {
+      "icon_id": "43392567",
+      "name": "仓储管理 - 入库管理",
+      "font_class": "a-cangchuguanli-rukuguanli",
+      "unicode": "e7a4",
+      "unicode_decimal": 59300
+    },
+    {
+      "icon_id": "43392569",
+      "name": "仓储管理",
+      "font_class": "cangchuguanli",
+      "unicode": "e7a5",
+      "unicode_decimal": 59301
+    },
+    {
+      "icon_id": "43392565",
+      "name": "仓储管理 - 调拨管理",
+      "font_class": "a-cangchuguanli-tiaoboguanli",
+      "unicode": "e7a6",
+      "unicode_decimal": 59302
+    },
+    {
+      "icon_id": "43392566",
+      "name": "仓储管理 - 库存管理",
+      "font_class": "a-cangchuguanli-kucunguanli",
+      "unicode": "e7a7",
+      "unicode_decimal": 59303
+    },
+    {
+      "icon_id": "43392564",
+      "name": "仓储管理 - 借还管理",
+      "font_class": "a-cangchuguanli-jiehuanguanli",
+      "unicode": "e7a8",
+      "unicode_decimal": 59304
+    },
+    {
+      "icon_id": "43392563",
+      "name": "仓储管理 - 仓储基础",
+      "font_class": "a-cangchuguanli-cangchujichu",
+      "unicode": "e7a9",
+      "unicode_decimal": 59305
+    },
+    {
+      "icon_id": "43392562",
+      "name": "仓储管理 - 出库管理",
+      "font_class": "a-cangchuguanli-chukuguanli",
+      "unicode": "e7aa",
+      "unicode_decimal": 59306
+    },
+    {
+      "icon_id": "43392561",
+      "name": "仓储管理 - 报废管理",
+      "font_class": "a-cangchuguanli-baofeiguanli",
+      "unicode": "e7ab",
+      "unicode_decimal": 59307
+    },
+    {
+      "icon_id": "43392583",
+      "name": "仓储管理 - 库存事物 - 库存",
+      "font_class": "a-cangchuguanli-kucunshiwu-kucun",
+      "unicode": "e795",
+      "unicode_decimal": 59285
+    },
+    {
+      "icon_id": "43392582",
+      "name": "待办事项 - 待审核",
+      "font_class": "a-daibanshixiang-daishenhe",
+      "unicode": "e796",
+      "unicode_decimal": 59286
+    },
+    {
+      "icon_id": "43392581",
+      "name": "待办事项",
+      "font_class": "daibanshixiang",
+      "unicode": "e797",
+      "unicode_decimal": 59287
+    },
+    {
+      "icon_id": "43392580",
+      "name": "存货核算 - 基础设置",
+      "font_class": "a-cunhuohesuan-jichushezhi",
+      "unicode": "e798",
+      "unicode_decimal": 59288
+    },
+    {
+      "icon_id": "43392579",
+      "name": "工作台",
+      "font_class": "gongzuotai",
+      "unicode": "e799",
+      "unicode_decimal": 59289
+    },
+    {
+      "icon_id": "43392578",
+      "name": "存货核算 - 基础设置 - 会计期间",
+      "font_class": "a-cunhuohesuan-jichushezhi-huijiqijian",
+      "unicode": "e79a",
+      "unicode_decimal": 59290
+    },
+    {
+      "icon_id": "43392574",
+      "name": "存货核算 - 采购事物 - 采购入库",
+      "font_class": "a-cunhuohesuan-caigoushiwu-caigouruku",
+      "unicode": "e79b",
+      "unicode_decimal": 59291
+    },
+    {
+      "icon_id": "43392619",
+      "name": "人员管理",
+      "font_class": "renyuanguanli",
+      "unicode": "e78c",
+      "unicode_decimal": 59276
+    },
+    {
+      "icon_id": "43392617",
+      "name": "机构管理 - 机构维护",
+      "font_class": "a-jigouguanli-jigouweihu",
+      "unicode": "e78d",
+      "unicode_decimal": 59277
+    },
+    {
+      "icon_id": "43392615",
+      "name": "合同管理 - 合同查询",
+      "font_class": "a-hetongguanli-hetongchaxun",
+      "unicode": "e78e",
+      "unicode_decimal": 59278
+    },
+    {
+      "icon_id": "43392613",
+      "name": "机构管理 - 单位调整",
+      "font_class": "a-jigouguanli-danweitiaozheng",
+      "unicode": "e78f",
+      "unicode_decimal": 59279
+    },
+    {
+      "icon_id": "43392616",
+      "name": "人员管理 - 信息维护",
+      "font_class": "a-renyuanguanli-xinxiweihu",
+      "unicode": "e790",
+      "unicode_decimal": 59280
+    },
+    {
+      "icon_id": "43392611",
+      "name": "公共基础",
+      "font_class": "gonggongjichu",
+      "unicode": "e791",
+      "unicode_decimal": 59281
+    },
+    {
+      "icon_id": "43392610",
+      "name": "公共基础- 物料管理",
+      "font_class": "a-gonggongjichu-wuliaoguanli",
+      "unicode": "e792",
+      "unicode_decimal": 59282
+    },
+    {
+      "icon_id": "43392609",
+      "name": "公共基础 - 物料档案",
+      "font_class": "a-gonggongjichu-wuliaodangan",
+      "unicode": "e793",
+      "unicode_decimal": 59283
+    },
+    {
+      "icon_id": "43392608",
+      "name": "公共基础 - 物料分类",
+      "font_class": "a-gonggongjichu-wuliaofenlei",
+      "unicode": "e794",
+      "unicode_decimal": 59284
+    },
+    {
+      "icon_id": "43392633",
+      "name": "系统管理 - 国际化管理",
+      "font_class": "a-xitongguanli-guojihuaguanli",
+      "unicode": "e77b",
+      "unicode_decimal": 59259
+    },
+    {
+      "icon_id": "43392637",
+      "name": "系统管理 - 通知公告",
+      "font_class": "a-xitongguanli-tongzhigonggao",
+      "unicode": "e77c",
+      "unicode_decimal": 59260
+    },
+    {
+      "icon_id": "43392628",
+      "name": "生产制造 - 生产管理",
+      "font_class": "a-shengchanzhizao-shengchanguanli",
+      "unicode": "e77d",
+      "unicode_decimal": 59261
+    },
+    {
+      "icon_id": "43392631",
+      "name": "系统管理 - 服务管理",
+      "font_class": "a-xitongguanli-fuwuguanli",
+      "unicode": "e77e",
+      "unicode_decimal": 59262
+    },
+    {
+      "icon_id": "43392629",
+      "name": "系统管理 - 菜单管理",
+      "font_class": "a-xitongguanli-caidanguanli",
+      "unicode": "e77f",
+      "unicode_decimal": 59263
+    },
+    {
+      "icon_id": "43392635",
+      "name": "系统管理 - 权限管理",
+      "font_class": "a-xitongguanli-quanxianguanli",
+      "unicode": "e780",
+      "unicode_decimal": 59264
+    },
+    {
+      "icon_id": "43392627",
+      "name": "生产制造",
+      "font_class": "shengchanzhizao",
+      "unicode": "e781",
+      "unicode_decimal": 59265
+    },
+    {
+      "icon_id": "43392630",
+      "name": "系统管理 - 角色管理",
+      "font_class": "a-xitongguanli-jiaoseguanli",
+      "unicode": "e782",
+      "unicode_decimal": 59266
+    },
+    {
+      "icon_id": "43392625",
+      "name": "生产制造 - 制造基础",
+      "font_class": "a-shengchanzhizao-zhizaojichu",
+      "unicode": "e783",
+      "unicode_decimal": 59267
+    },
+    {
+      "icon_id": "43392622",
+      "name": "机构管理",
+      "font_class": "jigouguanli",
+      "unicode": "e756",
+      "unicode_decimal": 59222
+    },
+    {
+      "icon_id": "43392623",
+      "name": "生产制造 - 需求计划",
+      "font_class": "a-shengchanzhizao-xuqiujihua",
+      "unicode": "e784",
+      "unicode_decimal": 59268
+    },
+    {
+      "icon_id": "43392626",
+      "name": "外包人员管理",
+      "font_class": "waibaorenyuanguanli",
+      "unicode": "e785",
+      "unicode_decimal": 59269
+    },
+    {
+      "icon_id": "43392624",
+      "name": "外包人员管理 - 岗位管理",
+      "font_class": "a-waibaorenyuanguanli-gangweiguanli",
+      "unicode": "e786",
+      "unicode_decimal": 59270
+    },
+    {
+      "icon_id": "43392621",
+      "name": "生产制造 - 车间管理",
+      "font_class": "a-shengchanzhizao-chejianguanli",
+      "unicode": "e787",
+      "unicode_decimal": 59271
+    },
+    {
+      "icon_id": "43392618",
+      "name": "生产制造 - 存货核算",
+      "font_class": "a-shengchanzhizao-cunhuohesuan",
+      "unicode": "e788",
+      "unicode_decimal": 59272
+    },
+    {
+      "icon_id": "43392620",
+      "name": "人力资源",
+      "font_class": "renliziyuan",
+      "unicode": "e789",
+      "unicode_decimal": 59273
+    },
+    {
+      "icon_id": "43392614",
+      "name": "合同管理",
+      "font_class": "hetongguanli",
+      "unicode": "e78a",
+      "unicode_decimal": 59274
+    },
+    {
+      "icon_id": "43392612",
+      "name": "合同管理 - 合同维护",
+      "font_class": "a-hetongguanli-hetongweihu",
+      "unicode": "e78b",
+      "unicode_decimal": 59275
+    },
+    {
+      "icon_id": "43392656",
+      "name": "运营管理 - 需求计划查询",
+      "font_class": "a-yunyingguanli-xuqiujihuachaxun",
+      "unicode": "e76b",
+      "unicode_decimal": 59243
+    },
+    {
+      "icon_id": "43392650",
+      "name": "销售管理- 销售出货",
+      "font_class": "a-xiaoshouguanli-xiaoshouchuhuo",
+      "unicode": "e76c",
+      "unicode_decimal": 59244
+    },
+    {
+      "icon_id": "43392654",
+      "name": "外包人员管理 - 供应商管理",
+      "font_class": "a-waibaorenyuanguanli-gongyingshangguanli",
+      "unicode": "e757",
+      "unicode_decimal": 59223
+    },
+    {
+      "icon_id": "43392651",
+      "name": "销售管理- 销售订单",
+      "font_class": "a-xiaoshouguanli-xiaoshoudingdan",
+      "unicode": "e76d",
+      "unicode_decimal": 59245
+    },
+    {
+      "icon_id": "43392644",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e759",
+      "unicode_decimal": 59225
+    },
+    {
+      "icon_id": "43392645",
+      "name": "项目管理",
+      "font_class": "xiangmuguanli",
+      "unicode": "e76e",
+      "unicode_decimal": 59246
+    },
+    {
+      "icon_id": "43392648",
+      "name": "销售管理- 销售查询",
+      "font_class": "a-xiaoshouguanli-xiaoshouchaxun",
+      "unicode": "e76f",
+      "unicode_decimal": 59247
+    },
+    {
+      "icon_id": "43392647",
+      "name": "销售管理- 报价单",
+      "font_class": "a-xiaoshouguanli-baojiadan",
+      "unicode": "e770",
+      "unicode_decimal": 59248
+    },
+    {
+      "icon_id": "43392649",
+      "name": "销售管理- 销售退货",
+      "font_class": "a-xiaoshouguanli-xiaoshoutuihuo",
+      "unicode": "e771",
+      "unicode_decimal": 59249
+    },
+    {
+      "icon_id": "43392642",
+      "name": "系统管理 - 流程管理",
+      "font_class": "a-xitongguanli-liuchengguanli",
+      "unicode": "e772",
+      "unicode_decimal": 59250
+    },
+    {
+      "icon_id": "43392643",
+      "name": "项目管理 - 项目维护",
+      "font_class": "a-xiangmuguanli-xiangmuweihu",
+      "unicode": "e773",
+      "unicode_decimal": 59251
+    },
+    {
+      "icon_id": "43392646",
+      "name": "销售管理- 客户档案",
+      "font_class": "a-xiaoshouguanli-kehudangan",
+      "unicode": "e774",
+      "unicode_decimal": 59252
+    },
+    {
+      "icon_id": "43392641",
+      "name": "系统管理 - 组织机构",
+      "font_class": "a-xitongguanli-zuzhijigou",
+      "unicode": "e775",
+      "unicode_decimal": 59253
+    },
+    {
+      "icon_id": "43392640",
+      "name": "项目管理 - 项目查询",
+      "font_class": "a-xiangmuguanli-xiangmuchaxun",
+      "unicode": "e776",
+      "unicode_decimal": 59254
+    },
+    {
+      "icon_id": "43392636",
+      "name": "系统管理 - 日志管理",
+      "font_class": "a-xitongguanli-rizhiguanli",
+      "unicode": "e758",
+      "unicode_decimal": 59224
+    },
+    {
+      "icon_id": "43392638",
+      "name": "系统管理 - 字典管理",
+      "font_class": "a-xitongguanli-zidianguanli",
+      "unicode": "e777",
+      "unicode_decimal": 59255
+    },
+    {
+      "icon_id": "43392632",
+      "name": "系统管理 - 打印管理",
+      "font_class": "a-xitongguanli-dayinguanli",
+      "unicode": "e778",
+      "unicode_decimal": 59256
+    },
+    {
+      "icon_id": "43392639",
+      "name": "系统管理 - 用户管理",
+      "font_class": "a-xitongguanli-yonghuguanli",
+      "unicode": "e779",
+      "unicode_decimal": 59257
+    },
+    {
+      "icon_id": "43392634",
+      "name": "系统管理 - 单据规则",
+      "font_class": "a-xitongguanli-danjuguize",
+      "unicode": "e77a",
+      "unicode_decimal": 59258
+    },
+    {
+      "icon_id": "43392668",
+      "name": "子系统模板",
+      "font_class": "zixitongmoban",
+      "unicode": "e75c",
+      "unicode_decimal": 59228
+    },
+    {
+      "icon_id": "43392669",
+      "name": "运营管理 - 运营需求",
+      "font_class": "a-yunyingguanli-yunyingxuqiu",
+      "unicode": "e75d",
+      "unicode_decimal": 59229
+    },
+    {
+      "icon_id": "43392670",
+      "name": "质量管理 - 质检单查询",
+      "font_class": "a-zhiliangguanli-zhijiandanchaxun",
+      "unicode": "e75e",
+      "unicode_decimal": 59230
+    },
+    {
+      "icon_id": "43392667",
+      "name": "质量管理 - 质检单维护",
+      "font_class": "a-zhiliangguanli-zhijiandanweihu",
+      "unicode": "e75f",
+      "unicode_decimal": 59231
+    },
+    {
+      "icon_id": "43392666",
+      "name": "质量管理 - 质检参数",
+      "font_class": "a-zhiliangguanli-zhijiancanshu",
+      "unicode": "e75b",
+      "unicode_decimal": 59227
+    },
+    {
+      "icon_id": "43392665",
+      "name": "质量管理 - 不良品台账",
+      "font_class": "a-zhiliangguanli-buliangpintaizhang",
+      "unicode": "e760",
+      "unicode_decimal": 59232
+    },
+    {
+      "icon_id": "43392664",
+      "name": "销售管理- 销售合同追溯",
+      "font_class": "a-xiaoshouguanli-xiaoshouhetongzhuisu",
+      "unicode": "e75a",
+      "unicode_decimal": 59226
+    },
+    {
+      "icon_id": "43392663",
+      "name": "在线开发 - 表单设计",
+      "font_class": "a-zaixiankaifa-biaodansheji",
+      "unicode": "e761",
+      "unicode_decimal": 59233
+    },
+    {
+      "icon_id": "43392662",
+      "name": "质量管理",
+      "font_class": "zhiliangguanli",
+      "unicode": "e762",
+      "unicode_decimal": 59234
+    },
+    {
+      "icon_id": "43392660",
+      "name": "在线开发",
+      "font_class": "zaixiankaifa",
+      "unicode": "e763",
+      "unicode_decimal": 59235
+    },
+    {
+      "icon_id": "43392661",
+      "name": "运营管理 - 用料申请维护",
+      "font_class": "a-yunyingguanli-yongliaoshenqingweihu",
+      "unicode": "e764",
+      "unicode_decimal": 59236
+    },
+    {
+      "icon_id": "43392659",
+      "name": "运营管理 - 用料申请查询",
+      "font_class": "a-yunyingguanli-yongliaoshenqingchaxun",
+      "unicode": "e765",
+      "unicode_decimal": 59237
+    },
+    {
+      "icon_id": "43392658",
+      "name": "销售管理",
+      "font_class": "xiaoshouguanli",
+      "unicode": "e766",
+      "unicode_decimal": 59238
+    },
+    {
+      "icon_id": "43392655",
+      "name": "运营管理",
+      "font_class": "yunyingguanli",
+      "unicode": "e767",
+      "unicode_decimal": 59239
+    },
+    {
+      "icon_id": "43392652",
+      "name": "销售管理- 预投单维护",
+      "font_class": "a-xiaoshouguanli-yutoudanweihu",
+      "unicode": "e768",
+      "unicode_decimal": 59240
+    },
+    {
+      "icon_id": "43392653",
+      "name": "运营管理 - 需求计划维护",
+      "font_class": "a-yunyingguanli-xuqiujihuaweihu",
+      "unicode": "e769",
+      "unicode_decimal": 59241
+    },
+    {
+      "icon_id": "43392657",
+      "name": "在线开发 - 代码生成",
+      "font_class": "a-zaixiankaifa-daimashengcheng",
+      "unicode": "e76a",
+      "unicode_decimal": 59242
+    },
+    {
+      "icon_id": "43392400",
+      "name": "采购管理 - 采购参数控制",
+      "font_class": "a-caigouguanli-caigoucanshukongzhi",
+      "unicode": "e74c",
+      "unicode_decimal": 59212
+    },
+    {
+      "icon_id": "43392401",
+      "name": "采购管理 - 采购订单维护",
+      "font_class": "a-caigouguanli-caigoudingdanweihu",
+      "unicode": "e74d",
+      "unicode_decimal": 59213
+    },
+    {
+      "icon_id": "43392402",
+      "name": "采购管理 - 采购查询",
+      "font_class": "a-caigouguanli-caigouchaxun",
+      "unicode": "e74e",
+      "unicode_decimal": 59214
+    },
+    {
+      "icon_id": "43392403",
+      "name": "采购管理 - 采购合同追溯",
+      "font_class": "a-caigouguanli-caigouhetongzhuisu",
+      "unicode": "e74f",
+      "unicode_decimal": 59215
+    },
+    {
+      "icon_id": "43392404",
+      "name": "采购管理 - 采购计划复合",
+      "font_class": "a-caigouguanli-caigoujihuafuhe",
+      "unicode": "e750",
+      "unicode_decimal": 59216
+    },
+    {
+      "icon_id": "43392405",
+      "name": "采购管理 - 采购计划维护",
+      "font_class": "a-caigouguanli-caigoujihuaweihu",
+      "unicode": "e751",
+      "unicode_decimal": 59217
+    },
+    {
+      "icon_id": "43392406",
+      "name": "采购管理 - 采购计划确认",
+      "font_class": "a-caigouguanli-caigoujihuaqueren",
+      "unicode": "e752",
+      "unicode_decimal": 59218
+    },
+    {
+      "icon_id": "43392407",
+      "name": "采购管理 - 退供单维护",
+      "font_class": "a-caigouguanli-tuigongdanweihu",
+      "unicode": "e753",
+      "unicode_decimal": 59219
+    },
+    {
+      "icon_id": "43392408",
+      "name": "采购管理 - 供应商档案",
+      "font_class": "a-caigouguanli-gongyingshangdangan",
+      "unicode": "e754",
+      "unicode_decimal": 59220
+    },
+    {
+      "icon_id": "43392409",
+      "name": "采购管理",
+      "font_class": "caigouguanli",
+      "unicode": "e755",
+      "unicode_decimal": 59221
+    }
+  ]
+}

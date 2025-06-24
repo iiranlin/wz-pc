@@ -1,0 +1,95 @@
+{
+  "_from": "blcd-hiprint@^1.0.26",
+  "_id": "blcd-hiprint@1.0.26",
+  "_inBundle": false,
+  "_integrity": "sha512-gjzEAGj41VOGMrcpYR+m/S6Vy7CbACybll4TGf7pQLQ58kIxCC0SZKYBvMbW63F5r3SLrBwttLZK7r6LFaUXyQ==",
+  "_location": "/blcd-hiprint",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "blcd-hiprint@^1.0.26",
+    "name": "blcd-hiprint",
+    "escapedName": "blcd-hiprint",
+    "rawSpec": "^1.0.26",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.26"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://nexus.rails.cn/repository/npm-all/blcd-hiprint/-/blcd-hiprint-1.0.26.tgz",
+  "_shasum": "fdbab624859b04e115af77b95477e5580e8a8c86",
+  "_spec": "blcd-hiprint@^1.0.26",
+  "_where": "C:\\project\\code\\prodmgr-front",
+  "author": "",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "bundleDependencies": false,
+  "dependencies": {
+    "@claviska/jquery-minicolors": "^2.3.6",
+    "@wtto00/html2canvas": "^1.4.3",
+    "bwip-js": "^4.0.0",
+    "canvg": "^3.0.10",
+    "jquery": "^3.6.0",
+    "jsbarcode": "^3.11.5",
+    "jspdf": "^2.5.1",
+    "lodash": "^4.17.21",
+    "nzh": "^1.0.8",
+    "socket.io-client": "^4.5.1"
+  },
+  "deprecated": false,
+  "description": "hiprint for Vue2.x / Vue3.x 支持拖拽(分页(不分页)、表头表脚、样式设置、复制粘贴、缩放、撤销重做)生成打印模板、导出json模板数据、静默打印/获取MAC地址(借助客户端)",
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-service": "^4.5.15",
+    "ant-design-vue": "^1.7.8",
+    "babel-loader": "^8.1.0",
+    "bootstrap": "^3.3.7",
+    "concurrent-tasks": "^1.0.7",
+    "copy-webpack-plugin": "^5.1.2",
+    "core-js": "^3.6.5",
+    "cross-env": "^5.0.5",
+    "less-loader": "^6.1.1",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue": "^2.5.11",
+    "vue-ls": "^4.0.0",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-cli": "^4.9.1"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "files": [
+    "dist",
+    "package-lock.json"
+  ],
+  "keywords": [
+    "vue",
+    "hiprint",
+    "print"
+  ],
+  "license": "MIT",
+  "main": "./dist/blcd-hiprint.umd.js",
+  "name": "blcd-hiprint",
+  "peerDependencies": {
+    "concurrent-tasks": "^1.0.7",
+    "ant-design-vue": "^1.7.8",
+    "vue-ls": "^4.0.0"
+  },
+  "private": false,
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --progress",
+    "build-demo": "vue-cli-service build",
+    "build-lib": "vue-cli-service build  --target lib --entry src/install.js --name blcd-hiprint",
+    "dev": "vue-cli-service serve",
+    "pub": "npm run build && npm  publish",
+    "pub-beta": "npm run build && npm  publish --tag beta",
+    "serve": "vue-cli-service serve",
+    "up-version": "node ./scripts/change-version.js"
+  },
+  "version": "1.0.26"
+}

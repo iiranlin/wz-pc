@@ -1,0 +1,40 @@
+{
+  "_from": "blcd-icons@^1.0.1",
+  "_id": "blcd-icons@1.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-YBIApW7nB59Zb14BXBR18U4tT3uftdYnNG9UsJ3/rKVYh7pQO+maGDeYJffZTlZmqUevm6YDk3za0z3oXtCXuw==",
+  "_location": "/blcd-icons",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "blcd-icons@^1.0.1",
+    "name": "blcd-icons",
+    "escapedName": "blcd-icons",
+    "rawSpec": "^1.0.1",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.1"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://nexus.rails.cn/repository/npm-all/blcd-icons/-/blcd-icons-1.0.1.tgz",
+  "_shasum": "0b54f5aaedb51d646b48352f0c4c74deab85ea1a",
+  "_spec": "blcd-icons@^1.0.1",
+  "_where": "C:\\project\\code\\prodmgr-front",
+  "author": "",
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "",
+  "license": "ISC",
+  "main": "iconfont.css",
+  "name": "blcd-icons",
+  "repository": {
+    "type": "git",
+    "url": "http://192.168.82.214:8899/blcd-cloud-platfrom/blcd-ui/blcd-icons.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.1"
+}
