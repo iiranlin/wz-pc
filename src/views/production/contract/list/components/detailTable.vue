@@ -82,6 +82,9 @@
         align="center"
         width="200px"
       >
+        <template slot-scope="scope">
+          {{ scope.row.updateDate | formatDate }}
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -89,6 +92,7 @@
 
 <script>
 import fileUpload from '@/components/upload'
+import dayjs from 'dayjs';
 export default {
   // 记录变更表格
   name: "detailTable",
@@ -107,6 +111,9 @@ export default {
     }
   },
   filters: {
+    formatDate (value) {
+      return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : ''
+    },
     numberToVersion (value) {
       return `V${value}.0`
     }
