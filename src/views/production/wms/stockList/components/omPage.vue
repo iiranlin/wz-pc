@@ -37,14 +37,17 @@
               物资明细 （共{{ tableData.length }}
               项）
             </span>
-            <!-- <el-input
+            <el-input
               v-if="type != 'view' && !preview"
-              v-model="materialName"
-              placeholder="请输入物资名称"
+              v-model="searchKeyword"
+              placeholder="请输入物资规格型号"
               style="width: 300px"
+              @input="handleSearch"
+              prefix-icon="el-icon-search"
+              clearable
             >
-              <el-button slot="append" icon="el-icon-search"></el-button
-            ></el-input> -->
+              
+            ></el-input>
           </div>
           <el-table
             :data="tableData"
@@ -56,6 +59,7 @@
             :load="load"
             row-key="id"
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+            @expand-change="handleExpandChange"
           >
             <el-table-column
               type="index"
@@ -131,6 +135,7 @@
                   size="mini"
                   style="width: 100%"
                   v-if="type != 'view' && !preview && !isParentRow(scope.row)"
+                  @change="handleOutTotalChange(scope.row)"
                 ></el-input-number>
                 <span v-else>
                   {{ scope.row.outTotal || "" }}
@@ -215,6 +220,10 @@ export default {
       selection: [],
       form: {},
       materialName: "",
+      searchKeyword: "",
+      originalTableData: [], // 保存原始数据
+      allDataBackup: new Map(), // 备份所有数据状态，包括展开的子树和填写的数量
+      expandedRowKeys: new Set(), // 缓存已展开的行的key
       preview: false, //出库页还是预览页
     };
   },
@@ -241,6 +250,10 @@ export default {
             },
           });
 
+          // 预览模式下恢复完整的原始数据，清空搜索关键词
+          this.searchKeyword = "";
+          this.tableData = [...this.originalTableData];
+          
           // 隐藏折叠按钮
           this.tableData = this.tableData.map((x) => {
             x.hasChildren = x.children.length > 0;
@@ -297,6 +310,7 @@ export default {
               manufactureDate: "",
             }));
             this.tableData = detail;
+            this.originalTableData = [...detail]; // 保存原始数据
           });
         });
       });
@@ -389,19 +403,43 @@ export default {
       });
     },
     getChildrenList(arr) {
-      return arr.reduce((acc, item) => {
-        // 如果有 children
+      const validChildren = [];
+      
+      // 从当前表格数据中获取有效子项
+      arr.forEach(item => {
         if (Array.isArray(item.children)) {
-          // 遍历 children，筛选出 outTotal > 0 的子项
-          const validChildren = item.children.filter(
+          const children = item.children.filter(
             (child) => Number(child.outTotal) > 0
           );
-          acc.push(...validChildren);
+          validChildren.push(...children);
         }
-        return acc;
-      }, []);
+      });
+      
+      // 从备份数据中获取所有有效子项（包括搜索时不在当前表格中的数据）
+      this.allDataBackup.forEach((backupItem) => {
+        if (Array.isArray(backupItem.children)) {
+          const children = backupItem.children.filter(
+            (child) => Number(child.outTotal) > 0 && 
+            !validChildren.some(existing => existing.id === child.id)
+          );
+          validChildren.push(...children);
+        }
+      });
+      
+      return validChildren;
     },
     async load(tree, treeNode, resolve) {
+      // 检查是否已有缓存的子树数据
+      const cachedTree = this.allDataBackup.get(tree.id);
+      if (cachedTree && cachedTree.children && cachedTree.children.length > 0) {
+        // 如果有缓存数据，直接使用缓存的子树数据（包含用户填写的数量）
+        tree.children = cachedTree.children;
+        this.expandedRowKeys.add(tree.id);
+        resolve(cachedTree.children);
+        return;
+      }
+      
+      // 如果没有缓存数据，从服务器获取新数据
       const res = await Lzmx.detail(tree.id);
       const data = res.data.map((x) => ({
         ...x,
@@ -415,10 +453,96 @@ export default {
         
       }));
       tree.children = data;
+      // 记录已展开的行
+      this.expandedRowKeys.add(tree.id);
+      // 更新备份数据
+      this.allDataBackup.set(tree.id, JSON.parse(JSON.stringify(tree)));
       resolve(data);
     },
     isParentRow(row) {
       return !row.isChildren;
+    },
+    // 搜索功能
+    handleSearch() {
+      // 在搜索前，先备份当前所有数据状态
+      this.backupAllData();
+      
+      if (!this.searchKeyword.trim()) {
+        // 如果搜索关键词为空，恢复所有原始数据，但从备份中恢复已展开的子树数据
+        this.tableData = this.originalTableData.map(originalItem => {
+          const backupItem = this.allDataBackup.get(originalItem.id);
+          // 如果备份中存在该项且有子树数据，使用备份数据
+          if (backupItem && backupItem.children && backupItem.children.length > 0) {
+            return backupItem;
+          }
+          return originalItem;
+        });
+        // 恢复展开状态
+        this.$nextTick(() => {
+          this.restoreExpandedState();
+        });
+        return;
+      }
+      
+      const keyword = this.searchKeyword.toLowerCase();
+      // 从原始数据中过滤，但从备份中恢复已展开的子树数据
+      this.tableData = this.originalTableData
+        .filter(item => item.specModel && item.specModel.toLowerCase().includes(keyword))
+        .map(item => {
+          const backupItem = this.allDataBackup.get(item.id);
+          // 如果备份中存在该项且有子树数据，使用备份数据
+          if (backupItem && backupItem.children && backupItem.children.length > 0) {
+            return backupItem;
+          }
+          return item;
+        });
+      
+      // 恢复展开状态
+      this.$nextTick(() => {
+        this.restoreExpandedState();
+      });
+    },
+    
+    // 处理出库数量变化
+    handleOutTotalChange(row) {
+      // 找到该子项所属的父项
+      const parentRow = this.tableData.find(item => 
+        item.children && item.children.some(child => child.id === row.id)
+      );
+      if (parentRow) {
+        // 更新备份数据中的对应项
+        this.allDataBackup.set(parentRow.id, JSON.parse(JSON.stringify(parentRow)));
+      }
+    },
+    
+    // 处理表格行展开/折叠状态变化
+    handleExpandChange(row, expandedRows) {
+      if (expandedRows.some(expandedRow => expandedRow.id === row.id)) {
+        // 行被展开，添加到expandedRowKeys
+        this.expandedRowKeys.add(row.id);
+      } else {
+        // 行被折叠，从expandedRowKeys中移除
+        this.expandedRowKeys.delete(row.id);
+      }
+    },
+    
+    // 恢复展开状态的方法
+    restoreExpandedState() {
+      this.expandedRowKeys.forEach(rowKey => {
+        const row = this.tableData.find(item => item.id === rowKey);
+        if (row && row.children && row.children.length > 0) {
+          // 使用el-table的toggleRowExpansion方法展开行
+          this.$refs.dataTable.toggleRowExpansion(row, true);
+        }
+      });
+    },
+    
+    // 备份所有数据状态的方法
+    backupAllData() {
+      this.tableData.forEach(item => {
+        // 使用深拷贝保存当前数据状态，包括子树数据
+        this.allDataBackup.set(item.id, JSON.parse(JSON.stringify(item)));
+      });
     },
   },
 };
