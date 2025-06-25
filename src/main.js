@@ -79,6 +79,10 @@ DictData.install()
 import SearchBar from 'search-bar-vue2'
 Vue.use(SearchBar)
 
+// 导入并使用vue-watermark
+import watermark from 'vue-watermark'
+Vue.use(watermark)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
