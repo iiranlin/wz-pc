@@ -127,7 +127,7 @@
                 <el-input-number
                   v-model="scope.row.outTotal"
                   :min="0"
-                  :max="+scope.row.storeTotal || 0"
+                  :max="+scope.row.remainingStock || 0"
                   size="mini"
                   style="width: 100%"
                   v-if="type != 'view' && !preview && !isParentRow(scope.row)"
@@ -410,8 +410,9 @@ export default {
         expirationDate: x.expirationDate
           ? dayjs(x.expirationDate).format("YYYY-MM-DD")
           : "",
-        outTotal: +x.storeTotal, //默认出库数量=库存数量
-        stockStatus: x.storeTotal,
+        outTotal: +x.remainingStock, //默认出库数量=库存数量
+        stockStatus: x.remainingStock,
+        
       }));
       tree.children = data;
       resolve(data);
