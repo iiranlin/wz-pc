@@ -108,7 +108,7 @@ export default {
         })
     },
     fileUpload(url, data) {
-      return new Promise((resolve) => {
+      return new Promise((resolve,reject) => {
         const formData = new FormData();
         for (const key in data) {
           formData.append(key, data[key])
@@ -120,6 +120,8 @@ export default {
           headers: { 'Content-Type': 'multipart/form-data' },
         }).then(async (res) => {
           resolve(res)
+        }).catch(async (err)=>{
+            reject(err)
         })
       })
     },

@@ -157,6 +157,8 @@ export default {
       if (option.file) {
         this.$download.fileUpload(minioUpload, { ...this.formData, file: option.file }).then((data) => {
           this.handleUploadSuccess(data)
+        }).catch((err) => {
+          this.handleUploadError(err, option.file, option.fileList)
         })
       }
     },
@@ -191,12 +193,20 @@ export default {
       return true;
     },
     // 文件个数超出
-    handleExceed () {
+    handleExceed (files, fileList) {
       this.$message.error(`上传文件数量不能超过 ${this.limit} 个!`);
     },
     // 上传失败
-    handleUploadError (err) {
+    handleUploadError (err, file, fileList) {
       this.$message.error("上传失败, 请重试");
+          // 确保失败的文件被完全清理
+      this.$nextTick(() => {
+        const uploadFiles = this.$refs.upload.uploadFiles;
+        const failedFileIndex = uploadFiles.findIndex(uploadFile => uploadFile.uid === file.uid);
+        if (failedFileIndex > -1) {
+          uploadFiles.splice(failedFileIndex, 1);
+        }
+      });
     },
     // 上传成功回调
     handleUploadSuccess (res, file) {
