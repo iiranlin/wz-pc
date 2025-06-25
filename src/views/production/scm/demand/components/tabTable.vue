@@ -65,7 +65,7 @@
           <el-input-number
             v-model="scope.row.sendTotal"
             :min="0"
-            :max="Number(scope.row.planAmount)"
+            :max="+scope.row.ssendTotal"
             size="mini"
             style="width: 100%"
             v-if="type != 'view'"
