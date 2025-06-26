@@ -18,7 +18,7 @@
         <template #file1Slot="scope">
           <el-form-item
             prop="fileList01"
-            label="检测报告"
+            label="报检材料上传（支持多个）"
             class="label-right-align"
             :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
           >
@@ -26,7 +26,8 @@
               v-model="scope.formModel.fileList01"
               :value="scope.formModel.fileList01"
               :preview="type == 'view'"
-              :limit="1"
+              :limit="0"
+              :multiple="true"
               :fileSize="200"
               :fileType="['pdf']"
               :isShowTip="false"
@@ -39,7 +40,7 @@
             prop="fileList02"
             label="质量证明文件"
             class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+            :rules="[{ required: false, message: '请上传', trigger: 'change' }]"
           >
             <fileUpload
               v-model="scope.formModel.fileList02"
@@ -58,7 +59,7 @@
             prop="fileList03"
             label="报验结果"
             class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+            :rules="[{ required: false, message: '请上传', trigger: 'change' }]"
           >
             <fileUpload
               v-model="scope.formModel.fileList03"
