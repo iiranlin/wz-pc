@@ -67,7 +67,7 @@
           <!-- 退货单号 -->
           <template #backNumber="scope">
             <el-button type="text" @click="toThd(scope.data)">
-              {{ scope.value || scope.data.backQualNumber }}
+              {{ scope.data.issueType == 1 ?  scope.value : scope.data.backQualNumber }}
             </el-button>
           </template>
           <!-- 发货单号 -->
