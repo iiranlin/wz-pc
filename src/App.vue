@@ -22,7 +22,8 @@ export default {
   },
   computed: {
     ...mapState({
-      token: state => state.user.token
+      token: state => state.user.token,
+      userInfo: state => state.user.userInfo
     }),
     themeColour() {
       const themeColour = this.$store.state.settings.themeColour
@@ -35,13 +36,22 @@ export default {
       return controlTheme
     },
     watermarkConfig() {
-
-      if (!this.token) {
+      // 检查token和userInfo是否都存在
+      if (!this.token || !this.userInfo || !this.userInfo.username) {
         return null
       }
-
-      const userInfo = getUserInfo()
-      const username = userInfo.nickName || userInfo.username || '用户'
+      
+      // 优先使用store中的userInfo，如果没有则尝试从sessionStorage获取
+      let userInfoData = this.userInfo
+      if (!userInfoData.username && sessionStorage.getItem('user_info')) {
+        userInfoData = getUserInfo()
+      }
+      
+      if (!userInfoData || !userInfoData.username) {
+        return null
+      }
+      
+      const username = userInfoData.nickName || userInfoData.username || '用户'
       const currentTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
 
       return {
@@ -50,9 +60,22 @@ export default {
          font: '16px Microsoft Yahei',   // 字体和大小
          tileWidth: 400,                // 水印宽度
          tileHeight: 200,               // 水印高度
-          tileWidthNumber: 50,
+         tileWidthNumber: 50,
          tileHeightNumber: 50,
       }
+    }
+  },
+  watch: {
+    // 监听用户信息变化，确保水印及时更新
+    userInfo: {
+      handler(newVal, oldVal) {
+        // 当用户信息发生变化时，强制重新计算水印配置
+        if (newVal && newVal.username && (!oldVal || !oldVal.username)) {
+          this.$forceUpdate()
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   metaInfo() {
