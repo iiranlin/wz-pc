@@ -36,7 +36,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="amount"
+        prop="remark"
         label="备注"
         align="center"
         width="200"

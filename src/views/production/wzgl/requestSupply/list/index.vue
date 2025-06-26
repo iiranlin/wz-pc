@@ -90,6 +90,7 @@
       </el-col>
     </el-row>
     <Add ref="addRef" @createSuccess="onSuccess" />
+    <DemandBack ref="demandBackRef" @createSuccess="onSuccess" />
   </div>
 </template>
 
@@ -99,10 +100,11 @@ import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import fileUpload from '@/components/upload'
+import DemandBack from './components/demandBack.vue'
 export default {
   // 供应需求列表
   name: "wzxqList",
-  components: { Add, fileUpload },
+  components: { Add, fileUpload,DemandBack },
   mixins: [indexMixin],
 
   data () {
@@ -289,11 +291,12 @@ export default {
       }
     },
     demandBack (id) {
-      this.$modal.confirm("是否确认退回？").then(() => {
-        return Api.demandBack({ id })
-      }).then(() => {
-        this.getList()
-      })
+      this.$refs.demandBackRef.updateInit(id)
+      // this.$modal.confirm("是否确认退回？").then(() => {
+      //   return Api.demandBack({ id })
+      // }).then(() => {
+      //   this.getList()
+      // })
     },
     // 提交审核
     handleExamine (id) {
