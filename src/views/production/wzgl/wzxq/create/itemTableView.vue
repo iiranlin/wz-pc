@@ -90,7 +90,7 @@
         prop="receiver"
         label="收货人及联系方式"
         align="center"
-        width="200"
+        min-width="200"
       ></el-table-column>
     </el-table>
   </div>

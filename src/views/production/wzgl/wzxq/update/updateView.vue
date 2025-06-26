@@ -1,19 +1,9 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: true }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: true }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: true }">
         <template #table>
           <ItemTableViewUpdate :allData="allData" @onSelectRow="onSelectRow" />
         </template>
@@ -43,7 +33,7 @@ export default {
     attachmentTable,
     ItemTableViewUpdate
   },
-  data () {
+  data() {
     return {
       loading: false,
       title: '新增',
@@ -76,23 +66,26 @@ export default {
     }
   },
   computed: {
-    type () {
+    type() {
       return this.$route.query.type
     },
-    id () {
+    id() {
       return this.$route.query?.id || ''
     },
-    projectId () {
+    projectId() {
       return this.$route.query?.projectId || ''
+    },
+    contractId() {
+      return this.$route.query?.contractId || ''
     },
     ...mapState(['requestUpdate'])
   },
-  async created () {
+  async created() {
     // this.getDeptTree()
     // this.getLineOptions()
 
   },
-  mounted () {
+  mounted() {
 
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
@@ -106,14 +99,18 @@ export default {
 
   },
   methods: {
-    async getCurrentProduction () {
-      const res = await SectionApi.getCurrentSectionMaterial()
+    async getCurrentProduction() {
+      const res = await SectionApi.getCurrentSectionMaterial(
+        {
+          contractId: this.contractId
+        }
+      )
       this.allData = res.data.map(x => ({
         ...x,
         uid: x.uniqueNumber
       }))
     },
-    async getCurrentSection () {
+    async getCurrentSection() {
       const res = await SectionApi.getCurrentSection()
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
@@ -121,12 +118,12 @@ export default {
         title: this.sectionInfo.constructionCompany + this.sectionInfo.sectionName + dayjs().format('YYYY年MM月') + '甲供物资需求'
       })
     },
-    onSelectRow (rows) {
+    onSelectRow(rows) {
       console.log(rows, 'rowssss')
       this.selectRows = rows;
     },
     //初始化
-    init () {
+    init() {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
@@ -135,7 +132,7 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit (id) {
+    async updateInit(id) {
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
@@ -148,7 +145,7 @@ export default {
         });
       });
     },
-    async getLineOptions () {
+    async getLineOptions() {
       const res = await LineApi.itemList({
         pageNum: 1,
         pageSize: -1,
@@ -160,7 +157,7 @@ export default {
         }
       })
     },
-    async getDeptTree (deptCode) {
+    async getDeptTree(deptCode) {
       const res = await listByDeptCode({
         deptCode
       })
@@ -172,7 +169,7 @@ export default {
       })
       return Promise.resolve(data)
     },
-    newButton (buttonCode) {
+    newButton(buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
         return
@@ -183,18 +180,18 @@ export default {
       }
 
     },
-    cancel () {
+    cancel() {
       this.$router.go(-1)
     },
 
-    buttonShow (item) {
+    buttonShow(item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
       return true
     },
     //新建
-    handleCreate () {
+    handleCreate() {
       // 判断当前是否选择了数据
       if (this.selectRows.length === 0) {
         this.$message.warning('请选择要添加的物资')
@@ -211,12 +208,12 @@ export default {
         query: {
           type: 'update',
           id: this.id,
-          from:'view'
+          from: 'view'
         }
       })
 
     },
-    formFillInPage () {
+    formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage('addRequest').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
@@ -228,10 +225,10 @@ export default {
         })
       })
     },
-    setSelectedMaterialList (data) {
+    setSelectedMaterialList(data) {
       this.$store.dispatch('requestUpdate/setSelectedMaterialList', data)
     },
-    getSelectedMaterialList (data) {
+    getSelectedMaterialList(data) {
       return this.requestUpdate.selectedMaterialList
     }
 

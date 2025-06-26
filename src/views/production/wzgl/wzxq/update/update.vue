@@ -1,19 +1,9 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: true }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: true }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: true }">
         <template #table>
           <item-table-update ref="itemTableRef" />
         </template>
@@ -43,7 +33,7 @@ export default {
     attachmentTable,
     ItemTableUpdate,
   },
-  data () {
+  data() {
     return {
       loading: false,
       title: '新增',
@@ -77,24 +67,24 @@ export default {
     }
   },
   computed: {
-    type () {
+    type() {
       return this.$route.query.type
     },
-    id () {
+    id() {
       return this.$route.query?.id || ''
     },
-    projectId () {
+    projectId() {
       return this.$route.query?.projectId || ''
     },
-    from () {
+    from() {
       return this.$route.query?.from || ''
     },
     ...mapState(['requestUpdate'])
   },
-  async created () {
+  async created() {
 
   },
-  mounted () {
+  mounted() {
 
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
@@ -108,7 +98,7 @@ export default {
 
   },
   methods: {
-    onCheck (tableData) {
+    onCheck(tableData) {
       const errors = [];
 
       tableData.forEach((row, index) => {
@@ -127,10 +117,10 @@ export default {
         if (!row.receiver || row.receiver.trim() === '') {
           errors.push(`第${rowNum}行，收货人及联系方式未填写 `);
         }
-        if(!row.field0 || row.field0.trim() === ''){
+        if (!row.field0 || row.field0.trim() === '') {
           errors.push(`第${rowNum}行，投资方未填写 `)
         }
-        if(!row.field1 || row.field1.trim() === ''){
+        if (!row.field1 || row.field1.trim() === '') {
           errors.push(`第${rowNum}行，投资比例未填写 `)
         }
 
@@ -158,7 +148,7 @@ export default {
       // TODO: 提交逻辑放这里
       return true
     },
-    async getCurrentSection () {
+    async getCurrentSection() {
       const res = await SectionApi.getCurrentSection()
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
@@ -166,9 +156,19 @@ export default {
         title: this.sectionInfo.constructionCompany + this.sectionInfo.sectionName + dayjs().format('YYYY年MM月') + '甲供物资需求'
       })
     },
+    // 新增时设置合同id
+    setContractId(data) {
+      this.$router.replace({
+        path: this.$route.path, // 保持当前路径不变
+        query: {
+          ...this.$route.query, // 保留现有参数
+          contractId: data.contractId
+        }
+      });
+    },
 
     //初始化
-    init () {
+    init() {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
@@ -177,10 +177,12 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit (id) {
+    async updateInit(id) {
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
+
+          this.setContractId(data)
 
           await this.formFillInPage()
           this.getCurrentSection()
@@ -204,7 +206,7 @@ export default {
         });
       });
     },
-    async getLineOptions () {
+    async getLineOptions() {
       const res = await LineApi.itemList({
         pageNum: 1,
         pageSize: -1,
@@ -216,7 +218,7 @@ export default {
         }
       })
     },
-    async getDeptTree (deptCode) {
+    async getDeptTree(deptCode) {
       const res = await listByDeptCode({
         deptCode
       })
@@ -228,7 +230,7 @@ export default {
       })
       return Promise.resolve(data)
     },
-    newButton (buttonCode) {
+    newButton(buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
         return
@@ -239,18 +241,18 @@ export default {
       }
 
     },
-    cancel () {
+    cancel() {
       this.$router.go(-1)
     },
 
-    buttonShow (item) {
+    buttonShow(item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
       return true
     },
     //新建
-    async handleCreate () {
+    async handleCreate() {
       if (this.getSelectedMaterialList().length === 0) {
         this.$modal.msgError('请选择物料')
         return
@@ -284,7 +286,7 @@ export default {
 
 
     },
-    formFillInPage () {
+    formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage('addRequest').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
@@ -296,16 +298,16 @@ export default {
         })
       })
     },
-    setSelectedMaterialList (data) {
+    setSelectedMaterialList(data) {
       this.$store.dispatch('requestUpdate/setSelectedMaterialList', data)
     },
-    getSelectedMaterialList () {
+    getSelectedMaterialList() {
       return this.requestUpdate.selectedMaterialList
     },
-    setUpdateId (data) {
+    setUpdateId(data) {
       this.$store.dispatch('requestUpdate/setUpdateId', data)
     },
-    getUpdateId () {
+    getUpdateId() {
       return this.requestUpdate.updateId
     },
 
