@@ -1,27 +1,43 @@
 <template>
   <div class="tab-table-container">
     <!-- Action Button -->
-    <template v-if="type !== 'view'">
+    <div style="display: flex;" >
       <!-- <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
         >添加物资</el-button
       > -->
       <!-- 批量导入 -->
-      <el-button
-        type="primary"
-        icon="el-icon-upload"
-        size="mini"
-        @click="onBatchUpload"
-        >批量导入</el-button
-      >
-      <!-- 删除 -->
-      <el-button
-        type="danger"
-        icon="el-icon-delete"
-        size="mini"
-        @click="onDelete"
-        >删除</el-button
-      >
-    </template>
+       <div v-if="type !== 'view'">
+
+         <el-button
+           type="primary"
+           icon="el-icon-upload"
+           size="mini"
+           @click="onBatchUpload"
+           >批量导入</el-button
+         >
+         <!-- 删除 -->
+         <el-button
+           type="danger"
+           icon="el-icon-delete"
+           size="mini"
+           @click="onDelete"
+           >删除</el-button
+         >
+       </div>
+
+      <div style="margin-left: auto;"> 
+        <el-input
+             v-model="searchKeyword"
+             placeholder="请输入规格型号搜索"
+             size="mini"
+             style="width: 200px"
+             clearable
+             prefix-icon="el-icon-search"
+             @input="handleSearch"
+             @clear="handleClearSearch"
+           ></el-input>
+      </div>
+    </div>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane label="建设项目" name="total"></el-tab-pane>
       <el-tab-pane
@@ -348,13 +364,13 @@
     </div>
 
     <!-- 统计信息 -->
-    <div class="summary-info" v-if="currentTableData.length > 0">
+    <div class="summary-info" v-if="filteredTableData.length > 0">
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">总条数：</span>
             <span class="summary-value amount-text"
-              >{{ currentTableData.length }} 条</span
+              >{{ filteredTableData.length }} 条</span
             >
           </div>
         </el-col>
@@ -406,6 +422,7 @@ export default {
       loading: false,
       selectedRowKeys: { total: [] }, // 用户存储当前选择的数据
       maxManualIndex: 0,
+      searchKeyword: '', // 搜索关键词
       options: {
 
       },
@@ -420,18 +437,32 @@ export default {
   },
   computed: {
     filteredTableData () {
+      let data = [];
+      
+      // 首先根据tab筛选数据
       if (this.activeTab === 'total') {
-        return this.tableData;
+        data = this.tableData;
       } else {
         const selectedProject = this.projectTabs.find(p => p.name === this.activeTab);
         if (selectedProject) {
-          return this.tableData.filter(item =>
+          data = this.tableData.filter(item =>
             item.sectionName === selectedProject.projectName
           );
         } else {
-          return [];
+          data = [];
         }
       }
+      
+      // 然后根据搜索关键词进一步筛选
+      if (this.searchKeyword && this.searchKeyword.trim()) {
+        const keyword = this.searchKeyword.trim().toLowerCase();
+        data = data.filter(item => {
+          // 搜索规格型号字段，支持模糊匹配
+          return item.specModel && item.specModel.toLowerCase().includes(keyword);
+        });
+      }
+      
+      return data;
     },
     // 计算总amount
     totalQuantity () {
@@ -849,6 +880,19 @@ export default {
           });
         }
       });
+    },
+
+    // 处理搜索输入
+    handleSearch () {
+      // 搜索功能通过computed属性filteredTableData自动实现
+      // 这里可以添加额外的搜索逻辑，比如防抖等
+      console.log('搜索关键词:', this.searchKeyword);
+    },
+
+    // 清除搜索
+    handleClearSearch () {
+      this.searchKeyword = '';
+      console.log('已清除搜索');
     },
   },
 }

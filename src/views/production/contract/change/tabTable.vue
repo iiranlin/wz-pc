@@ -28,7 +28,7 @@
           <!-- 按物资名称模糊搜索输入框，有值则自动搜索 -->
           <el-input
             v-model="searchKeyword"
-            placeholder="请输入物资名称搜索"
+            placeholder="请输入规格型号搜索"
             size="mini"
             style="width: 200px"
             clearable
@@ -359,13 +359,13 @@
     </div>
 
     <!-- 统计信息 -->
-    <div class="summary-info" v-if="currentTableData.length > 0">
+    <div class="summary-info" v-if="filteredTableData.length > 0">
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">总条数：</span>
             <span class="summary-value amount-text"
-              >{{ currentTableData.length }} 条</span
+              >{{ filteredTableData.length }} 条</span
             >
           </div>
         </el-col>
@@ -453,7 +453,7 @@ export default {
       if (this.searchKeyword && this.searchKeyword.trim()) {
         const keyword = this.searchKeyword.trim().toLowerCase();
         return baseData.filter(item => {
-          return item.materialName && item.materialName.toLowerCase().includes(keyword);
+          return item.specModel && item.specModel.toLowerCase().includes(keyword);
         });
       }
 
