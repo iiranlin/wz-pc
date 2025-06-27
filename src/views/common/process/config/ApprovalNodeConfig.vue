@@ -132,6 +132,22 @@
         </el-form-item>
       </div>
 
+      <template>
+        <el-divider />
+        <!-- 短信开关及短信模板 -->
+        <el-form-item label="短信开关"  prop="sendFlag">
+          <el-switch
+            v-model="nodeProps.sendFlag"
+            active-text="开启"
+            inactive-text="关闭"
+            active-color="#13ce66"
+           inactive-color="#ff4949"
+           :active-value="0"
+           :inactive-value="1"
+          />
+        </el-form-item>
+      </template>
+
       <!-- <el-divider>高级设置</el-divider>
       <el-form-item label="✍ 审批同意时是否需要签字" prop="text">
         <el-switch inactive-text="不用" active-text="需要" v-model="nodeProps.sign"></el-switch>
@@ -339,6 +355,11 @@ export default {
     },
   },
   created() {
+    // 设置短信开关默认为开启状态
+    if (this.nodeProps.sendFlag === undefined || this.nodeProps.sendFlag === null) {
+      this.$set(this.nodeProps, 'sendFlag', 0);
+    }
+    
     let conditionStr = this.nodeProps.condition;
 
     if(!!conditionStr){
