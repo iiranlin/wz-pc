@@ -118,12 +118,12 @@
               <span v-else>{{ scope.row.materialName }}</span>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="projectShortName"
             label="项目简称"
             width="120"
             align="center"
-          ></el-table-column>
+          ></el-table-column> -->
 
           <!-- 条件渲染：仅在总表中显示 -->
           <el-table-column
