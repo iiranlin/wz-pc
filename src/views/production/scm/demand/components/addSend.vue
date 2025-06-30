@@ -25,7 +25,7 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
-              :preview="type === 'view'"
+              :preview="type === 'view' && status !=2"
               :isShowTip="false"
             />
           </el-form-item>
@@ -141,6 +141,10 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
+    status(){
+      // status = 2 表示货运中，仅允许修改附件，其余和view模式一样
+      return this.$route.query?.status || "";
+    },
     ...mapState(["request"]),
   },
   async created() {},
@@ -150,7 +154,7 @@ export default {
         this.$tab.updatePage({
           path: "/scm/addSend",
           meta: {
-            title: "货运详情",
+            title: this.status == 2 ?'修改发货信息': "货运详情",
           },
         });
       });
@@ -316,7 +320,7 @@ export default {
 
     buttonShow(item) {
       if (item.buttonCode === "save") {
-        return this.type !== "view";
+        return this.type !== "view" || this.status == 2;
       }
       return true;
     },

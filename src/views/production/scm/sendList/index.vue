@@ -235,13 +235,13 @@ export default {
           this.handleSend(idArr, rowArr);
           break;
         case "update":
-          if (rowArr[0].status != "1") {
-            this.$modal.msgError("已发货，无法修改！");
-            return;
-          }
+          // if (rowArr[0].status != "1") {
+          //   this.$modal.msgError("已发货，无法修改！");
+          //   return;
+          // }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0], type: "update", planId: rowArr[0].planId },
+            query: { id: idArr[0], type:rowArr[0].status == 2 ?'view': "update", planId: rowArr[0].planId ,status:rowArr[0].status},
           });
           break;
         case "delete":
@@ -337,6 +337,9 @@ export default {
     //上方按钮控制
     buttonDisabledTop(button) {
       //状态不是未发货，按钮全不能操作
+      if(button.buttonCode == 'update'){
+        return this.selection[0].status == 3;
+      }
       return this.selection[0].status != 1;
     },
   },
