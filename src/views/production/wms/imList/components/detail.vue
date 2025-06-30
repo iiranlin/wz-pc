@@ -232,7 +232,7 @@ export default {
           buttonIcon: "Blue-Cancel",
           type: "create, update",
         },
-        { buttonName: "同意", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
+        { buttonName: "通过", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
         // {
         //   buttonName: "修改后同意",
         //   buttonCode: "passEdit",
@@ -240,7 +240,7 @@ export default {
         //   type: "",
         // },
         {
-          buttonName: "不同意",
+          buttonName: "驳回",
           buttonCode: "reject",
           buttonIcon: "Blue-EditCard",
           type: "",

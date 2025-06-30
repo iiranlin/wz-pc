@@ -84,7 +84,7 @@ export default {
     init (type, row, queryName, numArr = []) {
       this.selected = row;
       this.type = type
-      this.title = type === 'pass' ? '同意' : type === 'passEdit' ? '修改后同意' : '不同意'
+      this.title = type === 'pass' ? '通过' : type === 'passEdit' ? '修改后通过' : '驳回'
       this.queryName = queryName || ''
       this.numArr = numArr;
       this.visible = true
@@ -124,7 +124,7 @@ export default {
         candidateUsers: this.candidateUsers,
         businessType: this.selected[0].businessType,
         businessId: this.selected[0].businessId,
-        message: this.toBeReviewedForm.comment || "同意"
+        message: this.toBeReviewedForm.comment || "通过"
       }
       passWorkFlow(params).then(res => {
         if (res.success) {

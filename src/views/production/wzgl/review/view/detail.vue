@@ -77,9 +77,9 @@ export default {
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
-        { buttonName: '同意', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
-        { buttonName: '修改后同意', buttonCode: 'passEdit', buttonIcon: 'Blue-Edit', type: '' },
-        { buttonName: '不同意', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
+        { buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
+        { buttonName: '修改后通过', buttonCode: 'passEdit', buttonIcon: 'Blue-Edit', type: '' },
+        { buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
         { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
       ],
       constructionOptions: [],
