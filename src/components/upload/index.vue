@@ -1,7 +1,7 @@
 <template>
   <div class="upload-file" style="width: 100%">
     <el-upload
-      v-if="!preview"
+      v-if="!preview && fileList.length < limit"
       action="#"
       :http-request="customUpload"
       :before-upload="handleBeforeUpload"
@@ -256,13 +256,13 @@ export default {
     justify-content: flex-start;
     align-items: center;
     width: 100%;
+    height: 36px;
     .fileNames {
       max-width: calc(100% - 90px);
       display: inline-block;
     }
 
     .fileAction {
-      width: 90px;
       font-size: 16px;
       padding: 0 7px;
       flex-direction: row;
