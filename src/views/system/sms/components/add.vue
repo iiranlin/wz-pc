@@ -24,7 +24,7 @@
       >
         <el-row :span="24" :gutter="20">
           <el-col :span="24">
-            <el-form-item :label="'推送节点'" prop="smsCodeName">
+            <el-form-item :label="'推送事件'" prop="smsCodeName">
               <el-input
                 v-model="form.smsCodeName"
                 maxlength="240"
@@ -54,7 +54,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="24">
+          <el-col :span="24">
              <el-form-item label="短信开关"  prop="status">
           <el-switch
             v-model="form.status"
@@ -66,7 +66,7 @@
            inactive-value="0"
           />
         </el-form-item>
-          </el-col> -->
+          </el-col>
         </el-row>
       </el-form>
     </div>
@@ -103,7 +103,7 @@ export default {
       this.isEdit = false;
       this.visible = true;
       this.$nextTick(() => {
-        this.title = "新建物资";
+        this.title = "新建";
       });
     },
     // 编辑初始化
@@ -113,7 +113,7 @@ export default {
       await Api.detail(id).then(({ data }) => {
         this.form = Object.assign({}, data);
         this.$nextTick(() => {
-          this.title = "编辑物资";
+          this.title = "编辑";
         });
       });
     },

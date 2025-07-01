@@ -149,7 +149,7 @@ export default {
         candidateUsers: this.candidateUsers,
         businessType: this.selected[0].businessType,
         businessId: this.selected[0].businessId,
-        message: this.toBeReviewedForm.comment || "修改后同意",
+        message: this.toBeReviewedForm.comment || "修改后通过",
         modifyIds: this.numArr.length === 0 ? [this.selected[0].businessId] : this.numArr  // 添加勾选的参数
       }
       passEditWorkFlow(params).then(res => {
