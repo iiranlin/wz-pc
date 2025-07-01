@@ -142,7 +142,7 @@ export default {
     buttonDisable (btn) {
       // 没有合同物资才允许删除
       if (btn.buttonCode === 'delete') {
-        return this.selection.some(x => x.materialList.length != 0)
+        return this.selection.some(x => x.contractIdList.length != 0)
       }
       return false
     },
