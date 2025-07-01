@@ -38,6 +38,7 @@ import { itemList } from '@/api/prodmgr-inv/project/sms.js'
 import indexMixin from '@/views/mixins'
 import * as Api from '@/api/prodmgr-inv/project/sms.js'
 import Add from './components/add.vue'
+import { getUserInfo } from '@/utils/user-info'
 export default {
   // 物资列表
   name: 'itemList',
@@ -80,7 +81,8 @@ export default {
       // 部门树选项
       treeLoading: false,
       filterText: '',
-      areaList: []
+      areaList: [],
+      userInfo:getUserInfo()
     }
 
   },
@@ -117,7 +119,12 @@ export default {
       })
     },
     handleTopButtonDisabled(button) {
-      return this.selection.some(row => this.handleButtonDisable(button, row))
+      console.log(this.userInfo.username , 'username')
+      // cars系统管理员禁用
+      if (button.buttonCode === 'create' && this.userInfo.username === 'cars') {
+        return true
+      }
+      return false
     },
     handleButtonDisable(button, row) {
       if (button.buttonCode === 'submit' || button.buttonCode === 'delete') {
@@ -187,7 +194,7 @@ export default {
       if (buttonCode == 'update') {
         this.$refs['addRef'].updateInit(idArr[0])
       } else if (buttonCode === 'create') {
-        this.$refs['addRef'].init()
+        this.$refs['addRef'].init(this.list.map(x => x.smsCode))
       } else if (buttonCode === 'delete') {
         this.handleDelete(idArr)
       } 
@@ -203,7 +210,9 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true
-      itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+      itemList(Object.assign({
+        unitId: this.userInfo.username == 'cars' ? -1 : this.userInfo.unitId
+      }, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list
         this.total = data.total
       }).finally(() => {
