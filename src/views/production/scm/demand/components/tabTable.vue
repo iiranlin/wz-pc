@@ -160,6 +160,18 @@ export default {
     };
   },
 
+  watch: {
+    tableData: {
+      handler(newVal) {
+        if (newVal && newVal.length > 0) {
+          this.formatDateFields(newVal);
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+
   created() { },
   methods: {
     selectItem() {
@@ -175,6 +187,21 @@ export default {
     },
     setSelectedItemList(data) {
       this.$store.dispatch("request/setSelectedItemList", data);
+    },
+
+    // 格式化日期字段，确保空字符串不会被转换为Invalid Date
+    formatDateFields(data) {
+      const dateFields = ['manufactureDate', 'expirationDate', 'supplyDate'];
+      data.forEach(row => {
+        dateFields.forEach(field => {
+          if (row[field] !== undefined && row[field] !== null) {
+            // 如果是空字符串，设置为null
+            if (row[field] === '' || row[field] === 'Invalid Date') {
+              this.$set(row, field, null);
+            }
+          }
+        });
+      });
     },
 
 
