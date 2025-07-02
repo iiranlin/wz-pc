@@ -19,19 +19,20 @@
           <el-form-item
             prop="fileList01"
             label="报检材料上传（支持多个）"
+            label-width="200px"
             class="label-right-align"
             :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
           >
-            <fileUpload
+             <fileUpload
               v-model="scope.formModel.fileList01"
               :value="scope.formModel.fileList01"
               :preview="type == 'view'"
-              :limit="0"
+              :limit="9999"
               :multiple="true"
               :fileSize="200"
               :fileType="['pdf']"
               :isShowTip="false"
-            />
+            /> 
           </el-form-item>
         </template>
         <!-- 附件 -->

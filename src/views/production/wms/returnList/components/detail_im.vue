@@ -16,7 +16,7 @@
       >
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList" label="报检材料上传（支持多个）" class="label-right-align">
+          <el-form-item prop="fileList" label-width="200px" label="报检材料上传（支持多个）" class="label-right-align">
             <fileUpload :value="scope.formModel.fileList01" :preview="true" />
           </el-form-item>
         </template>
