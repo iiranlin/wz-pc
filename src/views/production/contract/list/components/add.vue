@@ -1,41 +1,16 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: type === 'view' }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: type === 'view' }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
         <template #lineSlot="{ formModel }">
-          <el-form-item
-            prop="projectId"
-            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="归属建设项目"
-            class="label-right-align"
-          >
+          <el-form-item prop="projectId" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label="归属建设项目"
+            class="label-right-align">
             <template v-if="type !== 'view' && !projectId">
-              <el-select
-                v-model="formModel.projectId"
-                filterable
-                required
-                style="width: 100%"
-                placeholder="请选择"
-                @change="(val) => selectChange(lineOptions, val, 'projectName')"
-              >
-                <el-option
-                  v-for="item in lineOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
+              <el-select v-model="formModel.projectId" filterable required style="width: 100%" placeholder="请选择"
+                @change="(val) => selectChange(lineOptions, val, 'projectName')">
+                <el-option v-for="item in lineOptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </template>
@@ -47,27 +22,12 @@
 
         <!--卖方单位  -->
         <template #sellerSlot="{ formModel }">
-          <el-form-item
-            prop="sellerId"
-            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="卖方"
-            class="label-right-align"
-          >
+          <el-form-item prop="sellerId" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label="卖方"
+            class="label-right-align">
             <template v-if="type !== 'view'">
-              <el-select
-                v-model="formModel.sellerId"
-                filterable
-                required
-                style="width: 100%"
-                placeholder="请选择"
-                @change="(val) => selectChange(gysOptions, val, 'seller')"
-              >
-                <el-option
-                  v-for="item in gysOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
+              <el-select v-model="formModel.sellerId" filterable required style="width: 100%" placeholder="请选择"
+                @change="(val) => selectChange(gysOptions, val, 'seller')">
+                <el-option v-for="item in gysOptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
             </template>
@@ -87,28 +47,16 @@
 
         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item
-            prop="fileList"
-            label="合同附件"
-            class="label-right-align"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="1"
-              :fileSize="200"
-              :fileType="['pdf']"
-              :preview="type === 'view'"
-            />
+          <el-form-item prop="fileList" label="合同附件" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList" :limit="1" :fileSize="200" :fileType="['pdf']"
+              :preview="type === 'view'" />
           </el-form-item>
+
         </template>
 
         <template #table>
-          <TabTable
-            ref="tabTableRef"
-            :tableData="tableData"
-            @data-change="onDataChange"
-            :sellerName="currentSellerName"
-          />
+          <TabTable ref="tabTableRef" :tableData="tableData" @data-change="onDataChange"
+            :sellerName="currentSellerName" />
         </template>
       </VFormRender>
     </div>
@@ -133,7 +81,7 @@ export default {
     fileUpload,
     TabTable
   },
-  data () {
+  data() {
     const userInfo = getUserInfo()
     return {
       maxManualIndex: 1,
@@ -167,24 +115,24 @@ export default {
     }
   },
   computed: {
-    type () {
+    type() {
       return this.$route.query.type
     },
-    id () {
+    id() {
       return this.$route.query?.id || ''
     },
-    projectId () {
+    projectId() {
       return this.$route.query?.projectId || ''
     },
-    currentSellerName () {
+    currentSellerName() {
       return this.sellerName || this.$refs.vFormRef?.getFieldValue('seller') || ''
     }
   },
-  async created () {
+  async created() {
     // this.getLineOptions()
     this.gysOptions = await this.getDeptTree('GYS')
   },
-  mounted () {
+  mounted() {
 
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
@@ -198,7 +146,7 @@ export default {
 
   },
   methods: {
-    onDataChange (data) {
+    onDataChange(data) {
       if (['delete'].includes(data.type)) {
         this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
         return
@@ -209,7 +157,7 @@ export default {
         return
       }
     },
-    onAdd () {
+    onAdd() {
       this.maxManualIndex += 1
       const newId = this.maxManualIndex;
       // 创建新行数据模板
@@ -238,7 +186,7 @@ export default {
       this.tableData.push(newRow);
     },
     //初始化
-    init () {
+    init() {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
@@ -246,7 +194,7 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit (id) {
+    async updateInit(id) {
 
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
@@ -271,7 +219,7 @@ export default {
         });
       });
     },
-    newButton (buttonCode) {
+    newButton(buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
         return
@@ -282,19 +230,19 @@ export default {
       }
 
     },
-    cancel () {
+    cancel() {
       this.$store.dispatch('setProjectId', '')
       this.$router.go(-1)
     },
 
-    buttonShow (item) {
+    buttonShow(item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
       return true
     },
     //新建
-    handleCreate () {
+    handleCreate() {
       this.$refs.vFormRef.validateForm(async (valid) => {
         if (!valid) {
           this.$message.warning('请完善信息')
@@ -340,7 +288,7 @@ export default {
         }
       });
     },
-    checkoutStatus (flag) {
+    checkoutStatus(flag) {
       const widgets = ['scrapName', 'sugHandMethod', 'applyDeptId', 'applyUserId', 'comments', 'fileList', 'design_p2', 'projectCode', 'projectName', 'scrapCode', 'grid96921', 'grid45899', 'grid80913']
       if (flag) {
         this.$refs.vFormRef.hideWidgets(widgets)
@@ -348,7 +296,7 @@ export default {
         this.$refs.vFormRef.showWidgets(widgets)
       }
     },
-    formFillInPage () {
+    formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage('contractList').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
@@ -363,7 +311,7 @@ export default {
         })
       })
     },
-    selectChange (options, val, key) {
+    selectChange(options, val, key) {
       this.$refs.vFormRef.setFormData({
         [key]: options.find(item => item.value === val)?.label
       })
@@ -385,7 +333,7 @@ export default {
       }
 
     },
-    async getLineOptions () {
+    async getLineOptions() {
       const res = await LineApi.itemList({
         pageNum: 1,
         pageSize: -1,
@@ -409,7 +357,7 @@ export default {
         })
       }
     },
-    async getDeptTree (deptCode) {
+    async getDeptTree(deptCode) {
       const res = await listByDeptCode({
         deptCode
       })
