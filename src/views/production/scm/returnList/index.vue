@@ -70,6 +70,9 @@
               {{ scope.data.issueType == 1 ?  scope.value : scope.data.backQualNumber }}
             </el-button>
           </template>
+            <template #backDate="scope">
+              {{ scope.data.issueType == 1 ?  scope.value : scope.data.backQualDate | formatDate }}
+          </template>
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
             <el-button type="text" @click="toFhd(scope.data)">
@@ -99,6 +102,7 @@
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
 import { getUserInfo } from "@/utils/user-info";
+import dayjs from 'dayjs'
 export default {
   // 建设项目
   name: "returnList_gys",
@@ -154,6 +158,12 @@ export default {
       selection: [],
       hasOwn: true,
     };
+  },
+  filters: {
+    formatDate(value) {
+      if(!value) return ''
+      return dayjs(value).format("YYYY-MM-DD");
+    },
   },
   async created() {
     let id = this.$route.meta.id;
