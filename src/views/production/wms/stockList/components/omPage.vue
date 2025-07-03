@@ -58,7 +58,7 @@
             :lazy="true"
             :load="load"
             row-key="id"
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+            :tree-props="{ children: 'children'}"
             @expand-change="handleExpandChange"
           >
             <el-table-column
@@ -128,6 +128,17 @@
               fixed="right"
             >
               <template slot-scope="scope">
+                <div v-if="isParentRow(scope.row)" style="display: flex; justify-content: center; align-items: center;">
+                  <el-button 
+                    v-if="scope.row.hasChildren"
+                    type="text" 
+                    size="mini"
+                    @click.stop="toggleExpand(scope.row)"
+                  >
+                    <i :class="scope.row.isExpanded ? 'el-icon-arrow-down' : 'el-icon-arrow-right'"></i>
+                    {{ scope.row.isExpanded ? '收起' : '展开' }}
+                  </el-button>
+                </div>
                 <el-input-number
                   v-model="scope.row.outTotal"
                   :min="0"
@@ -440,24 +451,31 @@ export default {
       }
       
       // 如果没有缓存数据，从服务器获取新数据
-      const res = await Lzmx.detail(tree.id);
-      const data = res.data.map((x) => ({
-        ...x,
-        isChildren: true,
-        manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
-        expirationDate: x.expirationDate
-          ? dayjs(x.expirationDate).format("YYYY-MM-DD")
-          : "",
-        outTotal: +x.remainingStock, //默认出库数量=库存数量
-        stockStatus: x.remainingStock,
+      try {
+        const res = await Lzmx.detail(tree.id);
+        const data = res.data.map((x) => ({
+          ...x,
+          isChildren: true,
+          manufactureDate: dayjs(x.manufactureDate).format("YYYY-MM-DD"),
+          expirationDate: x.expirationDate
+            ? dayjs(x.expirationDate).format("YYYY-MM-DD")
+            : "",
+          outTotal: +x.remainingStock, //默认出库数量=库存数量
+          stockStatus: x.remainingStock,
+        }));
+        // 更新树节点的子数据
+        tree.children = data;
         
-      }));
-      tree.children = data;
-      // 记录已展开的行
-      this.expandedRowKeys.add(tree.id);
-      // 更新备份数据
-      this.allDataBackup.set(tree.id, JSON.parse(JSON.stringify(tree)));
-      resolve(data);
+        // 记录已展开的行
+        this.expandedRowKeys.add(tree.id);
+        // 更新备份数据
+        this.allDataBackup.set(tree.id, JSON.parse(JSON.stringify(tree)));
+        // 调用resolve回调函数返回子数据
+        resolve(data);
+      } catch (error) {
+        console.error("加载子树数据失败:", error);
+        resolve([]);
+      }
     },
     isParentRow(row) {
       return !row.isChildren;
@@ -517,7 +535,12 @@ export default {
     
     // 处理表格行展开/折叠状态变化
     handleExpandChange(row, expandedRows) {
-      if (expandedRows.some(expandedRow => expandedRow.id === row.id)) {
+      // 直接使用el-table的内部状态来判断行是否展开
+      const isExpanded = this.$refs.dataTable.store.states.expandRows.some(
+        expandedRow => expandedRow.id === row.id
+      );
+      
+      if (isExpanded) {
         // 行被展开，添加到expandedRowKeys
         this.expandedRowKeys.add(row.id);
       } else {
@@ -543,6 +566,41 @@ export default {
         // 使用深拷贝保存当前数据状态，包括子树数据
         this.allDataBackup.set(item.id, JSON.parse(JSON.stringify(item)));
       });
+    },
+    toggleExpand(row) {
+      if (!this.$refs.dataTable) return;
+      
+      // 如果isExpanded字段不存在，初始化为false
+      if (row.isExpanded === undefined) {
+        this.$set(row, 'isExpanded', false);
+      }
+      
+      // 切换展开状态
+      row.isExpanded = !row.isExpanded;
+      
+      // 检查是否已有子树数据
+      if (!row.children || row.children.length === 0) {
+        // 如果没有子树数据，先加载数据
+        this.load(row, null, (children) => {
+          // 数据加载完成后展开行
+          this.$nextTick(() => {
+            this.$refs.dataTable.toggleRowExpansion(row, row.isExpanded);
+          });
+        });
+      } else {
+        // 如果已有子树数据，直接切换展开状态
+        this.$refs.dataTable.toggleRowExpansion(row, row.isExpanded);
+      }
+    },
+    isExpanded(row) {
+      // 检查行是否已展开 - 直接从表格组件获取展开状态
+      if (!this.$refs.dataTable) return false;
+      
+      // 获取表格的展开行数组
+      const expandedRows = this.$refs.dataTable.store.states.expandRows;
+      
+      // 检查当前行是否在展开行数组中
+      return expandedRows.some(expandedRow => expandedRow.id === row.id);
     },
   },
 };
@@ -579,5 +637,9 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+::v-deep .el-table__expand-icon {
+  display: none !important;
 }
 </style>
