@@ -42,6 +42,44 @@
             />
           </el-form-item>
         </template>
+         <template #fileListGgSlot="scope">
+          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList1" :limit="1" :fileSize="200" :fileType="['pdf']"
+              :preview="type === 'view'" />
+          </el-form-item>
+
+        </template>
+          <!--卖方单位  -->
+        <template #sellerSlot="{ formModel }">
+          <el-form-item
+            prop="sellerId"
+            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+            label="卖方"
+            class="label-right-align"
+          >
+            <template v-if="type !== 'view'">
+              <el-select
+                v-model="formModel.sellerId"
+                filterable
+                required
+                style="width: 100%"
+                placeholder="请选择"
+                @change="(val) => selectChange(gysOptions, val, 'seller')"
+              >
+                <el-option
+                  v-for="item in gysOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </template>
+            <template v-else>
+              <span>{{ formModel.seller }}</span>
+            </template>
+          </el-form-item>
+        </template>
         <template #lineSlot="{ formModel }">
           <el-form-item
             prop="projectId"
@@ -251,6 +289,7 @@ export default {
             ...data,
             ...backChangeData,
             fileList: this.status == '1' ? backChangeData?.fileList : data.fileList[0].fileList,
+            fileList1: this.status == '1' ? backChangeData?.fileList1 : data.fileList[1].fileList,
             contractStatus: data.contractStatus == '2',
           }
           this.$refs.vFormRef.setFormData(newData)
@@ -313,11 +352,12 @@ export default {
           formData.contractStatus = formData.contractStatus ? '2' : '1'
           // 后端存入嵌套数组
           const fileList = formData.fileList
+          const fileList1 = formData.fileList1.map(x => ({...x,id:null}))
           await Api[
             `changeList`
           ]({
             ...this.$store.state.project.backChangeData,
-            fileList: [{ fileList }],
+            fileList: [{ fileList },{fileList:fileList1}],
             saveStatus: true
           })
             .then(({ message }) => {

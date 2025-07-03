@@ -102,6 +102,14 @@
           </el-form-item>
         </template>
 
+         <template #fileListGgSlot="scope">
+          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList1" :limit="1" :fileSize="200" :fileType="['pdf']"
+              :preview="type === 'view'" />
+          </el-form-item>
+
+        </template>
+
         <template #table>
           <TabTable
             ref="tabTableRef"
@@ -264,7 +272,8 @@ export default {
           const newData = {
             ...data,
             contractStatus: data.contractStatus == '2',
-            fileList: data.fileList[0]?.fileList || []
+            fileList: data.fileList[0]?.fileList || [],
+            fileList1: data.fileList[1]?.fileList || [],
           }
           this.$refs.vFormRef.setFormData(newData)
 
@@ -323,10 +332,11 @@ export default {
           formData.contractStatus = formData.contractStatus ? '2' : '1'
           // 后端存入嵌套数组
           const fileList = formData.fileList
-          formData.fileList = [{ fileList }]
+          const fileList1 = formData.fileList1
           await Api[
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
+            fileList: [{ fileList },{fileList:fileList1}],
             materialList: this.tableData.map(x => ({
               ...x,
               id: null,

@@ -103,6 +103,14 @@
           </el-form-item>
         </template>
 
+         <template #fileListGgSlot="scope">
+          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList1" :limit="1" :fileSize="200" :fileType="['pdf']"
+              :preview="type === 'view'" />
+          </el-form-item>
+
+        </template>
+
         <template #table>
           <TabTable
             ref="tabTableRef"
@@ -270,6 +278,7 @@ export default {
             contractStatus: data.contractStatus == '2',
             // fileList: data.fileList[0]?.fileList || []
             fileList: [],
+            fileList1:data.fileList[1]?.fileList || [],
             complementName: '',
             updateReason:''
           }
