@@ -75,9 +75,9 @@
           </template>
           <!-- 收货单号 -->
           <template #takeNumber="scope">
-            <!-- <el-button type="text" @click="toReceive(scope.data)"> -->
+            <el-button type="text" @click="toReceive(scope.data)">
             {{ scope.value }}
-            <!-- </el-button> -->
+            </el-button>
           </template>
         </table-index>
         <pagination
@@ -293,7 +293,7 @@ export default {
     //收货单
     toReceive(row) {
       this.$router.push({
-        name: "receivePage",
+        name: "receivePageCrk",
         query: { id: row.id, type: "view" },
       });
     },

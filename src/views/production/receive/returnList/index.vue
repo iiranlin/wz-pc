@@ -52,9 +52,9 @@
           </template>
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
-            <!-- <el-button type="text" @click="toFhd(scope.data)"> -->
+            <el-button type="text" @click="toFhd(scope.data)">
               {{ scope.value }}
-            <!-- </el-button> -->
+            </el-button>
           </template>
         </table-index>
         <pagination
@@ -195,7 +195,7 @@ export default {
     //跳转货运详情
     toFhd(row) {
       this.$router.push({
-        name: "addSend",
+        name: "addSendCy",
         query: { id: row.id, type: "view" },
       });
     },
