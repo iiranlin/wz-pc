@@ -201,7 +201,7 @@ export default {
         this.$message.warning('请选择要添加的物资')
         return
       }
-      this.setSelectedMaterialList(this.selectRows.map(x => ({ ...x, addr: x.deliveryLocation })))
+      this.setSelectedMaterialList(this.selectRows.map(x => ({ ...x, field2: x.deliveryLocation })))
       this.$router.push({
         name: 'requestAdd',
         query: {
