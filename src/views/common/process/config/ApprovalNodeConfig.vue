@@ -132,9 +132,9 @@
         </el-form-item>
       </div>
 
-      <template>
+      <!-- 短信开关及短信模板 -->
+      <!-- <template>
         <el-divider />
-        <!-- 短信开关及短信模板 -->
         <el-form-item label="短信开关"  prop="sendFlag">
           <el-switch
             v-model="nodeProps.sendFlag"
@@ -146,7 +146,7 @@
            :inactive-value="1"
           />
         </el-form-item>
-      </template>
+      </template> -->
 
       <!-- <el-divider>高级设置</el-divider>
       <el-form-item label="✍ 审批同意时是否需要签字" prop="text">
