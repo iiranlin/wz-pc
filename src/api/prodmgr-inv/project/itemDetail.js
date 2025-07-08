@@ -71,7 +71,7 @@ export const remove = (id) => {
  */
 export const edit = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialProvidedDetail/modify`,
+    url: `${VUE_APP_PRODMGR_INV}/materialProvidedDetail/update`,
     method: 'post',
     data
   })

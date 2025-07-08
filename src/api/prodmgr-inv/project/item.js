@@ -106,3 +106,12 @@ export const itemBatchImport = (data) => {
     data
   })
 }
+
+// 物资提交审核
+export const itemSubmit = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/submit`,
+    method: 'post',
+    data
+  })
+}
