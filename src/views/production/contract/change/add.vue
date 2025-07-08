@@ -45,6 +45,27 @@
           </el-form-item>
         </template>
 
+         <!-- 合同名称选择 -->
+        <template #contractNameSlot="{ formModel }">
+          <el-form-item prop="contractName" label="合同名称" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
+            <div style="position: relative;">
+              <el-input v-model="formModel.contractName" placeholder="请选择" ></el-input>
+              <!-- 点击选择透明遮板 -->
+              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div>
+            </div>
+          </el-form-item>
+        </template>
+          <!-- 合同编号选择 -->
+        <template #contractNoSlot="{ formModel }">
+          <el-form-item prop="contractNo" label="合同名称" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
+            <div style="position: relative;">
+              <el-input v-model="formModel.contractNo" placeholder="请选择" ></el-input>
+              <!-- 点击选择透明遮板 -->
+              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div>
+            </div>
+          </el-form-item>
+        </template>
+
         <!--卖方单位  -->
         <template #sellerSlot="{ formModel }">
           <el-form-item
@@ -120,6 +141,7 @@
           />
         </template>
       </VFormRender>
+      <ContractNameSelect ref="contractNameSelect" @select="onContractSelect" />
     </div>
   </div>
 </template>
@@ -135,12 +157,14 @@ import { getToken } from '@/utils/auth'
 import fileUpload from '@/components/upload'
 import { listByDeptCode } from '@/api/system/dept.js'
 import { getUserInfo } from '@/utils/user-info'
+import ContractNameSelect from '@/views/production/contract/components/contractNameSelect.vue'
 export default {
   name: "changeContract",
   components: {
     VFormRender,
     fileUpload,
-    TabTable
+    TabTable,
+    ContractNameSelect
   },
 
   data () {
@@ -205,6 +229,13 @@ export default {
 
   },
   methods: {
+    onContractSelect(contract) {
+      this.$refs.vFormRef.setFieldValue('contractName', contract.scontName)
+      this.$refs.vFormRef.setFieldValue('contractNo', contract.scontCode)
+    },
+    handleContractNameSelect(){
+      this.$refs.contractNameSelect.open()
+    },
     onDataChange (data) {
       console.log(data, 'datas')
 
