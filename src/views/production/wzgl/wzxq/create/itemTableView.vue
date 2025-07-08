@@ -82,7 +82,7 @@
       ></el-table-column>
       <el-table-column
         prop="deliveryLocation"
-        label="使用地点"
+        label="交货地点"
         align="center"
         width="200"
       ></el-table-column>
