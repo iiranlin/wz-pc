@@ -15,7 +15,7 @@
 
         <el-form-item label="合同编号">
         <el-input
-          v-model="queryParams.scontCode"
+          v-model="queryParams.contCode"
           placeholder="请输入合同编号"
           clearable
           @keyup.enter.native="handleQuery"
@@ -23,7 +23,7 @@
       </el-form-item>
       <el-form-item label="合同名称">
         <el-input
-          v-model="queryParams.scontName"
+          v-model="queryParams.contName"
           placeholder="请输入合同名称"
           clearable
           @keyup.enter.native="handleQuery"
@@ -169,8 +169,8 @@ export default {
       // 表格数据
       tableData: [],
       queryParams:{
-        scontCode: "",
-        scontName:"",
+        contCode: "",
+        contName:"",
       }
     };
   },
@@ -192,8 +192,8 @@ export default {
       this.listQuery.pageNum = 1;
 
       this.queryParams = {
-        scontCode: "",
-        scontName: "",
+        contCode: "",
+        contName: "",
       };
     },
     // 查询按钮
