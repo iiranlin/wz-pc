@@ -24,6 +24,24 @@
       >
         <el-row :span="24" :gutter="20">
           <el-col :span="24">
+            <el-form-item :label="'物资大类'" prop="speciesCode">
+              <el-select
+                v-model="form.speciesCode"
+                placeholder="请选择"
+                style="width: 100%"
+                filterable
+                @change="speciesChange"
+              >
+                <el-option
+                  v-for="item in dict.type.WZDL"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item :label="'物资种类编码'" prop="materialCategoriesCode">
               <el-input
                 v-model="form.materialCategoriesCode"
@@ -53,30 +71,33 @@
 </template>
 
 <script>
-import * as Api from '@/api/prodmgr-inv/project/itemType.js'
+import * as Api from "@/api/prodmgr-inv/project/itemType.js";
 export default {
   name: "ItemAdd",
-  data () {
+  dicts: ["WZDL"],
+  data() {
     return {
-      title: '新增',
+      title: "新增",
       visible: false,
-      type: 'add',
+      type: "add",
       form: {},
       rules: {
+        speciesCode: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
         materialCategoriesCode: [
-          { required: true, message: '请输入', trigger: 'blur' },
+          { required: true, message: "请输入", trigger: "blur" },
         ],
         materialCategoriesName: [
-          { required: true, message: '请输入', trigger: 'blur' },
+          { required: true, message: "请输入", trigger: "blur" },
         ],
       },
-    }
+    };
   },
   methods: {
     //初始化
-    init () {
-      this.form = {
-      };
+    init() {
+      this.form = {};
       this.isEdit = false;
       this.visible = true;
       this.$nextTick(() => {
@@ -84,7 +105,7 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit (id) {
+    async updateInit(id) {
       this.isEdit = true;
       this.visible = true;
       await Api.detail(id).then(({ data }) => {
@@ -96,13 +117,11 @@ export default {
     },
 
     //新建
-    handleCreate () {
+    handleCreate() {
       this.$refs.elform.validate(async (valid) => {
         if (valid) {
           this.loading = true;
-          await Api[
-            this.isEdit ? `edit` : `save`
-          ](Object.assign({}, this.form))
+          await Api[this.isEdit ? `edit` : `save`](Object.assign({}, this.form))
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
@@ -116,13 +135,17 @@ export default {
       });
     },
     //取消
-    handleCancel () {
+    handleCancel() {
       this.visible = false;
     },
     //关闭dialog回调
-    handleDialogClose () {
+    handleDialogClose() {
       this.$refs.elform.resetFields();
     },
+    speciesChange(val) {
+      this.form.speciesName = this.dict.type.WZDL.find((x) => x.value == val)
+        .label;
+    },
   },
-}
+};
 </script>

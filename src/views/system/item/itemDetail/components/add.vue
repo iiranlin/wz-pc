@@ -23,6 +23,24 @@
         :model="form"
       >
         <el-row :span="24" :gutter="20">
+           <el-col :span="24">
+            <el-form-item :label="'物资种类'" prop="categoriesCode">
+              <el-select
+                v-model="form.categoriesCode"
+                placeholder="请选择"
+                style="width: 100%"
+                filterable
+                @change="categoriesChange"
+              >
+                <el-option
+                  v-for="item in typeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item :label="'细目编码'" prop="detailCode">
               <el-input
@@ -54,6 +72,7 @@
 
 <script>
 import * as Api from '@/api/prodmgr-inv/project/itemDetail.js'
+import * as TypeApi from '@/api/prodmgr-inv/project/itemType.js'
 export default {
   name: "ItemAdd",
   data () {
@@ -63,6 +82,9 @@ export default {
       type: 'add',
       form: {},
       rules: {
+        categoriesCode: [
+          { required: true, message: '请选择', trigger: 'change' },
+        ],
         detailCode: [
           { required: true, message: '请输入', trigger: 'blur' },
         ],
@@ -82,6 +104,15 @@ export default {
       this.$nextTick(() => {
         this.title = "新建";
       });
+    },
+    async getOptions() {
+      const params = { pageNum: 1, pageSize: -1 };
+      const res = await TypeApi.itemList(params);
+      this.typeOptions = res.data.list.map(x =>( {
+        ...x,
+        label: x.materialCategoriesName,
+        value: x.materialCategoriesCode,
+      }))
     },
     // 编辑初始化
     async updateInit (id) {
@@ -122,6 +153,13 @@ export default {
     //关闭dialog回调
     handleDialogClose () {
       this.$refs.elform.resetFields();
+    },
+    categoriesChange(val) {
+      this.form.categoriesName = this.typeOptions.find(x => x.value == val).label;
+      this.form.categoriesId = this.typeOptions.find(x => x.value == val).id;
+
+      this.form.speciesName = this.typeOptions.find(x => x.value == val).speciesName;
+      this.form.speciesCode = this.typeOptions.find(x => x.value == val).speciesCode;
     },
   },
 }

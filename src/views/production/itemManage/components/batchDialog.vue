@@ -59,14 +59,19 @@
       title="提示"
       type="warning"
       :closable="false"
-      style="margin-top: 16px;max-height: 300px;overflow-y: scroll;"
+      style="margin-top: 16px;width: 100%;"
     >
-      <template>
-        <ol style="max-height: 250px;">
-          <li :key="idx" v-for="(item, idx) of fileList[0].reason">
-            {{ `  ${item}` }}
-          </li>
-        </ol>
+      <template >
+        <div style="height: 250px;">
+          <virtual-list
+            :data-key="'index'"
+            :data-sources="reasonListWithIndex"
+            :data-component="reasonItemComponent"
+            :estimate-size="32"
+            :keeps="20"
+            style="height: 100%; overflow-y: auto"
+          />
+        </div>
       </template>
     </el-alert>
 
@@ -77,73 +82,106 @@
 </template>
 
 <script>
-import { itemBatchImport } from '@/api/prodmgr-inv/project/item.js'
+import { itemBatchImport } from "@/api/prodmgr-inv/project/item.js";
+import VirtualList from "vue-virtual-scroll-list";
+
+// 定义列表项组件
+const ReasonItem = {
+  props: {
+    source: {
+      type: Object,
+      required: true,
+    },
+  },
+  render(h) {
+    return h("li", {}, [`${this.source.text}`]);
+  },
+};
 
 export default {
   name: "batchDialog",
-  data () {
+  components: {
+    VirtualList,
+  },
+  data() {
     return {
       loading: false,
-      title: '批量导入',
+      title: "批量导入",
       visible: false,
       tableData: [],
       fileList: [],
-
-    }
+      reasonItemComponent: ReasonItem,
+    };
+  },
+  computed: {
+    reasonListWithIndex() {
+      if (!this.fileList.length || !this.fileList[0].reason) return [];
+      // 确保所有数据都被正确映射
+      const result = this.fileList[0].reason.map((text, index) => ({
+        index,
+        text,
+      }));
+      console.log(`总数据条数: ${result.length}`); // 调试用
+      return result;
+    },
   },
   methods: {
-    formatFileSize (row, column, cellValue) {
-      if (!cellValue) return '0 KB'
-      const sizeInMB = cellValue / (1024 * 1024)
+    formatFileSize(row, column, cellValue) {
+      if (!cellValue) return "0 KB";
+      const sizeInMB = cellValue / (1024 * 1024);
       if (sizeInMB < 1) {
-        const sizeInKB = cellValue / 1024
-        return sizeInKB.toFixed(2) + ' KB'
+        const sizeInKB = cellValue / 1024;
+        return sizeInKB.toFixed(2) + " KB";
       } else {
-        return sizeInMB.toFixed(2) + ' MB'
+        return sizeInMB.toFixed(2) + " MB";
       }
     },
-    open () {
+    open() {
       this.visible = true;
-      this.fileList = []
+      this.fileList = [];
     },
     //取消
-    handleCancel () {
+    handleCancel() {
       this.visible = false;
     },
-    onOk () {
+    onOk() {
       if (!this.fileList[0]?.list?.length) {
-        this.$message.warning('请先上传文件')
-        return
+        this.$message.warning("请先上传文件");
+        return;
       }
-      this.$emit('onOk', this.fileList[0].list)
+      this.$emit("onOk", this.fileList[0].list);
       this.visible = false;
     },
-    beforeUpload (file) {
-      const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-        file.name.endsWith('.xlsx') || file.name.endsWith('.xls')
-      const isLt100M = file.size / 1024 / 1024 < 100
+    beforeUpload(file) {
+      const isExcel =
+        file.type ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        file.name.endsWith(".xlsx") ||
+        file.name.endsWith(".xls");
+      const isLt100M = file.size / 1024 / 1024 < 100;
       if (!isExcel) {
-        this.$message.error('只能上传 Excel 文件')
+        this.$message.error("只能上传 Excel 文件");
       }
       if (!isLt100M) {
-        this.$message.error('文件大小不能超过 100MB')
+        this.$message.error("文件大小不能超过 100MB");
       }
-      return isExcel && isLt100M
+      return isExcel && isLt100M;
     },
-    handleUpload ({ file }) {
+    handleUpload({ file }) {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
       this.loading = true;
-      itemBatchImport(formData).then(res => {
-        this.fileList = [res.data]
-        this.$message.success('导入成功')
-      }).finally(() => {
-        this.loading = false;
-      })
-
-    }
-  }
-}
+      itemBatchImport(formData)
+        .then((res) => {
+          this.fileList = [res.data];
+          this.$message.success("导入成功");
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -165,5 +203,9 @@ export default {
 
 .mt-20 {
   margin-top: 20px !important;
+}
+
+::v-deep .el-alert__content{
+  width: 100%;
 }
 </style>
