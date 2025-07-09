@@ -62,7 +62,7 @@
       :closable="false"
     >
       <template>
-        <ol>
+        <ol style="max-height: 250px;">
           <li :key="idx" v-for="(item, idx) of fileList[0].reason">
             {{ `  ${item}` }}
           </li>

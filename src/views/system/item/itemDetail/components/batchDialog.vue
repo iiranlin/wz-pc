@@ -62,7 +62,7 @@
       style="margin-top: 16px;max-height: 300px;overflow-y: scroll;"
     >
       <template>
-        <ol >
+        <ol style="max-height: 250px;" >
           <li :key="idx" v-for="(item, idx) of fileList[0].reason">
             {{ `  ${item}` }}
           </li>
