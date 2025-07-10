@@ -26,17 +26,17 @@
             <div style="position: relative;">
               <el-input v-model="formModel.contractName" placeholder="请选择" ></el-input>
               <!-- 点击选择透明遮板 -->
-              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div>
+              <!-- <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div> -->
             </div>
           </el-form-item>
         </template>
           <!-- 合同编号选择 -->
         <template #contractNoSlot="{ formModel }">
-          <el-form-item prop="contractNo" label="合同名称" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
+          <el-form-item prop="contractNo" label="合同编号" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
             <div style="position: relative;">
               <el-input v-model="formModel.contractNo" placeholder="请选择" ></el-input>
               <!-- 点击选择透明遮板 -->
-              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div>
+              <!-- <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div> -->
             </div>
           </el-form-item>
         </template>
