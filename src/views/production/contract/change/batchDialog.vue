@@ -90,7 +90,7 @@ export default {
   data () {
     return {
       loading: false,
-      title: '批量导入',
+      title: '导入合同物资',
       visible: false,
       tableData: [],
       fileList: [],
