@@ -59,10 +59,10 @@
       title="提示"
       type="warning"
       :closable="false"
-      style="margin-top: 16px;width: 100%;"
+      style="margin-top: 16px; width: 100%"
     >
-      <template >
-        <div style="height: 250px;">
+      <template>
+        <div style="height: 250px">
           <virtual-list
             :data-key="'index'"
             :data-sources="reasonListWithIndex"
@@ -175,6 +175,7 @@ export default {
         .then((res) => {
           this.fileList = [res.data];
           this.$message.success("导入成功");
+          this.$emit("onOk");
         })
         .finally(() => {
           this.loading = false;
@@ -205,7 +206,7 @@ export default {
   margin-top: 20px !important;
 }
 
-::v-deep .el-alert__content{
+::v-deep .el-alert__content {
   width: 100%;
 }
 </style>

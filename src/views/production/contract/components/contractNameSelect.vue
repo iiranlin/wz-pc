@@ -12,8 +12,7 @@
   >
     <!-- 搜索区域 -->
     <el-form :inline="true" :model="queryParams" class="search-form">
-
-        <el-form-item label="合同编号">
+      <el-form-item label="合同编号">
         <el-input
           v-model="queryParams.contCode"
           placeholder="请输入合同编号"
@@ -168,10 +167,10 @@ export default {
       total: 0,
       // 表格数据
       tableData: [],
-      queryParams:{
+      queryParams: {
         contCode: "",
-        contName:"",
-      }
+        contName: "",
+      },
     };
   },
   methods: {
@@ -238,7 +237,15 @@ export default {
       try {
         this.loading = true;
         // 内网地址：http://10.3.144.73:8000/api/data-share/outputService/service/contractMtInfo
-        const res = await axios.post("http://10.3.144.73:8000/api/data-share/outputService/service/contractMtInfo", data);
+        const res = await axios.post(
+          "http://10.3.144.73:8000/api/data-share/outputService/service/contractMtInfo",
+          data,
+          {
+            headers: {
+              Token: "0scch18f23f7ce82",
+            },
+          }
+        );
         this.tableData = res.data.data.list || [];
         this.total = res.data.data.total || 0;
       } catch (error) {
