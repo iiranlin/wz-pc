@@ -221,7 +221,7 @@ export default {
           }, "*")
           : null,
         h("span", {}, column.label),
-        !['projectShortName', 'remark'].includes(column.property) && this.type !== 'view'?
+        !['projectShortName', 'remark','sendTotal'].includes(column.property) && this.type !== 'view'?
         h("el-button", {
           props: {
             type: "text",

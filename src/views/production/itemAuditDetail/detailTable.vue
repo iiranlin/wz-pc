@@ -16,12 +16,15 @@
     >
       <!-- 序号 -->
       <el-table-column
-        type="index"
         align="center"
         label="序号"
         width="60"
         fixed
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ (listQuery.pageNum - 1) * listQuery.pageSize + scope.$index + 1 }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="speciesName"
         label="物资大类"
@@ -100,7 +103,6 @@ export default {
     this.getList();
   },
   methods: {
-
     // 获取物资列表数据
     async getList() {
       const params = {
@@ -114,7 +116,6 @@ export default {
         const res = await ItemApi.itemList(params);
         this.tableData = res.data.list || [];
         this.total = res.data.total || 0;
-       
       } catch (error) {
         console.error("获取物资列表失败", error);
         this.$message.error("获取物资列表失败");
