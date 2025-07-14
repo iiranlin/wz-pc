@@ -176,7 +176,7 @@ export default {
       console.log(selected, "=======selected=====");
       if (selected.length > 0) {
         selected.forEach((sel) => {
-          const match = this.tableData.find((item) => item.id === sel.id);
+          const match = this.tableData.find((item) => item.allocationUniqueNumber === sel.allocationUniqueNumber);
           if (match) {
             // ✅ 把 store 中的数据字段 merge 到 tableData 的项上（只 merge 附加字段，不覆盖关键字段）
             Object.keys(sel).forEach((key) => {
