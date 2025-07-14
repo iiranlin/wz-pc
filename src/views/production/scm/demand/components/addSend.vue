@@ -145,6 +145,9 @@ export default {
       // status = 2 表示货运中，仅允许修改附件，其余和view模式一样
       return this.$route.query?.status || "";
     },
+    planId(){
+      return this.$route.query?.planId || "";
+    },
     ...mapState(["request"]),
   },
   async created() {},
@@ -374,7 +377,7 @@ export default {
           await Api[this.type == "create" ? "save" : "modifySend"](
             Object.assign(
               {
-                planId: this.type == "create" ? this.id : "",
+                planId: this.planId,
                 id: this.type == "create" ? "" : this.id,
               },
               formData,
