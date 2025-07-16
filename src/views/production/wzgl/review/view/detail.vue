@@ -196,19 +196,19 @@ export default {
       }
       // 修改
       if (item.buttonCode === 'edit') {
-        return ['0', '4'].includes(this.detail.planStatus)
+        return ['0', '4'].includes(this.detail.planStatus) && this.name !== 'toBeDeal'
       }
       // 同意
       if (item.buttonCode === 'pass') {
-        return ['2'].includes(this.detail.planStatus)
+        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal'
       }
       // 修改后同意
       if (item.buttonCode === 'passEdit') {
-        return ['2'].includes(this.detail.planStatus)
+        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal'
       }
       // 不同意
       if (item.buttonCode === 'reject') {
-        return ['2'].includes(this.detail.planStatus)
+        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal'
       }
 
 
