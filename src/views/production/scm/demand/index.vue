@@ -255,6 +255,7 @@ export default {
             query: {
               id: idArr[0],
               type: "create",
+              planId:idArr[0],
             },
           });
           break;

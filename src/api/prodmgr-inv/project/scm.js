@@ -129,7 +129,7 @@ export const batchRemove = (data) => {
  */
 export const sendDetail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySend/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByUpdateSend/${id}`,
     method: 'get',
   })
 }
