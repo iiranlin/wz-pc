@@ -101,7 +101,7 @@ export default {
     },
     fileSize:{
       type: Number,
-      default: 200
+      default: 500
     },
     // 是否显示提示
     isShowTip: {

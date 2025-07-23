@@ -74,7 +74,7 @@
               v-if="scope.value[0]"
               :value="scope.value[0].fileList"
               :limit="1"
-              :fileSize="200"
+              :fileSize="500"
               :fileType="['pdf']"
               :preview="'view'"
             />
@@ -113,7 +113,8 @@ export default {
       '0': '未提交',
       '2': '未确认',
       '3': '已确认',
-      '4': '供货中'
+      '4': '供货中',
+      '9': '已完成',
     }
     return {
       status: status,

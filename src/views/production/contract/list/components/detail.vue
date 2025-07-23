@@ -95,7 +95,7 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
-              :fileSize="200"
+              :fileSize="500"
               :fileType="['pdf']"
               :preview="type === 'view'"
             />
@@ -104,7 +104,7 @@
 
          <template #fileListGgSlot="scope">
           <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList1" :limit="1" :fileSize="200" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.fileList1" :limit="1" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
 

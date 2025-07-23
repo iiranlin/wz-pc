@@ -63,7 +63,7 @@
             v-if="scope.row.fileList[0]"
             :value="scope.row.fileList[0].fileList"
             :limit="1"
-            :fileSize="200"
+            :fileSize="500"
             :fileType="['pdf']"
             :preview="'view'"
           />

@@ -29,7 +29,7 @@
               :preview="type == 'view'"
               :limit="9999"
               :multiple="true"
-              :fileSize="200"
+              :fileSize="500"
               :fileType="['pdf']"
               :isShowTip="false"
             /> 
@@ -48,7 +48,7 @@
               :value="scope.formModel.fileList02"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="200"
+              :fileSize="500"
               :fileType="['pdf']"
               :isShowTip="false"
             />
@@ -67,7 +67,7 @@
               :value="scope.formModel.fileList03"
               :preview="type == 'view'"
               :limit="1"
-              :fileSize="200"
+              :fileSize="500"
               :fileType="['pdf']"
               :isShowTip="false"
             />
@@ -257,7 +257,7 @@
                   :preview="type == 'view'"
                   :isShowTip="false"
                   :limit="1"
-                  :fileSize="200"
+                  :fileSize="500"
                 />
               </template>
             </el-table-column>

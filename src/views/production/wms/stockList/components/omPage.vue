@@ -26,7 +26,7 @@
               v-model="scope.formModel.fileList"
               :preview="type == 'view' || preview"
               :limit="1"
-              :fileSize="200"
+              :fileSize="500"
               :isShowTip="false"
             />
           </el-form-item>
