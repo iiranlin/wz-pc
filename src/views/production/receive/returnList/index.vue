@@ -12,6 +12,7 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       :formData="formData"
+      :labelWidth="150"
     >
     </form-data>
     <el-row type="flex" class="container_h">
