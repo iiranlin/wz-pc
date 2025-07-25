@@ -198,6 +198,12 @@ export default {
           return item.status != '2'
         })
       }
+      // 未提交允许提交供应商
+      if (item.buttonCode === 'create') {
+        return this.selection.some(item => {
+          return item.status != '0'
+        })
+      }
       return false;
     },
     onGoDetail (row) {
