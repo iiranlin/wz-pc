@@ -30,6 +30,23 @@
             />
           </el-form-item>
         </template>
+         <!-- 装车照片附件 -->
+        <template #fhSlot="scope">
+          <el-form-item
+            prop="zczp"
+            label="装车照片"
+            class="label-right-align"
+           
+          >
+            <fileUpload
+              v-model="scope.formModel.zczp"
+              :limit="9999"
+              :preview="type === 'view' && status !=2"
+              :isShowTip="false"
+              :fileType="['jpg','png','jpeg']"
+            />
+          </el-form-item>
+        </template>
         <!-- 供应需求ID和需求项目切换 -->
         <!-- <template #slot2="scope">
           <el-form-item
@@ -283,6 +300,7 @@ export default {
           const newData = {
             ...data,
             fileList: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
+            zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
             arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
             shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
           };
@@ -358,6 +376,10 @@ export default {
           //发货单
           if (formData.fileList.length > 0) {
             this.$set(fileByList, "fhd", formData.fileList);
+          }
+          //装车照片
+          if (formData.zczp.length > 0) {
+            this.$set(fileByList, "zczp", formData.zczp);
           }
           formData.fileByList = JSON.stringify(fileByList);
           for (var i in this.tableData) {

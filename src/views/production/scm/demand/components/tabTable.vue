@@ -101,7 +101,7 @@
       </el-table-column>
       <el-table-column prop="projectShortName" label="厂检报告附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
-          <fileUpload v-model="scope.row.fileList02" :value="scope.row.fileList02" :limit="1" :preview="type == 'view' && status !=2"
+          <fileUpload v-model="scope.row.fileList02" :value="scope.row.fileList02" :limit="9999" :preview="type == 'view' && status !=2"
             :isShowTip="false" />
         </template>
       </el-table-column>
