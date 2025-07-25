@@ -264,7 +264,7 @@
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
             <el-table-column
               prop="putTotal"
-              label="收货数量"
+              label="实收数量"
               width="120"
               fixed="right"
               align="center"
@@ -472,7 +472,7 @@ export default {
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
               supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
-              putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认收货数量=发货数量
+              putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认实收数量=发货数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_sh || [] : [], //退货附件
@@ -599,11 +599,11 @@ export default {
         });
       });
     },
-    //填写收货数量
+    //填写实收数量
     changePut(row) {
       //收货不能超过发货，最终算出退货
       if (Number(row.putTotal) > Number(row.sendTotal)) {
-        this.$modal.msgError("收货数量不能大于发货数量！");
+        this.$modal.msgError("实收数量不能大于发货数量！");
         row.putTotal = row.sendTotal;
         console.log(row.putTotal, "======row.putTotal====");
       } else {

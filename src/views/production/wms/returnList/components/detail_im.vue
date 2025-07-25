@@ -69,7 +69,7 @@
             ></el-table-column>
             <el-table-column
               prop="putTotal"
-              label="本次收货数量"
+              label="本次实收数量"
               width="120"
               align="center"
             ></el-table-column>

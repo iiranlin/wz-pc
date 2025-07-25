@@ -124,7 +124,7 @@
             ></el-table-column>
             <el-table-column
               prop="putTotal"
-              label="本次收货数量"
+              label="本次实收数量"
               width="120"
               align="center"
             ></el-table-column>
@@ -386,7 +386,7 @@ export default {
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
               supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
-              storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=收货数量
+              storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=实收数量
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
@@ -556,7 +556,7 @@ export default {
     changePut(row) {
       //入库不能超过收货，最终算出退货
       if (Number(row.storeTotal) > Number(row.putTotal)) {
-        this.$modal.msgError("入库数量不能大于收货数量！");
+        this.$modal.msgError("入库数量不能大于实收数量！");
         row.storeTotal = row.putTotal;
       } else {
         row.refundZjTotal = Number(row.putTotal) - Number(row.storeTotal);
@@ -570,7 +570,7 @@ export default {
     changeRefund(row) {
       //退货不能超过收货，最终算出入库
       if (Number(row.refundZjTotal) > Number(row.putTotal)) {
-        this.$modal.msgError("退货数量不能大于收货数量！");
+        this.$modal.msgError("退货数量不能大于实收数量！");
         row.refundZjTotal = Number(row.putTotal) - Number(row.storeTotal);
       } else {
         row.storeTotal = Number(row.putTotal) - Number(row.refundZjTotal);
