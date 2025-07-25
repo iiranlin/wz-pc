@@ -62,6 +62,9 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
+        <template #validityGuarantee="scope">
+          {{ scope.data.validityGuarantee|formatDate }} 至 {{ scope.data.validityGuaranteeEnd|formatDate }}
+        </template>
           <!-- 合同状态 -->
           <template #contractStatus="scope">
             <!-- 0: "State-Fail", //审核不通过
@@ -95,7 +98,7 @@
 import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
-import { listByDeptCode } from '@/api/system/dept.js'
+import dayjs from 'dayjs'
 export default {
   // 建设项目
   name: "contractList",
@@ -145,7 +148,12 @@ export default {
       this.property = data;
     });
   },
-
+  filters: {
+    formatDate (value) {
+      if (!value) return ''
+      return dayjs(value).format('YYYY-MM-DD')
+    }
+  },
   methods: {
     selectable (row) {
       // 履约比例等于0允许删除
@@ -242,7 +250,9 @@ export default {
         case 'contractStatus':
           this.changeStatus(rowArr[0])
           break;
-
+        case 'add':
+          this.$router.push({ name: 'addSupplementContract', query: { type: 'create',parentId: idArr[0] } })
+          break;
       }
     },
     async changeStatus (row) {

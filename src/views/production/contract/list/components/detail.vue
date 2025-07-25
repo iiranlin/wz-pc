@@ -275,8 +275,9 @@ export default {
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
           }
+          // validityGuarantee 重新组合为数组
+          newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
           this.$refs.vFormRef.setFormData(newData)
-
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
 

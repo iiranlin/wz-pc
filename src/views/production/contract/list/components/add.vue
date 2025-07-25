@@ -249,7 +249,8 @@ export default {
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
           }
-          console.log(newData, 'newData')
+          // validityGuarantee 重新组合为数组
+          newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
           this.$refs.vFormRef.setFormData(newData)
           // 更新重新赋值
           this.sellerName = data.seller
@@ -310,6 +311,10 @@ export default {
           const fileList = formData.fileList
           const fileList1 = formData.fileList1
           // formData.fileList = [{ fileList }]
+          // validityGuarantee 保函有效期日期范围拆分两个字段: validityGuarantee,validityGuaranteeEnd
+          const validityGuarantee = formData.validityGuarantee
+          formData.validityGuarantee = validityGuarantee ? validityGuarantee[0] : ''
+          formData.validityGuaranteeEnd = validityGuarantee ? validityGuarantee[1] : ''
 
           await Api[
             this.type === 'update' ? `edit` : `save`

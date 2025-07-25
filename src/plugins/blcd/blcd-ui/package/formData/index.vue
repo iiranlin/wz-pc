@@ -1,6 +1,6 @@
 <template>
     <el-form v-if="searchArr.length != 0" class="container form-data-search" ref="queryForm" :model="formData"
-        :inline="true" @submit.native.prevent v-show="showSearch" label-width="85px">
+        :inline="true" @submit.native.prevent v-show="showSearch" :label-width="labelWidth">
         <div class="form-content-box" :class="{ 'form-content-box-defaultSearch': defaultSearch && showDefaultSearch }"
             v-show="!showDefaultSearch || defaultSearch">
             <template v-for="item in searchObjArr.defaultSearchArr">
@@ -289,6 +289,10 @@ export default {
             default: () => {
                 return []
             }
+        },
+        labelWidth: {
+            type: String,
+            default: '85px'
         }
     },
     components: {
