@@ -257,6 +257,10 @@ export default {
         case 'add':
           this.$router.push({ name: 'addSupplementContract', query: { type: 'create',parentId: idArr[0],projectId: rowArr[0].projectId } })
           break;
+          // 新增保函
+        case 'addBh':
+          this.$router.push({ name: 'addValidityGuarantee', query: { type: 'create',contractId:idArr[0] } })
+          break;
       }
     },
     async changeStatus (row) {

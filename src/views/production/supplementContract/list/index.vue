@@ -101,7 +101,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import dayjs from 'dayjs'
 export default {
-  // 建设项目
+  // 补充合同列表
   name: "contractList",
   components: { Add },
   mixins: [indexMixin],
@@ -250,6 +250,9 @@ export default {
           break;
         case 'contractStatus':
           this.changeStatus(rowArr[0])
+          break;
+        case 'add':
+          this.$router.push({ name: 'addValidityGuarantee', query: { type: 'create',contractId:idArr[0] } })
           break;
 
       }
