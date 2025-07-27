@@ -251,7 +251,7 @@ export default {
           this.changeStatus(rowArr[0])
           break;
         case 'add':
-          this.$router.push({ name: 'addSupplementContract', query: { type: 'create',parentId: idArr[0] } })
+          this.$router.push({ name: 'addSupplementContract', query: { type: 'create',parentId: idArr[0],projectId: rowArr[0].projectId } })
           break;
       }
     },
