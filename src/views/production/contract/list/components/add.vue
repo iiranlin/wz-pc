@@ -158,7 +158,19 @@ export default {
       return this.$route.query?.projectId || ''
     },
     currentSellerName() {
-      return this.sellerName || this.$refs.vFormRef?.getFieldValue('seller') || ''
+      // 优先使用 sellerName 数据属性，确保返回字符串类型
+      if (this.sellerName) {
+        return this.sellerName;
+      }
+
+      // 如果 sellerName 为空，尝试从表单获取，但确保返回字符串
+      const sellerValue = this.$refs.vFormRef?.getFieldValue('seller');
+      if (Array.isArray(sellerValue)) {
+        // 如果返回数组，取第一个元素或空字符串
+        return sellerValue.length > 0 ? String(sellerValue[0]) : '';
+      }
+
+      return String(sellerValue || '');
     }
   },
   async created() {
@@ -207,7 +219,7 @@ export default {
         materialName: '', // 物资名称
         projectShortName: '', // 项目简称
         sectionName: '', // 标段项目名称
-        sellerName: this.$refs.vFormRef.getFieldValue('seller'), // 卖方名称
+        sellerName: this.currentSellerName, // 卖方名称 - 修复：使用计算属性确保返回字符串
         specModel: '', // 规格型号
         standardCode: '', // 标准或图号
         unit: '', // 计量单位

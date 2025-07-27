@@ -19,7 +19,7 @@
             ref="tabTableRef"
             :tableData="tableData"
             @data-change="onDataChange"
-            :sellerName="$refs.vFormRef.getFieldValue('seller')"
+            :sellerName="currentSellerName"
           />
         </template>
         <!-- 合同变更内容 -->
@@ -168,7 +168,8 @@ export default {
       tableData: [],
       removeMaterial: [],
       updateMaterial: {},
-      recordData: []
+      recordData: [],
+      sellerName: '' // 添加sellerName数据属性
     }
   },
   computed: {
@@ -184,6 +185,16 @@ export default {
     // 1: 变更保存预览   2：变更内容查看  顶部按钮不同
     status () {
       return this.$route.query?.status || ''
+    },
+    currentSellerName () {
+      // 确保返回字符串类型的卖方名称
+      const sellerValue = this.$refs.vFormRef?.getFieldValue('seller');
+      if (Array.isArray(sellerValue)) {
+        // 如果返回数组，取第一个元素或空字符串
+        return sellerValue.length > 0 ? String(sellerValue[0]) : '';
+      }
+
+      return String(sellerValue || '');
     }
   },
   async created () {
@@ -251,7 +262,7 @@ export default {
         materialName: '', // 物资名称
         projectShortName: '', // 项目简称
         sectionName: '', // 标段项目名称
-        sellerName: this.$refs.vFormRef.getFieldValue('seller'), // 卖方名称
+        sellerName: this.currentSellerName, // 卖方名称 - 修复：使用计算属性确保返回字符串
         specModel: '', // 规格型号
         standardCode: '', // 标准或图号
         unit: '', // 计量单位
@@ -294,9 +305,12 @@ export default {
           }
           this.$refs.vFormRef.setFormData(newData)
 
+          // 设置 sellerName 数据属性，确保新增行时能正确获取卖方名称
+          this.sellerName = data.seller;
+
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
-       
+
           this.tableData = this.status == '1'? this.$store.state?.project?.selectList : data?.materialList
           this.recordData = this.status == '1' ? this.$store.state.project.contractChangeDetail : data.updateDetails
         });
@@ -415,6 +429,8 @@ export default {
       if (key === 'seller') {
         const selectedSeller = options.find(item => item.value === val)
         if (selectedSeller) {
+          // 更新sellerName数据属性
+          this.sellerName = selectedSeller.label;
           // 更新tableData中所有行的卖方信息
           this.tableData.forEach(row => {
             row.sellerName = selectedSeller.label

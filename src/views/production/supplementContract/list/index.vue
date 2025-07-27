@@ -13,7 +13,7 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       :formData="formData"
-      :labelWidth="150"
+      labelWidth="150px"
     >
       <template #contractStatus>
         <el-select

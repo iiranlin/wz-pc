@@ -201,6 +201,7 @@ import fileUpload from "@/components/upload";
 import { listByDeptCode } from "@/api/system/dept.js";
 import { getUserInfo } from "@/utils/user-info";
 import ContractNameSelect from "@/views/production/contract/components/contractNameSelect.vue";
+import router from '@/router';
 export default {
   name: "SectionAdd",
   components: {
@@ -262,9 +263,19 @@ export default {
       return this.$route.query?.projectId || "";
     },
     currentSellerName() {
-      return (
-        this.sellerName || this.$refs.vFormRef?.getFieldValue("seller") || ""
-      );
+      // 优先使用 sellerName 数据属性，确保返回字符串类型
+      if (this.sellerName) {
+        return this.sellerName;
+      }
+
+      // 如果 sellerName 为空，尝试从表单获取，但确保返回字符串
+      const sellerValue = this.$refs.vFormRef?.getFieldValue("seller");
+      if (Array.isArray(sellerValue)) {
+        // 如果返回数组，取第一个元素或空字符串
+        return sellerValue.length > 0 ? String(sellerValue[0]) : "";
+      }
+
+      return String(sellerValue || "");
     },
     parentId() {
       return this.$route.query?.parentId || "";
@@ -297,6 +308,9 @@ export default {
           fileList:  [],
           fileList1: [],
         });
+
+        // 设置 sellerName 数据属性，确保新增行时能正确获取卖方名称
+        this.sellerName = data.seller;
       });
     },
     onContractSelect(contract) {
@@ -329,7 +343,7 @@ export default {
         materialName: "", // 物资名称
         projectShortName: "", // 项目简称
         sectionName: "", // 标段项目名称
-        sellerName: this.$refs.vFormRef.getFieldValue("seller"), // 卖方名称
+        sellerName: this.currentSellerName, // 卖方名称 - 修复：使用计算属性确保返回字符串
         specModel: "", // 规格型号
         standardCode: "", // 标准或图号
         unit: "", // 计量单位
@@ -401,6 +415,14 @@ export default {
       this.$store.dispatch("setProjectId", "");
       this.$router.go(-1);
     },
+    // 补充合同添加成功后跳转补充合同列表
+    success(){
+      this.$store.dispatch("setProjectId", "");
+       this.$tab.closePage(router.currentRoute)
+      this.$router.push({
+        name: 'supplementContract'
+      })
+    },
 
     buttonShow(item) {
       if (item.buttonCode === "save") {
@@ -461,7 +483,7 @@ export default {
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
-              this.cancel();
+              this.success();
             })
             .finally((err) => {
               this.loading = false;
