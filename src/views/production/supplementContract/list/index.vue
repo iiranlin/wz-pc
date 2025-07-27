@@ -234,16 +234,16 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
-          this.$router.push({ name: 'addContract', query: { type: 'create' } })
+          this.$router.push({ name: 'addSupplementContract', query: { type: 'create' } })
           break;
         case "update":
-          this.$router.push({ name: 'addContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })
+          this.$router.push({ name: 'addSupplementContract', query: { id: idArr[0], type: 'update',parentId: rowArr[0].parentId, projectId: rowArr[0].projectId } })
           break;
         case "delete":
           this.handleDelete(idArr)
           break;
         case 'view':
-          this.$router.push({ name: 'detailContract', query: { id: idArr[0], type: 'view' } })
+          this.$router.push({ name: 'detailSupplementContract', query: { id: idArr[0], type: 'view' } })
           break;
         case 'change':
           this.$router.push({ name: 'changeContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })

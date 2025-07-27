@@ -180,6 +180,10 @@ export default {
       if (btn.buttonCode === 'change') {
         return this.selection[0].contractStatus == 1
       }
+      // 已启用允许新增合同
+      if (btn.buttonCode === 'add') {
+        return this.selection[0].contractStatus != 2
+      }
       return false
     },
     numberChange (val) {

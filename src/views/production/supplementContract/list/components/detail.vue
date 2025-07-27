@@ -85,6 +85,45 @@
           </el-form-item>
         </template>
 
+         <!-- 建设项目 -->
+        <template #projectNameSlot="{ formModel }">
+          <el-form-item
+            prop="buyerId"
+            label="建设项目"
+            class="label-right-align"
+          >
+            <template>
+              <span>{{ formModel.projectName }}</span>
+            </template>
+          </el-form-item>
+        </template>
+
+        <!-- 物资名称 -->
+        <template #itemNameSlot="{ formModel }">
+          <el-form-item
+            prop="buyerId"
+            label="物资名称"
+            class="label-right-align"
+          >
+            <template>
+              <span>{{ formModel.itemName }}</span>
+            </template>
+          </el-form-item>
+        </template>
+
+        <!-- 原合同名称 -->
+        <template #oldNameSlot="{ formModel }">
+          <el-form-item
+            prop="buyerId"
+            label="原合同名称"
+            class="label-right-align"
+          >
+            <template>
+              <span>{{ formModel.oldName }}</span>
+            </template>
+          </el-form-item>
+           </template>
+
         <!-- 附件 -->
         <template #fileListSlot="scope">
           <el-form-item
@@ -377,7 +416,7 @@ export default {
     },
     formFillInPage () {
       return new Promise((resolve) => {
-        formFillInPage('contractDetail').then(res => {
+        formFillInPage('supplementContractList').then(res => {
           this.$refs['vFormRef'].setFormJson(res.data)
 
           // 如果有projectId 则默认赋值归属项目，并且禁用归属建设项目选项

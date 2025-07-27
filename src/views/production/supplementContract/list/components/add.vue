@@ -305,6 +305,7 @@ export default {
           ...data,
           oldName: data.contractName,
           contractName: "",
+          validityGuarantee: [],
           fileList:  [],
           fileList1: [],
         });
