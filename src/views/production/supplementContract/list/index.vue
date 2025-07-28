@@ -181,6 +181,10 @@ export default {
       if (btn.buttonCode === 'change') {
         return this.selection[0].contractStatus == 1
       }
+      // 已启用允许新增保函
+      if (btn.buttonCode === 'add') {
+        return this.selection[0].contractStatus == 1
+      }
       return false
     },
     numberChange (val) {
@@ -262,7 +266,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(Api.editStatus({ id: row.id, contractStatus: 2 }))
+      }).then(()=>Api.editStatus({ id: row.id, contractStatus: 2 }))
         .then(() => {
           this.getList();
           this.$modal.msgSuccess("启用成功");
