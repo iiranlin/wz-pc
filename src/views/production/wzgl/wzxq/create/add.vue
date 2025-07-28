@@ -17,6 +17,23 @@
         <template #table>
           <item-table ref="itemTableRef" />
         </template>
+
+         <!-- 附件 -->
+        <template #fileListSlot="scope">
+          <el-form-item
+            prop="fileList"
+            label="计划附件"
+            class="label-right-align"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList"
+              :limit="1"
+              :preview="type === 'view' "
+              :isShowTip="false"
+              :fileType="['pdf']"
+            />
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -36,12 +53,14 @@ import ItemTable from './itemTable.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
+import fileUpload from "@/components/upload";
 export default {
   // 需求填报
   components: {
     VFormRender,
     attachmentTable,
     ItemTable,
+    fileUpload
   },
   data () {
     return {
@@ -190,6 +209,8 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
+          // fileList回显
+          data.fileList = data.fileList[0]?.fileList || []
           this.$refs.vFormRef.setFormData(data)
 
           //   form action
@@ -248,6 +269,9 @@ export default {
     },
     //新建
     async handleCreate () {
+      // 获取表单数据
+      const formData = await this.$refs['vFormRef'].getFormData()
+
       if (this.getSelectedMaterialList().length === 0) {
         this.$modal.msgError('请选择物料')
         return
@@ -258,7 +282,9 @@ export default {
         return
       }
       this.loading = true;
+
       const data = {
+        fileList:[{fileList:formData.fileList||[]}],
         contractId: this.id,
         detailsModifyParams: tableData.map(x => ({
           ...x,
