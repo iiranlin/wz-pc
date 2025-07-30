@@ -174,8 +174,14 @@ export default {
       itemBatchImport(formData)
         .then((res) => {
           this.fileList = [res.data];
-          this.$message.success("导入成功");
-          this.$emit("onOk");
+          // 判断 reason 是否存在且有内容
+          if (Array.isArray(res.data.reason) && res.data.reason.length > 0) {
+            this.$message.warning("文件存在错误，请查看提示信息");
+            // 不关闭弹窗，只更新fileList并让用户查看错误信息
+          } else {
+            this.$message.success("导入成功");
+            this.$emit("onOk"); // 正常导入才关闭
+          }
         })
         .finally(() => {
           this.loading = false;
