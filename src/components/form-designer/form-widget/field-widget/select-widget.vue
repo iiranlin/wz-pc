@@ -114,7 +114,8 @@
         if(field.options.name == "warehouseManagementId"){
           return false
         }
-        return true
+        // 改为默认返回 false，或者根据 field.options.collapseTags 的值
+        return  false
       },
     }
   }

@@ -97,6 +97,7 @@
                 required
                 style="width: 100%"
                 placeholder="请选择"
+                multiple
                 @change="
                   (val) =>
                     selectChange(supervisionUnitOptions, val, 'supervisionUnit')
@@ -255,11 +256,17 @@ export default {
           this.title = "编辑";
           await this.formFillInPage()
           this.getLineOptions()
+          
+          // 处理监理单位数据：将逗号分隔的字符串转换为数组
+          if (data.supervisionUnitId && typeof data.supervisionUnitId === 'string') {
+            data.supervisionUnitId = data.supervisionUnitId.split(',')
+          }
+          if(data.projectType && typeof data.projectType === 'string'){
+            data.projectType = data.projectType.split(',')
+          }
+          
           this.$refs.vFormRef.setFormData(data)
-
-          //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
-
         });
       });
     },
@@ -327,6 +334,15 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
+          
+          // 处理监理单位多选数据：将数组转换为逗号分隔的字符串
+          if (Array.isArray(formData.supervisionUnitId)) {
+            formData.supervisionUnitId = formData.supervisionUnitId.join(',')
+          }
+          if (Array.isArray(formData.projectType)) {
+            formData.projectType = formData.projectType.join(',')
+          }
+          
           await Api[
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData))
@@ -334,6 +350,11 @@ export default {
               this.loading = false;
               this.$modal.msgSuccess(message);
               this.cancel();
+            })
+            .catch(async ()=>{
+               const formData = await this.$refs.vFormRef.getFormData();
+               formData.supervisionUnitId = formData.supervisionUnitId.split(',')
+              formData.projectType = formData.projectType.split(',')
             })
             .finally((err) => {
               this.loading = false;
@@ -362,9 +383,18 @@ export default {
       })
     },
     selectChange (options, val, key) {
-      this.$refs.vFormRef.setFormData({
-        [key]: options.find(item => item.value === val)?.label
-      })
+      if (Array.isArray(val)) {
+        // 多选情况：将选中的值转换为逗号分隔的字符串
+        const labels = val.map(v => options.find(item => item.value === v)?.label).filter(Boolean)
+        this.$refs.vFormRef.setFormData({
+          [key]: labels.join(',')
+        })
+      } else {
+        // 单选情况
+        this.$refs.vFormRef.setFormData({
+          [key]: options.find(item => item.value === val)?.label
+        })
+      }
     }
 
   },

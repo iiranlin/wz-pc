@@ -123,6 +123,7 @@
                 v-model="formModel.supervisionUnitId"
                 filterable
                 required
+                multiple
                 style="width: 100%"
                 placeholder="请选择"
                 @change="
@@ -317,6 +318,16 @@ export default {
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
+           // 处理监理单位数据：将逗号分隔的字符串转换为数组
+          if (data.supervisionUnitId && typeof data.supervisionUnitId === 'string') {
+            data.supervisionUnitId = data.supervisionUnitId.split(',')
+          }
+          if(data.supervisionUnit && typeof data.supervisionUnit === 'string'){
+            data.supervisionUnit = data.supervisionUnit
+          }
+          if(data.projectType && typeof data.projectType === 'string'){
+            data.projectType = data.projectType
+          }
           await this.formFillInPage()
           this.$refs.vFormRef.setFormData(data)
 

@@ -121,6 +121,7 @@
             <template v-if="type !== 'view'">
               <el-select
                 v-model="formModel.supervisionUnitId"
+                multiple
                 filterable
                 required
                 style="width: 100%"
