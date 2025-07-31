@@ -34,6 +34,16 @@ const typeName = {
     push: '下推'
 }
 
+// 根据环境变量选择登录组件
+const getLoginComponent = () => {
+    const loginType = process.env.VUE_APP_LOGIN_TYPE || 'old'
+    if (loginType === 'old') {
+        return () => import('@/views/login1')
+    } else {
+        return () => import('@/views/login')
+    }
+}
+
 // 公共路由
 export const constantRoutes = [
     {
@@ -49,7 +59,7 @@ export const constantRoutes = [
     },
     {
         path: '/login',
-        component: () => import('@/views/login'),
+        component: getLoginComponent(),
         hidden: true
     },
     {
