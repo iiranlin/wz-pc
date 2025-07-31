@@ -96,13 +96,13 @@
       <el-table-column prop="projectShortName" label="合格证附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
           <fileUpload v-model="scope.row.fileList01" :value="scope.row.fileList01" :limit="1" :preview="type == 'view' && status !=2"
-            :isShowTip="false" />
+            :isShowTip="false" :fileType="['pdf']" />
         </template>
       </el-table-column>
       <el-table-column prop="projectShortName" label="厂检报告附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
           <fileUpload v-model="scope.row.fileList02" :value="scope.row.fileList02" :limit="9999" :preview="type == 'view' && status !=2"
-            :isShowTip="false" />
+            :isShowTip="false" :fileType="['pdf']" />
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" width="200">

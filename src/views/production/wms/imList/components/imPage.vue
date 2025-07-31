@@ -258,6 +258,8 @@
                   :isShowTip="false"
                   :limit="1"
                   :fileSize="500"
+                  :fileType="['pdf']"
+
                 />
               </template>
             </el-table-column>

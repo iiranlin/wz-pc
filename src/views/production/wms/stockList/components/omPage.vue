@@ -28,6 +28,8 @@
               :limit="1"
               :fileSize="500"
               :isShowTip="false"
+              :fileType="['pdf']"
+
             />
           </el-form-item>
         </template>

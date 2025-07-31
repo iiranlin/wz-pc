@@ -27,6 +27,7 @@
               :limit="1"
               :preview="type === 'view' && status !=2"
               :isShowTip="false"
+              :fileType="['pdf']"
             />
           </el-form-item>
         </template>

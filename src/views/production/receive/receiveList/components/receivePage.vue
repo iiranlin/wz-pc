@@ -319,6 +319,8 @@
                   :isShowTip="false"
                   :limit="1"
                   :fileSize="500"
+                  :fileType="['pdf']"
+
                 />
               </template>
             </el-table-column>
@@ -385,7 +387,7 @@ export default {
           type: "",
         },
         {
-          buttonName: "提交入库审核",
+          buttonName: "提交收货审核",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
