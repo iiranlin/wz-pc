@@ -3,9 +3,10 @@
     <el-descriptions :column="1" :colon="false">
       <el-descriptions-item :label="item.fileName" v-for="(item, index) in helpListData" :key="index"
         label-class-name="docName">
-        <el-button type="text" @click="minioDownload(item)">
+        <!-- <el-button type="text" @click="minioDownload(item)">
           <span class="docNameLabel">下载</span>
-        </el-button>
+        </el-button> -->
+        <a download href="/建设物资管理系统操作说明书-v1.0.docx" class="docNameLabel">下载</a>
       </el-descriptions-item>
     </el-descriptions>
   </Dialog>
@@ -19,7 +20,7 @@ export default {
       dialogVisible: false,
       helpListData: [{
         filePath: 'templates/生产制造标准产品操作说明书v1.0.docx',
-        fileName: '生产制造标准产品操作说明书v1.0.docx'
+        fileName: '建设物资管理系统操作说明书-v1.0.docx'
       }],
     }
   },
@@ -36,8 +37,9 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .docNameLabel {
+  text-decoration: none;
+  color: #1890ff;
   font-weight: 600;
-  border-bottom: 1px solid;
 }
 
 ::v-deep .docName {
