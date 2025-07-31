@@ -312,6 +312,7 @@
             >
               <template slot-scope="scope">
                 <fileUpload
+                  v-if="Number(scope.row.refundTotal) > 0"
                   :value="scope.row.fileList03"
                   v-model="scope.row.fileList03"
                   :preview="type == 'view'"
@@ -325,6 +326,7 @@
         </template>
       </VFormRender>
     </div>
+      <toBeReviewed ref="toBereview" />
   </div>
 </template>
 
@@ -337,15 +339,18 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import dayjs from "dayjs";
+import toBeReviewed from "@/views/audit/components/toBeReviewed";
 export default {
   name: "receivePage",
   components: {
     VFormRender,
     fileUpload,
+    toBeReviewed,
   },
   data() {
     const userInfo = getUserInfo();
     return {
+      approvalStatus:"",
       maxManualIndex: 1,
       buyer: userInfo?.deptName,
       loading: false,
@@ -372,8 +377,15 @@ export default {
           buttonIcon: "Blue-Cancel",
           type: "create, update",
         },
+        { buttonName: "通过", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
         {
-          buttonName: "确定",
+          buttonName: "驳回",
+          buttonCode: "reject",
+          buttonIcon: "Blue-EditCard",
+          type: "",
+        },
+        {
+          buttonName: "提交入库审核",
           buttonCode: "save",
           buttonIcon: "Blue-Save",
           type: "create, update",
@@ -405,6 +417,15 @@ export default {
     },
     supplyId() {
       return this.$route.query?.supplyId || "";
+    },
+    takeStatus(){
+      return this.$route.query?.takeStatus ;
+    },
+    queryAuditArr() {
+      return JSON.parse(this.$route.query.auditArr || "[]");
+    },
+    name() {
+      return this.$route.query?.name || "";
     },
   },
   async created() {},
@@ -440,7 +461,9 @@ export default {
     init(id) {
       this.$nextTick(async () => {
         this.loading = true;
-        await Api.detailTake(id).then(({ data }) => {
+        const api = this.takeStatus == 5 || this.takeStatus == void 0 ? 'detailTakeBack' : 'detailTake';
+        await Api[api](id).then(({ data }) => {
+          this.approvalStatus = data.approvalStatus;
           this.$nextTick(async () => {
             this.loading = false;
             await this.formFillInPage();
@@ -491,6 +514,14 @@ export default {
         this.handleCreate();
         return;
       }
+      if (buttonCode === "pass") {
+        this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
+        return
+      }
+      if (buttonCode === "reject") {
+        this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
+        return
+      }
     },
     cancel() {
       this.$router.go(-1);
@@ -499,6 +530,17 @@ export default {
     buttonShow(item) {
       if (item.buttonCode === "save") {
         return this.type !== "view";
+      }
+       // 审核中才能显示同意和不同意按钮
+      if (item.buttonCode === "pass" || item.buttonCode === "reject") {
+        if(['toBeDeal','handle'].includes(this.name)){
+          return false
+        }
+        if(this.takeStatus == 5){
+          return false
+        }
+        // 2 审核中  0已驳回 3审核通过
+        return this.approvalStatus == "2";
       }
       return true;
     },
@@ -520,7 +562,6 @@ export default {
         });
         return false;
       }
-      // TODO: 提交逻辑放这里
       return true;
     },
     //新建
@@ -561,28 +602,41 @@ export default {
             this.tableData[i].fileByList = JSON.stringify(fileByList);
           }
           formData.takeDate = new Date(formData.takeDate).toISOString();
-          await Api.save(
-            Object.assign(
-              {
-                id: this.id,
-              },
-              formData,
-              {
-                materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
-                  ...x,
-                })),
-              }
-            )
-          )
-            .then(({ message }) => {
-              this.loading = false;
-              this.$modal.msgSuccess(message);
 
-              this.cancel();
-            })
-            .finally((err) => {
-              this.loading = false;
+          this.$modal.confirm("是否确认提交审核?").then(() => {
+            this.$reviewerDialog({
+              type: "SH",
+              multiple: false,
+              success: async (assignee) => {
+                this.loading = true;
+                await Api.submitTodo(
+                  Object.assign(
+                    {
+                      id: this.id,
+                      planType: "SH",
+                      assignee,
+                    },
+                    formData,
+                    {
+                      materialCirculationDetailsTableParamList: this.tableData.map((x) => ({
+                        ...x,
+                      })),
+                    }
+                  )
+                )
+                  .then(({ message }) => {
+                    this.loading = false;
+                    this.$modal.msgSuccess(message);
+
+                    this.cancel();
+                  })
+                  .finally((err) => {
+                    this.loading = false;
+                  });
+              },
             });
+          });
+           
         }
       });
     },

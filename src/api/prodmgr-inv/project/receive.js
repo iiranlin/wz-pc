@@ -23,6 +23,17 @@ export const detailTake = (id) => {
         method: 'get',
     })
 }
+/**
+ * 收货备份明细详情
+ * @param {*} params 
+ * @returns 
+ */
+export const detailTakeBack = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialBackTableRest/detailByBack/${id}`,
+    method: 'get',
+  })
+}
 //收货保存
 export const save = (data) => {
     return request({
@@ -42,4 +53,17 @@ export const listRetreat = (params) => {
       method: 'get',
       params
     })
+  }
+
+  /**
+   * 收货提交
+   * @param {*} params
+   * @returns
+   */
+  export const submitTodo = (data) => {
+      return request({
+          url: `${VUE_APP_PRODMGR_INV}/materialBackTableRest/submit`,
+          method: 'post',
+          data
+      })
   }

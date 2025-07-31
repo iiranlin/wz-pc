@@ -61,6 +61,7 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :buttonDisable="buttonDisabledTable"
         >
           <template #takeStatus="scope">
             {{ status[scope.value] }}
@@ -95,6 +96,10 @@
           :limit.sync="listQuery.pageSize"
           @pagination="getList"
         />
+         <workFlowView
+          :bill-data="selectedRow"
+         :work-flow-view-visible.sync="workFlowViewVisible"
+        />
       </el-col>
     </el-row>
   </div>
@@ -104,10 +109,11 @@
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
 import fileUpload from "@/components/upload";
+import workFlowView from "@/components/workFlowView";
 export default {
   // 建设项目
   name: "receive",
-  components: { fileUpload },
+  components: { fileUpload ,workFlowView},
   mixins: [indexMixin],
 
   data() {
@@ -117,6 +123,7 @@ export default {
         2: "已收货",
         3: "部分退货",
         4: "已退货",
+        5: "审核中",
       },
       options: [
         {
@@ -134,6 +141,10 @@ export default {
         {
           code: "4",
           name: "已退货",
+        },
+        {
+          code: "5",
+          name: "审核中",
         },
       ],
       treeCurrentKey: "",
@@ -168,6 +179,8 @@ export default {
       total: 0,
       selection: [],
       hasOwn: true,
+      workFlowViewVisible: false,
+      selectedRow: null,
     };
   },
   async created() {
@@ -235,10 +248,33 @@ export default {
           }
           this.$router.push({
             name: "receivePage",
-            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create" },
+            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create",takeStatus:rowArr[0].takeStatus },
           });
           break;
+        case "withdraw":
+          this.handleRecall(idArr[0]);
+          break;
+          //流程查看
+        case "flowSee":
+          this.workFlowViewVisible = true;
+          this.selectedRow = { businessId: rowArr[0].storeMiddleId?rowArr[0].storeMiddleId:idArr[0]};
+          break;
+        case "download":
+          this.handleDonwload(idArr[0])
+          break;
       }
+    },
+        // 撤回
+    handleRecall(id) {
+      this.$modal
+        .confirm("是否确认撤回?")
+        .then(function () {
+          return Api.recall({ businessId:id,businessType:'RK' });
+        })
+        .then(() => {
+          this.$modal.msgSuccess("撤回成功");
+          this.getList();
+        });
     },
 
     clickReset() {
@@ -257,7 +293,7 @@ export default {
     toReceive(row) {
       this.$router.push({
         name: "receivePage",
-        query: { id: row.id, type: "view" },
+        query: { id: row.id, type: "view",takeStatus:row.takeStatus },
       });
     },
     //跳转货运详情
@@ -277,7 +313,24 @@ export default {
     //上方按钮控制
     buttonDisabledTop(button) {
       //状态不是未收货，按钮全不能操作
-      return this.selection[0].takeStatus != 1;
+      if(button.buttonCode == "receive"){
+        return this.selection[0].takeStatus != 1;
+      }
+      // 非审核中不允许撤回
+      if(button.buttonCode == "withdraw"){
+        return this.selection[0].takeStatus != 5; 
+      }
+      
+    },
+    buttonDisabledTable(button, row) {
+      // 未收货不允许查看流程
+      if (button.buttonCode == "process"  ) {
+        return row.takeStatus == "1"
+      }
+    },
+   async handleDonwload(id) {
+    await Api.exportDetailList({id})
+    this.$modal.msgSuccess("下载验收单成功");
     },
   },
 };

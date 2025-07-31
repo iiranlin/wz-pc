@@ -91,7 +91,8 @@ export const FLOW_ROUTE = {
     FBYLJH: 'planReviewDetail',//分部甲供计划审核详情
     YLJH:'planReviewDetail',//总部甲供计划审核详情
     WZML:'itemAuditDetail',//甲供物资审核详情
-    RK:'imDetail'
+    RK:'imDetail',
+    SH:'receivePage',
     
 }
 
