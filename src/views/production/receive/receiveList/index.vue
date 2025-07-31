@@ -320,13 +320,18 @@ export default {
       if(button.buttonCode == "withdraw"){
         return this.selection[0].takeStatus != 5; 
       }
+      // 未收货不能下载
+      if( button.buttonCode == "download"){
+        return this.selection[0].takeStatus == 1 || this.selection[0].takeStatus == 5;
+      }
       
     },
     buttonDisabledTable(button, row) {
       // 未收货不允许查看流程
-      if (button.buttonCode == "process"  ) {
+      if (button.buttonCode == "flowSee"  ) {
         return row.takeStatus == "1"
       }
+      
     },
    async handleDonwload(id) {
     await Api.exportDetailList({id})

@@ -79,6 +79,22 @@
             <el-table-column prop="ssendTotal" label="剩余待发货" width="150" align="center"></el-table-column>
           </el-table>
         </template>
+             <!-- 附件 -->
+        <template #fileListSlot="scope">
+          <el-form-item
+            prop="fileList"
+            label="计划附件"
+            class="label-right-align"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList"
+              :limit="1"
+              :preview="type === 'view' "
+              :isShowTip="false"
+              :fileType="['pdf']"
+            />
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -157,8 +173,10 @@ export default {
           this.loading=false;
           this.$nextTick(async () => {
             await this.formFillInPage();
+          // fileList回显
             const newData = {
               ...data,
+              fileList :data.fileList[0]?.fileList || [],
               createDate: dayjs(data.createDate).format("YYYY-MM-DD"),
             };
             this.$refs.vFormRef.setFormData(newData);
