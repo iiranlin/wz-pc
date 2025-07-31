@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column prop="updateAfter" label="已验收" align="center">
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已入库" align="center">
+      <el-table-column prop="updateAfter" label="已报检入库" align="center">
       </el-table-column>
       <el-table-column prop="updateAfter" label="已出库" align="center">
       </el-table-column>

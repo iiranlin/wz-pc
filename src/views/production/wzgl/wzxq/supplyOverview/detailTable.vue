@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column prop="putTotal" label="验收通过" align="center">
       </el-table-column>
-      <el-table-column prop="storeTotal" label="已入库" align="center">
+      <el-table-column prop="storeTotal" label="已报检入库" align="center">
       </el-table-column>
       <el-table-column prop="outCkTotal" label="已出库" align="center">
       </el-table-column>

@@ -66,7 +66,7 @@
             <el-table-column prop="putTotal" label="已收货" width="150" align="center"></el-table-column>
             <el-table-column
               prop="storeTotal"
-              label="已入库"
+              label="已报检入库"
               width="150"
               align="center"
             ></el-table-column>
