@@ -252,7 +252,7 @@
             >
               <template slot-scope="scope">
                 <fileUpload
-                  :value="scope.row.fileList03"
+                  v-if="Number(scope.row.refundZjTotal) > 0"
                   v-model="scope.row.fileList03"
                   :preview="type == 'view'"
                   :isShowTip="false"

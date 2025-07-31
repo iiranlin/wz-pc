@@ -110,17 +110,16 @@ export default {
   data() {
     return {
       storeStatus: {
-        1: "未入库",
+        1: "待检测",
         2: "部分退货",
-        3: "已入库",
+        3: "检测通过",
         4: "已退货",
         5: "审核中",
-        6: "已驳回",
       },
       options: [
         {
           code: "1",
-          name: "未入库",
+          name: "待检测",
         },
         {
           code: "2",
@@ -128,7 +127,7 @@ export default {
         },
         {
           code: "3",
-          name: "已入库",
+          name: "检测通过",
         },
         {
           code: "4",
@@ -137,10 +136,6 @@ export default {
         {
           code: "5",
           name: "审核中",
-        },
-        {
-          code: "6",
-          name: "已驳回",
         },
       ],
       treeCurrentKey: "",
@@ -294,7 +289,7 @@ export default {
     toReceive(row) {
       this.$router.push({
         name: "receivePageCrk",
-        query: { id: row.id, type: "view" },
+        query: { id: row.id, type: "view",takeStatus:row.takeStatus },
       });
     },
     //收货超过20天未入库显示红色
