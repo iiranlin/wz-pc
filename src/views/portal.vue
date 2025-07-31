@@ -6,7 +6,7 @@
           <div class="user-list">
               <ul>
                 <li v-for="(item,index ) in menuList" :key="index">
-                  <el-dropdown trigger="click" v-if="item.option">
+                  <el-dropdown trigger="click" v-if="item.option" >
                       <span class="el-dropdown-link" v-if="item.title=='用户'">
                        <img :src="item.icon" /><span>{{ username }}</span>
                       </span>
@@ -22,7 +22,7 @@
                       </el-dropdown-menu>
                     </el-dropdown>
                     <div v-else class="el-dropdown-other">
-                        <span v-if="item.title!='通讯录'">
+                      <span>
                         <img :src="item.icon" />{{ item.title }}
                       </span>
                     </div>
@@ -32,8 +32,9 @@
         </div>
       </div>
       <div class="login-banner">
-        <h1>铁路物资管理解决方案</h1>
-        <video :src="logoBg" width="1920" height="600" autoplay="autoplay" loop="loop" muted="true"></video>
+        <h1>物资管理解决方案</h1>
+        <!-- <video :src="logoBg" width="1920" height="600" autoplay="autoplay" loop="loop" muted="true"></video> -->
+        <img :src="logoBg1" alt="" width="100%" height="400px">
       </div>
       <div class="login-list">
         <div class="list-content">
@@ -122,6 +123,7 @@
 
 <script>
 import logoBg from '../assets/login/Banner.mp4';
+import logoBg1 from '../assets/login/BannerMask@2x.webp';
 import { getCookie, setCookie, removeCookie } from "@/utils/auth";
 import { getVerificationCode, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
@@ -145,6 +147,7 @@ export default {
     data() {
         return {
            logoBg,
+           logoBg1,
            logo1,
            logo2,
            logo3,
@@ -156,7 +159,7 @@ export default {
                 {name:"退出登录",value:"out"}
               ]},
               {title:"帮助",icon:logo3},
-              {title:"通讯录",icon:logo2},
+              // {title:"通讯录",icon:logo2},
               {title:"常用菜单",icon:logo1,option:[]
               },
             ],
@@ -275,7 +278,7 @@ export default {
               item.children.forEach(child=>{
                  if(child.menuName=='合同列表'||child.menuName=='用料需求管理'||child.menuName=='供应需求列表'
                       ||child.menuName=='收货列表'||child.menuName=='入库列表'||child.menuName=='需求库存'||child.menuName=='出库列表'){
-                  that.menuList[3].option.push(
+                  that.menuList.find(mu=>mu.title=='常用菜单').option.push(
                       {name:child.menuName,path:child.menuUrl}
                     )
                  }
@@ -305,9 +308,9 @@ export default {
 		list-style: none;
 	}
   .custom-dropdown-menu{
-    background: transparent;
+    background: #fff;
     text-align: center;
-    top: 45px !important;
+    top: 62px !important;
     border: none;
     .el-dropdown-menu__item{
        padding: 0 20px;
@@ -329,6 +332,7 @@ export default {
     height: 74px;
     line-height: 74px;
     background-image: linear-gradient(180deg, #f5faff 0%, rgba(245, 250, 255, 0) 100%);
+    background: #fff;
     z-index: 4;
     .top-content{
       margin: 0 auto;
@@ -351,6 +355,7 @@ export default {
           li{
           float: right;
           margin-left: 27px;
+          margin-top: 16px;
           .el-dropdown-link{
             font-family:Microsoft YaHei;
             color:#0e183b;
@@ -387,9 +392,10 @@ export default {
   .login-banner{
     position: relative;
     width: 100%;
-    height: 600px;
+    height: 400px;
     background: #F5FAFF;
     overflow: hidden;
+    margin-top: 74px;
     &::before {
       content: "";
       position: absolute;
@@ -414,9 +420,9 @@ export default {
       position: absolute;
       text-align: center;
       width: 1150px;
-      height: 448px;
+      height: 400px;
       z-index: 3;
-      top: 66px;
+      top: 0px;
       left: 50%;
       padding: 0 0.5em;
       transform: translateX(-48%);
