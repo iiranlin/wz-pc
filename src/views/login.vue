@@ -1,134 +1,80 @@
 <template>
-    <div class="login-container">
-      <div class="top-bar">
-        <div class="top-content">
-          <div class="logo"></div>
+    <section class="login-container" v-loading="loading && username">
+        <div id="leftvedio">
+            <el-image
+                :src="logoBg"
+                class="background-image"
+                fit="cover">
+            </el-image>
         </div>
-      </div>
-      <div class="login-banner">
-        <h1>铁路物资管理解决方案</h1>
-        <a href="javascript:void(0)" class="banner-login-btn" @click="handleDialog">立即登录</a>
-        <video :src="logoBg" width="1920" height="600" autoplay="autoplay" loop="loop" muted="true"></video>
-      </div>
-      <div class="functions">
-        <h2>特色功能</h2>
-        <div class="func-box">
-          <ul class="funct-content">
-            <li>
-              <div class="func-img"><img src="../assets/login/Icon1@2x.webp" alt=""></div>
-              <h3>项目管理</h3>
-            </li>
-            <li>
-              <div class="func-img"><img src="../assets/login/Icon2@2x.webp" alt=""></div>
-              <h3>合同管理</h3>
-            </li>
-            <li>
-              <div class="func-img"><img src="../assets/login/Icon3@2x.webp" alt=""></div>
-              <h3>需求计划管理</h3>
-            </li>
-            <li>
-              <div class="func-img"><img src="../assets/login/Icon4@2x.webp" alt=""></div>
-              <h3>供应管理</h3>
-            </li>
-            <li>
-              <div class="func-img"><img src="../assets/login/Icon5@2x.webp" alt=""></div>
-              <h3>收货管理</h3>
-            </li>
-            <li>
-              <div class="func-img"><img src="../assets/login/Icon6@2x.webp" alt=""></div>
-              <h3>出入库管理</h3>
-            </li>
-          </ul>
+        <div class="login-form"  v-if="!username">
+            <header>
+                <!-- <div class="login-logo">
+                    <img :src="logo" />
+                </div> -->
+                <!-- <h1>{{ title }}</h1> -->
+                 <el-image
+                :src="loginTitle"
+                fit="cover">
+            </el-image>
+                <!-- <h3>请输入账号信息</h3> -->
+            </header>
+            <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="hz-form" inline>
+                <el-form-item prop="username" label="用户名：">
+                    <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+                        <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="password" label="密码：">
+                    <el-input ref="password" v-model="loginForm.password" :type="passwordType" auto-complete="off"
+                        placeholder="密码" @keyup.enter.native="handleLogin">
+                        <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+                    </el-input>
+                    <span :class="passwordType ? 'hz-icon-eye' : 'hz-icon-eye-open'" @click="showPwd"></span>
+                </el-form-item>
+                <el-form-item prop="checkCode" label="验证码：">
+                    <el-input v-model="loginForm.checkCode" type="text" auto-complete="off" placeholder="验证码"
+                        @keyup.enter.native="handleLogin" style="width: 65%; float: left">
+                    </el-input>
+                    <img class="imgVerification" :src="verificationCode" @click="getVerificationCode" alt="" />
+                </el-form-item>
+            </el-form>
+            <div class="btn">
+                <el-button type="primary" @click.native.prevent="handleLogin" @keyup.enter.native.prevent="handleLogin"
+                    :loading="loading">
+                    <span v-if="!loading">登 录</span>
+                    <span v-else>登 录 中...</span>
+                </el-button>
+            </div>
         </div>
-      </div>
-      <div class="features">
-        <h2>产品介绍</h2>
-        <div class="features-content">
-          <p>物资管理平台集成了业务管理、建设物资、绩效评价、统计分析四大子系统，做为集团公司统一信息化平台，串联了各系统业务流程，达到了智慧运维、整合资源、合理配置、充分共享的目标。创建资产履历动态记录资产使用详情，资产信息数字化保证业务留痕、可追溯，满足资产管理的需求。</p>
-        </div>
-        <video src="../assets/login/About.mp4" width="700" height="520" autoplay="autoplay" loop="loop" muted="true"></video>
-        <img src="../assets/login/cubes.svg" alt="">
-        <a href="javascript:void(0)" class="featureslogin" @click="handleDialog">立即登录</a>
-      </div>
-      <div class="footer">技术支持：中国铁道科学研究院集团有限公司电子计算技术研究所</div>
-      <el-dialog
-          :visible.sync="dialogVisible"
-          width="360px" 
-          :close="handleClose"
-          :show-close="false"
-          id="dialogLogin"
-          >
-          <div class="login-form" >
-              <header>
-                  <el-image
-                  :src="loginTitle"
-                  fit="cover">
-              </el-image>
-              </header>
-              <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="hz-form">
-                  <el-form-item  label="用户名：">
-                      <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="请输入用户名">
-                           <template slot="prefix">
-                              <img src="../assets/login/Icon-user@2x.webp" style="height: 20px; margin-right: 5px;line-height:40px;margin-left: 7px;">
-                            </template>
-                      </el-input>
-                  </el-form-item>
-                  <el-form-item  label="密码：">
-                      <el-input ref="password" v-model="loginForm.password" :type="passwordType" auto-complete="off"
-                          placeholder="请输入密码" @keyup.enter.native="handleLogin">
-                            <template slot="prefix">
-                              <img src="../assets/login/Icon-pwd@2x.webp" style="height: 20px; margin-right: 5px;line-height:40px;margin-left: 7px;">
-                            </template>
-                      </el-input>
-                      <span :class="passwordType ? 'hz-icon-eye' : 'hz-icon-eye-open'" @click="showPwd"></span>
-                  </el-form-item>
-                  <el-form-item  label="验证码：" class="custom-label"> 
-                       <!-- <label style="display:block">验证码：</label> -->
-                       <el-input v-model="loginForm.checkCode" type="text" auto-complete="off" placeholder="请输入验证码"
-                          @keyup.enter.native="handleLogin" style="width:170px;vertical-align: middle;">
-                             <template slot="prefix">
-                              <img src="../assets/login/Icon-code@2x.webp" style="height: 20px; margin-right: 5px; margin-left: 7px;line-height:40px;">
-                            </template>
-                      </el-input>
-                      <div class="img-code">
-                        <img class="imgVerification" :src="verificationCode" @click="getVerificationCode" />
-                      </div>
-                      
-                  </el-form-item>
-              </el-form>
-              <div class="btn">
-                  <el-button  class="btn-el" @click.native.prevent="handleLogin" @keyup.enter.native.prevent="handleLogin"
-                      :loading="loading">
-                      <span v-if="!loading">登 录</span>
-                      <span v-else>登 录 中...</span>
-                  </el-button>
-              </div>
-          </div>
-      </el-dialog>
-      <update-password ref="updatePassword" @watchVisible="watchUpdatePasswordClose"></update-password>
-    </div>
+        <span v-if="testFlag" class="testTitle">{{ testFlag }}</span>
+        <update-password ref="updatePassword" @watchVisible="watchUpdatePasswordClose"></update-password>
+    </section>
 </template>
 
 <script>
-import logoBg from '../assets/login/Banner.mp4';
 import { getCookie, setCookie, removeCookie } from "@/utils/auth";
 import { getVerificationCode, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
 import logo from "@/assets/logo/logo.png";
-import loginTitle from '../assets/login/Login Title@2x.webp';
+import logoBg from '../assets/loginBg.png';
+import loginTitle from '../assets/loginTitle.png';
 import { setToken } from "@/utils/auth";
+
 export default {
     name: "Login",
     components: {
-      UpdatePassword,
+        UpdatePassword,
     },
     data() {
         return {
-           logoBg,
-           loginTitle,
-           dialogVisible:false,
-           loginForm: {
+            loginTitle,
+            logoBg,
+            logo,
+            title: process.env.VUE_APP_TITLE,
+            testFlag: process.env.VUE_APP_TEST_FLAG,
+            loginForm: {
                 username: "",
                 // password: '',
                 checkCode: "",
@@ -146,35 +92,76 @@ export default {
                     { required: true, trigger: "blur", message: "请输入验证码" },
                 ],
             },
+            loading: false,
+            redirect: undefined,
+            patternSwitch: true,
             passwordType: "password",
             verificationCode: "",
-            loading: false,
         };
     },
     computed:{
-
+        username(){
+            return this.$route.query?.username || ''
+        },
+        userkey(){
+            return this.$route.query?.userkey || ''
+        }
     },
     watch: {
+        $route: {
+            handler: function (route) {
+                if (route.query && route.query.redirect) {
+                    const redirect = decodeURIComponent(route.query.redirect)
+                    const url = /(http|https):\/\/([\w.]+\/?)\S*/.test(redirect) ? redirect: `${location.origin}${redirect}` 
+                    this.redirect = new URL(`${url}`);
+                }
 
-
+            },
+            immediate: true,
+        },
+        // 'loginForm.username': {
+        //   handler: function (newUsername){
+        //     this.loginForm.username = newUsername.toLocaleUpperCase();
+        //   }
+        // }
     },
     created() {
-       
+        // 检查URL参数中是否有username，如果有则自动登录
+        const urlParams = new URLSearchParams(window.location.search);
+        const usernameFromUrl = urlParams.get('username');
+        
+        if (usernameFromUrl) {
+            this.handleAutoLogin(usernameFromUrl);
+            return;
+        }
+        
+        const username = getCookie("username");
+        const password = getCookie("password");
+        this.loginForm = {
+            username: username === undefined ? this.loginForm.username : username,
+            password: password === undefined ? this.loginForm.password : password,
+            rememberMe: true,
+            checkCode: "",
+            checkKey: "",
+        };
+        this.getVerificationCode();
     },
     mounted() {
-
+        let banner = document.getElementById('banner');
+        if (banner) {
+            this.setBg();
+            window.addEventListener('resize', this.setBg);
+        }
     },
     methods: {
-      handleDialog(){
-        this.dialogVisible =true
-        this.getVerificationCode();
-      },
-      handleClose(){
-        this.dialogVisible =false
-      },
-      handleLogin() {
-        debugger
-        
+        setBg() {
+            let vdo_w = 2560;
+            let vdo_h = 1400;
+            let win_w = window.innerWidth;
+            let set_h = vdo_h / vdo_w * win_w;
+            document.getElementById('banner').style.height = set_h + 'px';
+        },
+        handleLogin() {
             localStorage.removeItem('UNIT_ID')
             localStorage.removeItem('UNIT_NAME')
             this.$refs.loginForm.validate((valid) => {
@@ -182,8 +169,10 @@ export default {
                     this.loading = true;
                     if (this.loginForm.rememberMe) {
                         setCookie("username", this.loginForm.username);
+                        // setCookie('password', this.loginForm.password)
                     } else {
                         removeCookie("username");
+                        // removeCookie('password')
                     }
                     this.$store
                         .dispatch("Login", this.loginForm)
@@ -193,8 +182,7 @@ export default {
                                 // 标记为普通登录
                                 sessionStorage.setItem('loginType', 'normal');
                                 
-                                let route = { path: '/portal' }
-                                // let route = { path: '/' }
+                                let route = { path: '/' }
                                 if (this.redirect) {
                                     const query = this.redirect.search ? Object.fromEntries(
                                         new URLSearchParams(this.redirect.search)
@@ -229,355 +217,298 @@ export default {
                         });
                 }
             });
-      },
-      /**获取验证码*/
-      getVerificationCode() {
-        let randomKey = generateUUID(8, 16);
-        this.loginForm.checkKey = randomKey;
-        getVerificationCode(randomKey).then((res) => {
-            this.verificationCode = res.data;
-        });
-      },
-      showPwd() {
-        if (this.passwordType === "password") {
-            this.passwordType = "";
-        } else {
-            this.passwordType = "password";
-        }
-        this.$nextTick(() => {
-            this.$refs.password.focus();
-        });
-      },
-      watchUpdatePasswordClose() {
-        this.getVerificationCode();
-      },
+        },
+        /**获取验证码*/
+        getVerificationCode() {
+            let randomKey = generateUUID(8, 16);
+            this.loginForm.checkKey = randomKey;
+            getVerificationCode(randomKey).then((res) => {
+                this.verificationCode = res.data;
+            });
+        },
+        pattern() {
+            this.patternSwitch = !this.patternSwitch;
+        },
+        showPwd() {
+            if (this.passwordType === "password") {
+                this.passwordType = "";
+            } else {
+                this.passwordType = "password";
+            }
+            this.$nextTick(() => {
+                this.$refs.password.focus();
+            });
+        },
+        watchUpdatePasswordClose() {
+            this.getVerificationCode();
+        },
+        /**
+         * 处理自动登录
+         * @param {string} username - 从URL参数获取的用户名
+         */
+        handleAutoLogin(username) {
+            this.loading = true;
+            autoLogin({ username })
+                .then((res) => {
+                    this.loading = false;
+                    if (res.success && res.data && res.data.token) {
+                        // 设置token
+                        setToken(res.data.token);
+                        this.$store.commit('SET_TOKEN', res.data.token);
+                        
+                        // 标记为通过username自动登录
+                        sessionStorage.setItem('loginType', 'username');
+                        sessionStorage.setItem('userkey',this.userkey)
+                        
+                        // 获取用户信息
+                        this.$store.dispatch('GetInfo').then(() => {
+                            // 生成动态路由
+                            this.$store.dispatch('GenerateRoutes').then(accessRoutes => {
+                                this.$router.addRoutes(accessRoutes); // 动态添加可访问路由表
+                                
+                                // 处理重定向
+                                let route = { path: '/' };
+                                if (this.redirect) {
+                                    const query = this.redirect.search ? Object.fromEntries(
+                                        new URLSearchParams(this.redirect.search)
+                                    ) : {};
+                                    route = {
+                                        path: this.redirect.pathname,
+                                        query: query
+                                    };
+                                }
+                                this.loading = false; // 关闭loading
+                                this.$router.push(route).catch(() => {});
+                            }).catch(() => {
+                                this.$modal.msgError('生成路由失败');
+                                this.loading = false;
+                            });
+                        }).catch(() => {
+                            this.$modal.msgError('获取用户信息失败');
+                            this.loading = false;
+                        });
+                    } else {
+                        this.$modal.msgError(res.message || '自动登录失败');
+                    }
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    this.$modal.msgError('自动登录失败，请手动登录');
+                    console.error('Auto login error:', error);
+                });
+        },
     },
     beforeDestroy() {
-      
+        window.removeEventListener('resize', this.setBg);
     }
 };
 </script>
 
-<style lang="scss" scoped>
-* {
-		padding: 0;
-		margin: 0;
-	}
-	body {
-		overflow-x: hidden;
-		background-color: #fff;
-		font-family: "Microsoft YaHei", "Pingfang SC", "Hiragino Sans GB", "Helvetica", "Droid Sans", "Arial", "sans-serif";
-	}
-	ul, li {
-		list-style: none;
-	}
- ::v-deep.el-dialog__wrapper .el-dialog .el-dialog__header {
-  background-color: #fff; /* 修改背景颜色 */
-  padding: 0px; /* 修改内边距 */
-  }
-  ::v-deep.el-dialog__wrapper .el-dialog .el-dialog__body {
-    height: 502px;
-    padding:30px 26px;
-  }
+<style lang="scss">
+.login-container {
+    height: 100%;
+    background-color: #eaeff6;
 
-.imgVerification{
-  vertical-align: middle;
-  height: 36px;
-  top: -3px;
-  position: relative;
-}
-.login-container{
-  .top-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 74px;
-    line-height: 74px;
-    background-image: linear-gradient(180deg, #f5faff 0%, rgba(245, 250, 255, 0) 100%);
-    z-index: 4;
-    .top-content{
-      margin: 0 auto;
-      width: 1220px;
-      .logo{
-        float: left;
-        margin-top: 10px;
-        width: 222px;
-        height: 66px;
-        background: url(../assets/login/Logo.png) no-repeat left top;
-        background-size: contain;
-      }
-    }
-  }
-  .login-banner{
-    position: relative;
-    width: 100%;
-    height: 600px;
-    background: #F5FAFF;
-    overflow: hidden;
-    &::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      transform: translateX(-960px);
-      width: 75px;
-      height: 100%;
-      background-image: linear-gradient(270deg, rgba(245, 250, 255, 0) 0%, #f5fafe 100%);
-      z-index: 2;
-    }
-     &::after {
-      content: "";
-      position: absolute;
-      right: 50%;
-      transform: translateX(960px);
-      width: 75px;
-      height: 100%;
-      background-image: linear-gradient(-270deg, rgba(245, 250, 255, 0) 0%, #f5fafe 100%);
-      z-index: 2;
-    }
-    h1{
-      position: absolute;
-      text-align: center;
-      width: 1150px;
-      height: 448px;
-      z-index: 3;
-      top: 66px;
-      left: 50%;
-      padding: 0 0.5em;
-      transform: translateX(-48%);
-      font-size: 52px;
-      line-height: 999px;
-      color: #0F2241;
-      overflow: hidden;
-      background: url(../assets/login/Title.png) no-repeat center top;
-      background-size: contain;
-    }
-    .banner-login-btn{
-      position: absolute;
-      top: 376px;
-      left: 50%;
-      width: 168px;
-      height: 44px;
-      background: #2B53FF;
-      border-radius: 4px;
-      line-height: 44px;
-      transform: translateX(-50%);
-      z-index: 3;
-      color: #fff;
-      text-align: center;
-      text-decoration: none;
-      transition: all 0.2s ease-in-out 0s;
-      cursor: pointer;
-    }
-    video{
-      position: absolute;
-      left: 50%;
-      top: 0;
-      transform: translateX(-50%);
-      display: block;
-      margin: 0 auto;
+    #leftvedio {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        overflow: hidden;
     }
 
+    .background-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
+    #banner {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        filter: saturate(1.3);
+    }
 
-  }
- /* 5大特色功能 */
+    .login-form {
+        position: fixed;
+        left: 75%;
+        top: 50%;
+        transform: translate(-50%, -56%);
+        width: 350px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 3px 7px rgba(15, 20, 44, 0.16);
+        z-index: 2;
+        color: #2a2e33;
 
-	.functions {
-		width: 100%;
-		height: 395px;
-		background-color: #233660;
-	}
-	.functions h2 {
-		padding: 60px 0 46px;
-		font-size: 44px;
-		line-height: 64px;
-		color: #fff;
-		font-weight: 500;
-		text-align: center;
-		letter-spacing: 5px;
-	}
-	.func-box {
-		margin: 0 auto;
-		width: 1220px;
-	}
-	.func-box ul {
-		display: flex;
-		justify-content: space-between;
-	}
-	.funct-content li {
-		width: 140px;
-	}
-	.funct-content li .func-img {
-		position: relative;
-		margin: 0 auto;
-		width: 110px;
-		height: 110px;
-		overflow: hidden;
-	}
-	.funct-content li .func-img img {
-		display: block;
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 110px;
-		height: 4070px;
-	}
-	.funct-content li:hover .func-img img {
-		animation: features 1.6s forwards steps(36, end) infinite;
-	}
-	.funct-content li:nth-child(3):hover .func-img img {
-		animation: features 2.2s forwards steps(36, end) infinite;
-	}
-	@keyframes features {
-		0% {
-			top: 0;
-		}
-		100% {
-			top: -3960px;
-		}
-	}
-	.funct-content li h3 {
-		color: #fff;
-		text-align: center;
-		font-size: 16px;
-		line-height: 40px;
-		font-weight: 400;
-	}
-	/* 产品介绍 */
-	.features {
-		position: relative;
-		margin: 0 auto;
-		width: 1220px;
-		height: 615px;
-		padding-bottom: 96px;
-		background-size: contain;
-	}
-	.features h2 {
-		padding-top: 126px;
-		padding-bottom: 30px;
-		font-size: 44px;
-		line-height: 62px;
-		color: #003081;
-	}
-	.features p {
-		font-size: 16px;
-		line-height: 38px;
-		width: 560px;
-	}
-	.features video {
-		position: absolute;
-		width: 800px;
-		height: 636px;
-		left: 50%;
-		top: 0;
-		transform: translateX(-28px);
-	}
-	.features img {
-		position: absolute;
-		width: 214px;
-		height: 228px;
-		left: 50%;
-		top: 294px;
-		transform: translateX(-850px);
-	}
-	.featureslogin {
-		display: block;
-		margin-top: 46px;
-		width: 168px;
-		height: 44px;
-		background: #2B53FF;
-		border-radius: 4px;
-		line-height: 44px;
-		z-index: 3;
-		color: #fff;
-		text-align: center;
-		text-decoration: none;
-		transition: all 0.2s ease-in-out 0s;
-		cursor: pointer;
-	}
-	.featureslogin:hover {
-		background-color: #032CDD;
-	}
+        header {
+            width: 100%;
+            padding: 15px 15px 0 32px;
+        }
 
-	.footer {
-		width: 100%;
-		background-color: #24314E;
-		text-align: center;
-		line-height: 36px;
-		color: rgba(245, 250, 255, 0.7);
-		font-size: 12px;
-	}
+        .login-logo {
+            width: 83px;
+            height: 40px;
+            position: absolute;
+            left: 14px;
+            top: 15px;
+        }
 
+        img {
+            width: 100%;
+        }
 
-	@media screen and (max-width:1440px) {
-		#Banner {
-			height: 500px;
-		}
-		#Banner video {
-			width: 1600px;
-			height: 500px;
-			z-index: 1;
-		}
-		#Banner h1 {
-			top: 180px;
-			font-size: 48px;
-			line-height: 67px;
-		}
-		#Banner h2 {
-			top: 256px;
-			font-size: 16px;
-			line-height: 22px;
-		}
-		.bannerlogin {
-			top: 316px;
-		}
-		.features video {
-			transform: translateX(-90px);
-		}
-	}
-  ::v-deep.custom-label .el-form-item__label {
-    display: block; /* 使标签独占一行 */
-    width: 100%;
-    text-align: left;
-  }
-  .hz-form .el-form-item{
-    margin-bottom:10px;
-    ::v-deep.el-form-item__content{
-      .img-code{
-        display: inline-block;
-        width: 130px;
-        height: 40px;
+        h1 {
+            font-size: 32px;
+            line-height: 45px;
+            color: #18223e;
+            letter-spacing: 2px;
+            margin-top: 50px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        h3 {
+            margin-left: 32px;
+            font-size: 12px;
+            font-weight: 300;
+            line-height: 16px;
+            color: #18223e;
+            opacity: 0.7;
+            margin: 0;
+            text-align: center;
+        }
+
+        .hz-form {
+            // margin-top: 14px;
+            padding: 0 40px;
+
+            .el-form-item__error {
+                display: none;
+            }
+        }
+
+        .btn {
+            margin-top: 30px;
+            padding: 0 35px;
+            margin-bottom: 20px;
+        }
+
+        .el-form-item {
+            width: 100%;
+            margin-bottom: 5px;
+            margin-right: 0px !important;
+        }
+
+        .el-form-item__label {
+            padding: 0;
+            font-size: 13px;
+
+            &::before {
+                content: none !important;
+            }
+        }
+
+        .el-form-item__content {
+            width: 100%;
+
+            .imgVerification {
+                width: 35%;
+                height: 36px;
+            }
+        }
+
+        .el-input__inner {
+            border-width: 0;
+            border-radius: 0 !important;
+            border-bottom-width: 1px;
+            padding-left: 15px;
+            border-bottom-color: #000;
+            color: #2a2e33;
+        }
+
+        .is-error .el-input__inner {
+            border-bottom-color: #ff4949;
+        }
+
+        .el-input__inner:focus {
+            border: 2px solid #1682e6;
+            border-radius: 4px !important;
+        }
+
+        .el-button {
+            width: 100%;
+            font-size: 16px;
+            background-color: #1c75fd;
+            padding: 15px 20px;
+
+            &:hover {
+                background: #0160ee;
+            }
+        }
+    }
+
+    .el-login-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         text-align: center;
-        border:1px solid #DCDFE6;
-        border-radius:5px;
-        vertical-align:middle;
-        margin-left: 7px;
-      }
+        height: 20px;
+        line-height: 20px;
     }
-  }
-  ::v-deep.el-input .el-input__prefix{
-    top: 5px;
- 
-  }
-  ::v-deep.el-form-item .el-form-item__content{
-    .el-input--prefix  .el-input__inner{
-      padding-left: 35px;
-     }
-  }
-  
-  .btn{
+
+    .hz-icon-eye {
+        display: inline-block;
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 12px;
+        right: 8px;
+        background: url("../assets/images/eye.png") center/contain no-repeat;
+        cursor: pointer;
+
+        &:hover {
+            background: url("../assets/images/eye-hover.png") center/contain no-repeat;
+        }
+    }
+
+    .hz-icon-eye-open {
+        display: inline-block;
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 12px;
+        right: 8px;
+        background: url("../assets/images/eye-open.png") center/contain no-repeat;
+        cursor: pointer;
+
+        &:hover {
+            background: url("../assets/images/eye-open-hover.png") center/contain no-repeat;
+        }
+    }
+}
+
+// 测试提示
+.testTitle {
+    color: red;
+    font-weight: bold;
+    font-size: 22px;
+    position: absolute;
+    left: 50%;
+    bottom: 2%;
+    transform: translate(-50%, -2%);
+    z-index: 2;
+}
+
+.validate-code-image {
     margin-top: 32px;
-    .btn-el{
-      width:308px;
-      height:46px;
-      border-radius:4px;
-      background:#1e38c4;
-      span{
-        color: #fff;
-      }
-    }
-  }
- 
+    display: flex;
+    height: 30px;
+    background-color: #fff;
 }
 </style>
