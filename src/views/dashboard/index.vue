@@ -201,7 +201,6 @@ export default {
     },
     created() {
         this.memoDate = this.parseTime(new Date().getTime(), "{y}-{m}-{d}");
-
         this.getAllTaskNumByUser();
         this.getMessageList();
         this.getDailyList();
