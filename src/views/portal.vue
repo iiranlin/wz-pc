@@ -101,15 +101,15 @@
                 <span class="left-title-bg"></span>
                 <span class="left-title-text">通知公告</span>
               </div>
-              <div class="right-title">
+              <div class="right-title" @click="getNotic">
                 <span>更多<i class="el-icon-arrow-right"></i></span>
               </div>
             </div>
             <div class="message-list">
               <ul>
                 <li v-for="(item,index) in noticeList" :key="index">
-                  <span class="list-span1">{{item.list}}</span>
-                  <span class="list-span2">{{item.time}}</span>
+                  <span class="list-span1">{{item.noticeTitle}}</span>
+                  <span class="list-span2">{{ parseTime(item.updateTime, '{y}-{m}-{d}')}}</span>
                 </li>
               </ul>
             </div>
@@ -138,6 +138,7 @@ import { setToken } from "@/utils/auth";
 import { mapGetters, mapState } from 'vuex'
 import { wfTodoCount } from "@/api/system/workflow";
 import { getUserMenu } from '@/api/system/menu'
+import { noticePage } from "@/api/system/notice";
 
 export default {
     name: "Login",
@@ -198,7 +199,6 @@ export default {
           return `${this.userInfo.nickName}(${this.userInfo.username})`;
       }
     },
-  
     watch: {
 
 
@@ -206,6 +206,7 @@ export default {
     created() {
       this.getAllTaskNumByUser()
       this.getUserMenu()
+      this.getList()
        
     },
     mounted() {
@@ -255,7 +256,6 @@ export default {
       },
       handleWaitClick(name) {
           if(name){
-            console.log(name,"name")
               this.$router.push({ name })
           }
       },
@@ -287,6 +287,17 @@ export default {
           })
         });
       },
+      getList() {
+        noticePage({pageNum:1,pageSize:8}).then(
+            ({ data }) => {
+                this.noticeList = data.list;
+            }
+          );
+      },
+      getNotic(){
+        let name= this.menuOptions.find(item=>item.menuName=='系统管理').children.find(child=>child.menuName=='通知公告').menuUrl
+        this.$router.push({ name })
+      }
     },
     beforeDestroy() {
       
