@@ -6,7 +6,7 @@
         </div>
       </div>
       <div class="login-banner">
-        <h1>铁路物资管理解决方案</h1>
+        <h1>物资管理解决方案</h1>
         <a href="javascript:void(0)" class="banner-login-btn" @click="handleDialog">立即登录</a>
         <video :src="logoBg" width="1920" height="600" autoplay="autoplay" loop="loop" muted="true"></video>
       </div>
