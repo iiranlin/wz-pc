@@ -67,6 +67,18 @@
           </el-form-item>
         </template>
         <!-- 附件 -->
+        <template #zcFileSlot="scope">
+          <el-form-item prop="zczp" label="装车照片" class="label-right-align">
+            <fileUpload
+              v-model="scope.formModel.zczp"
+              :preview="true"
+              :fileSize="500"
+              :fileType="['pdf']"
+              :isShowTip="false"
+            />
+          </el-form-item>
+        </template>
+        <!-- 附件 -->
         <template #file1Slot="scope">
           <el-form-item
             v-if="type != 'view'"
@@ -108,6 +120,7 @@
             />
           </el-form-item>
         </template>
+    
         <!-- 收货时间 -->
         <template #dateSlot="scope">
           <el-form-item
@@ -484,6 +497,7 @@ export default {
             // fileList回显
             const newData = {
               ...data,
+              zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
               fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
               fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
               fileList03: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
@@ -498,6 +512,7 @@ export default {
                 : "",
               supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
               putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认实收数量=发货数量
+              zczp: x.fileByList ? JSON.parse(x.fileByList).zczp || [] : [], //装车照片
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_sh || [] : [], //退货附件
@@ -587,6 +602,10 @@ export default {
           //自检单
           if (formData.fileList01.length > 0) {
             this.$set(fileByList, "zjd", formData.fileList01);
+          }
+          //装车照片
+          if (formData.zczp.length > 0) {
+            this.$set(fileByList, "zczp", formData.zczp);
           }
           //其他资料
           if (formData.fileList02.length > 0) {

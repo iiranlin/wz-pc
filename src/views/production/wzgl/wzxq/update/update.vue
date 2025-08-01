@@ -7,6 +7,22 @@
         <template #table>
           <item-table-update ref="itemTableRef" />
         </template>
+                  <!-- 附件 -->
+        <template #fileListSlot="scope">
+          <el-form-item
+            prop="fileList"
+            label="计划附件"
+            class="label-right-align"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList"
+              :limit="1"
+              :preview="type === 'view' "
+              :isShowTip="false"
+              :fileType="['pdf']"
+            />
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -16,6 +32,7 @@
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
+import fileUpload from "@/components/upload";
 
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
@@ -32,6 +49,7 @@ export default {
     VFormRender,
     attachmentTable,
     ItemTableUpdate,
+    fileUpload
   },
   data() {
     return {
@@ -186,6 +204,8 @@ export default {
 
           await this.formFillInPage()
           this.getCurrentSection()
+           // fileList回显
+          data.fileList = data.fileList[0]?.fileList || []
           this.$refs.vFormRef.setFormData(data)
 
           //   form action
@@ -253,6 +273,8 @@ export default {
     },
     //新建
     async handleCreate() {
+       // 获取表单数据
+      const formData = await this.$refs['vFormRef'].getFormData()
       if (this.getSelectedMaterialList().length === 0) {
         this.$modal.msgError('请选择物料')
         return
@@ -264,6 +286,7 @@ export default {
       }
       this.loading = true;
       const data = {
+         fileList:[{fileList:formData.fileList||[]}],
         id: this.id,
         detailsModifyParams: tableData.map(x => ({
           ...x,

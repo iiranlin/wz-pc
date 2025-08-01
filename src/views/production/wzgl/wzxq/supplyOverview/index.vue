@@ -19,6 +19,24 @@
             ref="detailTable"
             :tableData="tableData"
           ></detailTable>
+       
+        </template>
+            <!-- 附件 -->
+
+         <template #fileListSlot="scope">
+          <el-form-item
+            prop="fileList"
+            label="计划附件"
+            class="label-right-align"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList"
+              :limit="1"
+              :preview="type === 'view' "
+              :isShowTip="false"
+              :fileType="['pdf']"
+            />
+          </el-form-item>
         </template>
       </VFormRender>
     </div>
@@ -39,12 +57,15 @@ import detailTable from './detailTable.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
+import fileUpload from "@/components/upload";
 export default {
   // 供应概览
   components: {
     VFormRender,
     attachmentTable,
     detailTable,
+    fileUpload
+
   },
   data () {
     return {
@@ -140,7 +161,9 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
-          this.$refs.vFormRef.setFormData({ ...data, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
+          this.$refs.vFormRef.setFormData({ ...data, 
+            fileList: data.fileList[0]?.fileList || [],
+            createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
 
           //   form action
           this.$refs.vFormRef.setReadMode(true)
