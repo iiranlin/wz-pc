@@ -83,7 +83,7 @@
           @handleButton="handleButton"
         >
           <template #status="scope">
-            {{ scope.value == "5" ? "已完成" : "未完成" }}
+            {{ scope.data.planStatus == "9" ? "已完成" : "未完成" }}
           </template>
           <template #relatedCount="scope">
             {{ scope.value=='0'?'无':'有' }}
@@ -120,11 +120,11 @@ export default {
     return {
       options: [
         {
-          code: "4",
+          code: "0",
           name: "未完成",
         },
         {
-          code: "5",
+          code: "1",
           name: "已完成",
         },
       ],
