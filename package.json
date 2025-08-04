@@ -67,7 +67,7 @@
     "quill": "1.3.7",
     "relation-graph": "2.1.42",
     "screenfull": "5.0.2",
-    "search-bar-vue2": "^1.0.1",
+    "search-bar-vue2": "^1.0.0",
     "sm-crypto": "^0.3.13",
     "sortable.js": "^0.3.0",
     "sortablejs": "1.10.2",
