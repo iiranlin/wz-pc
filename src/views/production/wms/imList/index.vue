@@ -259,7 +259,7 @@ export default {
       this.$modal
         .confirm("是否确认撤回?")
         .then(function () {
-          return Api.recall({ businessId:id,businessType:'RK' });
+          return Api.recall({ businessId:id,businessType:'RKLC' });
         })
         .then(() => {
           this.$modal.msgSuccess("撤回成功");

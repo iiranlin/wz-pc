@@ -107,6 +107,7 @@
 
 <script>
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
+import * as wmsApi from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 import fileUpload from "@/components/upload";
 import workFlowView from "@/components/workFlowView";
@@ -269,7 +270,7 @@ export default {
       this.$modal
         .confirm("是否确认撤回?")
         .then(function () {
-          return Api.recall({ businessId:id,businessType:'RK' });
+          return wmsApi.recall({ businessId:id,businessType:'SHLC' });
         })
         .then(() => {
           this.$modal.msgSuccess("撤回成功");

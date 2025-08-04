@@ -206,7 +206,7 @@ export default {
     toShd(row) {
       this.$router.push({
         name: "receivePage",
-        query: { id: row.id, type: "view" },
+        query: { id: row.id, type: "view",takeStatus:row.takeStatus },
       });
     },
   },
