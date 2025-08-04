@@ -258,7 +258,7 @@ export default {
           //流程查看
         case "flowSee":
           this.workFlowViewVisible = true;
-          this.selectedRow = { businessId: rowArr[0].storeMiddleId?rowArr[0].storeMiddleId:idArr[0]};
+          this.selectedRow = { businessId: rowArr[0].backMiddleId?rowArr[0].backMiddleId:idArr[0]};
           break;
         case "download":
           this.handleDonwload(idArr[0])
