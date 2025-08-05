@@ -14,7 +14,7 @@
       @handleQuery="handleQuery"
       :formData="formData"
     >
-      <template #status="data">
+      <template #planCompleteStatus="data">
         <el-select
           class="select-box"
           v-model="formData[data.data.fieldCode]"
@@ -82,8 +82,8 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-          <template #status="scope">
-            {{ scope.data.planStatus == "9" ? "已完成" : "未完成" }}
+          <template #planCompleteStatus="scope">
+            {{ scope.value == "1" ? "已完成" : "未完成" }}
           </template>
           <template #relatedCount="scope">
             {{ scope.value=='0'?'无':'有' }}
