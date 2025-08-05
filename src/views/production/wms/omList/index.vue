@@ -68,6 +68,7 @@
 
 <script>
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 建设项目
@@ -119,6 +120,18 @@ export default {
   },
 
   methods: {
+   async handleDonwload(id) {
+    try {
+      this.loading = true;
+      await FileApi.downloadOutOfTheWarehouse({id});
+      this.$modal.msgSuccess("下载出库单成功");
+    } catch (error) {
+      this.$modal.msgError("下载失败，请重试");
+      console.error('下载验收单失败:', error);
+    } finally {
+      this.loading = false;
+    }
+  },
     numberChange(val) {
       this.numberShow = val;
     },
@@ -167,6 +180,12 @@ export default {
       this.selection = selection;
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
+        this.proxyPrint(buttonCode, rowArr, buttonData);
+      switch (buttonCode) {
+        case "download":
+          this.handleDonwload(idArr[0])
+          break;
+      }
     },
 
     clickReset() {

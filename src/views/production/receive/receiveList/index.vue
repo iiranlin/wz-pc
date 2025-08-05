@@ -107,6 +107,7 @@
 
 <script>
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import * as wmsApi from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 import fileUpload from "@/components/upload";
@@ -335,9 +336,17 @@ export default {
       
     },
    async handleDonwload(id) {
-    await Api.exportDetailList({id})
-    this.$modal.msgSuccess("下载验收单成功");
-    },
+    try {
+      this.loading = true;
+      await FileApi.downloadHandoverAcceptanceForm({id});
+      this.$modal.msgSuccess("下载验收单成功");
+    } catch (error) {
+      this.$modal.msgError("下载失败，请重试");
+      console.error('下载验收单失败:', error);
+    } finally {
+      this.loading = false;
+    }
+  },
   },
 };
 </script>
