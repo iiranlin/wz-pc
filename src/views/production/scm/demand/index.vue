@@ -107,8 +107,9 @@ export default {
         2: "未确认",
         3: "已确认",
         4: "供货中",
-        5: "已验收",
+        5: "已完成",
         6: "已完成",
+        7: "已撤回",
       },
       options: [
         {
@@ -125,11 +126,11 @@ export default {
         },
         {
           code: "5",
-          name: "已验收",
+          name: "已完成",
         },
         {
-          code: "6",
-          name: "已完成",
+          code: "7",
+          name: "已撤回",
         },
       ],
       treeCurrentKey: "",
