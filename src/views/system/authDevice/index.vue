@@ -48,9 +48,9 @@
         >
           <template slot="status" slot-scope="scope">
             <icon-svg
-              :class="iconClassSize({ 0: 3, 1: 0 }[scope.value])"
-              :icon-class="iconEnableStautsClass({ 0: 3, 1: 0 }[scope.value])"
-            />{{ scope.value | fieldFormat(scope.fieldFormatArr) }}
+              :class="iconClassSize({ 0: 0, 1: 3 }[+scope.value])"
+              :icon-class="iconEnableStautsClass({ 0: 0, 1: 3 }[+scope.value])"
+            />{{ scope.value == 1 ? "已开启" : "已关闭" }}
           </template>
         </table-index>
         <pagination
@@ -214,7 +214,7 @@ export default {
     },
     onDialogOk(data) {
       this.getList();
-      this.goAudit()
+      // this.goAudit()
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       if (buttonCode == "update") {
@@ -243,7 +243,7 @@ export default {
       this.loading = true;
       itemList(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
-          this.list = data.list;
+          this.list =data.list;
           this.total = data.total;
         })
         .finally(() => {

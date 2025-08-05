@@ -72,6 +72,15 @@ export function deptTreeAll(params) {
   })
 }
 
+// 获取第一级部门数据
+export function deptGetFirstLevel(params) {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/dept/findTopDeptList`,
+    method: 'get',
+    params
+  })
+}
+
 // 根据部门id获得子部门
 export function deptGetTreeByDeptId(params) {
   return request({

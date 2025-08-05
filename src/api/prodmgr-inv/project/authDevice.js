@@ -8,7 +8,7 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  */
 export const itemList = (params) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/list`,
+        url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/list`,
         method: 'get',
         params
     })
@@ -21,7 +21,7 @@ export const itemList = (params) => {
  */
 export const detail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/detail/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/detail/${id}`,
     method: 'get',
   })
 }
@@ -33,7 +33,7 @@ export const detail = (id) => {
  */
 export const add = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/create`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/create`,
     method: 'post',
     data
   })
@@ -46,7 +46,7 @@ export const add = (data) => {
  */
 export const batchRemove = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/batchRemove`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/batchRemove`,
     method: 'post',
     data
   })
@@ -58,7 +58,7 @@ export const batchRemove = (data) => {
  */
 export const remove = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/remove/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/remove/${id}`,
     method: 'post',
   })
 }
@@ -70,7 +70,7 @@ export const remove = (id) => {
  */
 export const edit = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/modify`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/modify`,
     method: 'post',
     data
   })
@@ -83,7 +83,7 @@ export const edit = (data) => {
  */
 export const save = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/save`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/save`,
     method: 'post',
     data
   })
@@ -101,7 +101,7 @@ export function adjustInExport(data) {
 // 物资批量导入
 export const itemBatchImport = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/importExcel`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/importExcel`,
     method: 'post',
     data
   })
@@ -110,7 +110,7 @@ export const itemBatchImport = (data) => {
 // 物资提交审核
 export const itemSubmit = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialManagementDict/submit`,
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/submit`,
     method: 'post',
     data
   })

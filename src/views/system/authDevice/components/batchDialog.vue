@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { itemBatchImport } from "@/api/prodmgr-inv/project/item.js";
+import { itemBatchImport } from "@/api/prodmgr-inv/project/authDevice.js";
 import VirtualList from "vue-virtual-scroll-list";
 
 // 定义列表项组件
