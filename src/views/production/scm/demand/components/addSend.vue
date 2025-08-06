@@ -292,7 +292,8 @@ export default {
     // 编辑初始化
     async updateInit(id) {
       this.loading = true;
-      await Api.sendDetail(id).then(({ data }) => {
+      const api = this.type == 'view' ? 'viewDetail' : 'sendDetail'
+      await Api[api](id).then(({ data }) => {
         this.$nextTick(async () => {
           this.loading = false;
           this.title = "编辑";

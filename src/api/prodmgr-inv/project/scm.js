@@ -123,13 +123,25 @@ export const batchRemove = (data) => {
 }
 
 /**
- * 发货列表修改、详情回显
+ * 发货列表修改
  * @param {*} params 
  * @returns 
  */
 export const sendDetail = (id) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailByUpdateSend/${id}`,
+    method: 'get',
+  })
+}
+
+/**
+ * 发货列表详情回显
+ * @param {*} params 
+ * @returns 
+ */
+export const viewDetail = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/detailBySend/${id}`,
     method: 'get',
   })
 }
