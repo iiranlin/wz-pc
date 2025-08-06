@@ -10,3 +10,13 @@ export const downloadHandoverAcceptanceForm = (params) => {
 export const downloadOutOfTheWarehouse = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialExport/outOfTheWarehouse`, params, 'get')
 }
+
+// 入库单下载
+export const downloadStorageList = (params) => {
+  return download(`${VUE_APP_PRODMGR_INV}/materialExport/storageList`, params, 'get')
+}
+
+// 结算清单下载
+export const downloadSettlementList = (params) => {
+  return download(`${VUE_APP_PRODMGR_INV}/materialExport/settlementList`, params, 'get')
+}

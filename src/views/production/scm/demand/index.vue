@@ -95,6 +95,7 @@ import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
 import Confirm from "./components/confirm.vue";
 import fileUpload from "@/components/upload";
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "demand",
@@ -274,8 +275,21 @@ export default {
             query: { id: idArr[0], type: "view" },
           });
           break;
+        case "download":
+          this.handleDonwload(idArr[0]);
+          break;
       }
     },
+   async handleDonwload(id) {
+    try {
+      this.loading = true;
+      await FileApi.downloadSettlementList({id});
+    } catch (error) {
+      this.$modal.msgError("下载失败，请重试");
+    } finally {
+      this.loading = false;
+    }
+  },
 
     clickReset() {
       this.handleQuery();
@@ -304,6 +318,10 @@ export default {
       //已确认或供货中才能点击发货按钮
       if (button.buttonCode == "send") {
         return this.selection[0].status != "4" && this.selection[0].status != "3";
+      }
+      // 已完成才能下载
+      if (button.buttonCode == "download") {
+        return this.selection[0].status != "5";
       }
     },
     //跳转需求供应详情

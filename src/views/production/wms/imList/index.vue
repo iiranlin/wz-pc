@@ -100,6 +100,7 @@
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 
 export default {
   // 建设项目
@@ -252,8 +253,23 @@ export default {
           this.workFlowViewVisible = true;
           this.selectedRow = { businessId: rowArr[0].storeMiddleId?rowArr[0].storeMiddleId:idArr[0]};
           break;
+        case "download":
+          this.handleDonwload(idArr[0])
+          break;
       }
     },
+    async handleDonwload(id) {
+    try {
+      this.loading = true;
+      await FileApi.downloadStorageList({id});
+    
+    } catch (error) {
+      this.$modal.msgError("下载失败，请重试");
+      console.error('下载入库单失败:', error);
+    } finally {
+      this.loading = false;
+    }
+  },
     // 撤回
     handleRecall(id) {
       this.$modal
@@ -314,6 +330,12 @@ export default {
       if (button.buttonCode == "withdraw") {
         return (
          this.selection[0].storeStatus != "5"
+        );
+      }
+      // 下载按钮控制（检测通过和部分退货）
+      if (button.buttonCode == "download") {
+        return (
+          this.selection[0].storeStatus != "3" && this.selection[0].storeStatus != "2"
         );
       }
     },

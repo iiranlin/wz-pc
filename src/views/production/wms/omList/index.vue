@@ -124,10 +124,9 @@ export default {
     try {
       this.loading = true;
       await FileApi.downloadOutOfTheWarehouse({id});
-      this.$modal.msgSuccess("下载出库单成功");
+      
     } catch (error) {
       this.$modal.msgError("下载失败，请重试");
-      console.error('下载验收单失败:', error);
     } finally {
       this.loading = false;
     }
