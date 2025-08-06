@@ -20,8 +20,8 @@
       <span class="readonly-mode-field">{{contentForReadMode}}</span>
     </template> -->
     <template v-if="(isReadMode || field.options.readonlyText) && fieldModel && fieldModel[0] && fieldModel[1]">
-        <el-tooltip :content="parseTime(fieldModel[0],'{y}-{m}-{d}')+' - '+parseTime(fieldModel[1],'{y}-{m}-{d}')" effect="light">
-            <span class="readonly-mode-field">{{parseTime(fieldModel[0],'{y}-{m}-{d}')+' - '+parseTime(fieldModel[1],'{y}-{m}-{d}')}}</span>
+        <el-tooltip :content="parseTime(fieldModel[0],'{y}-{m}-{d}')+' 至 '+parseTime(fieldModel[1],'{y}-{m}-{d}')" effect="light">
+            <span class="readonly-mode-field">{{parseTime(fieldModel[0],'{y}-{m}-{d}')+' 至 '+parseTime(fieldModel[1],'{y}-{m}-{d}')}}</span>
         </el-tooltip>
     </template>
   </form-item-wrapper>
@@ -79,7 +79,7 @@
         if (!this.fieldModel) {
           return '--'
         } else {
-          return this.fieldModel[0] + ' - ' + this.fieldModel[1]
+          return this.fieldModel[0] + ' 至 ' + this.fieldModel[1]
         }
       },
 

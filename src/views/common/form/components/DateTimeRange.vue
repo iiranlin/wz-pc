@@ -10,7 +10,7 @@
     <div v-else>
       <template>
         <el-date-picker v-if="!readerMode" v-model="_value" size="medium" clearable :value-format="format" :type="type" :start-placeholder="placeholder[0]" :end-placeholder="placeholder[1]"/>
-        <div v-else v-text="value[0] + ' ~ ' + value[1]"></div>
+        <div v-else v-text="value[0] + ' 至 ' + value[1]"></div>
       </template>
 
       <div v-if="showLength" class="length">

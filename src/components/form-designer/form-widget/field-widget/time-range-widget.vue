@@ -70,7 +70,7 @@
         if (!this.fieldModel) {
           return '--'
         } else {
-          return this.fieldModel[0] + ' - ' + this.fieldModel[1]
+          return this.fieldModel[0] + ' 至 ' + this.fieldModel[1]
         }
       },
 
