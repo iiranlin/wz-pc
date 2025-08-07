@@ -13,11 +13,18 @@
       :show-file-list="false"
       class="upload-file-uploader"
       ref="upload"
+      :disabled="isUploading"
     >
       <!-- 上传按钮 -->
-      <el-button v-if="isShowButton" size="mini" type="primary"
-        >选取文件</el-button
+      <el-button
+        v-if="isShowButton"
+        size="mini"
+        type="primary"
+        :loading="isUploading"
+        :disabled="isUploading"
       >
+        {{ isUploading ? '上传中' : '选取文件' }}
+      </el-button>
       <!-- 上传提示 -->
       <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
@@ -66,7 +73,7 @@
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
+// 实际使用单附件上传
 import { minioUpload } from '@/api/minio'
 
 export default {
@@ -117,6 +124,8 @@ export default {
         businessType: '',
         key: ''
       },
+      // 上传状态
+      isUploading: false,
     };
   },
   watch: {
@@ -153,13 +162,32 @@ export default {
     handleDownload (index) {
       this.$refs[`fileView`][index].handleDownload()
     },
+    /**
+     * 自定义上传方法
+     * @param {Object} option - 上传选项
+     */
     customUpload (option) {
       if (option.file) {
-        this.$download.fileUpload(minioUpload, { ...this.formData, file: option.file }).then((data) => {
-          this.handleUploadSuccess(data)
-        }).catch((err) => {
-          this.handleUploadError(err, option.file, option.fileList)
-        })
+        // 防止重复上传
+        if (this.isUploading) {
+          this.$message.warning('正在上传中，请稍候...');
+          return;
+        }
+
+        // 设置上传状态
+        this.isUploading = true;
+
+        this.$download.fileUpload(minioUpload, { ...this.formData, file: option.file })
+          .then((data) => {
+            this.handleUploadSuccess(data, option.file);
+          })
+          .catch((err) => {
+            this.handleUploadError(err, option.file);
+          })
+          .finally(() => {
+            // 无论成功失败都要重置状态
+            this.isUploading = false
+          });
       }
     },
     // 上传前校检格式和大小
