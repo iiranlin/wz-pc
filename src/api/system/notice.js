@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_SERVER;
+let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV
 
 // 查询列表
 export function noticePage(params) {
@@ -42,5 +43,15 @@ export function noticeDeleteBatch(data) {
     url: `${VUE_APP_BASE_PREFIX}/notice/deleteBatch`,
     method: 'post',
     data
+  })
+}
+
+
+// 短信消息通知
+export function materialSmsLogRest(params) {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSmsLogRest/list`,
+    method: 'get',
+    params
   })
 }

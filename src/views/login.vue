@@ -173,7 +173,6 @@ export default {
         this.dialogVisible =false
       },
       handleLogin() {
-        debugger
         
             localStorage.removeItem('UNIT_ID')
             localStorage.removeItem('UNIT_NAME')

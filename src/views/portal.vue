@@ -26,7 +26,7 @@
                         <img :src="item.icon" />{{ item.title }}
                       </span>
                     </div>
-                </li>
+                </li> 
               </ul>
           </div>
         </div>
@@ -39,11 +39,11 @@
       <div class="login-list">
         <div class="list-content">
           <ul>
-            <li class="li-fisrt">
+            <li class="li-fisrt" @click="loginSHIndex(1)">
             </li>
             <li  class="li-second" @click="loginIndex">
             </li>
-            <li  class="li-there">
+            <li  class="li-there" @click="loginSHIndex(2)">
             </li>
             <li  class="li-four">
             </li>
@@ -87,12 +87,16 @@
               </div>
             </div>
             <div class="message-list">
-              <ul>
+              <ul v-if="messageList.length">
                 <li v-for="(item,index) in messageList" :key="index">
-                  <span class="list-span1">{{item.list}}</span>
-                  <span class="list-span2">{{item.time}}</span>
+                  <span class="list-span1">{{item.content}}</span>
+                  <span class="list-span2">{{parseTime(item.createDate, '{y}-{m}-{d}')}}</span>
                 </li>
               </ul>
+              <div v-else class="notice-empty">
+                      <img src="/static/icon-notice-empty.webp" />
+                      <span>暂无信息</span>
+                  </div>
             </div>
           </div>
           <div class="notice-announcement">
@@ -106,12 +110,16 @@
               </div>
             </div>
             <div class="message-list">
-              <ul>
+              <ul v-if="noticeList.length">
                 <li v-for="(item,index) in noticeList" :key="index">
                   <span class="list-span1">{{item.noticeTitle}}</span>
                   <span class="list-span2">{{ parseTime(item.updateTime, '{y}-{m}-{d}')}}</span>
                 </li>
               </ul>
+                <div v-else class="notice-empty">
+                    <img src="/static/icon-notice-empty.webp" />
+                    <span>暂无信息</span>
+                </div>
             </div>
           </div>
         </div>
@@ -139,6 +147,7 @@ import { mapGetters, mapState } from 'vuex'
 import { wfTodoCount } from "@/api/system/workflow";
 import { getUserMenu } from '@/api/system/menu'
 import { noticePage } from "@/api/system/notice";
+import { messagePage }from "@/api/system/message"
 
 export default {
     name: "Login",
@@ -165,24 +174,8 @@ export default {
               },
             ],
             messageList:[
-              {list:"您有一条用料需求计划需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条入库单需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条用料需求计划需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条入库单需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条用料需求计划需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条入库单需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条用料需求计划需要审核，请及时处理",time:"2025-06-26"},
-              {list:"您有一条入库单需要审核，请及时处理",time:"2025-06-26"},
             ],
             noticeList:[
-              {list:"关于物资管理信息系统建设推进会的通知",time:"2025-06-26"},
-              {list:"关于物资管理情况通报优化工作的征求意见通知",time:"2025-06-26"},
-              {list:"关于物资管理信息系统建设推进会的通知",time:"2025-06-26"},
-              {list:"关于物资管理情况通报优化工作的征求意见通知",time:"2025-06-26"},
-              {list:"关于物资管理信息系统建设推进会的通知",time:"2025-06-26"},
-              {list:"关于物资管理情况通报优化工作的征求意见通知",time:"2025-06-26"},
-              {list:"关于物资管理信息系统建设推进会的通知",time:"2025-06-26"},
-              {list:"关于物资管理情况通报优化工作的征求意见通知",time:"2025-06-26"},
             ],
              //待办数量对象
             taskNum: {},
@@ -207,6 +200,7 @@ export default {
       this.getAllTaskNumByUser()
       this.getUserMenu()
       this.getList()
+      this.getmaterialList()
        
     },
     mounted() {
@@ -261,13 +255,7 @@ export default {
       },
       //通知消息点击更多
       handleNoticeMore() {
-        console.log("更多消息通知")
-          // this.$router.push({
-          //     name: 'myMessage',
-          //     query: {
-
-          //     },
-          // })
+          this.$router.push({name:'message'})
       },
        getUserMenu() {
         getUserMenu().then(({ data }) => {
@@ -294,9 +282,19 @@ export default {
             }
           );
       },
+      getmaterialList(){
+        messagePage({pageNum:1,pageSize:8}).then(
+            ({ data }) => {
+                this.messageList = data.list;
+            }
+          );
+      },
       getNotic(){
         let name= this.menuOptions.find(item=>item.menuName=='系统管理').children.find(child=>child.menuName=='通知公告').menuUrl
         this.$router.push({ name })
+      },
+      loginSHIndex(val){
+        window.open(process.env.VUE_APP_OPEN_URL+"/index?userName="+this.userInfo.username+"&type="+val,"_self","",true)
       }
     },
     beforeDestroy() {
@@ -691,6 +689,22 @@ export default {
                 text-align: right;
             }
           }
+          .notice-empty{
+             height: 300px;
+                text-align: center;
+                img {
+                    width: 280px;
+                    height: 178px;
+                    margin-top: 28px;
+                    margin-bottom: 5px;
+                }
+
+                span {
+                    font-size: 14px;
+                    color: #a1aecb;
+                    display: block;
+                }
+          }
         }
       }
       .notice-announcement{
@@ -774,6 +788,22 @@ export default {
                 font-size:12px;
                 text-align: right;
             }
+          }
+          .notice-empty{
+            height: 300px;
+              text-align: center;
+              img {
+                  width: 280px;
+                  height: 178px;
+                  margin-top: 28px;
+                  margin-bottom: 5px;
+              }
+
+              span {
+                  font-size: 14px;
+                  color: #a1aecb;
+                  display: block;
+              }
           }
         }
       }
