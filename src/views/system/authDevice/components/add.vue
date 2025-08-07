@@ -33,7 +33,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item :label="'设备序列号'" prop="deviceNum">
+            <el-form-item :label="'设备注册码'" prop="deviceNum">
               <el-input v-model="form.deviceNum" maxlength="240" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
