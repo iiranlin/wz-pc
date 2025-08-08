@@ -23,7 +23,7 @@
                     </el-dropdown>
                     <div v-else class="el-dropdown-other">
                       <span>
-                        <img :src="item.icon" />{{ item.title }}
+                        <img :src="item.icon" /><a download href="/建设物资管理系统操作说明书-v1.0.docx" class="docNameLabel">{{ item.title }}</a>
                       </span>
                     </div>
                 </li> 
@@ -149,10 +149,11 @@ import { getUserMenu } from '@/api/system/menu'
 import { noticePage } from "@/api/system/notice";
 import { messagePage }from "@/api/system/message"
 
+
 export default {
     name: "Login",
     components: {
-      UpdatePassword,
+      UpdatePassword
     },
     data() {
         return {
@@ -181,6 +182,10 @@ export default {
             taskNum: {},
             // 动态路由
             menuOptions:[],
+            helpListData: {
+              filePath: 'templates/生产制造标准产品操作说明书v1.0.docx',
+              fileName: '建设物资管理系统操作说明书-v1.0.docx'
+            }
 
         };
     },
@@ -252,7 +257,7 @@ export default {
           if(name){
               this.$router.push({ name })
           }
-      },
+      }, 
       //通知消息点击更多
       handleNoticeMore() {
           this.$router.push({name:'message'})
@@ -295,7 +300,8 @@ export default {
       },
       loginSHIndex(val){
         window.open(process.env.VUE_APP_OPEN_URL+"/index?userName="+this.userInfo.username+"&type="+val,"_self","",true)
-      }
+      },
+  
     },
     beforeDestroy() {
       
@@ -644,7 +650,7 @@ export default {
           .right-title{
             line-height: 24px;
             span{
-              opacity:50%;
+              opacity:0.5;
               width:25px;
               height:17px;
               line-height:normal;
@@ -679,7 +685,7 @@ export default {
               color: #2B53FF;
             }
             .list-span2{
-                opacity:50%;
+                opacity:0.5;
                 width:78px;
                 height:17px;
                 line-height:normal;
@@ -744,7 +750,7 @@ export default {
           .right-title{
             line-height: 24px;
             span{
-              opacity:50%;
+              opacity:0.5;
               width:25px;
               height:17px;
               line-height:normal;
@@ -779,7 +785,7 @@ export default {
               color: #2B53FF;
             }
             .list-span2{
-                opacity:50%;
+                opacity:0.5;
                 width:78px;
                 height:17px;
                 line-height:normal;
