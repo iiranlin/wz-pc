@@ -178,6 +178,12 @@ export default {
     },
 
     buttonShow (item) {
+    //   const status = {
+    //   0: "已驳回",
+    //   1: "未提交",
+    //   2: "已提交",
+    //   3: "已生效",
+    // };
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
@@ -187,19 +193,19 @@ export default {
       }
       // 修改
       if (item.buttonCode === 'edit') {
-        return ['0', '4'].includes(this.detail.planStatus)
+        return ['0'].includes(this.detail.status)
       }
       // 同意
       if (item.buttonCode === 'pass') {
-        return ['2'].includes(this.detail.planStatus)
+        return ['2'].includes(this.detail.status)
       }
       // 修改后同意
-      if (item.buttonCode === 'passEdit') {
-        return ['2'].includes(this.detail.planStatus)
-      }
+      // if (item.buttonCode === 'passEdit') {
+      //   return ['2'].includes(this.detail.planStatus)
+      // }
       // 不同意
       if (item.buttonCode === 'reject') {
-        return ['2'].includes(this.detail.planStatus)
+        return ['2'].includes(this.detail.status)
       }
 
 
