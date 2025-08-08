@@ -21,6 +21,22 @@
             @selectionChange="selectionChange"
           />
         </template>
+                     <!-- 附件 -->
+        <template #fileListSlot="scope">
+          <el-form-item
+            prop="fileList"
+            label="计划附件"
+            class="label-right-align"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList"
+              :limit="1"
+              :preview="type === 'view' "
+              :isShowTip="false"
+              :fileType="['pdf']"
+            />
+          </el-form-item>
+        </template>
       </VFormRender>
       <toBeReviewed ref="toBereview" />
     </div>
@@ -43,6 +59,7 @@ import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import router from '@/router';
+import fileUpload from "@/components/upload";
 
 export default {
   // 需求审核详情
@@ -50,7 +67,8 @@ export default {
     VFormRender,
     attachmentTable,
     detailTable,
-    toBeReviewed
+    toBeReviewed,
+    fileUpload
   },
   data () {
     return {
@@ -150,7 +168,9 @@ export default {
           this.title = "编辑";
           await this.formFillInPage()
           this.tableData = data.details
-          this.$refs.vFormRef.setFormData({ ...data, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
+          // fileList回显
+          const fileList = data.fileList[0]?.fileList || []
+          this.$refs.vFormRef.setFormData({ ...data,fileList, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
           this.detail = data
           //   form action
           this.$refs.vFormRef.setReadMode(true)
