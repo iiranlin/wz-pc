@@ -303,7 +303,7 @@ export default {
           // this.handleRecall(idArr[0])
           this.handleWithdraw({
             businessId: idArr[0],
-            businessType: rowArr[0].planType == 1 ? "FBYLXQ" : "YLXQ",
+            businessType: 'WZML',
           });
           break;
         case "supplyView":
