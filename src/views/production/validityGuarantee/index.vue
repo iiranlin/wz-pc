@@ -13,10 +13,11 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       :formData="formData"
+      labelWidth="150px"
     >
       <template #validityGuarantee>
         <el-date-picker
-          style="width: 150% !important"
+          style="width: 100% !important"
           v-model="formData.validityGuarantee"
           type="daterange"
           start-placeholder="开始日期"
