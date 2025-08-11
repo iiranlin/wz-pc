@@ -232,7 +232,7 @@ export default {
         }
       },
       loginIndex(){
-        let route = { path: '/' }
+        let route = { path: 'index' }
         this.$router
             .push(route)
             .catch(() => { });
