@@ -117,7 +117,7 @@ export default {
       this.isInitialLoad = false;
       this.visible = true;
       this.$nextTick(() => {
-        this.title = "新建授权设备";
+        this.title = "新增授权设备";
         this.getUnitTypeOptions();
       });
     },
