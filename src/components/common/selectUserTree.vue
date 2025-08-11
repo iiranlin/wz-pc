@@ -153,7 +153,8 @@ export default {
     async getUserList(p = {}) {
       const params = {
         ...this.page,
-        ...this.userFormData
+        ...this.userFormData,
+        ...this.queryParams  // 添加 queryParams，包含 deptId
       }
       if(p.page) {
         params.pageNum = p.page,
@@ -167,7 +168,6 @@ export default {
           this.$modal.msgError(res.message);
         }
       })
-
     },
 
     // 用户选择弹出框确认按钮
@@ -196,11 +196,12 @@ export default {
     },
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.getUserList(this.userFormData)
+      this.getUserList();  // 移除参数，让方法内部自动合并所有参数
     },
     resetQuery() {
       this.$refs.userFormData.resetFields()
       this.queryParams.pageNum = 1;
+      this.queryParams.deptId = undefined;  // 重置时清空部门筛选
       this.getUserList()
     },
   },
