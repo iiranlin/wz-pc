@@ -119,14 +119,15 @@
                     </div>
                     <div class="video-content" @click="handleVideoClick()">
                         <div class="video-title">
-                            <span>视频教程</span>
+                             <a download href="/建设物资管理系统操作说明书-v1.0.docx" class="operation-manual-link">操作手册</a>
+                            <!-- <span style="cursor: pointer;">操作手册</span> -->
                         </div>
                         <img class="video-image" src="/static/icon-video.svg" />
                     </div>
                     <div class="support-content">
                         <ul>
                             <li>
-                                <img src="/static/icon-phone.webp" />
+                                <!-- <img src="/static/icon-phone.webp" /> -->
                                 <!-- <span>唐伟：13261263907</span> -->
                             </li>
                             <!-- <li>
@@ -392,6 +393,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
+.operation-manual-link {
+  text-decoration: none;
+  color: #165DFF;
+  font-size: 14px;
+  
+  &:hover {
+    color: #1F98FF;
+  }
+}
+
 .home-container {
     margin: 0 20px 20px 20px;
     height: 100%;
