@@ -1,11 +1,13 @@
 <template>
     <section class="login-container" v-loading="loading && username">
         <div id="leftvedio">
-            <el-image
+            <!-- <el-image
                 :src="logoBg"
                 class="background-image"
                 fit="cover">
-            </el-image>
+            </el-image> -->
+       <video id="banner" src="../assets/LoginBg.mp4" width="2560" height="1400" autoplay="autoplay" loop="loop"
+                muted></video>
         </div>
         <div class="login-form"  v-if="!username">
             <header>
@@ -58,7 +60,7 @@ import { getVerificationCode, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
 import logo from "@/assets/logo/logo.png";
-import logoBg from '../assets/loginBg.png';
+// import logoBg from '../assets/loginBg.png';
 import loginTitle from '../assets/loginTitle.png';
 import { setToken } from "@/utils/auth";
 
@@ -70,7 +72,7 @@ export default {
     data() {
         return {
             loginTitle,
-            logoBg,
+            // logoBg,
             logo,
             title: process.env.VUE_APP_TITLE,
             testFlag: process.env.VUE_APP_TEST_FLAG,
@@ -147,11 +149,11 @@ export default {
         this.getVerificationCode();
     },
     mounted() {
-        let banner = document.getElementById('banner');
-        if (banner) {
-            this.setBg();
-            window.addEventListener('resize', this.setBg);
-        }
+        // let banner = document.getElementById('banner');
+        // if (banner) {
+        //     this.setBg();
+        //     window.addEventListener('resize', this.setBg);
+        // }
     },
     methods: {
         setBg() {
@@ -306,108 +308,73 @@ export default {
 
 <style lang="scss">
 .login-container {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
     background-color: #eaeff6;
 
     #leftvedio {
         position: absolute;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        z-index: 2;
-        overflow: hidden;
-    }
-
-    .background-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        z-index: 1;
     }
 
     #banner {
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
+        width: calc(100vw - 500px);
+        height: 100%;
+        object-fit: cover;
         filter: saturate(1.3);
     }
 
     .login-form {
-        position: fixed;
-        left: 75%;
+        position: absolute;
+        right: 0;
         top: 50%;
-        transform: translate(-50%, -56%);
-        width: 350px;
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        transform: translateY(-50%);
+        width: 500px;
         background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0px 3px 7px rgba(15, 20, 44, 0.16);
-        z-index: 2;
+        padding: 0 70px;
+        // border-radius: 12px;
+        // box-shadow: 0px 3px 7px rgba(15, 20, 44, 0.16);
         color: #2a2e33;
+        z-index: 2;
 
         header {
             width: 100%;
-            padding: 15px 15px 0 32px;
-        }
-
-        .login-logo {
-            width: 83px;
-            height: 40px;
-            position: absolute;
-            left: 14px;
-            top: 15px;
-        }
-
-        img {
-            width: 100%;
-        }
-
-        h1 {
-            font-size: 32px;
-            line-height: 45px;
-            color: #18223e;
-            letter-spacing: 2px;
-            margin-top: 50px;
-            margin-bottom: 0;
-            text-align: center;
-        }
-
-        h3 {
-            margin-left: 32px;
-            font-size: 12px;
-            font-weight: 300;
-            line-height: 16px;
-            color: #18223e;
-            opacity: 0.7;
-            margin: 0;
             text-align: center;
         }
 
         .hz-form {
-            // margin-top: 14px;
-            padding: 0 40px;
-
-            .el-form-item__error {
-                display: none;
-            }
+            padding: 0;
         }
 
         .btn {
             margin-top: 30px;
-            padding: 0 35px;
-            margin-bottom: 20px;
+            padding: 0;
+            margin-bottom: 30px;
         }
 
+        // 表单项样式
         .el-form-item {
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
             margin-right: 0px !important;
         }
 
         .el-form-item__label {
             padding: 0;
-            font-size: 13px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
 
             &::before {
                 content: none !important;
@@ -416,36 +383,40 @@ export default {
 
         .el-form-item__content {
             width: 100%;
+            position: relative;
 
             .imgVerification {
                 width: 35%;
                 height: 36px;
+                float: right;
+                cursor: pointer;
             }
         }
 
         .el-input__inner {
-            border-width: 0;
-            border-radius: 0 !important;
-            border-bottom-width: 1px;
-            padding-left: 15px;
-            border-bottom-color: #000;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px !important;
+            padding: 12px 15px;
             color: #2a2e33;
+            height: 40px;
+
+            &:focus {
+                border-color: #1682e6;
+                box-shadow: 0 0 0 2px rgba(22, 130, 230, 0.2);
+            }
         }
 
         .is-error .el-input__inner {
-            border-bottom-color: #ff4949;
-        }
-
-        .el-input__inner:focus {
-            border: 2px solid #1682e6;
-            border-radius: 4px !important;
+            border-color: #ff4949;
         }
 
         .el-button {
             width: 100%;
             font-size: 16px;
             background-color: #1c75fd;
-            padding: 15px 20px;
+            padding: 12px 20px;
+            height: 44px;
+            border-radius: 4px;
 
             &:hover {
                 background: #0160ee;
@@ -453,30 +424,20 @@ export default {
         }
     }
 
-    .el-login-footer {
+    // 测试提示
+    .testTitle {
+        color: red;
+        font-weight: bold;
+        font-size: 22px;
         position: absolute;
-        bottom: 0;
-        width: 100%;
-        text-align: center;
-        height: 20px;
-        line-height: 20px;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        z-index: 3;
     }
 
-    .hz-icon-eye {
-        display: inline-block;
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 12px;
-        right: 8px;
-        background: url("../assets/images/eye.png") center/contain no-repeat;
-        cursor: pointer;
-
-        &:hover {
-            background: url("../assets/images/eye-hover.png") center/contain no-repeat;
-        }
-    }
-
+    // 眼睛图标样式
+    .hz-icon-eye,
     .hz-icon-eye-open {
         display: inline-block;
         position: absolute;
@@ -484,8 +445,20 @@ export default {
         height: 16px;
         top: 12px;
         right: 8px;
-        background: url("../assets/images/eye-open.png") center/contain no-repeat;
         cursor: pointer;
+        z-index: 3;
+    }
+
+    .hz-icon-eye {
+        background: url("../assets/images/eye.png") center/contain no-repeat;
+
+        &:hover {
+            background: url("../assets/images/eye-hover.png") center/contain no-repeat;
+        }
+    }
+
+    .hz-icon-eye-open {
+        background: url("../assets/images/eye-open.png") center/contain no-repeat;
 
         &:hover {
             background: url("../assets/images/eye-open-hover.png") center/contain no-repeat;
@@ -493,22 +466,5 @@ export default {
     }
 }
 
-// 测试提示
-.testTitle {
-    color: red;
-    font-weight: bold;
-    font-size: 22px;
-    position: absolute;
-    left: 50%;
-    bottom: 2%;
-    transform: translate(-50%, -2%);
-    z-index: 2;
-}
 
-.validate-code-image {
-    margin-top: 32px;
-    display: flex;
-    height: 30px;
-    background-color: #fff;
-}
 </style>
