@@ -13,7 +13,7 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       :formData="formData"
-      labelWidth="150px"
+      labelWidth="110px"
     >
       <template #validityGuarantee>
         <el-date-picker

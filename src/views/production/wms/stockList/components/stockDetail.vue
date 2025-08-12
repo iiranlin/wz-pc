@@ -66,6 +66,22 @@
             ></el-table-column>
           </el-table>
         </template>
+          <!-- 附件 -->
+        <template #fileListSlot="scope">
+          <el-form-item
+            prop="fileList"
+            label="计划附件"
+            class="label-right-align"
+          >
+            <fileUpload
+              v-model="scope.formModel.fileList"
+              :limit="1"
+              :preview="type === 'view' "
+              :isShowTip="false"
+              :fileType="['pdf']"
+            />
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -145,6 +161,7 @@ export default {
           await this.formFillInPage();
           const newData = {
             ...data,
+           fileList :data.fileList[0]?.fileList || [],
           };
           this.$refs.vFormRef.setFormData(newData);
           this.$refs.vFormRef.setReadMode(true);
