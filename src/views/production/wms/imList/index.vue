@@ -332,10 +332,10 @@ export default {
          this.selection[0].storeStatus != "5"
         );
       }
-      // 下载按钮控制（检测通过和部分退货）
+      // 下载按钮控制（检测通过和部分退货和已退货）
       if (button.buttonCode == "download") {
         return (
-          this.selection[0].storeStatus != "3" && this.selection[0].storeStatus != "2"
+         !['3','2','4'].includes(this.selection[0].storeStatus) 
         );
       }
     },
