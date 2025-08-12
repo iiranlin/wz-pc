@@ -56,13 +56,13 @@ router.beforeEach(async (to, from, next) => {
             const link = document.querySelector('[rel="icon"]');  
             link.href ="./iconLogo.png";     
         } else {
-            document.title = "物质管理平台";  
+            document.title = "物资管理平台";  
             const link = document.querySelector('[rel="icon"]');  
             link.href ="./Logo.png";      
         }
     }
     else if(to.path=="/portal") { 
-        document.title = "物质管理平台";  
+        document.title = "物资管理平台";  
         const link = document.querySelector('[rel="icon"]');  
         link.href ="./Logo.png";  
     }else{
