@@ -58,8 +58,8 @@ export default {
         text: username + ' \n\n ' + currentTime,
         opacity: 0.11,                 
          font: '16px Microsoft Yahei',   // 字体和大小
-         tileWidth: 400,                // 水印宽度
-         tileHeight: 200,               // 水印高度
+         tileWidth: 250,                // 水印宽度
+         tileHeight: 130,               // 水印高度
          tileWidthNumber: 50,
          tileHeightNumber: 50,
       }
