@@ -59,7 +59,7 @@ export default {
         opacity: 0.11,                 
          font: '16px Microsoft Yahei',   // 字体和大小
          tileWidth: 250,                // 水印宽度
-         tileHeight: 130,               // 水印高度
+         tileHeight: 70,               // 水印高度
          tileWidthNumber: 50,
          tileHeightNumber: 50,
       }
