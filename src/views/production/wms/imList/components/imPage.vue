@@ -387,7 +387,7 @@
 	                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
 	                : "",
 	              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
-	               storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=实收数量
+	               storeTotal: this.type == "create" ? x.putTotal : x.putTotal, //新增默认入库数量=实收数量
 	              refundZjTotal: this.type == "create" ? 0 : x.refundZjTotal, //新增默认退货数量为0
 	              fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
 	              fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
