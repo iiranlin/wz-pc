@@ -130,6 +130,7 @@ export default {
             return this.selected.some(row => this.handleButtonDisable(button, row))
         },
         handleButtonDisable(button, row) {
+			console.log(button, 'button')
             if (button.buttonCode == 'delete') {
                 return this.selected.length != 1
             }
@@ -137,6 +138,9 @@ export default {
                 return row.enableStatus != '1'
             }
             if (button.buttonCode == 'disable') {
+                return row.enableStatus != '0'
+            }
+            if (button.buttonCode == 'copy') {
                 return row.enableStatus != '0'
             }
 
