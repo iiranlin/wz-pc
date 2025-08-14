@@ -74,7 +74,7 @@
 
 <script>
 // 实际使用单附件上传
-import { minioUpload } from '@/api/minio'
+import { minioUpload ,minioImageToPdf} from '@/api/minio'
 
 export default {
   name: "FileUpload",
@@ -114,6 +114,10 @@ export default {
     isShowTip: {
       type: Boolean,
       default: true
+    },
+    isImgToPdf:{
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -177,7 +181,8 @@ export default {
         // 设置上传状态
         this.isUploading = true;
 
-        this.$download.fileUpload(minioUpload, { ...this.formData, file: option.file })
+        const url =  this.isImgToPdf ? minioImageToPdf : minioUpload 
+        this.$download.fileUpload(url, { ...this.formData, file: option.file })
           .then((data) => {
             this.handleUploadSuccess(data, option.file);
           })

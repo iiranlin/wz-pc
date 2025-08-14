@@ -45,6 +45,7 @@
               :preview="type === 'view' && status !=2"
               :isShowTip="false"
               :fileType="['jpg','png','jpeg']"
+              :isImgToPdf="true"
             />
           </el-form-item>
         </template>
