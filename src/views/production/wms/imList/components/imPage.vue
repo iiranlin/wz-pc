@@ -75,7 +75,7 @@
 	        </template>
 	        <!-- 详情页显示入库时间 -->
 	        <template #dateSlot="scope">
-	          <el-form-item label="入库时间" class="label-right-align" v-if="type == 'view'">
+	          <el-form-item label="报检时间" class="label-right-align" v-if="type == 'view'">
 	            {{ scope.formModel.storeDate }}
 	          </el-form-item>
 	        </template>
@@ -202,7 +202,7 @@
 	            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
 	            <el-table-column
 	              prop="storeTotal"
-	              label="入库数量"
+	              label="报检通过"
 	              width="100"
 	              fixed="right"
 	              align="center"
@@ -213,7 +213,7 @@
 	            </el-table-column>
 	            <el-table-column
 	              prop="refundZjTotal"
-	              label="退货数量"
+	              label="报检退货"
 	              width="100"
 	              fixed="right"
 	              align="center"
@@ -254,7 +254,7 @@
 	                  type="primary"
 	                  @click="handleRowInbound(scope.row)"
 	                  :disabled="scope.row.storeTotal > 0"
-	                >入库</el-button>
+	                >通过</el-button>
 	                <el-button
 	                  size="mini"
 	                  type="danger"
@@ -387,7 +387,7 @@
 	                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
 	                : "",
 	              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
-	               storeTotal: this.type == "create" ? x.putTotal : x.putTotal, //新增默认入库数量=实收数量
+	               storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=实收数量
 	              refundZjTotal: this.type == "create" ? 0 : x.refundZjTotal, //新增默认退货数量为0
 	              fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
 	              fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告

@@ -316,8 +316,9 @@ export default {
         return this.selection[0].status != "2";
       }
       //已确认或供货中才能点击发货按钮,数量不等于0
-       if (button.buttonCode == "send") {
-        return this.selection[0].status != "4" && this.selection[0].status != "3";
+       // 未确认禁用及数量0禁用
+      if (button.buttonCode == "send") {
+        return this.selection[0].status == "2" ||  this.selection[0].remainTotal <=0;
       }
       // 已完成才能下载
       if (button.buttonCode == "download") {
