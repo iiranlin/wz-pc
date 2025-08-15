@@ -34,9 +34,10 @@
           </el-form-item>
           <el-col :span="24"> </el-col>
           <el-col :span="24">
-            <el-form-item :label="'需求计划表附件'" prop="fileList">
+            <el-form-item :label="'需求计划表附件'" prop="xqjhbfj">
               <fileUpload
-                v-model="form.fileList"
+                v-model="form.xqjhbfj"
+                businessType="51"
                 :limit="1"
                 :fileSize="500"
                 :fileType="['pdf']"
@@ -58,6 +59,7 @@
 <script>
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import fileUpload from '@/components/upload'
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   name: "ItemAdd",
   components: {
@@ -70,7 +72,7 @@ export default {
       type: 'add',
       form: {},
       rules: {
-        fileList: [
+        xqjhbfj: [
           { required: true, message: '请选择', trigger: 'change' },
         ],
       },
@@ -92,7 +94,7 @@ export default {
       this.isEdit = true;
       this.visible = true;
       await Api.detail(id).then(({ data }) => {
-        this.form = Object.assign({}, data);
+        this.form = Object.assign({xqjhbfj:undefined}, data);
         this.$nextTick(() => {
           this.title = "发送甲供物资需求计划到供应商";
         });
@@ -103,9 +105,10 @@ export default {
     handleCreate () {
       this.$refs.elform.validate(async (valid) => {
         if (valid) {
+          const fileList = [...this.form.fileList ,{fileList:this.form.xqjhbfj}]
           const data = {
             ...this.form,
-            fileList: [{ fileList: this.form.fileList }]
+            fileList
           }
           this.loading = true;
           await Api[

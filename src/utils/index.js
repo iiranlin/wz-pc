@@ -733,3 +733,21 @@ export function extractSelectOptions(node) {
 
   return transform(node.children);
 }
+
+/**
+ * 
+ * @param {*} data 数组 
+ * @param {*} targetBusinessType  目标业务类型
+ * 51物代公司给供应商提供的需求计划表
+ * 54需求计划表附件
+ * @returns  目标业务类型的数组
+ */
+export function findByBusinessType(data, targetBusinessType) {
+  // 找到第一个外层对象，内部 fileList 中包含目标 businessType
+  const found = data.find(outer =>
+    outer.fileList?.some(inner => inner.businessType === targetBusinessType)
+  );
+
+  // 如果找到就返回外层对象，否则返回空数组
+  return found?.fileList || [];
+}

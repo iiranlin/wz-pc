@@ -96,6 +96,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import dayjs from "dayjs";
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   name: "stockDetail",
   components: {
@@ -161,7 +162,7 @@ export default {
           await this.formFillInPage();
           const newData = {
             ...data,
-           fileList :data.fileList[0]?.fileList || [],
+           fileList :findByBusinessType(data.fileList,'54'),
           };
           this.$refs.vFormRef.setFormData(newData);
           this.$refs.vFormRef.setReadMode(true);

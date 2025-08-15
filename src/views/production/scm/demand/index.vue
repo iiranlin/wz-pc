@@ -96,6 +96,7 @@ import indexMixin from "@/views/mixins";
 import Confirm from "./components/confirm.vue";
 import fileUpload from "@/components/upload";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   // 建设项目
   name: "demand",
@@ -214,7 +215,8 @@ export default {
           this.total = data.total;
           this.list = data.list.map((x) => ({
             ...x,
-            fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
+            // fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
+            fileList: findByBusinessType(x.fileList,'51'),
           }));
         })
         .finally(() => {
@@ -316,9 +318,8 @@ export default {
         return this.selection[0].status != "2";
       }
       //已确认或供货中才能点击发货按钮,数量不等于0
-       // 未确认禁用及数量0禁用
       if (button.buttonCode == "send") {
-        return this.selection[0].status == "2" ||  this.selection[0].remainTotal <=0;
+        return this.selection[0].status != "4" && this.selection[0].status != "3";
       }
       // 已完成才能下载
       if (button.buttonCode == "download") {

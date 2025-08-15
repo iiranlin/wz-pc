@@ -245,7 +245,7 @@ export default {
     handleUploadSuccess (res, file) {
       if (res.success) {
         this.$message.success("上传成功");
-        this.fileList.push({ fileName: res.data.fileName, filePath: res.data.filePath });
+        this.fileList.push({...res.data, fileName: res.data.fileName, filePath: res.data.filePath });
         this.$emit("input", this.fileList);
       } else {
         this.$message.error(res.message);

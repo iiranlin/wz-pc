@@ -60,6 +60,7 @@ import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import router from '@/router';
 import fileUpload from "@/components/upload";
+import {findByBusinessType} from '@/utils/index.js'
 
 export default {
   // 需求审核详情
@@ -169,7 +170,7 @@ export default {
           await this.formFillInPage()
           this.tableData = data.details
           // fileList回显
-          const fileList = data.fileList[0]?.fileList || []
+          const fileList = findByBusinessType(data.fileList,'54')
           this.$refs.vFormRef.setFormData({ ...data,fileList, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
           this.detail = data
           //   form action

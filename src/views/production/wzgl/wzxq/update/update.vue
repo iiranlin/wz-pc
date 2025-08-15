@@ -43,6 +43,7 @@ import ItemTableUpdate from './itemTableUpdate.vue'
 import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   // 需求填报更新
   components: {
@@ -205,7 +206,7 @@ export default {
           await this.formFillInPage()
           this.getCurrentSection()
            // fileList回显
-          data.fileList = data.fileList[0]?.fileList || []
+          data.fileList = findByBusinessType(data.fileList,'54')
           this.$refs.vFormRef.setFormData(data)
 
           //   form action

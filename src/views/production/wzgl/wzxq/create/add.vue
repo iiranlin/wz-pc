@@ -28,6 +28,7 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :limit="1"
+              businessType="54"
               :preview="type === 'view' "
               :isShowTip="false"
               :fileType="['pdf']"
@@ -54,6 +55,7 @@ import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import fileUpload from "@/components/upload";
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   // 需求填报
   components: {
@@ -209,8 +211,8 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
-          // fileList回显
-          data.fileList = data.fileList[0]?.fileList || []
+          // fileList回显 54需求计划附件
+          data.fileList = findByBusinessType(data.fileList,'54')
           this.$refs.vFormRef.setFormData(data)
 
           //   form action

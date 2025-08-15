@@ -109,6 +109,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import dayjs from "dayjs";
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   name: "freightDetail",
   components: {
@@ -176,7 +177,7 @@ export default {
           // fileList回显
             const newData = {
               ...data,
-              fileList :data.fileList[0]?.fileList || [],
+              fileList :findByBusinessType(data.fileList,'54'),
               createDate: dayjs(data.createDate).format("YYYY-MM-DD"),
             };
             this.$refs.vFormRef.setFormData(newData);
