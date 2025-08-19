@@ -46,6 +46,8 @@ export const ACTIVITI_ASSUGNEE = {
     MM_SCBG: 'MM_SCBG', // 生产变更
     INV_ADJUST_IN: 'INV_ADJUST_IN', // 入库调整单
     FBYLXQ:'FBYLXQ' ,//分部用料需求
+	CGWJ:'detailPurchase', // 采购文件
+	CGHT:'detailPurchaseContract', // 采购合同
 }
 
 // 审批类型对应的路由
@@ -93,6 +95,8 @@ export const FLOW_ROUTE = {
     WZML:'itemAuditDetail',//甲供物资审核详情
     RKLC:'imDetail',
     SHLC:'receivePage',
+	CGWJ:'detailPurchase', // 采购文件
+	CGHT:'detailPurchaseContract', // 采购合同
     
 }
 
