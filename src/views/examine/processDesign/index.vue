@@ -130,7 +130,6 @@ export default {
             return this.selected.some(row => this.handleButtonDisable(button, row))
         },
         handleButtonDisable(button, row) {
-			console.log(button, 'button')
             if (button.buttonCode == 'delete') {
                 return this.selected.length != 1
             }

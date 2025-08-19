@@ -73,6 +73,10 @@
                                 :index-of-parent-list="swIdx" :parent-widget="widget" :sub-form-row-id="subFormRowId"
                                 :sub-form-row-index="sfrIdx" :sub-form-col-index="swIdx">
                                 <!-- 子表单暂不支持插槽！！！ -->
+								<!-- 递归传递插槽！！！ -->
+							<template v-for="(slot,idx) in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+							  <slot :name="slot" v-bind="{...scope,sfrIdx}"/>
+							</template>
                             </component>
                         </div>
                     </template>
