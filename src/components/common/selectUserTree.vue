@@ -30,8 +30,14 @@
             <div slot="header">
               <span>部门列表</span>
             </div>
-              <el-tree :data="deptTreeData" :props="deptProps" :expand-on-click-node="false" ref="tree"
-                @node-click="handleNodeClick" />
+              <el-tree 
+                :data="deptTreeData" 
+                :props="deptProps" 
+                :expand-on-click-node="false" 
+                ref="tree"
+                @node-click="handleNodeClick"
+                style="width: fit-content; min-width: 100%; overflow-x: auto;"
+              />
           </el-card>
         </el-col>
         <el-col :span="17" style="height: calc(100% - 34px);">
