@@ -71,8 +71,8 @@
           </template>
           <template #fileList="scope">
             <fileUpload
-              v-if="scope.value[0]"
-              :value="scope.value[0].fileList"
+              v-if="scope.value"
+              :value="scope.value"
               :limit="1"
               :fileSize="500"
               :fileType="['pdf']"
@@ -101,6 +101,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import fileUpload from '@/components/upload'
 import DemandBack from './components/demandBack.vue'
+import {findByBusinessType} from '@/utils/index.js'
 export default {
   // 供应需求列表
   name: "wzxqList",
@@ -251,7 +252,11 @@ export default {
       Api.itemList(Object.assign({
         pageStatus: '1'
       }, this.listQuery, this.formData)).then(({ data }) => {
-        this.list = data.list
+        this.list = data.list.map((x) => ({
+            ...x,
+            // fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
+            fileList: findByBusinessType(x.fileList,'51'),
+          }));
         this.total = data.total
       }).finally(() => {
         this.loading = false
