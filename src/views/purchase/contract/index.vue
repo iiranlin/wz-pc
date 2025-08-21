@@ -67,7 +67,7 @@
 				</el-form-item>
 				<el-form-item label="核备附件(支持多个)" prop="attachmentFile">
 					<fileUpload v-model="contractLicense.attachmentFile" :limit="10" :fileSize="500" :fileType="['pdf']"
-						:preview="type === 'view'" />
+						:preview="false" />
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="closeAddStatus()">取 消</el-button>
@@ -81,9 +81,6 @@
 
 <script>
 	import * as Api from '@/api/purchase/contract.js'
-	import {
-		purchaseItemFindAllList
-	} from '@/api/purchase/item.js'
 	import {
 		purchaseTypeFindAllList
 	} from '@/api/purchase/type.js'
