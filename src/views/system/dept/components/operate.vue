@@ -1,6 +1,6 @@
 <template>
 	<!-- 添加或修改部门对话框 -->
-	<Dialog :title="title" :visible.sync="openDataScope" :close-on-click-modal="false" width="600px" append-to-body>
+	<Dialog :title="title" :visible.sync="openDataScope" :close-on-click-modal="false" width="900px" append-to-body>
 		<el-form ref="elForm" :model="form" :rules="rules" label-width="85px">
 			<el-row>
 				<el-col :span="24">
@@ -38,7 +38,7 @@
 			</el-row>
 			<el-row>
 				<el-col :span="24">
-					<el-form-item label="部门类型:" prop="deptType">
+					<el-form-item label="单位类别:" prop="deptType">
 						<el-radio-group v-model="form.deptType">
 							<el-radio v-for="dict in deptEnum" :key="dict.label" :label="dict.value">{{ dict.label }}
 							</el-radio>

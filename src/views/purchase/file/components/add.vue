@@ -245,7 +245,6 @@
 	import {
 		getCurrentSection
 	} from '@/api/prodmgr-inv/project/section.js'
-	import TabTable from './tabTable.vue'
 	import VFormRender from '@/components/form-render/index'
 	import {
 		purchaseItemFindAllList
@@ -264,9 +263,6 @@
 	} from '@/utils/auth'
 	import fileUpload from '@/components/upload'
 	import {
-		listByDeptCode
-	} from '@/api/system/dept.js'
-	import {
 		getUserInfo
 	} from '@/utils/user-info'
 	export default {
@@ -274,13 +270,16 @@
 		dicts: ["purchase_code", "flowStatus"],
 		components: {
 			VFormRender,
-			fileUpload,
-			TabTable
+			fileUpload
 		},
 		data() {
 			const userInfo = getUserInfo()
 			return {
 				purchaseItem: [],
+				code:null,
+				purchaseCode: null,
+				purchaseTypeCode:null,
+				purchaseDetailCode:null,
 				purchaseType: [],
 				purcahseDetail: [],
 				projectData: {},
@@ -354,21 +353,6 @@
 						unitName: res.data.constructionCompany
 					})
 				});
-				purchaseItemFindAllList().then(res => {
-					this.purchaseItem = res.data;
-				});
-				purchaseTypeFindAllList().then(res => {
-					this.purchaseType = res.data;
-				});
-				purchaseDetailFindAllList().then(res => {
-					this.purcahseDetail = res.data;
-				});
-			},
-			onContractSelect(contract) {
-
-			},
-			handleContractNameSelect() {
-
 			},
 			onDataChange(data) {
 				if (['delete'].includes(data.type)) {
@@ -394,6 +378,9 @@
 					this.$nextTick(async () => {
 						this.title = '编辑';
 						await this.formFillInPage();
+						this.getItemList(res.data.code);
+						this.getTypeData(res.data.code, res.data.purchaseCode);
+						this.getDetailDate(res.data.code, res.data.purchaseCode, res.data.purchaseTypeCode);
 						if (res.data.status === 3) {
 							this.checked = true;
 						}
@@ -488,9 +475,6 @@
 					}
 				});
 			},
-			checkoutStatus(flag) {
-
-			},
 			formFillInPage() {
 				return new Promise((resolve) => {
 					formFillInPage('purchase').then(res => {
@@ -502,18 +486,42 @@
 					})
 				})
 			},
+			getItemList(code) {
+				purchaseItemFindAllList({code: code}).then(res => {
+					this.purchaseItem = res.data;
+				});
+			},
+
+			getTypeData(code, purchaseCode) {
+				purchaseTypeFindAllList({code: code, purchaseCode, purchaseCode}).then(res => {
+					this.purchaseType = res.data;
+				});
+			},
+
+			getDetailDate(code, purchaseCode, purchaseTypeCode) {
+				purchaseDetailFindAllList({code: code, purchaseCode: purchaseCode, purchaseTypeCode: purchaseTypeCode}).then(res => {
+					this.purcahseDetail = res.data;
+				});
+			},
+
 			selectDataChange(options, val, key) {
 				if (key == 'code') {
+					this.code = val;
+					this.getItemList(val);
 					this.$refs['vFormRef'].setFormData({
 						name: options.find(item => item.value === val).label
 					})
 				}
 				if (key == 'purchaseCode') {
+					this.purchaseCode = val;
+					this.getTypeData(this.code, this.purchaseCode);
 					this.$refs['vFormRef'].setFormData({
 						purchaseName: options.find(item => item.purchaseCode === val).purchaseName
 					})
 				}
 				if (key == 'purchaseTypeCode') {
+					this.purchaseTypeCode = val;
+					this.getDetailDate(this.code, this.purchaseCode, this.purchaseTypeCode);
 					this.$refs['vFormRef'].setFormData({
 						purchaseTypeName: options.find(item => item.purchaseTypeCode === val).purchaseTypeName
 					})
@@ -529,12 +537,6 @@
 				this.$refs.vFormRef.setFormData({
 					[key]: options.find(item => item.value === val)?.label
 				})
-			},
-			async getLineOptions() {
-
-			},
-			async getDeptTree(deptCode) {
-
 			},
 		},
 	}
