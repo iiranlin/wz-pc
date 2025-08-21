@@ -19,7 +19,9 @@
           <div class="head-container ov_head">
             <el-tree class="drawer-tree" v-loading="treeLoading" node-key="id" :indent="0" :data="deptOptions"
               :props="defaultProps" :expand-on-click-node="false" ref="tree" :highlight-current="true"
-              :filter-node-method="filterNode" @node-click="handleNodeClick">
+              :filter-node-method="filterNode" @node-click="handleNodeClick"
+              style="width: fit-content; min-width: 100%; overflow-x: auto;"
+              >
               <template slot-scope="{ node }">
                 <span class="el-tree-node__label" :title="node.label">{{ node.label }}</span>
               </template>
