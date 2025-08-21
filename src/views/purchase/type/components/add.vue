@@ -24,11 +24,11 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
-					<el-col :span="24">
+					<!-- <el-col :span="24">
 						<el-form-item :label="'种类编码'" prop="purchaseTypeCode">
 							<el-input v-model="form.purchaseTypeCode" maxlength="240" placeholder="请输入"></el-input>
 						</el-form-item>
-					</el-col>
+					</el-col> -->
 					<el-col :span="24">
 						<el-form-item :label="'种类名称'" prop="purchaseTypeName">
 							<el-input v-model="form.purchaseTypeName" maxlength="240" placeholder="请输入"></el-input>

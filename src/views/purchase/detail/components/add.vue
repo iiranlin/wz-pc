@@ -33,11 +33,11 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
-					<el-col :span="24">
+					<!-- <el-col :span="24">
 						<el-form-item :label="'细目编码'" prop="purchaseDetailCode">
 							<el-input v-model="form.purchaseDetailCode" maxlength="240" placeholder="请输入"></el-input>
 						</el-form-item>
-					</el-col>
+					</el-col> -->
 					<el-col :span="24">
 						<el-form-item :label="'细目名称'" prop="purchaseDetailName">
 							<el-input v-model="form.purchaseDetailName" maxlength="240" placeholder="请输入"></el-input>
