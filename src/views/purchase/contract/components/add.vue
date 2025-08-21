@@ -315,6 +315,7 @@
 						this.loading = true;
 						const formData = await this.$refs.vFormRef.getFormData();
 						formData.projefctName = this.projectData.projectName;
+						formData.projectId = this.projectData.projectId;
 						formData.unitName = this.projectData.constructionCompany;
 						formData.bidDocument = JSON.stringify(formData.bidDocument);
 						formData.registration = JSON.stringify(formData.registration);
