@@ -445,7 +445,7 @@ export default {
       line-height: 999px;
       color: #0F2241;
       overflow: hidden;
-      background: url(../assets/login/Title.png) no-repeat center top;
+      background: url(../assets/login/Title1.png) no-repeat center top;
       background-size: contain;
     }
     .banner-login-btn{
