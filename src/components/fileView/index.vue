@@ -163,10 +163,28 @@ export default {
                 this.handleError()
             }
         },
-      async  handleDownload() {
-          await  this.loadSource()
-            const { fileName } = this.fileObject
-            this.saveAs(this._blob, decodeURI(fileName))
+      async handleDownload() {
+            const { filePath, fileName, uploadType } = this.fileObject
+
+            // 判断是否为OSS文件
+            if (uploadType === 'oss' || (filePath && filePath.includes('oss-cn-'))) {
+                // OSS文件：直接走流式下载
+                try {
+                    const response = await fetch(filePath);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const blob = await response.blob();
+                    this.saveAs(blob, decodeURI(fileName));
+                } catch (error) {
+                    console.error('OSS文件下载失败:', error);
+                    this.$message.error('文件下载失败，请重试');
+                }
+            } else {
+                // MinIO文件：使用原有方式
+                await this.loadSource();
+                this.saveAs(this._blob, decodeURI(fileName));
+            }
         },
         saveAs(text, name, opts) {
             saveAs(text, name, opts);
@@ -174,14 +192,36 @@ export default {
         async loadSource() {
             try {
                 this.loading = true
-                const { filePath, fileName } = this.fileObject
-                const res = await this.$download.fileSource(
-                    `${minioDownload}?filePath=${encodeURI(filePath)}&fileName=${encodeURI(fileName)}`);
-                const blob = new Blob([res.data])
-                this._blob = blob
-                this.url = window.URL.createObjectURL(blob);
-                if (this.pngTypes.includes(this.fileType)) {
-                    this.renderImg()
+                const { filePath, fileName, uploadType } = this.fileObject
+
+                // 判断文件类型：OSS文件还是MinIO文件
+                if (uploadType === 'oss' || (filePath && filePath.includes('oss-cn-'))) {
+                    // OSS文件：直接走流式处理
+                    // 对于图片文件，直接使用OSS URL
+                    if (this.pngTypes.includes(this.fileType)) {
+                        this.url = filePath;
+                        this.renderImg();
+                    } else {
+                        // 对于其他文件类型，通过fetch直接获取流式数据
+                        const response = await fetch(filePath);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const blob = await response.blob();
+                        this._blob = blob;
+                        this.url = window.URL.createObjectURL(blob);
+                        this.handleRendered();
+                    }
+                } else {
+                    // MinIO文件：使用原有的MinIO下载接口
+                    const downloadUrl = `${minioDownload}?filePath=${encodeURI(filePath)}&fileName=${encodeURI(fileName)}`;
+                    const res = await this.$download.fileSource(downloadUrl);
+                    const blob = new Blob([res.data])
+                    this._blob = blob
+                    this.url = window.URL.createObjectURL(blob);
+                    if (this.pngTypes.includes(this.fileType)) {
+                        this.renderImg()
+                    }
                 }
             } catch (err) {
                 this.isSuccess = false

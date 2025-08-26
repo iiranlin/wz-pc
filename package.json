@@ -38,6 +38,7 @@
     "@vue-office/docx": "1.6.2",
     "@vue-office/excel": "1.7.11",
     "@vue/composition-api": "^1.7.2",
+    "ali-oss": "^6.23.0",
     "axios": "0.24.0",
     "blcd-hiprint": "^1.0.2",
     "blcd-ui": "^1.0.45",

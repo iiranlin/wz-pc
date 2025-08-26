@@ -31,7 +31,7 @@
               businessType="54"
               :preview="type === 'view' "
               :isShowTip="false"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
             />
           </el-form-item>
         </template>

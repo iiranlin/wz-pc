@@ -23,7 +23,7 @@
         :loading="isUploading"
         :disabled="isUploading"
       >
-        {{ isUploading ? '上传中' : '选取文件' }}
+        {{ getUploadButtonText() }}
       </el-button>
       <!-- 上传提示 -->
       <div class="el-upload__tip" slot="tip" v-if="showTip">
@@ -74,8 +74,8 @@
 
 <script>
 // 实际使用单附件上传
-import { minioUpload ,minioImageToPdf} from '@/api/minio'
-
+import { minioUpload, minioImageToPdf, getOssStsToken } from '@/api/minio'
+import OSS from "ali-oss";
 export default {
   name: "FileUpload",
   components: {
@@ -115,6 +115,8 @@ export default {
       type: Boolean,
       default: true
     },
+   // 🔹 新增阿里云参数
+    useOss: { type: Boolean, default: false },
     isImgToPdf:{
       type: Boolean,
       default: false
@@ -130,6 +132,21 @@ export default {
       },
       // 上传状态
       isUploading: false,
+      // 上传进度
+      uploadProgress: 0,
+      // OSS客户端实例
+      ossClient: null,
+      // STS临时凭证缓存
+      stsCredentials: null,
+      // STS凭证过期时间
+      stsExpiration: null,
+      // OSS配置
+      ossConfig: {
+        bucket: "yc-mat",
+        region: 'cn-beijing',
+        secure: true,
+        endpoint: 'https://oss-cn-beijing.aliyuncs.com'
+      }
     };
   },
   watch: {
@@ -164,35 +181,162 @@ export default {
       this.$refs[`fileView`][index].handlePreview()
     },
     handleDownload (index) {
-      this.$refs[`fileView`][index].handleDownload()
+      const file = this.fileList[index];
+      if (!file || !file.filePath) {
+        this.$message.warning('文件路径不存在');
+        return;
+      }
+
+      // 判断是否为OSS文件
+      if (file.uploadType === 'oss' || (file.filePath && file.filePath.includes('oss-cn-'))) {
+        // OSS文件：使用多种方式确保立即下载
+        this.downloadOssFileImmediate(file.filePath, file.fileName);
+      } else {
+        // MinIO文件：使用fileView组件的下载方法
+        this.$refs[`fileView`][index].handleDownload();
+      }
+    },
+
+    /**
+     * OSS文件立即下载
+     * @param {string} url - 文件URL
+     * @param {string} fileName - 文件名
+     */
+    downloadOssFileImmediate(url, fileName) {
+      // 方案1: 直接使用window.location.href进行跳转下载
+      // 这是最直接的方法，浏览器会立即开始处理
+      try {
+        // 先尝试在新窗口打开
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+          newWindow.location.href = url;
+          this.$message.success('已开始下载文件');
+        } else {
+          // 如果弹窗被阻止，直接跳转
+          window.location.href = url;
+        }
+      } catch (error) {
+        // 如果上述方法失败，使用最简单的方法
+        window.location.href = url;
+      }
+    },
+
+    /**
+     * 获取或刷新STS临时凭证
+     * @returns {Promise<Object>} STS凭证对象
+     */
+    async getStsCredentials() {
+      try {
+        // 从后端API获取STS凭证
+        const response = await getOssStsToken();
+        if (!response.success) {
+          throw new Error(response.message || '获取STS凭证失败');
+        }
+        const credentials = JSON.parse( response.data);
+
+        // 缓存凭证和过期时间（STS凭证通常有效期为1小时）
+        this.stsCredentials = credentials
+        return this.stsCredentials;
+      } catch (error) {
+        console.error('获取STS凭证失败:', error);
+        throw new Error('获取OSS上传凭证失败，请重试');
+      }
+    },
+
+    /**
+     * 创建或更新OSS客户端
+     * @returns {Promise<OSS>} OSS客户端实例
+     */
+    async getOssClient() {
+      try {
+        const credentials = await this.getStsCredentials();
+        console.log(credentials,'credentials');
+
+        // 创建新的OSS客户端实例
+        this.ossClient = new OSS({
+          ...this.ossConfig,
+          accessKeyId: credentials.accessKeyId,
+          accessKeySecret: credentials.secretAccessKey,
+          stsToken: credentials.securityToken
+        });
+
+        return this.ossClient;
+      } catch (error) {
+        console.error('创建OSS客户端失败:', error);
+        throw error;
+      }
     },
     /**
      * 自定义上传方法
      * @param {Object} option - 上传选项
      */
-    customUpload (option) {
-      if (option.file) {
-        // 防止重复上传
-        if (this.isUploading) {
-          this.$message.warning('正在上传中，请稍候...');
-          return;
-        }
+     async customUpload(option) {
+      if (!option.file) return;
+      if (this.isUploading) {
+        this.$message.warning("正在上传中，请稍候...");
+        return;
+      }
+      this.isUploading = true;
+      this.uploadProgress = 0; // 重置进度
 
-        // 设置上传状态
-        this.isUploading = true;
+      try {
+        if (this.useOss) {
+          // 🔹 走 OSS STS 上传逻辑
+          const ossClient = await this.getOssClient();
+          // 生成OSS Key
+          const ossKey = `${this.businessType}/${Date.now()}_${option.file.name}`;
 
-        const url =  this.isImgToPdf ? minioImageToPdf : minioUpload 
-        this.$download.fileUpload(url, { ...this.formData, file: option.file })
-          .then((data) => {
-            this.handleUploadSuccess(data, option.file);
-          })
-          .catch((err) => {
-            this.handleUploadError(err, option.file);
-          })
-          .finally(() => {
-            // 无论成功失败都要重置状态
-            this.isUploading = false
+          // 使用分片上传，支持大文件和断点续传
+          await ossClient.multipartUpload(ossKey, option.file, {
+            progress: (p) => {
+              // 更新上传进度
+              this.uploadProgress = Math.floor(p * 100);
+            },
+            partSize: 1024 * 1024, // 1MB分片大小
+            parallel: 4, // 并发上传数
+            meta: {
+              businessType: this.businessType,
+              uploadTime: new Date().toISOString()
+            }
           });
+
+          // 构造与MinIO兼容的数据结构
+          // 手动拼接OSS文件URL地址（OSS上传成功后不返回完整URL，需要手动拼接）
+          const ossFileUrl = `https://${this.ossConfig.bucket}.${this.ossConfig.endpoint.replace('https://', '')}/${ossKey}`;
+
+          this.handleUploadSuccess(
+            {
+              success: true,
+              data: {
+                fileName: option.file.name,
+                filePath: ossFileUrl, // 使用工具函数拼接的OSS URL，保持与MinIO数据结构一致
+                ossKey: ossKey,
+                uploadType: 'oss' // 标识上传类型，便于后续区分处理
+              },
+            },
+            option.file
+          );
+        } else {
+          // 🔹 走 MinIO 上传逻辑
+          const ext = option.file.name.split(".").pop().toLowerCase();
+          const isImage = ["png", "jpg", "jpeg", "gif"].includes(ext);
+
+          const url = isImage ? minioImageToPdf : minioUpload;
+
+          // 使用await等待MinIO上传完成，确保loading状态正确
+          try {
+            const data = await this.$download.fileUpload(url, { ...this.formData, file: option.file });
+            this.handleUploadSuccess(data, option.file);
+          } catch (err) {
+            this.handleUploadError(err, option.file);
+          }
+        }
+      } catch (err) {
+        console.error('文件上传失败:', err);
+        this.handleUploadError(err, option.file);
+      } finally {
+        this.isUploading = false;
+        this.uploadProgress = 0; // 重置进度
       }
     },
     // 上传前校检格式和大小
@@ -256,6 +400,19 @@ export default {
     handleDelete (index) {
       this.fileList.splice(index, 1);
       this.$emit("input", this.fileList);
+    },
+
+    // 获取上传按钮文本
+    getUploadButtonText() {
+      if (!this.isUploading) {
+        return '选取文件';
+      }
+
+      if (this.useOss && this.uploadProgress > 0) {
+        return `上传中 ${this.uploadProgress}%`;
+      }
+
+      return '上传中';
     },
   }
 };

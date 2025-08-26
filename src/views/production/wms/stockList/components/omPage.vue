@@ -28,7 +28,7 @@
               :limit="1"
               :fileSize="500"
               :isShowTip="false"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
 
             />
           </el-form-item>

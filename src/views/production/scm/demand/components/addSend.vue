@@ -27,7 +27,7 @@
               :limit="1"
               :preview="type === 'view' && status !=2"
               :isShowTip="false"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
             />
           </el-form-item>
         </template>
@@ -44,7 +44,7 @@
               :limit="9999"
               :preview="type === 'view' && status !=2"
               :isShowTip="false"
-              :fileType="['jpg','png','jpeg']"
+              :fileType="['pdf','jpg','png','jpeg']"
               :isImgToPdf="true"
             />
           </el-form-item>

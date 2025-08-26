@@ -92,7 +92,7 @@
               :preview="type == 'view'"
               :limit="1"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
             />
           </el-form-item>
@@ -102,7 +102,7 @@
               :preview="type == 'view'"
               :limit="1"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
             />
           </el-form-item>
@@ -115,7 +115,7 @@
               :preview="type == 'view'"
               :limit="1"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
             />
           </el-form-item>
@@ -155,7 +155,7 @@
               :preview="type == 'view'"
               :limit="1"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
             />
           </el-form-item>
@@ -332,7 +332,7 @@
                   :isShowTip="false"
                   :limit="1"
                   :fileSize="500"
-                  :fileType="['pdf']"
+                  :fileType="['pdf','jpg','png','jpeg']"
 
                 />
               </template>
