@@ -5,12 +5,12 @@
 			<VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
 				:global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
 				<template #projefctNameSolt="{ formModel }">
-					<el-form-item prop="projefctName" label="标段项目:" class="label-right-align">
+					<el-form-item prop="projefctName" label-width="90px" label="标段项目:" class="label-right-align">
 						<template v-if="type === 'create'">
-							<span>{{ projectData.projectName }}</span>
+							<span class="titleCss" :title="projectData.sectionName">{{ projectData.sectionName }}</span>
 						</template>
 						<template v-else>
-							<span>{{ formModel.projefctName }}</span>
+							<span class="titleCss" :title="formModel.projefctName">{{ formModel.projefctName }}</span>
 						</template>
 					</el-form-item>
 				</template>
@@ -18,17 +18,18 @@
 				<template #unitNameSlot="{ formModel }">
 					<el-form-item prop="unitName" label="采购单位:" class="label-right-align">
 						<template v-if="type === 'create'">
-							<span>{{ projectData.constructionCompany }}</span>
+							<span class="titleCss" :title="projectData.constructionCompany">{{
+								projectData.constructionCompany }}</span>
 						</template>
 						<template v-else>
-							<span>{{ formModel.unitName }}</span>
+							<span class="titleCss" :title="formModel.unitName">{{ formModel.unitName }}</span>
 						</template>
 					</el-form-item>
 				</template>
 
 				<template #codeSolt="{ formModel }">
 					<el-form-item prop="code" :rules="[{ required: true, message: '请选择物资大类', trigger: 'change' }]"
-						label="物资大类" class="label-right-align">
+				 		label-width="140px" label="物资大类" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select :disabled="checked" v-model="formModel.code" filterable required
 								style="width: 100%" placeholder="请选择"
@@ -46,7 +47,7 @@
 
 				<template #purchaseCodeSolt="{ formModel }">
 					<el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择类别', trigger: 'change' }]"
-						label="类别" class="label-right-align">
+						label-width="90px" label="类别" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select :disabled="checked" v-model="formModel.purchaseCode" filterable required
 								style="width: 100%" placeholder="请选择"
@@ -83,7 +84,7 @@
 
 				<template #purchaseDetailCodeSolt="{ formModel }">
 					<el-form-item prop="purchaseDetailCode"
-						:rules="[{ required: true, message: '请选择物资细目', trigger: 'change' }]" label="物资细目"
+						:rules="[{ required: true, message: '请选择物资细目', trigger: 'change' }]" label-width="140px" label="物资细目"
 						class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select :disabled="checked" v-model="formModel.purchaseDetailCode" filterable required
@@ -103,7 +104,7 @@
 				<template #purchaseFileNameSolt="{ formModel }">
 					<el-form-item prop="purchaseFileName"
 						:rules="[{ required: true, message: '请输入物资名称', trigger: 'change' }]" label="物资名称"
-						class="label-right-align">
+						label-width="90px" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-input v-model="formModel.purchaseFileName" :disabled="checked" />
 						</template>
@@ -124,7 +125,7 @@
 					</el-form-item>
 				</template>
 				<template #amountSolt="{ formModel }">
-					<el-form-item prop="amount" :rules="[{ required: true, message: '请输入预算金额', trigger: 'change' }]"
+					<el-form-item prop="amount" label-width="140px" :rules="[{ required: true, message: '请输入预算金额', trigger: 'change' }]"
 						label="预算金额(万元)" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-input type="number" min="0" v-model="formModel.amount" :disabled="checked" />
@@ -135,7 +136,7 @@
 					</el-form-item>
 				</template>
 				<template #remakSolt="{ formModel }">
-					<el-form-item prop="remak" label="备注" class="label-right-align">
+					<el-form-item prop="remak" label-width="90px" label="备注" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-input type="text" v-model="formModel.remak" />
 						</template>
@@ -147,7 +148,7 @@
 
 				<!-- 附件 -->
 				<template #registrationSolt="{ formModel }">
-					<el-form-item prop="registration"
+					<el-form-item prop="registration" label-width="140px"
 						:rules="[{ required: true, message: '请上传采购文件登记表', trigger: 'change' }]" label="采购文件登记表"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="1" :fileSize="500"
@@ -156,7 +157,7 @@
 				</template>
 
 				<template #schemeSolt="scope">
-					<el-form-item prop="scheme"
+					<el-form-item prop="scheme" label-width="170px"
 						:rules="[{ required: true, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="1" :fileSize="500"
@@ -165,7 +166,7 @@
 				</template>
 
 				<template #schemeApprovalSolt="scope">
-					<el-form-item prop="schemeApproval"
+					<el-form-item prop="schemeApproval" label-width="190px"
 						:rules="[{ required: true, message: '请上传采购方案（批复）文件', trigger: 'change' }]" label="采购方案（批复）"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.schemeApproval" :limit="1"
@@ -173,7 +174,7 @@
 					</el-form-item>
 				</template>
 				<template #bidDocumentSolt="scope">
-					<el-form-item prop="bidDocument"
+					<el-form-item prop="bidDocument" label-width="140px"
 						:rules="[{ required: true, message: '请上传招标文件', trigger: 'change' }]" label="招标文件"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="1" :fileSize="500"
@@ -181,55 +182,55 @@
 					</el-form-item>
 				</template>
 				<template #tenderAnnouncementSolt="scope">
-					<el-form-item prop="tenderAnnouncement" label="招标公告网页版" class="label-right-align">
+					<el-form-item prop="tenderAnnouncement" label-width="170px" label="招标公告网页版" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.tenderAnnouncement" :limit="1"
 							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidAddendumSolt="scope">
-					<el-form-item prop="bidAddendum" label="招标文件答疑、补遗" class="label-right-align">
+					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidEvaluationReportSolt="scope">
-					<el-form-item prop="bidEvaluationReport" label="评标报告" class="label-right-align">
+					<el-form-item prop="bidEvaluationReport" label-width="140px" label="评标报告" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidEvaluationReport" :limit="1"
 							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCandidateWebSolt="scope">
-					<el-form-item prop="bidCandidateWeb" label="中标候选人公示网页版" class="label-right-align">
+					<el-form-item prop="bidCandidateWeb" label-width="170px" label="中标候选人公示网页版" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCandidateWeb" :limit="1"
 							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #acceptanceSolt="scope">
-					<el-form-item prop="acceptance" label="中标通知书" class="label-right-align">
+					<el-form-item prop="acceptance" label-width="190px" label="中标通知书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
-					<el-form-item prop="bidCopy" label="中标人的投标副本" class="label-right-align">
+					<el-form-item prop="bidCopy" label-width="170px" label="中标人的投标副本" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCopy" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #contractCopySolt="scope">
-					<el-form-item prop="contractCopy" label="合同副本" class="label-right-align">
+					<el-form-item prop="contractCopy" label-width="140px" label="合同副本" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #commitmentSolt="scope">
-					<el-form-item prop="commitment" label="供应商质量终身责任承诺书" class="label-right-align">
+					<el-form-item prop="commitment" label-width="190px" label="供应商质量终身责任承诺书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #otherSolt="scope">
-					<el-form-item prop="other" label="其他文件" class="label-right-align">
+					<el-form-item prop="other" label-width="140px"label="其他文件" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.other" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view'" />
 					</el-form-item>
@@ -440,7 +441,7 @@ export default {
 				if (valid) {
 					this.loading = true;
 					const formData = await this.$refs.vFormRef.getFormData();
-					formData.projefctName = this.projectData.projectName;
+					formData.projefctName = this.projectData.sectionName;
 					formData.projectId = this.projectData.projectId;
 					formData.unitName = this.projectData.constructionCompany;
 					formData.bidDocument = JSON.stringify(formData.bidDocument);
@@ -561,5 +562,13 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
 	text-align: right;
+}
+
+.titleCss {
+	display: inline-block; /* 或者 block */
+	width: 260px; /* 设置一个具体的宽度 */
+	white-space: nowrap; /* 防止文本换行 */
+	overflow: hidden; /* 隐藏溢出的内容 */
+	text-overflow: ellipsis; /* 显示省略符号来代表被修剪的文本 */
 }
 </style>

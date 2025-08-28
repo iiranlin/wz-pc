@@ -5,12 +5,12 @@
 			<VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
 				:global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
 				<template #projefctNameSolt="{ formModel }">
-					<el-form-item prop="projefctName" label="标段项目:" class="label-right-align">
+					<el-form-item prop="projefctName" label-width="110px" label="标段项目:" class="label-right-align">
 						<template v-if="type === 'create'">
-							<span>{{ projectData.projectName }}</span>
+							<span class="titleCss" :title="projectData.sectionName">{{ projectData.sectionName }}</span>
 						</template>
 						<template v-else>
-							<span>{{ formModel.projefctName }}</span>
+							<span class="titleCss" :title="formModel.projefctName">{{ formModel.projefctName }}</span>
 						</template>
 					</el-form-item>
 				</template>
@@ -18,10 +18,10 @@
 				<template #unitNameSlot="{ formModel }">
 					<el-form-item prop="unitName" label="采购单位:" class="label-right-align">
 						<template v-if="type === 'create'">
-							<span>{{ projectData.constructionCompany }}</span>
+							<span class="titleCss" :title="projectData.constructionCompany">{{ projectData.constructionCompany }}</span>
 						</template>
 						<template v-else>
-							<span>{{ formModel.unitName }}</span>
+							<span class="titleCss" :title="formModel.unitName">{{ formModel.unitName }}</span>
 						</template>
 					</el-form-item>
 				</template>
@@ -45,7 +45,7 @@
 
 				<template #purchaseCodeSolt="{ formModel }">
 					<el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-						label="类别" class="label-right-align">
+						label-width="110px"label="类别" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select v-model="formModel.purchaseCode" filterable required style="width: 100%"
 								placeholder="请选择"
@@ -100,16 +100,9 @@
 				</template>
 
 				<template #attachmentFileSolt="{ formModel, sfrIdx }">
-					<el-form-item prop="attachmentFile" label="核备附件(支持多个)" class="label-right-align">
+					<el-form-item prop="attachmentFile" label-width="150px" label="核备附件(支持多个)" class="label-right-align">
 						<fileUpload v-model="formModel.contractLicense[sfrIdx].attachmentFile" :limit="10"
-							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" />
-						<!-- <el-upload class="upload-demo" action="" :http-request="uploadFile"
-							:on-success="handleUploadSuccess" :on-preview="handlePreview" :on-remove="handleRemove"
-							:before-remove="beforeRemove" multiple :before-upload="beforeUpload" :limit="10"
-							:on-exceed="handleExceed" :file-list="fileList">
-							<el-button size="small" type="primary">点击上传</el-button>
-							<div slot="tip" class="el-upload__tip">只能上传pdf文件，且不超过500M</div>
-						</el-upload> -->
+							:fileSize="false" :fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
 					</el-form-item>
 				</template>
 				<template #table>
@@ -147,6 +140,7 @@ import fileUpload from '@/components/upload'
 import {
 	getUserInfo
 } from '@/utils/user-info'
+import { useSlots } from 'vue'
 export default {
 	name: "SectionAdd",
 	dicts: ["purchase_code", "flowStatus"],
@@ -318,7 +312,7 @@ export default {
 				if (valid) {
 					this.loading = true;
 					const formData = await this.$refs.vFormRef.getFormData();
-					formData.projefctName = this.projectData.projectName;
+					formData.projefctName = this.projectData.sectionName;
 					formData.projectId = this.projectData.projectId;
 					formData.unitName = this.projectData.constructionCompany;
 					formData.bidDocument = JSON.stringify(formData.bidDocument);
@@ -478,5 +472,12 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
 	text-align: right;
+}
+.titleCss {
+	display: inline-block; /* 或者 block */
+	width: 260px; /* 设置一个具体的宽度 */
+	white-space: nowrap; /* 防止文本换行 */
+	overflow: hidden; /* 隐藏溢出的内容 */
+	text-overflow: ellipsis; /* 显示省略符号来代表被修剪的文本 */
 }
 </style>

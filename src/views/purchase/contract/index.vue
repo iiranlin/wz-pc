@@ -66,8 +66,8 @@
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="核备附件(支持多个)" prop="attachmentFile">
-					<fileUpload v-model="contractLicense.attachmentFile" :limit="10" :fileSize="500" :fileType="['pdf']"
-						:preview="false" />
+					<fileUpload v-model="contractLicense.attachmentFile" :limit="10" :fileSize="false" :fileType="['pdf']"
+						:preview="false" :useOss="true" />
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="closeAddStatus()">取 消</el-button>
@@ -217,6 +217,9 @@
 				if (btn.buttonCode === 'download') {
 					return this.selection[0].status != 3
 				}
+				if(btn.buttonCode === 'addCertificate'){
+					return this.selection[0].status == 2
+				}
 				return false
 			},
 			numberChange(val) {
@@ -283,7 +286,7 @@
 						break;
 					case "update":
 						this.$router.push({
-							name: 'addPurchaseContract',
+							name: 'updatePurchaseContract',
 							query: {
 								id: idArr[0],
 								type: 'update'

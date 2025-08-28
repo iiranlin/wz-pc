@@ -5,7 +5,7 @@
 		<form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
 			:formData="formData">
 			<template #name>
-				<el-select v-model="formData.code" filterable required style="width: 100%" placeholder="请选择" clearable>
+				<el-select v-model="formData.code" filterable required style="width: 100%" placeholder="请选择" @change="(val) => selectDataChange(dict.type.purchase_code, val, 'code')" clearable>
 					<el-option v-for="item in dict.type.purchase_code" :key="item.value" :label="item.label"
 						:value="item.value">
 					</el-option>
@@ -14,8 +14,8 @@
 			<template #purchaseName>
 				<el-select v-model="formData.purchaseCode" filterable required style="width: 100%" placeholder="请选择"
 					clearable>
-					<el-option v-for="item in purchaseType" :key="item.purchaseTypeCode" :label="item.purchaseTypeName"
-						:value="item.purchaseTypeCode">
+					<el-option v-for="item in purchaseItem" :key="item.purchaseCode" :label="item.purchaseName"
+						:value="item.purchaseCode">
 					</el-option>
 				</el-select>
 			</template>
@@ -109,6 +109,7 @@
 					}
 				],
 				purchaseType: [],
+				purchaseItem:[],
 				treeCurrentKey: "",
 				// 遮罩层
 				loading: false,
@@ -151,6 +152,7 @@
 				this.property = data;
 			});
 			this.findAllListData();
+			this.findItemListData();
 		},
 		filters: {
 			formatDate(value) {
@@ -170,6 +172,14 @@
 				});
 
 			},
+			findItemListData(code) {
+				purchaseItemFindAllList({code: code}).then(res => {
+					this.purchaseItem = res.data;
+				});
+			},
+			selectDataChange(options, val, key) {
+				this.findItemListData(val);
+			},
 			selectable(row) {
 				// 履约比例等于0允许删除
 				return row.materialUsedRatio == 0
@@ -182,7 +192,7 @@
 					return this.selection[0].status == 2
 				}
 				if (btn.buttonCode === 'delete') {
-					return this.selection[0].status != 1
+					return this.selection[0].status != 1 && this.selection[0].status != 0
 				}
 				if (btn.buttonCode === 'withdraw') {
 					return this.selection[0].status != 2
@@ -261,7 +271,7 @@
 						break;
 					case "update":
 						this.$router.push({
-							name: 'addPurchase',
+							name: 'updatePurchase',
 							query: {
 								id: idArr[0],
 								type: 'update'
