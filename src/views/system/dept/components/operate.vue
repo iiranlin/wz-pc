@@ -113,6 +113,9 @@
 					deptType:"FB"
 				},
 				deptEnum: [{
+					label: "铁路局",
+					value: "TLJ"
+				},{
 					label: "施工单位(分部)",
 					value: "FB"
 				},{
