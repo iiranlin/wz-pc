@@ -159,14 +159,20 @@ export default {
       );
     },
     handleButtonDisable(button, row) {
-      // if (button.buttonCode === "delete") {
-      //   return row.status === "2" || row.status === "3";
-      // } 
+      if (button.buttonCode === "delete") {
+        return row.status != '3';
+      } 
       // if (button.buttonCode === "update") {
       //   return row.status === "2" || row.status === "3";
       // } 
       if (button.buttonCode === "pass" || button.buttonCode === "reject") {
         return row.status != "2";
+      }
+      if(button.buttonCode === 'open'){
+        return row.status != '0';
+      }
+      if(button.buttonCode === 'off'){
+        return row.status != '1';
       }
       return false;
     },
@@ -271,7 +277,25 @@ export default {
         this.handlerPassSubmit(idArr[0]);
       } else if (buttonCode === "reject") {
         this.handlerRejectSubmit(idArr[0]);
+      }else if (buttonCode === "open") {
+        this.handleOpen(idArr[0]);
+      }else if (buttonCode === "off") {
+        this.handleOff(idArr[0]);
       }
+    },
+    handleOpen(id) {
+      Api.edit({ id: id, status: "1" }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("开启成功");
+          this.dialogVisible = false;
+        })
+    },
+    handleOff(id) {
+      Api.edit({ id: id, status: "0" }).then(() => {
+          this.getList();
+          this.$modal.msgSuccess("关闭成功");
+          this.dialogVisible = false;
+        })
     },
     handleDelete(ids) {
       this.$modal

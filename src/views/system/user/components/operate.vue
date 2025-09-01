@@ -22,14 +22,23 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="联系方式:" prop="phone">
-            <el-input v-model="form.phone" placeholder="请输入联系方式" maxlength="11" @input="(v)=>(form.phone=v.replace(/[^\d]/g,''))"/>
+          <el-form-item label="电话号码:" prop="phone">
+            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11" @input="(v)=>(form.phone=v.replace(/[^\d]/g,''))"/>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="座机号:" prop="tel">
+            <el-input v-model="form.tel" placeholder="请输入座机号"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="12">
           <el-form-item label="电子邮箱:" prop="email">
             <el-input v-model="form.email" placeholder="请输入电子邮箱" />
           </el-form-item>
+        </el-col>
+        <el-col :span="12">
         </el-col>
       </el-row>
       <el-row>
@@ -120,6 +129,7 @@ export default {
         flag: 1,
         phone: '',
         email: '',
+        tel: '',
       },
       // 表单校验
       rules: {
@@ -153,7 +163,28 @@ export default {
                 if (!reg.test(value)) {
                   callback(
                     new Error(
-                      '联系电话格式错误'
+                      '电话号码格式错误'
+                    )
+                  )
+                } else {
+                  callback()
+                }
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
+        tel: [
+          {
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              let reg = /^(?:(?:\d{3}-)?\d{5,8}|^(?:\d{4}-)?\d{5,8})(?:-\d+)?$/
+              if(value){
+                if (!reg.test(value)) {
+                  callback(
+                    new Error(
+                      '座机号格式错误'
                     )
                   )
                 } else {
