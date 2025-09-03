@@ -113,27 +113,34 @@
 					deptType:"FB"
 				},
 				deptEnum: [{
-					label: "铁路局",
+					label: "路局",
 					value: "TLJ"
-				},{
-					label: "施工单位(分部)",
-					value: "FB"
-				},{
-					label: "施工单位(总部)",
-					value: "ZB"
-				},{
-					label: "物代公司",
-					value: "WZDL"
-				},{
-					label: "供应商",
-					value: "GYS"
-				},{
+				},
+				{
 					label: "指挥部",
 					value: "SN"
-				},{
+				},
+				{
+					label: "物代公司",
+					value: "WZDL"
+				},
+				{
+					label: "施工单位(总部)",
+					value: "ZB"
+				},
+				{
+					label: "施工单位(分部)",
+					value: "FB"
+				},
+				{
 					label: "监理单位",
 					value: "JL"
-				}],
+				},
+				{
+					label: "供应商",
+					value: "GYS"
+				}
+				],
 				// 表单校验
 				rules: {
 					deptType:[{
