@@ -105,7 +105,7 @@ import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
 import fileUpload from '@/components/upload'
-import { listByDeptCode } from '@/api/system/dept.js'
+import { newListByDeptCode } from '@/api/system/dept.js'
 import { getUserInfo } from '@/utils/user-info'
 import ContractNameSelect from '@/views/production/contract/components/contractNameSelect.vue'
 export default {
@@ -419,9 +419,9 @@ export default {
         })
       }
     },
-    async getDeptTree(deptCode) {
-      const res = await listByDeptCode({
-        deptCode
+    async getDeptTree(deptCodePrefix) {
+      const res = await newListByDeptCode({
+        deptCodePrefix
       })
       const data = res.data.map(item => {
         return {

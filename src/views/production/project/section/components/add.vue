@@ -167,7 +167,7 @@ import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
 import { getToken } from '@/utils/auth'
 import attachmentTable from '@/views/components/attachmentTable'
-import { listByDeptCode } from '@/api/system/dept.js'
+import { newListByDeptCode } from '@/api/system/dept.js'
 import { extractSelectOptions } from '@/utils/index'
 export default {
   name: "SectionAdd",
@@ -222,9 +222,9 @@ export default {
     // this.getLineOptions()
 
 
-    this.constructionCompanyOptions = await this.getDeptTree('SGDW',1)
-    this.supervisionUnitOptions = await this.getDeptTree('JLDW')
-    this.materialAgentCompanyOptions = await this.getDeptTree('WZDLGS')
+    this.constructionCompanyOptions = await this.getDeptTree('ZB')
+    this.supervisionUnitOptions = await this.getDeptTree('JL')
+    this.materialAgentCompanyOptions = await this.getDeptTree('WZDL')
   },
   mounted () {
 
@@ -293,9 +293,9 @@ export default {
         })
       }
     },
-    async getDeptTree (deptCode ,status = '') {
-      const res = await listByDeptCode({
-        deptCode,
+    async getDeptTree (deptCodePrefix ,status = '') {
+      const res = await newListByDeptCode({
+        deptCodePrefix,
         status
       })
       const data = res.data.map(item => {

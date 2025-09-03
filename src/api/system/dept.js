@@ -19,6 +19,15 @@ export function listByDeptCode(params) {
   })
 }
 
+// New  根据deptCode查询指定部门列表,仅枢纽指挥部使用
+export function newListByDeptCode(params) {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/dept/getListByDeptCodePrefix`,
+    method: 'get',
+    params
+  })
+}
+
 // 查询部门详细
 export function deptDetail(deptId) {
   return request({
