@@ -128,6 +128,7 @@ export default {
       treeLoading: false,
       filterText: "",
       areaList: [],
+      rowData:{},
     };
   },
   watch: {
@@ -188,11 +189,11 @@ export default {
     clickReset() {
       this.handleQuery();
     },
-    handlerPassSubmit(id) {
+    handlerPassSubmit(rowArr) {
       this.$modal
         .confirm("是否确认通过?")
         .then(function () {
-          return Api.save({ id: id, status: "1" });
+          return Api.edit({ ...rowArr, status: "1" });
         })
         .then(() => {
           this.getList();
@@ -209,7 +210,7 @@ export default {
     },
     rejectSubmit() {
       this.$refs.rejectForm.validate().then(() => {
-        Api.save(this.rejectForm).then(() => {
+        Api.edit({...this.rowData,status: "3",...this.rejectForm}).then(() => {
           this.getList();
           this.$modal.msgSuccess("驳回成功");
           this.dialogVisible = false;
@@ -274,24 +275,25 @@ export default {
       } else if (buttonCode === "batch") {
         this.$refs.batchDialogRef.open();
       } else if (buttonCode === "pass") {
-        this.handlerPassSubmit(idArr[0]);
+        this.handlerPassSubmit(rowArr[0]);
       } else if (buttonCode === "reject") {
         this.handlerRejectSubmit(idArr[0]);
+        this.rowData = rowArr[0];
       }else if (buttonCode === "open") {
-        this.handleOpen(idArr[0]);
+        this.handleOpen(rowArr[0]);
       }else if (buttonCode === "off") {
-        this.handleOff(idArr[0]);
+        this.handleOff(rowArr[0]);
       }
     },
-    handleOpen(id) {
-      Api.edit({ id: id, status: "1" }).then(() => {
+    handleOpen(rowArr) {
+      Api.edit({ ...rowArr, status: "1" }).then(() => {
           this.getList();
           this.$modal.msgSuccess("开启成功");
           this.dialogVisible = false;
         })
     },
-    handleOff(id) {
-      Api.edit({ id: id, status: "0" }).then(() => {
+    handleOff(rowArr) {
+      Api.edit({ ...rowArr, status: "0" }).then(() => {
           this.getList();
           this.$modal.msgSuccess("关闭成功");
           this.dialogVisible = false;
