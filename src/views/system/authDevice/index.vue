@@ -161,7 +161,7 @@ export default {
     },
     handleButtonDisable(button, row) {
       if (button.buttonCode === "delete") {
-        return row.status != '3';
+        return row.status != '3' || row.status != '0';
       } 
       // if (button.buttonCode === "update") {
       //   return row.status === "2" || row.status === "3";
