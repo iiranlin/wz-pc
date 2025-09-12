@@ -296,13 +296,13 @@ export default {
     //确认发货
     handleSend(ids, rowArr) {
       for (var i in rowArr) {
-        if (rowArr[i].status != "1") {
+        if (rowArr[i].status != "1" && rowArr[i].status != "9") {
           this.$modal.msgError("已发货！");
           return;
         }
       }
       this.$modal
-        .confirm("是否确认发货?")
+        .confirm("是否确认提交发货审核?")
         .then(function () {
           return Api.modify({ id: ids[0], status: "2" });
         })
@@ -361,9 +361,13 @@ export default {
     },
     //上方按钮控制
     buttonDisabledTop(button) {
-      //状态不是未发货，按钮全不能操作
+      //状态不是未发货，按钮全不能操作,审核中也不能操作
       if(button.buttonCode == 'update'){
-        return this.selection[0].status == 3;
+        return this.selection[0].status == 3|| this.selection[0].status == 8;
+      }
+      // 驳回后允许确认发货
+      if (button.buttonCode == "confirm") {
+        return this.selection[0].status != 1 && this.selection[0].status != 9;
       }
       return this.selection[0].status != 1;
     },
