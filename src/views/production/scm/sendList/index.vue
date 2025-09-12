@@ -98,6 +98,10 @@
         />
       </el-col>
     </el-row>
+     <workFlowView
+      :bill-data="selectedRow"
+      :work-flow-view-visible.sync="workFlowViewVisible"
+    />
     <add-adress ref="addAdress" :shipmentBatchNumber="shipmentBatchNumber" />
   </div>
 </template>
@@ -107,10 +111,11 @@ import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import indexMixin from "@/views/mixins";
 import AddAdress from "./components/addAdress.vue";
 import fileUpload from "@/components/upload";
+import workFlowView from '@/components/workFlowView'
 export default {
   // 建设项目
   name: "sendList",
-  components: { AddAdress, fileUpload },
+  components: { AddAdress, fileUpload,workFlowView },
   mixins: [indexMixin],
 
   data() {
@@ -119,6 +124,8 @@ export default {
         1: "未发货",
         2: "货运中",
         3: "已完成",
+        8: "审核中",
+        9: "驳回"
       },
       options: [
         {
@@ -133,6 +140,14 @@ export default {
           code: "3",
           name: "已完成",
         },
+        {
+          code:"8",
+          name:"审核中",
+        },
+        {
+          code:"9",
+          name:"驳回"
+        }
       ],
       treeCurrentKey: "",
       // 遮罩层
@@ -167,6 +182,8 @@ export default {
       selection: [],
       hasOwn: true,
       shipmentBatchNumber: "",
+      workFlowViewVisible: false,
+      selectedRow: null,
     };
   },
   async created() {
@@ -253,6 +270,10 @@ export default {
             this.$refs.addAdress.init();
           });
           break;
+        case 'flowSee':
+          this.workFlowViewVisible = true
+          this.selectedRow = { businessId: idArr[0] }
+          break;
       }
     },
     handleDelete(ids, rowArr) {
@@ -332,6 +353,10 @@ export default {
     buttonDisabled(button, row) {
       if (button.buttonCode == "addAdress" && (row.oddNumbers || row.status != "2")) {
         return true;
+      }
+      //状态不是未发货,不能查看流程
+      if(button.buttonCode == 'flowSee'){
+        return row.status == 1;
       }
     },
     //上方按钮控制

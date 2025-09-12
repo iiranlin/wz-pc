@@ -90,6 +90,7 @@
           <TabTable ref="tabTableRef" :tableData="tableData" />
         </template>
       </VFormRender>
+       <toBeReviewed ref="toBereview" />
     </div>
   </div>
 </template>
@@ -105,12 +106,14 @@ import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { mapState } from "vuex";
 import dayjs from "dayjs";
+import toBeReviewed from "@/views/audit/components/toBeReviewed";
 export default {
   name: "addSend",
   components: {
     VFormRender,
     fileUpload,
     TabTable,
+    toBeReviewed
   },
   data() {
     const userInfo = getUserInfo();
@@ -141,6 +144,13 @@ export default {
           buttonIcon: "Blue-Cancel",
           type: "create, update",
         },
+        { buttonName: "通过", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
+        {
+          buttonName: "驳回",
+          buttonCode: "reject",
+          buttonIcon: "Blue-EditCard",
+          type: "",
+        },
         {
           buttonName: "保存",
           buttonCode: "save",
@@ -166,6 +176,12 @@ export default {
     },
     planId(){
       return this.$route.query?.planId || "";
+    },
+    name(){
+      return this.$route.query?.name || "";
+    },
+    queryAuditArr() {
+      return JSON.parse(this.$route.query.auditArr || "[]");
     },
     ...mapState(["request"]),
   },
@@ -337,6 +353,14 @@ export default {
         this.handleCreate();
         return;
       }
+      if (buttonCode === "pass") {
+        this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
+        return;
+      }
+      if (buttonCode === "reject") {
+        this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
+        return;
+      }
     },
     cancel() {
       this.$router.go(-1);
@@ -346,6 +370,11 @@ export default {
       if (item.buttonCode === "save") {
         return this.type !== "view" || this.status == 2;
       }
+  // 审核中才能显示同意和不同意按钮
+      if (item.buttonCode === "pass" || item.buttonCode === "reject") {
+       return this.name == 'audit'
+      }
+
       return true;
     },
     //新建
