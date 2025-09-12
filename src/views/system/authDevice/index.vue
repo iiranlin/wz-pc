@@ -189,11 +189,11 @@ export default {
     clickReset() {
       this.handleQuery();
     },
-    handlerPassSubmit(rowArr) {
+    handlerPassSubmit(ids) {
       this.$modal
         .confirm("是否确认通过?")
         .then(function () {
-          return Api.edit({ ...rowArr, status: "1" });
+          return Api.batchEdit(ids);
         })
         .then(() => {
           this.getList();
@@ -275,7 +275,7 @@ export default {
       } else if (buttonCode === "batch") {
         this.$refs.batchDialogRef.open();
       } else if (buttonCode === "pass") {
-        this.handlerPassSubmit(rowArr[0]);
+        this.handlerPassSubmit(rowArr.map(i => i.id));
       } else if (buttonCode === "reject") {
         this.handlerRejectSubmit(idArr[0]);
         this.rowData = rowArr[0];

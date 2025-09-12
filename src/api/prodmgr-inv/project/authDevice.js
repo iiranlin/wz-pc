@@ -52,6 +52,19 @@ export const batchRemove = (data) => {
   })
 }
 
+/**
+ * 批量修改状态
+ * @param {*} params 
+ * @returns 
+ */
+export const batchEdit = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/invAuthorizedDevices/bulkConsent`,
+    method: 'post',
+    data
+  })
+}
+
 
 /**
  * 删除
