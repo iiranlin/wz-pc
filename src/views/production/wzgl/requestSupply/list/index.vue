@@ -20,6 +20,7 @@
           filterable
           clearable
           placeholder="请选择"
+          style="width:100%"
         >
           <el-option
             v-for="item in Object.keys(status).map((x) => ({
