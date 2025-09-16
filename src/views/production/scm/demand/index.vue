@@ -129,11 +129,7 @@ export default {
         {
           code: "5",
           name: "已完成",
-        },
-        {
-          code: "7",
-          name: "已撤回",
-        },
+        }
       ],
       treeCurrentKey: "",
       // 遮罩层
