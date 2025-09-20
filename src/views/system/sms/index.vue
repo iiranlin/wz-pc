@@ -1,7 +1,7 @@
 <template>
   <div class="app-container container_flex">
     <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
-      :button-disable="handleTopButtonDisabled"></button-top>
+      :buttonShow="handleButtonShow" :button-disable="handleTopButtonDisabled"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" :formData="formData"
       @handleQuery="handleQuery" @handleResetField="handleResetField">
     </form-data>
@@ -21,7 +21,7 @@
           <template slot="status" slot-scope="scope">
             <icon-svg :class="iconClassSize({ '0': 0, '1': 3 }[scope.value])"
               :icon-class="iconEnableStautsClass({ '0': 0, '1': 3 }[scope.value])" />{{ scope.value |
-                fieldsFormat}}
+            fieldsFormat }}
           </template>
         </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
@@ -29,7 +29,7 @@
       </el-col>
     </el-row>
 
-    <Add ref="addRef" @createSuccess="getList" />
+    <Add ref="addRef" @createSuccess="getList" :userName="userInfo.username" />
   </div>
 </template>
 
@@ -40,13 +40,13 @@ import * as Api from '@/api/prodmgr-inv/project/sms.js'
 import Add from './components/add.vue'
 import { getUserInfo } from '@/utils/user-info'
 export default {
-  // 物资列表
-  name: 'itemList',
+  // 短信管理
+  name: 'SmsList',
   mixins: [indexMixin],
   components: {
     Add,
   },
-  data() {
+  data () {
     return {
 
       // 遮罩层
@@ -82,12 +82,12 @@ export default {
       treeLoading: false,
       filterText: '',
       areaList: [],
-      userInfo:getUserInfo()
+      userInfo: getUserInfo()
     }
 
   },
   filters: {
-    fieldsFormat(val) {
+    fieldsFormat (val) {
       const data = {
         '0': '停用',
         '1': '已启用'
@@ -99,56 +99,65 @@ export default {
     }
   },
   watch: {
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree.filter(val)
     }
   },
-  created() {
+  created () {
     this.menuProperty()
   },
   methods: {
-    filterNode(value, data) {
+    filterNode (value, data) {
       if (!value) return true
       return !!this.$py.match(data.deptName, value) || data.deptCode.indexOf(value) !== -1
     },
-    menuProperty() {
+    menuProperty () {
       let id = this.$route.meta.id
       this.$store.dispatch('menuProperty', id).then((data) => {
         this.listQuery.pageSize = data.defaultPageSize || 30
         this.property = data
       })
     },
-    handleTopButtonDisabled(button) {
-      console.log(this.userInfo.username , 'username')
+    handleButtonShow(button){
+      return this.userInfo.username == 'cars'
+    },
+    handleTopButtonDisabled (button) {
+      console.log(this.userInfo.username, 'username')
       // cars系统管理员禁用
       if (button.buttonCode === 'create' && this.userInfo.username === 'cars') {
-        return true
+        return false
       }
-      return false
     },
-    handleButtonDisable(button, row) {
+    handleButtonDisable (button, row) {
       if (button.buttonCode === 'submit' || button.buttonCode === 'delete') {
         return row.status === '2' || row.status === '3'
       } else if (button.buttonCode === 'update') {
         return row.status === '2' || row.status === '3'
       }
+
+      if (button.buttonCode === 'open') {
+        return row.status == 1
+      }
+      if (button.buttonCode === 'close') {
+        return row.status == 0
+      }
       return false
     },
-    numberChange(val) {
+    numberChange (val) {
       this.numberShow = val
     },
-    newButton(buttonCode, formId, buttonData) {
+    newButton (buttonCode, formId, buttonData) {
       this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData)
     },
-    handleCheckAllChange(columns) {
+    handleCheckAllChange (columns) {
       this.$refs.tableIndex.init(columns)
     },
-    clickReset() {
+    clickReset () {
       this.handleQuery()
     },
 
     //选择框回调
-    selectChange(row) {
+    selectChange (row) {
       let { formData, isWatch } = row
       if (!isWatch) {
         this.handleQuery(formData)
@@ -156,7 +165,7 @@ export default {
         this.formData = Object.assign({}, this.formData, formData)
       }
     },
-    cleanClick(data) {
+    cleanClick (data) {
       for (const key of data) {
         if (key.indexOf('Start') != -1 || key.indexOf('End') != -1) {
           this.$refs.formData.resetQueryDateRange(key)
@@ -165,31 +174,31 @@ export default {
       }
       this.handleQuery()
     },
-    handleQuery(row = {}) {
+    handleQuery (row = {}) {
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row)
       this.formDataClick = Object.assign({}, this.formData, row)
       this.getList()
     },
-    operateSuccess() {
+    operateSuccess () {
       this.handleQuery()
     },
-    emitAblFilter(listQuery) {
+    emitAblFilter (listQuery) {
       this.listQuery = Object.assign({}, this.listQuery, listQuery)
       this.handleQuery()
     },
-    handleSelectionChange(ids, single, multiple, selection) {
+    handleSelectionChange (ids, single, multiple, selection) {
       this.ids = ids
       this.single = single
       this.multiple = multiple
       this.selection = selection
     },
-    handleResetField() {
+    handleResetField () {
     },
-    onDialogOk(data) {
+    onDialogOk (data) {
       this.getList()
     },
-    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
+    handleButton (buttonCode, idArr, rowArr, { buttonData }) {
 
       if (buttonCode == 'update') {
         this.$refs['addRef'].updateInit(idArr[0])
@@ -197,9 +206,23 @@ export default {
         this.$refs['addRef'].init(this.list.map(x => x.smsCode))
       } else if (buttonCode === 'delete') {
         this.handleDelete(idArr)
-      } 
+      } else if (buttonCode === 'open') {
+        // 调用更新接口，将status改为1
+        this.handleOpen(rowArr[0],1)
+      } else if (buttonCode === 'close') {
+        this.handleOpen(rowArr[0],0)
+      }
     },
-    handleDelete(ids) {
+    // 是否启用
+    handleOpen (row,status) {
+      this.$modal.confirm(`是否确认${status ==1 ? '开启':'关闭'}?`).then(function () {
+        return Api.edit({...row, status });
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess(`${status ==1 ? '开启':'关闭'}成功`);
+      })
+    },
+    handleDelete (ids) {
       this.$modal.confirm("是否确认删除?").then(function () {
         return Api.batchRemove({ ids });
       }).then(() => {
@@ -208,11 +231,9 @@ export default {
       })
     },
     /** 查询菜单列表 */
-    getList() {
+    getList () {
       this.loading = true
-      itemList(Object.assign({
-        unitId: this.userInfo.username == 'cars' ? -1 : this.userInfo.unitId
-      }, this.listQuery, this.formData)).then(({ data }) => {
+      itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list
         this.total = data.total
       }).finally(() => {
@@ -221,7 +242,7 @@ export default {
     },
 
     /*导出*/
-    handleExport(obj) {
+    handleExport (obj) {
       const _this = this
       let params = {
         pageSize: this.listQuery.pageSize,
@@ -254,7 +275,7 @@ export default {
     },
 
 
-    handleClose() {
+    handleClose () {
       this.open = false
     }
   },

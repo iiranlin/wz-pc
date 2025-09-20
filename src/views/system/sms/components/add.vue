@@ -5,23 +5,35 @@
       <el-form ref="elform" class="process-form" label-position="right" labelWidth="120px" size="medium"
         :showMessage="true" :rules="rules" :model="form">
         <el-row :span="24" :gutter="20">
+          <template v-if="userName == 'cars'">
+            <el-col :span="24">
+              <el-form-item :label="'短信类型'" prop="smsType">
+                <el-input v-model="form.smsType" maxlength="240" placeholder="请输入"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item :label="'短信模板编码'" prop="smsCodeAli">
+                <el-input v-model="form.smsCodeAli" maxlength="240" placeholder="请输入"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item :label="'短信编码'" prop="smsCode">
+                <el-input v-model="form.smsCode" maxlength="240" placeholder="请输入"></el-input>
+              </el-form-item>
+            </el-col>
+          </template>
           <el-col :span="24">
             <el-form-item :label="'推送事件'" prop="smsFlowCode">
-              <el-select v-model="form.smsFlowCode" @change="onChange" style="width: 100%;" :disabled="isEdit">
-                <el-option v-for="item in eventOptions" :key="item.value" :label="item.label" :disabled="item.disabled"
+              <el-select @change="onChange" v-model="form.smsFlowCode" style="width: 100%;" :disabled="userName != 'cars'">
+                <el-option v-for="item in dict.type.SMSTEMPLATE" :key="item.value" :label="item.label"
                   :value="item.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item v-if="form.smsCode == 7" :label="'接收人'" prop="roleCode">
-              <el-select v-model="form.roleCode" filterable  @change="onRoleChange" style="width: 100%;">
-                <el-option v-for="item in roleOptions" :key="item.value" :label="item.label"
-                  :value="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item v-else :label="'接收人'" prop="remark">
-              <el-input v-model="form.remark" maxlength="240" placeholder="请输入" :disabled="true"></el-input>
+            <el-form-item :label="'接收人'" prop="remark">
+              <el-input v-model="form.remark" maxlength="240" placeholder="请输入"
+                :disabled="userName != 'cars'"></el-input>
             </el-form-item>
           </el-col>
 
@@ -53,7 +65,14 @@ import * as RoleApi from '@/api/system/role.js'
 import { getUserInfo } from '@/utils/user-info'
 export default {
   name: "ItemAdd",
-  data() {
+  dicts: ['SMSTEMPLATE', 'SMSTYPE'],
+  props: {
+    userName: {
+      type: String,
+      default: ''
+    }
+  },
+  data () {
     return {
       title: '新增',
       visible: false,
@@ -61,45 +80,28 @@ export default {
       form: {},
       rules: {
         content: [
-          { required: true, message: '请输入', trigger: 'blur' },
-        ],
-        roleCode: [
-          { required: true, message: '请选择', trigger: 'change' },
+          { required: false, message: '请输入', trigger: 'blur' },
         ],
         smsFlowCode: [
-          { required: true, message: '请选择', trigger: 'change' },
-        ]
+          { required: false, message: '请选择', trigger: 'change' },
+        ],
+        smsType: [
+          { required: false, message: '请选择', trigger: 'change' },
+        ],
       },
       userInfo: getUserInfo(),
       eventOptions: [],
       loading: false,
       roleOptions: [],
-      selectedIds:[]
+      selectedIds: []
     }
   },
 
   methods: {
-    getList() {
-      this.loading = true
-      const params = {
-        unitId: -1,
-        pageNum: 1,
-        pageSize: -1,
-      }
-      Api.itemList(Object.assign(params)).then(({ data }) => {
-        this.eventOptions = data.list.map(x => ({
-          ...x,
-          disabled: this.selectedIds.includes(x.smsCode),
-          label: x.smsCodeName,
-          value: x.id,
-        }))
+    getList () {
 
-        this.getRoleList()
-      }).finally(() => {
-        this.loading = false
-      })
     },
-    getRoleList() {
+    getRoleList () {
       const params = {
         pageNum: 1,
         pageSize: -1,
@@ -115,7 +117,7 @@ export default {
       })
     },
     //初始化
-    init(allIds) {
+    init (allIds) {
       this.form = {
       };
       this.selectedIds = allIds
@@ -127,7 +129,7 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit(id) {
+    async updateInit (id) {
       this.isEdit = true;
       this.visible = true;
       await Api.detail(id).then(({ data }) => {
@@ -140,44 +142,44 @@ export default {
     },
 
     //新建
-    handleCreate() {
+    handleCreate () {
       this.$refs.elform.validate(async (valid) => {
         if (valid) {
           this.loading = true;
           await Api[
             this.isEdit ? `edit` : `save`
-          ](Object.assign(this.form,{ unitId: this.userInfo.unitId }, ))
+          ](Object.assign(this.form, { unitId: this.userInfo.unitId },))
             .then(({ message }) => {
               this.$modal.msgSuccess(message);
               this.visible = false;
               this.$emit("createSuccess");
             })
-          .finally(() => {
-            this.loading = false
-          })
+            .finally(() => {
+              this.loading = false
+            })
         }
       });
     },
     //取消
-    handleCancel() {
+    handleCancel () {
       this.visible = false;
     },
     //关闭dialog回调
-    handleDialogClose() {
+    handleDialogClose () {
       this.$refs.elform.resetFields();
     },
-    onChange(e) {
+    onChange (e) {
       // this.form.remark = this.eventOptions.find(x => x.value == e).remark
-      // this.form.smsCodeName = this.eventOptions.find(x => x.value == e).smsCodeName
+      this.form.smsCodeName = this.dict.type.SMSTEMPLATE.find(x => x.value == e).label
       // this.form.content = this.eventOptions.find(x => x.value == e).content
       // this.form.status = this.eventOptions.find(x => x.value == e).status
       // this.form.smsCode = this.eventOptions.find(x => x.value == e).smsCode
 
-      this.form = {...this.eventOptions.find(x => x.value == e)}
+      // this.form = { ...this.eventOptions.find(x => x.value == e) }
       this.form.smsFlowCode = e
-      this.form.id = null
+      // this.form.id = null
     },
-    onRoleChange(e) {
+    onRoleChange (e) {
       this.form.remark = this.roleOptions.find(x => x.value == e).roleName
     }
   },
