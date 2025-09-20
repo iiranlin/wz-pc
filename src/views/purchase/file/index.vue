@@ -58,6 +58,13 @@
 						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf']"
 							:preview="true" />
 					</template>
+
+					<!-- 招标归档资料链接跳转 -->
+					 <template #archivedMaterials="scope">
+						<el-link type="primary" @click.stop="goArchivedMaterials(scope.data)">
+							归档资料
+						</el-link>
+					 </template>
 				</table-index>
 				<pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum"
 					:limit.sync="listQuery.pageSize" @pagination="getList" />
@@ -161,6 +168,15 @@
 			}
 		},
 		methods: {
+			goArchivedMaterials(data) {
+				this.$router.push({
+					name: 'updatePurchase',
+					query: {
+						type:'update',
+						id: data.id
+					}
+				})
+			},
 			fileListStr(val) {
 				if (val) {
 					return JSON.parse(val);
@@ -271,7 +287,7 @@
 						break;
 					case "update":
 						this.$router.push({
-							name: 'updatePurchase',
+							name: 'addPurchase',
 							query: {
 								id: idArr[0],
 								type: 'update'
