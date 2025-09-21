@@ -16,7 +16,7 @@
 				</template>
 
 				<template #unitNameSlot="{ formModel }">
-					<el-form-item prop="unitName" label="采购单位:" class="label-right-align">
+					<el-form-item prop="unitName" label="买方:" class="label-right-align">
 						<template v-if="type === 'create'">
 							<span class="titleCss" :title="projectData.constructionCompany">{{
 								projectData.constructionCompany }}</span>

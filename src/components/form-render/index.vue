@@ -378,6 +378,19 @@ export default {
           this.formConfig.onFormDataChange)
         customFunc.call(this, fieldName, newValue, oldValue, this.formDataModel, subFormName, subFormRowIndex)
       }
+      // 新增：每次字段变化时触发
+      this.onFormValueChange()
+    },
+
+    /**
+     * 表单控件值变化后触发，返回当前表单值
+     */
+    onFormValueChange() {
+      // 这里可以自定义处理，比如 emit 事件
+      this.$emit('formValueChange', { ...this.formDataModel })
+      // 或直接在此打印/处理
+      // console.log('当前表单值:', this.formDataModel)
+      return { ...this.formDataModel }
     },
 
     handleOnCreated() {

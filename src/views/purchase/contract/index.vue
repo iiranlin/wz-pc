@@ -218,7 +218,7 @@
 					return this.selection[0].status != 3
 				}
 				if(btn.buttonCode === 'addCertificate'){
-					return this.selection[0].status == 2
+					return this.selection[0].status == 2 || this.selection[0].railwaySpecial == 0
 				}
 				return false
 			},
@@ -286,7 +286,7 @@
 						break;
 					case "update":
 						this.$router.push({
-							name: 'updatePurchaseContract',
+							name: 'addPurchaseContract',
 							query: {
 								id: idArr[0],
 								type: 'update'
