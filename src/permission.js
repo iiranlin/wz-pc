@@ -48,28 +48,28 @@ const versionCheck = async () => {
 
 router.beforeEach(async (to, from, next) => {
     NProgress.start()
-      console.log(to,"111") 
+      console.log(to,"111")
     if(to.path=='/login'){
         const loginType = process.env.VUE_APP_LOGIN_TYPE || 'old'
         if (loginType === 'old') {
-            document.title = "建设物资管理系统";  
-            const link = document.querySelector('[rel="icon"]');  
-            link.href ="./iconLogo.png";     
+            document.title = "建设物资管理系统";
+            const link = document.querySelector('[rel="icon"]');
+            link.href ="./iconLogo.png";
         } else {
-            document.title = "物资管理平台";  
-            const link = document.querySelector('[rel="icon"]');  
-            link.href ="./Logo.png";      
+            document.title = "物资管理信息化平台";
+            const link = document.querySelector('[rel="icon"]');
+            link.href ="./Logo.png";
         }
     }
-    else if(to.path=="/portal") { 
-        document.title = "物资管理平台";  
-        const link = document.querySelector('[rel="icon"]');  
-        link.href ="./Logo.png";  
+    else if(to.path=="/portal") {
+        document.title = "物资管理信息化平台";
+        const link = document.querySelector('[rel="icon"]');
+        link.href ="./Logo.png";
     }else{
-        document.title = "建设物资管理系统";  
-        const link = document.querySelector('[rel="icon"]');  
-        link.href ="./iconLogo.png";  
-    }   
+        document.title = "建设物资管理系统";
+        const link = document.querySelector('[rel="icon"]');
+        link.href ="./iconLogo.png";
+    }
 
     if (to.matched && to.matched.length > 2) {
         to.matched.splice(1, to.matched.length - 2)
@@ -113,7 +113,7 @@ router.beforeEach(async (to, from, next) => {
             NProgress.done()
         } else {
             store.dispatch('GetI18nMessages')
-                
+
             await store.dispatch('getSysConfig')
             try {
                 store.dispatch('GetInfo').then(() => {

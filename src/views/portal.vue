@@ -26,7 +26,7 @@
                         <img :src="item.icon" /><a download href="/建设物资管理系统操作说明书-v1.0.docx" class="docNameLabel">{{ item.title }}</a>
                       </span>
                     </div>
-                </li> 
+                </li>
               </ul>
           </div>
         </div>
@@ -206,7 +206,7 @@ export default {
       this.getUserMenu()
       this.getList()
       this.getmaterialList()
-       
+
     },
     mounted() {
 
@@ -257,7 +257,7 @@ export default {
           if(name){
               this.$router.push({ name })
           }
-      }, 
+      },
       //通知消息点击更多
       handleNoticeMore() {
           this.$router.push({name:'message'})
@@ -301,10 +301,10 @@ export default {
       loginSHIndex(val){
         window.open(process.env.VUE_APP_OPEN_URL+"/index?userName="+this.userInfo.username+"&type="+val,"_self","",true)
       },
-  
+
     },
     beforeDestroy() {
-      
+
     }
 };
 </script>
@@ -400,7 +400,7 @@ export default {
             }
           }
         }
-        } 
+        }
       }
     }
   }
@@ -445,7 +445,7 @@ export default {
       line-height: 999px;
       color: #0F2241;
       overflow: hidden;
-      background: url(../assets/login/Title1.png) no-repeat center top;
+      background: url(../assets/login/Title.png) no-repeat center top;
       background-size: contain;
     }
     .banner-login-btn{
@@ -522,8 +522,8 @@ export default {
       width:1220px;
       height: 110px;
       margin: 0 auto;
-    
-      
+
+
       margin-top: 14px;
       ul{
         padding: 13px 38px;
@@ -577,7 +577,7 @@ export default {
             background-image: url('../assets/login/Icon(3)@2x.png');
             background-size: cover;
           }
-          
+
         }
         .list-li:nth-child(2){
            .list-li-bg{
@@ -590,8 +590,8 @@ export default {
             background-image: url('../assets/login/Icon(1)@2x.png');
             background-size: cover;
           }
-          
-          
+
+
         }
         .list-li:nth-child(4){
            border-right: none;
@@ -604,7 +604,7 @@ export default {
             width:85px;
           }
         }
-        
+
       }
     }
     .content{
@@ -644,7 +644,7 @@ export default {
               color:#0e142f;
               font-size:16px;
               vertical-align: middle;
-              
+
             }
           }
           .right-title{
@@ -744,7 +744,7 @@ export default {
               color:#0e142f;
               font-size:16px;
               vertical-align: middle;
-              
+
             }
           }
           .right-title{
@@ -875,14 +875,14 @@ export default {
   }
   ::v-deep.el-input .el-input__prefix{
     top: 5px;
- 
+
   }
   ::v-deep.el-form-item .el-form-item__content{
     .el-input--prefix  .el-input__inner{
       padding-left: 35px;
      }
   }
-  
+
   .btn{
     margin-top: 32px;
     .btn-el{
@@ -895,6 +895,6 @@ export default {
       }
     }
   }
- 
+
 }
 </style>
