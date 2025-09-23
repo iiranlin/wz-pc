@@ -22,8 +22,8 @@
 			<template #status>
 				<el-select v-model="formData.status" filterable required style="width: 100%" placeholder="请选择"
 					clearable>
-					<el-option v-for="item in dict.type.flowStatus" :key="item.value" :label="item.label"
-						:value="item.value">
+					<el-option v-for="item  of Object.keys(status) " :key="status[item]" :label="status[item]"
+						:value="item">
 					</el-option>
 				</el-select>
 			</template>
@@ -89,6 +89,7 @@
 	import fileUpload from '@/components/upload'
 	import workFlowView from '@/components/workFlowView'
 	import dayjs from 'dayjs'
+import { status } from 'nprogress';
 	export default {
 		// 自购物资文件核备
 		name: "purchaseFile",
@@ -105,8 +106,8 @@
 				status: {
 					'1': '未提交',
 					'2': '审核中',
-					'3': '已同意',
-					'0': '不同意'
+					'3': '已完成',
+					'0': '已驳回'
 				},
 				purchaseType: [],
 				// 遮罩层

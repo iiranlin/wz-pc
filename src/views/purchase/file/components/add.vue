@@ -181,7 +181,7 @@
 
 				<template #schemeSolt="scope">
 					<el-form-item prop="scheme" label-width="170px"
-						:rules="[{ required: true, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
+						:rules="[{ required: false, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="1" :fileSize="500"
 							:fileType="['pdf']" :preview="type === 'view' || checked" :useOss="true" />
@@ -483,8 +483,8 @@ export default {
 					formData.schemeApproval = JSON.stringify(formData.schemeApproval);
 
 					formData.tenderAnnouncement = JSON.stringify(formData.tenderAnnouncement)
-					formData.bidAddendum =  JSON.stringify(formData.bidAddendum) 
-					formData.bidEvaluationReport =  JSON.stringify(formData.bidEvaluationReport) 
+					formData.bidAddendum =  JSON.stringify(formData.bidAddendum)
+					formData.bidEvaluationReport =  JSON.stringify(formData.bidEvaluationReport)
 					formData.bidCandidateWeb =  JSON.stringify(formData.bidCandidateWeb)
 					formData.acceptance = JSON.stringify(formData.acceptance)
 					formData.bidCopy = JSON.stringify(formData.bidCopy)
