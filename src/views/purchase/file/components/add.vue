@@ -381,6 +381,9 @@ export default {
 	},
 	methods: {
 		findAllListData () {
+			if(this.type === 'view') {
+				return
+			}
 			getCurrentSection().then(res => {
 				this.projectData = res.data;
 				this.$refs['vFormRef'].setFormData({
