@@ -183,7 +183,13 @@ export default {
 
   },
   watch: {
-    //
+    // 深度侦听表单数据模型，任何来源的变化都会触发 onFormValueChange
+    formDataModel: {
+      handler() {
+        this.onFormValueChange()
+      },
+      deep: true
+    }
   },
   created() {
     this.buildFormModel(!this.formJsonObj ? null : this.formJsonObj.widgetList)
