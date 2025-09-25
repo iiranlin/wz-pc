@@ -400,6 +400,7 @@
 			display: flex;
 			align-items: center;
 			border: 1px solid #e1e2e3;
+			margin-bottom: 20px;
 
 			.row-number-span {
 				margin-left: 16px;

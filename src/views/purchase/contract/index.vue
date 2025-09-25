@@ -3,7 +3,7 @@
 		<button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
 			:buttonDisable="buttonDisable"></button-top>
 		<form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-			:formData="formData">
+			:formData="formData" :labelWidth="'120px'" @cleanClick="cleanClick">
 			<template #name>
 				<el-select v-model="formData.code" filterable required style="width: 100%" placeholder="请选择" clearable>
 					<el-option v-for="item in dict.type.purchase_code" :key="item.value" :label="item.label"
@@ -89,7 +89,6 @@
 	import fileUpload from '@/components/upload'
 	import workFlowView from '@/components/workFlowView'
 	import dayjs from 'dayjs'
-import { status } from 'nprogress';
 	export default {
 		// 自购物资文件核备
 		name: "purchaseFile",
