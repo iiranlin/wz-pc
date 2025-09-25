@@ -485,6 +485,11 @@ export default {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage();
+        setTimeout(() => {
+          this.$refs.vFormRef.setFormData({
+            railwaySpecial: '1',
+          });
+        }, 100);
       });
     },
     // 编辑初始化
