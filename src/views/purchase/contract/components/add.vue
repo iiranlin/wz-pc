@@ -295,6 +295,7 @@
         </template>
       </VFormRender>
     </div>
+      <toBeReviewed ref="toBereview" />
   </div>
 </template>
 
@@ -311,12 +312,14 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { useSlots } from "vue";
+import toBeReviewed from '@/views/audit/components/toBeReviewed'
 export default {
   name: "SectionAdd",
   dicts: ["purchase_code", "flowStatus"],
   components: {
     VFormRender,
     fileUpload,
+    toBeReviewed
   },
   data() {
     const userInfo = getUserInfo();
@@ -362,6 +365,9 @@ export default {
           buttonIcon: "Blue-Save",
           type: "create, update",
         },
+        { buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
+        { buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
+        { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
       ],
       constructionOptions: [],
       gysOptions: [],
@@ -369,6 +375,7 @@ export default {
       formConfigJson: "",
       currentFormData: {},
       backData: null,
+      detail: {},
       sellerName: "", // 添加sellerName数据属性
     };
   },
@@ -378,6 +385,12 @@ export default {
     },
     id() {
       return this.$route.query?.id || "";
+    },
+    name() {
+      return this.$route.query?.name || "";
+    },
+    queryAuditArr () {
+      return JSON.parse(this.$route.query.auditArr || '[]')
     },
   },
   async created() {
@@ -434,6 +447,9 @@ export default {
       return JSON.stringify(formConfig);
     },
     findAllListData() {
+      if(this.type === 'view') {
+				return
+			}
       getCurrentSection().then((res) => {
         this.projectData = res.data;
         this.$refs["vFormRef"].setFormData({
@@ -512,6 +528,7 @@ export default {
               )
             );
           }
+          this.detail = newData
           this.$refs.vFormRef.setFormData(newData);
           this.$refs.vFormRef.setReadMode(this.type === "view");
         });
@@ -526,15 +543,41 @@ export default {
         this.handleCreate();
         return;
       }
+      if (buttonCode === 'pass') {
+        this.$refs.toBereview.init('pass', this.queryAuditArr, this.name)
+        return;
+      }
+      if (buttonCode === 'reject') {
+        this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
+        return
+      }
+       if (buttonCode === 'edit') {
+        this.$tab.closePage(true)
+        this.$router.push({
+          name: 'detailPurchaseContract',
+          query: {
+            id: this.id,
+            type: 'update',
+            from: 'list'
+          }
+        })
+        return
+
+      }
     },
     cancel() {
-      this.$store.dispatch("setProjectId", "");
-      this.$router.go(-1);
+      this.$tab.closeOpenPage(true)
     },
 
     buttonShow(item) {
       if (item.buttonCode === "save") {
         return this.type !== "view";
+      }
+      if(item.buttonCode === 'pass' || item.buttonCode === 'reject'){
+        return [2].includes(this.detail.status) && this.name !== 'toBeDeal' && this.name !=='handle'
+      }
+      if(item.buttonCode === 'edit'){
+        return [0].includes(this.detail.status) && this.name =='handle'
       }
       return true;
     },
@@ -584,13 +627,22 @@ export default {
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
-              this.cancel();
+              this.saveBack();
             })
             .finally((err) => {
               this.loading = false;
             });
         }
       });
+    },
+    saveBack(){
+      this.$tab.closeOpenPage(true)
+      setTimeout(()=>{
+
+        this.$router.push({
+          name:'/nuclear/contract'
+        })
+      },100)
     },
     checkoutStatus(flag) {},
     formFillInPage() {

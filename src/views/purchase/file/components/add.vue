@@ -255,6 +255,7 @@
 				</template>
 			</VFormRender>
 		</div>
+      <toBeReviewed ref="toBereview" />
 	</div>
 </template>
 
@@ -285,12 +286,14 @@ import {
 	getUserInfo
 } from '@/utils/user-info'
 import dayjs from 'dayjs'
+import toBeReviewed from '@/views/audit/components/toBeReviewed'
 export default {
 	name: "SectionAdd",
 	dicts: ["purchase_code", "flowStatus"],
 	components: {
 		VFormRender,
-		fileUpload
+		fileUpload,
+		toBeReviewed
 	},
 	filters: {
 		dateFormat (value, format = 'YYYY-MM-DD') {
@@ -340,10 +343,14 @@ export default {
 				buttonIcon: 'Blue-Save',
 				type: 'create, update'
 			},
+			{ buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
+        	{ buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
+       		{ buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
 			],
 			constructionOptions: [],
 			gysOptions: [],
 			tableData: [],
+			detail: {},
 			sellerName: '' // 添加sellerName数据属性
 		}
 	},
@@ -353,7 +360,13 @@ export default {
 		},
 		id () {
 			return this.$route.query?.id || ''
-		}
+		},
+		name() {
+			return this.$route.query?.name || "";
+		},
+		queryAuditArr() {
+			return JSON.parse(this.$route.query.auditArr || '[]')
+		},
 	},
 	async created () {
 		this.findAllListData();
@@ -440,6 +453,7 @@ export default {
 					newData.commitment = newData.commitment != '' ? JSON.parse(newData.commitment) : [];
 					newData.other = newData.other != '' ? JSON.parse(newData.other) : [];
 
+					this.detail = newData
 					this.$refs.vFormRef.setFormData(newData);
 
 					this.$refs.vFormRef.setReadMode(this.type === 'view')
@@ -455,6 +469,27 @@ export default {
 				this.handleCreate()
 				return
 			}
+			if (buttonCode === 'pass') {
+				this.$refs.toBereview.init('pass', this.queryAuditArr, this.name)
+				return;
+			}
+			if (buttonCode === 'reject') {
+				this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
+				return
+			}
+			if (buttonCode === 'edit') {
+				this.$tab.closePage(true)
+				this.$router.push({
+					name: 'detailPurchase',
+					query: {
+						id: this.id,
+						type: 'update',
+						from: 'list'
+					}
+				})
+				return
+
+			}
 		},
 		cancel () {
 			this.$tab.closeOpenPage(true);
@@ -463,6 +498,12 @@ export default {
 		buttonShow (item) {
 			if (item.buttonCode === 'save') {
 				return this.type !== 'view'
+			}
+			if (item.buttonCode === 'pass' || item.buttonCode === 'reject') {
+				return [2].includes(this.detail.status) && this.name !== 'toBeDeal' && this.name !== 'handle'
+			}
+			if (item.buttonCode === 'edit') {
+				return [0].includes(this.detail.status) && this.name == 'handle'
 			}
 			return true
 		},
@@ -504,13 +545,22 @@ export default {
 						}) => {
 							this.loading = false;
 							this.$modal.msgSuccess(message);
-							this.cancel();
+							this.saveBack();
 						})
 						.finally((err) => {
 							this.loading = false;
 						});
 				}
 			});
+		},
+		saveBack() {
+			this.$tab.closeOpenPage(true)
+			setTimeout(() => {
+
+				this.$router.push({
+					name: '/nuclear/file'
+				})
+			}, 100)
 		},
 		formFillInPage () {
 			return new Promise((resolve) => {
