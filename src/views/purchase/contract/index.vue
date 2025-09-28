@@ -66,8 +66,8 @@
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="核备附件(支持多个)" prop="attachmentFile">
-					<fileUpload v-model="contractLicense.attachmentFile" :limit="10" :fileSize="false" :fileType="['pdf']"
-						:preview="false" :useOss="true" />
+					<fileUpload v-model="contractLicense.attachmentFile" :limit="100" :fileSize="false" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
+						:preview="false"   />
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="closeAddStatus()">取 消</el-button>

@@ -124,6 +124,23 @@
 						</template>
 					</el-form-item>
 				</template>
+				<template #unitSlot="{ formModel }">
+					<el-form-item prop="unit" :rules="[{ required: true, message: '请选择计量单位', trigger: 'change' }]"
+						label="计量单位" class="label-right-align">
+						<template v-if="type !== 'view'">
+							<el-select :disabled="checked" v-model="formModel.unit" filterable required allow-create
+								style="width: 100%" placeholder="请选择"
+								>
+								<el-option v-for="item in dict.type.MeasureUnit" :key="item.value" :label="item.label"
+									:value="item.value">
+								</el-option>
+							</el-select>
+						</template>
+						<template v-else>
+							{{ formModel.unit }}
+						</template>
+					</el-form-item>
+				</template>
 				<template #amountSolt="{ formModel }">
 					<el-form-item prop="amount" label-width="140px"
 						:rules="[{ required: true, message: '请输入预算金额', trigger: 'change' }]" label="预算金额(万元)"
@@ -166,7 +183,7 @@
 						:rules="[{ required: true, message: '请上传采购文件审查登记表', trigger: 'change' }]" label="采购文件审查登记表"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view' || checked" :useOss="true" />
+							:fileType="['jpg','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
 					</el-form-item>
 				</template>
 
@@ -175,7 +192,7 @@
 						:rules="[{ required: true, message: '请上传招标文件(含技术规格书)', trigger: 'change' }]"
 						label="招标文件(含技术规格书)" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view' || checked" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
 					</el-form-item>
 				</template>
 
@@ -184,7 +201,7 @@
 						:rules="[{ required: false, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view' || checked" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
 					</el-form-item>
 				</template>
 
@@ -193,7 +210,7 @@
 						:rules="[{ required: false, message: '请上传采购方案（批复）文件', trigger: 'change' }]" label="采购方案（批复）"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.schemeApproval" :limit="1"
-							:fileSize="500" :fileType="['pdf']" :preview="type === 'view' || checked" :useOss="true" />
+							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
 					</el-form-item>
 				</template>
 
@@ -201,56 +218,56 @@
 					<el-form-item prop="tenderAnnouncement" label-width="170px" label="招标公告网页版"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.tenderAnnouncement" :limit="1"
-							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #bidAddendumSolt="scope">
 					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #bidEvaluationReportSolt="scope">
 					<el-form-item prop="bidEvaluationReport" label-width="140px" label="评标报告" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidEvaluationReport" :limit="1"
-							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #bidCandidateWebSolt="scope">
 					<el-form-item prop="bidCandidateWeb" label-width="170px" label="中标候选人公示网页版"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCandidateWeb" :limit="1"
-							:fileSize="500" :fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #acceptanceSolt="scope">
 					<el-form-item prop="acceptance" label-width="190px" label="中标通知书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
 					<el-form-item prop="bidCopy" label-width="170px" label="中标人的投标副本" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCopy" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #contractCopySolt="scope">
 					<el-form-item prop="contractCopy" label-width="140px" label="合同副本" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #commitmentSolt="scope">
 					<el-form-item prop="commitment" label-width="190px" label="供应商质量终身责任承诺书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #otherSolt="scope">
 					<el-form-item prop="other" label-width="140px" label="其他文件" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.other" :limit="1" :fileSize="500"
-							:fileType="['pdf']" :preview="type === 'view'" :useOss="true" />
+						<fileUpload :isShowTip="false" v-model="scope.formModel.other" :limit="100" :fileSize="500"
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 			</VFormRender>
@@ -289,7 +306,7 @@ import dayjs from 'dayjs'
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
 export default {
 	name: "SectionAdd",
-	dicts: ["purchase_code", "flowStatus"],
+	dicts: ["purchase_code", "flowStatus","MeasureUnit"],
 	components: {
 		VFormRender,
 		fileUpload,

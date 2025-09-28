@@ -43,19 +43,19 @@
 						{{ status[scope.value] }}
 					</template>
 					<template #registration="scope">
-						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf']"
+						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
 							:preview="true" />
 					</template>
 					<template #scheme="scope">
-						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf']"
+						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
 							:preview="true" />
 					</template>
 					<template #schemeApproval="scope">
-						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf']"
+						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
 							:preview="true" />
 					</template>
 					<template #bidDocument="scope">
-						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf']"
+						<fileUpload :value="fileListStr(scope.value)" :limit="1" :fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
 							:preview="true" />
 					</template>
 

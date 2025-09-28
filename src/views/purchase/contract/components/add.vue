@@ -213,9 +213,9 @@
               v-model="formModel.htfbsmj"
               :limit="1"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg','doc','docx']"
               :preview="type === 'view' || checked"
-              :useOss="true"
+               
             />
           </el-form-item>
         </template>
@@ -239,9 +239,9 @@
               v-model="formModel.gyszlzscns"
               :limit="1"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg','doc','docx']"
               :preview="type === 'view' || checked"
-              :useOss="true"
+               
             />
           </el-form-item>
         </template>
@@ -279,9 +279,9 @@
               v-model="formModel.contractLicense[sfrIdx].attachmentFile"
               :limit="10"
               :fileSize="500"
-              :fileType="['pdf']"
+              :fileType="['pdf','jpg','png','jpeg','doc','docx']"
               :preview="type === 'view'"
-              :useOss="true"
+               
             />
           </el-form-item>
         </template>
