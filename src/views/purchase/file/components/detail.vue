@@ -127,7 +127,7 @@
 				</template>
 				<template #amountSolt="{ formModel }">
 					<el-form-item prop="amount" label-width="140px"
-						:rules="[{ required: false, message: '请输入预算金额', trigger: 'change' }]" label="预算金额(万元)"
+						:rules="[{ required: false, message: '请输入预估采购金额', trigger: 'change' }]" label=" 预估采购金额(万元)"
 						class="label-right-align">
 						<template v-if="type !== 'update'">
 							<el-input type="number" min="0" v-model="formModel.amount" :disabled="checked" />
