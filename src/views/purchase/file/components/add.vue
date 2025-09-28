@@ -117,7 +117,7 @@
 					<el-form-item prop="quantity" :rules="[{ required: true, message: '请输入数量', trigger: 'change' }]"
 						label="数量" class="label-right-align">
 						<template v-if="type !== 'view'">
-							<el-input type="text" min="0" v-model="formModel.quantity" :disabled="checked" />
+							<el-input-number :min="0.01" v-model="formModel.quantity" :disabled="checked" style="width: 100%;" />
 						</template>
 						<template v-else>
 							{{ formModel.quantity }}
@@ -146,7 +146,7 @@
 						:rules="[{ required: false, message: '请输入预估采购金额', trigger: 'change' }]" label=" 预估采购金额(万元)"
 						class="label-right-align">
 						<template v-if="type !== 'view'">
-							<el-input type="number" min="0" v-model="formModel.amount" :disabled="checked" />
+							<el-input-number :min="0" v-model="formModel.amount" :disabled="checked" style="width: 100%;" />
 						</template>
 						<template v-else>
 							{{ formModel.amount }}
