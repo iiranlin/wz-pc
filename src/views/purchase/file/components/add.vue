@@ -125,14 +125,14 @@
 					</el-form-item>
 				</template>
 				<template #unitSlot="{ formModel }">
-					<el-form-item prop="unit" :rules="[{ required: true, message: '请选择计量单位', trigger: 'change' }]"
+					<el-form-item label-width="140px" prop="unit" :rules="[{ required: true, message: '请选择计量单位', trigger: 'change' }]"
 						label="计量单位" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select :disabled="checked" v-model="formModel.unit" filterable required allow-create
 								style="width: 100%" placeholder="请选择"
 								>
 								<el-option v-for="item in dict.type.MeasureUnit" :key="item.value" :label="item.label"
-									:value="item.value">
+									:value="item.label">
 								</el-option>
 							</el-select>
 						</template>
@@ -142,7 +142,7 @@
 					</el-form-item>
 				</template>
 				<template #amountSolt="{ formModel }">
-					<el-form-item prop="amount" label-width="140px"
+					<el-form-item prop="amount" label-width="150px"
 						:rules="[{ required: true, message: '请输入预算金额', trigger: 'change' }]" label="预算金额(万元)"
 						class="label-right-align">
 						<template v-if="type !== 'view'">
@@ -167,7 +167,7 @@
 					</el-form-item>
 				</template>
 				<template #remakSolt="{ formModel }">
-					<el-form-item prop="remak" label-width="150px" label="备注" class="label-right-align">
+					<el-form-item prop="remak" label-width="140px" label="备注" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-input type="text" v-model="formModel.remak" />
 						</template>
