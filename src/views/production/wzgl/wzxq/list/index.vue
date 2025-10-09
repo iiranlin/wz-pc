@@ -14,6 +14,25 @@
       @handleQuery="handleQuery"
       :formData="formData"
     >
+     <template #planStatus="data">
+        <el-select
+          class="select-box"
+          v-model="formData[data.data.fieldCode]"
+          :placeholder="
+             '请选择状态'
+          "
+          clearable
+          style="width: 100%"
+          size="small"
+        >
+          <el-option
+            v-for="(item, key) in Object.keys(planStatus) "
+            :key="item"
+            :label="planStatus[item]"
+            :value="item"
+          />
+        </el-select>
+      </template>
      <!-- 日期范围搜索 -->
       <template #date>
         <el-date-picker
