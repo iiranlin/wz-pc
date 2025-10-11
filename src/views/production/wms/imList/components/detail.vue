@@ -330,7 +330,7 @@ export default {
     buttonShow(item) {
       // 审核中才能显示同意和不同意按钮
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
-        return this.storeStatus == "5";
+        return this.storeStatus == "5" && this.name !== 'toBeDeal';
       }
 
       if (item.buttonCode === "cancel") {
