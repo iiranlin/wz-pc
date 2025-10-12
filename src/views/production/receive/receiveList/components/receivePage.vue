@@ -90,7 +90,7 @@
             <fileUpload
               v-model="scope.formModel.fileList01"
               :preview="type == 'view'"
-              :limit="1"
+              :limit="100"
               :fileSize="500"
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
@@ -100,7 +100,7 @@
             <fileUpload
               v-model="scope.formModel.fileList02"
               :preview="type == 'view'"
-              :limit="1"
+              :limit="100"
               :fileSize="500"
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
@@ -113,7 +113,7 @@
             <fileUpload
               v-model="scope.formModel.fileList02"
               :preview="type == 'view'"
-              :limit="1"
+              :limit="100"
               :fileSize="500"
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
