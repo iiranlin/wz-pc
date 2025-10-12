@@ -751,3 +751,28 @@ export function findByBusinessType(data, targetBusinessType) {
   // 如果找到就返回外层对象，否则返回空数组
   return found?.fileList || [];
 }
+
+/**
+ * 递归设置菜单的 isHide
+ * 如果一个节点的所有子节点都是隐藏的，则该节点也标记为隐藏
+ * @param {Array} menus 菜单数组
+ * @returns {Array} 修改后的菜单数组
+ */
+export function updateMenuHideStatus(menus) {
+  return menus.map(menu => {
+    // 如果有子菜单，递归处理
+    if (menu.children && menu.children.length > 0) {
+      menu.children = updateMenuHideStatus(menu.children)
+
+      // 检查所有子节点的 isHide 是否都为 1
+      const allChildrenHidden = menu.children.every(child => child.isHide === 1)
+
+      // 若全部隐藏，则父级也隐藏
+      if (allChildrenHidden) {
+        menu.isHide = 1
+      }
+    }
+
+    return menu
+  })
+}

@@ -4,6 +4,7 @@ import Layout from '@/layout/index'
 import ParentView from '@/components/ParentView'
 import { getUserMenu } from '@/api/system/menu'
 import { useQiankun } from '@/qiankun'
+import { updateMenuHideStatus } from '@/utils/index'
 
 const permission = {
     state: {
@@ -43,8 +44,9 @@ const permission = {
             return new Promise(async resolve => {
                 // 向后端请求路由数据
                 const menuList1 = await getUserMenu();
-                useQiankun(menuList1.data, Vue.prototype)
-                let menuList = filterAsyncRoutes(menuList1.data, true);
+                const menuListData = updateMenuHideStatus(menuList1.data);
+                useQiankun(menuListData, Vue.prototype)
+                let menuList = filterAsyncRoutes(menuListData, true);
                 const sdata = JSON.parse(JSON.stringify(menuList))
                 const rdata = JSON.parse(JSON.stringify(menuList))
                 const sidebarRoutes = filterAsyncRouter(sdata)
