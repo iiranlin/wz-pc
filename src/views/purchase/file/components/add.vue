@@ -167,7 +167,7 @@
 					</el-form-item>
 				</template>
 				<template #remakSolt="{ formModel }">
-					<el-form-item prop="remak" label-width="140px" label="备注" class="label-right-align">
+					<el-form-item prop="remak" label-width="150px" label="备注" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-input type="text" v-model="formModel.remak" />
 						</template>
