@@ -28,34 +28,6 @@
         align="center"
         fixed="left"
       />
-     
-      <el-table-column
-        prop="materialName"
-        label="物资名称"
-        width="250"
-        align="center"
-        fixed="left"
-      >
-        <template slot-scope="scope">
-          <el-select
-            v-if="scope.row.isManual && type !== 'view'"
-            v-model="scope.row.materialId"
-            placeholder="请选择物资名称"
-            size="mini"
-            style="width: 100%"
-            filterable
-            @change="handleFieldChange('materialId', scope.row)"
-          >
-            <el-option
-              v-for="unit of options['itemOptions']"
-              :key="unit.value"
-              :label="unit.label"
-              :value="unit.value"
-            ></el-option>
-          </el-select>
-          <span v-else>{{ scope.row.materialName }} </span>
-        </template>
-      </el-table-column>
       <el-table-column
         prop="projectShortName"
         label="项目简称"
@@ -99,6 +71,32 @@
         width="120"
         align="center"
       ></el-table-column>
+      <el-table-column
+        prop="materialName"
+        label="物资名称"
+        width="250"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-select
+            v-if="scope.row.isManual && type !== 'view'"
+            v-model="scope.row.materialId"
+            placeholder="请选择物资名称"
+            size="mini"
+            style="width: 100%"
+            filterable
+            @change="handleFieldChange('materialId', scope.row)"
+          >
+            <el-option
+              v-for="unit of options['itemOptions']"
+              :key="unit.value"
+              :label="unit.label"
+              :value="unit.value"
+            ></el-option>
+          </el-select>
+          <span v-else>{{ scope.row.materialName }} </span>
+        </template>
+      </el-table-column>
       <el-table-column prop="specModel" label="规格型号" width="200" align="center">
       </el-table-column>
 

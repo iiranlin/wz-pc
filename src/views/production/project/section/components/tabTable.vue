@@ -20,11 +20,24 @@
         fixed="left"
       />
      
+     
       <el-table-column
+        prop="projectShortName"
+        label="项目简称"
+        width="120"
+      ></el-table-column>
+
+      <!-- 其他列 -->
+      <el-table-column
+        prop="sellerName"
+        label="卖方名称"
+        width="120"
+        align="center"
+      ></el-table-column>
+       <el-table-column
         prop="materialName"
         label="物资名称"
         width="250"
-        fixed="left"
       >
         <template slot-scope="scope">
           <el-select
@@ -46,19 +59,6 @@
           <span v-else>{{ scope.row.materialName }} </span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="projectShortName"
-        label="项目简称"
-        width="120"
-      ></el-table-column>
-
-      <!-- 其他列 -->
-      <el-table-column
-        prop="sellerName"
-        label="卖方名称"
-        width="120"
-        align="center"
-      ></el-table-column>
       <el-table-column prop="specModel" label="规格型号" width="200">
       </el-table-column>
 
