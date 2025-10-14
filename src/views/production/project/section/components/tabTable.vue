@@ -230,6 +230,44 @@
           <span v-else>{{ scope.row.deliveryDate }}</span>
         </template>
       </el-table-column>
+            <el-table-column
+        prop="cumulativeRatio"
+        label="计划金额比例"
+        width="150"
+        align="center"
+      >
+      <template slot-scope="scope">
+        <span>{{ scope.row.cumulativeRatio }}%</span>
+      </template>
+      </el-table-column>
+       <el-table-column
+        prop="storeTotal"
+        label="累计入库量"
+        width="150"
+        align="center"
+      >
+      </el-table-column>
+        <el-table-column
+        prop="outTotal"
+        label="累计出库量"
+        width="150"
+        align="center"
+      >
+      </el-table-column>
+        <el-table-column
+        prop="storeTotalRates"
+        label="已到货金额"
+        width="150"
+        align="center"
+      >
+      </el-table-column>
+        <el-table-column
+        prop="outTotalRates"
+        label="出库金额"
+        width="150"
+        align="center"
+      >
+      </el-table-column>
     </el-table>
 
     <!-- 统计信息 -->
