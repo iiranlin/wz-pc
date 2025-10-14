@@ -81,7 +81,7 @@
         <!-- 附件 -->
         <template #file1Slot="scope">
           <el-form-item
-            v-if="type != 'view'"
+            
             prop="fileList01"
             label="自检单"
             class="label-right-align"
@@ -96,7 +96,23 @@
               :isShowTip="false"
             />
           </el-form-item>
-          <el-form-item prop="fileList" label="其它资料" class="label-right-align" v-else>
+          <!-- <el-form-item prop="fileList02" label-width="120px" label="到货确认照片" class="label-right-align" v-else>
+            <fileUpload
+              v-model="scope.formModel.fileList02"
+              :preview="type == 'view'"
+              :limit="100"
+              :fileSize="500"
+              :fileType="['pdf','jpg','png','jpeg']"
+              :isShowTip="false"
+            />
+          </el-form-item> -->
+        </template>
+        <!-- 附件 -->
+        <template #file2Slot="scope" >
+          <el-form-item prop="fileList02" label="到货确认照片" class="label-right-align"
+          label-width="120px"
+           :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
               v-model="scope.formModel.fileList02"
               :preview="type == 'view'"
@@ -107,11 +123,15 @@
             />
           </el-form-item>
         </template>
-        <!-- 附件 -->
-        <template #file2Slot="scope" v-if="type != 'view'">
-          <el-form-item prop="fileList" label="其它资料" class="label-right-align">
+
+         <!-- 交货单附件 -->
+        <template #file4Slot="scope" >
+          <el-form-item prop="fileList04" label="交货单附件" class="label-right-align"
+          label-width="120px"
+           :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
+          >
             <fileUpload
-              v-model="scope.formModel.fileList02"
+              v-model="scope.formModel.fileList04"
               :preview="type == 'view'"
               :limit="100"
               :fileSize="500"
@@ -124,7 +144,7 @@
         <!-- 收货时间 -->
         <template #dateSlot="scope">
           <el-form-item
-            v-if="type != 'view'"
+          label-width="120px"
             prop="takeDate"
             label="收货时间"
             class="label-right-align"
@@ -143,7 +163,7 @@
               {{ scope.formModel.takeDate }}
             </span>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             v-else
             prop="fileList01"
             label="自检单"
@@ -158,7 +178,7 @@
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
             />
-          </el-form-item>
+          </el-form-item> -->
         </template>
         <template #detailSlot>
           <el-table
@@ -501,6 +521,7 @@ export default {
               fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
               fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
               fileList03: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
+              fileList04: data.fileByList ? JSON.parse(data.fileByList).jhd || [] : [], //交货单
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(this.type === "view");
@@ -516,6 +537,7 @@ export default {
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_sh || [] : [], //退货附件
+              fileList04: x.fileByList ? JSON.parse(x.fileByList).jhd || [] : [], //交货单
             }));
             this.tableData = detail;
           });
@@ -610,6 +632,10 @@ export default {
           //其他资料
           if (formData.fileList02.length > 0) {
             this.$set(fileByList, "qtzl", formData.fileList02);
+          }
+          // 交货单
+          if (formData.fileList04.length > 0) {
+            this.$set(fileByList, "jhd", formData.fileList04);
           }
           formData.fileByList = JSON.stringify(fileByList);
           for (var i in this.tableData) {
