@@ -41,69 +41,62 @@
                 <div class="calendar-container gird-item">
                     <div class="title-item">
                         <div class="title-item-left">
-                            <span>日历</span>
+                            <span>{{ activeComponentTitle }}</span>
                         </div>
                     </div>
-                    <div>
-                        <div class="calendar-select">
-                            <el-date-picker v-model="memoDate" type="month" placeholder="选择月"
-                                :clearable="false"></el-date-picker>
-                            <el-button class="today-btn" @click="clickToday">今天</el-button>
-                        </div>
-                        <div class="calendar-list">
-                            <el-calendar ref="calender" v-model="memoDate">
-                                <template slot="dateCell" slot-scope="{ data }">
-                                    <div @click="openDateCell(data)" class="custom-day">
-                                        <span :class="{ 'memo-day': message(data.day) }">
-                                            {{ data.day.split("-").pop() }}
-                                        </span>
-                                    </div>
-                                </template>
-                            </el-calendar>
-                        </div>
+                    <div style="width: 50.2vw;height: calc(100% - 60px);">
+                        <ChildAudit v-if="activeComponent === 'ChildAudit'"></ChildAudit>
+                        <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"></ChildToBeDeal>
+                        <ChildHandle v-if="activeComponent === 'ChildHandle'"></ChildHandle>
+                        <ChildTodoList v-if="activeComponent === 'ChildTodoList'"></ChildTodoList>
                     </div>
                 </div>
             </div>
             <div class="grid-right">
-                <!--常用功能-->
-                <div class="menu-container gird-item">
+                <!--数据概况-->
+                <div class="data-overview-container gird-item">
                     <div class="title-item">
                         <div class="title-item-left">
-                            <span>常用功能</span>
+                            <span>数据概况</span>
                         </div>
                     </div>
-                    <div class="menu-content">
-                        <el-carousel trigger="click" :autoplay="false">
-                            <el-carousel-item v-for="(carouselItem, carouselIndex) in recentList" :key="carouselIndex">
-                                <ul>
-                                    <li v-for="(item, index) in carouselItem" :key="index"
-                                        @click="handleMenuClick(item.funcUrl)">
-                                        <div><svg-icon class="recent-icon" :icon-class="item.funcIcon" /></div>
-                                        <span>{{ item.funcName }}</span>
-                                    </li>
-                                </ul>
-                            </el-carousel-item>
-                        </el-carousel>
+                    <div class="overview-content">
+                        <el-row :gutter="20">
+                            <el-col :span="12" v-for="(item, index) in dataOverview" :key="index" class="overview-col">
+                                <div class="overview-card">
+                                    <div class="card-details">
+                                        <p class="card-title">{{ item.title }}</p>
+                                        <p class="card-value">
+                                            <span>{{ item.value }}</span>{{ item.unit }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </el-col>
+                        </el-row>
                     </div>
                 </div>
                 <!--通知信息-->
                 <div class="notice-container gird-item">
                     <div class="title-item">
                         <div class="title-item-left click-menu" @click="handleNoticeMore()">
-                            <span>通知消息</span>
+                            <span>系统提醒</span>
                         </div>
                         <div class="title-item-right" @click="handleNoticeMore()">
                             <span>查看更多</span>
                         </div>
                     </div>
                     <div class="notice-content" v-if="noticeOptions.length > 0">
-                        <ul>
-                            <li v-for="(item, index) in noticeOptions" :key="index" @click="handleNoticeClick(item)">
-                                <span :style="checkNoticeType(item.mesStats)">{{ item.mesStatsName }}</span>
-                                <p class="notice-text">{{ item.mesTitle }}</p>
-                                <p class="notice-date">{{ parseTime(item.sendDate, '{y}-{m}-{d}') }}</p>
+                        <ul style="min-height: 205px;">
+                            <li v-for="(item, index) in noticeOptions" :key="item.id">
+                              
+                                <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1 }}、{{ item.content }}</p>
+                                <p class="notice-date">{{ parseTime(item.createDate, '{y}-{m}-{d}') }}</p>
                             </li>
                         </ul>
+                        <div class="pagination-container">
+                            <el-pagination :current-page.sync="listQuery.pageNum" :page-size="listQuery.pageSize"
+                                layout="total, prev, pager, next" :total="total" @current-change="getMessageList" />
+                        </div>
                     </div>
                     <div v-else class="notice-empty">
                         <img src="/static/icon-notice-empty.webp" />
@@ -119,7 +112,7 @@
                     </div>
                     <div class="video-content" @click="handleVideoClick()">
                         <div class="video-title">
-                             <a download href="/建设物资管理系统操作说明书-v1.0.docx" class="operation-manual-link">操作手册</a>
+                            <a download href="/建设物资管理系统操作说明书-v1.0.docx" class="operation-manual-link">操作手册</a>
                             <!-- <span style="cursor: pointer;">操作手册</span> -->
                         </div>
                         <img class="video-image" src="/static/icon-video.svg" />
@@ -139,8 +132,7 @@
                 </div>
             </div>
         </div>
-        <!--备忘录弹框-->
-        <memo-operate ref="memoOperate" @memoOperateSuccess="memoOperateSuccess"></memo-operate>
+       
         <!--公告弹框-->
         <notice-operate ref="noticeOperate" @noticeOperateClose="batchUpdateOwnMes"></notice-operate>
         <!--通知提醒弹框-->
@@ -148,10 +140,16 @@
     </div>
 </template>
 <script>
+import ChildAudit from "../audit/childAudit.vue";
+import ChildHandle from "../event/handle/childHandle.vue";
+import ChildToBeDeal from "../examine/toDoList/toBeDeal/childToBeDeal.vue";
+import ChildTodoList from "./childTodoList.vue";
 import memoOperate from "./components/memoOperate.vue"
 import noticeOperate from './components/noticeOperate.vue'
 import notice from './notice.vue'
+import { itemList } from '@/api/prodmgr-inv/project/dataCount.js'
 import { wfTodoCount } from "@/api/system/workflow";
+import {messagePage} from "@/api/system/message";
 // import { getAllTaskByUser, funcRecentList } from "@/api/examine/to-be-reviewed"
 // import { memoGetOneMonthMemo } from '@/api/system/dashboard.js';
 import moment from 'moment';
@@ -160,15 +158,25 @@ import { mapGetters } from "vuex";
 
 export default {
     name: 'Index',
-    components: { memoOperate, noticeOperate, notice },
+    components: { memoOperate, noticeOperate, notice, ChildAudit, ChildHandle, ChildToBeDeal, ChildTodoList },
 
     data() {
         return {
+            activeComponent: 'ChildAudit',
+            // NOTE: The following data is hardcoded for demonstration.
+            // It should be fetched from a relevant API endpoint.
+            dataOverview: [
+                { title: '建设项目', value: '0', unit: '个' },
+                { title: '标段项目', value: '0', unit: '个', },
+                { title: '供应商', value: '0', unit: '个' },
+                { title: '合同数量', value: '0', unit: '个', },
+                { title: '物资总金额', value: '0', unit: '万元' }
+            ],
             //待办数量对象
             taskNum: {},
             //通知信息
             noticeOptions: [],
-            //常用功能数据
+            //数据概况数据
             recentList: [],
             //查询备忘录月份
             memoDate: '',
@@ -177,8 +185,9 @@ export default {
             //分页参数
             listQuery: {
                 pageNum: 1,
-                pageSize: 10,
-            }
+                pageSize: 5,
+            },
+            total: 0,
         }
     },
     computed: {
@@ -187,28 +196,48 @@ export default {
         ]),
         username() {
             return `${this.userInfo.nickName}(${this.userInfo.username})`;
+        },
+        activeComponentTitle() {
+            switch (this.activeComponent) {
+                case 'ChildAudit':
+                    return '待审核';
+                case 'ChildHandle':
+                    return '待处理';
+                case 'ChildTodoList':
+                    return '我的发起';
+                case 'ChildToBeDeal':
+                    return '已审核';
+                default:
+                    return '日历';
+            }
         }
     },
-    watch: {
-        memoDate(val, oldVal) {
-            if (
-                val &&
-                this.parseTime(val, "{y}-{m}") != this.parseTime(oldVal, "{y}-{m}")
-            ) {
-                this.memoDate = moment(val).format("YYYY-MM-DD");
-                this.getMemoData();
-            }
-        },
+    activated() {
+        this.init()
+        console.log('dashboard activated');
     },
     created() {
-        this.memoDate = this.parseTime(new Date().getTime(), "{y}-{m}-{d}");
-        this.getAllTaskNumByUser();
-        this.getMessageList();
-        this.getDailyList();
+        this.init()
+        console.log('dashboard mounted');
     },
     methods: {
-        clickToday() {
-            this.memoDate = this.parseTime(new Date().getTime(), "{y}-{m}-{d}")
+        init() {
+            this.getAllTaskNumByUser();
+            this.getMessageList();
+            this.getDailyList();
+            this.getDataCount()
+        },
+        getDataCount() {
+            itemList().then(res => {
+                console.log(res.data.contractTotal, 'res')
+                this.dataOverview = [
+                    { title: '建设项目', value: res.data.projectTotal || '0', unit: '个' },
+                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', },
+                    { title: '供应商', value: res.data.sellerTotal || '0', unit: '个' },
+                    { title: '合同数量', value: res.data.contractTotal || '0', unit: '个', },
+                    { title: '物资总金额', value:  (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' }
+                ]
+            })
         },
         //获取待办数量
         getAllTaskNumByUser() {
@@ -226,26 +255,27 @@ export default {
                 // loading?.close();
             })
         },
-        //获取通知消息
+        //获取系统提醒
         getMessageList() {
             // const loading = this.$loading(this.$c.loadingCommonOptions);
 
-            // let params = {
-            //     flag: 1,
-            // }
-            // sysMsgSettingSelectOwnMesPage(Object.assign({}, this.listQuery, params)).then((res) => {
-            //     if (res.success) {
-            //         this.noticeOptions = res.data.list.slice(0, 6);
-            //     } else {
-            //         this.$modal.msgError(res.message);
-            //     }
-            // }).catch((err) => {
-
-            // }).finally(() => {
-            //     loading?.close();
-            // })
+            let params = {
+                flag: 1,
+            }
+            messagePage(Object.assign({}, this.listQuery, params)).then((res) => {
+                if (res.success) {
+                    this.noticeOptions = res.data.list;
+                    this.total = res.data.total;
+                } else {
+                    this.$modal.msgError(res.message);
+                }
+            }).catch((err) => {
+                // Handle error if needed
+            }).finally(() => {
+                loading?.close();
+            })
         },
-        //获取常用功能数据
+        //获取数据概况数据
         getDailyList() {
             // const loading = this.$loading(this.$c.loadingCommonOptions);
 
@@ -281,7 +311,7 @@ export default {
             //     loading?.close();
             // })
         },
-        //封装常用功能数据
+        //封装数据概况数据
         encapsulationList(chunkSize) {
             if (this.recentList.length === 0) {
                 return;
@@ -292,87 +322,26 @@ export default {
             }
             this.recentList = chunkedArray;
         },
-        //日历单元格点击
-        openDateCell(data) {
-            this.$refs.memoOperate.init(data.day, this.message(data.day));
-        },
-        //添加备忘录回调
-        memoOperateSuccess() {
-            this.memoDate = moment(this.memoDate).format("YYYY-MM-DD");
-            this.getMemoData();
-        },
-        //匹配备忘录
-        message(date) {
-            if (Object.keys(this.memoOptions).length === 0) {
-                return ''
-            } else {
-                for (let key in this.memoOptions) {
-                    if (date == key) {
-                        return this.memoOptions[key];
-                    }
-                }
-            }
-        },
         handleWaitClick(name) {
-            if(name){
-                this.$router.push({ name })
+            if (name === 'audit') {
+                this.activeComponent = 'ChildAudit';
+            } else if (name === 'handle') {
+                this.activeComponent = 'ChildHandle';
+            } else if (name === 'todoList') {
+                this.activeComponent = 'ChildTodoList';
+            } else if (name === 'toBeDeal') {
+                this.activeComponent = 'ChildToBeDeal';
             }
         },
-        //通知公告点击
-        handleNoticeClick(item) {
-            if (item.mesStats == 'TZ' || item.mesStats == 'TX') {
-                this.$refs.notice.init(item)
-            } else {
-                this.$refs.noticeOperate.init(item)
-            }
-        },
-        //标记已读
-        batchUpdateOwnMes(id) {
-            // const loading = this.$loading(this.$c.loadingCommonOptions);
 
-            // let ids = [];
-            // ids.push(id);
-
-            // sysMsgSettingBatchUpdateOwnMes({ ids: ids }).then((res) => {
-            //     if (res.success) {
-            //         this.getMessageList();
-            //     }
-            // }).catch((err) => {
-
-            // }).finally(() => {
-            //     loading?.close();
-            // })
-        },
-        //判断通知信息类型
-        checkNoticeType(mesStats) {
-            switch (mesStats) {
-                case 'TZ':
-                    return {
-                        background: '#E8F3FF',
-                        color: '#165DFF',
-                    }
-                case 'GG':
-                    return {
-                        background: '#E8FFFB',
-                        color: '#0FC6C2',
-                    }
-                case 'TX':
-                    return {
-                        background: '#fff0db',
-                        color: '#dd2a00',
-                    }
-                default:
-                    break;
-            }
-        },
-        //通知消息点击更多
+        //系统提醒点击更多
         handleNoticeMore() {
-            // this.$router.push({
-            //     name: 'myMessage',
-            //     query: {
+            this.$router.push({
+                name: 'message',
+                query: {
 
-            //     },
-            // })
+                },
+            })
         },
         //常用菜单点击
         handleMenuClick(funcUrl) {
@@ -388,20 +357,21 @@ export default {
 
             //     },
             // })
+
         },
     },
+
 }
 </script>
 <style lang="scss" scoped>
-
 .operation-manual-link {
-  text-decoration: none;
-  color: #165DFF;
-  font-size: 14px;
-  
-  &:hover {
-    color: #1F98FF;
-  }
+    text-decoration: none;
+    color: #165DFF;
+    font-size: 14px;
+
+    &:hover {
+        color: #1F98FF;
+    }
 }
 
 .home-container {
@@ -583,7 +553,7 @@ export default {
 
                     li {
                         // line-height: 22px;
-                        margin-bottom: 10px;
+                        // margin-bottom: 10px;
                         display: flex;
                         align-items: center;
                         max-width: 693px;
@@ -600,6 +570,7 @@ export default {
                         }
 
                         .notice-text {
+                            margin-top: 0;
                             font-size: 14px;
                             color: #4e5969;
                             width: calc(100% - 190px);
@@ -1015,5 +986,82 @@ export default {
         background-color: #165DFF;
         font-weight: 600;
     }
+}
+
+.pagination-container {
+    text-align: right;
+    padding: 10px 0;
+}
+
+/* --- 数据概况新样式 (v2) --- */
+.data-overview-container .overview-content {
+    padding: 10px 20px;
+}
+
+.overview-col {
+    margin-bottom: 10px;
+}
+
+.overview-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    transition: all 0.3s;
+    background: #F7F8FA;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+}
+
+.overview-card:hover .card-title,
+.overview-card:hover .card-icon .svg-icon {
+    color: #165DFF;
+}
+
+.card-icon {
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.card-icon .svg-icon {
+    font-size: 32px;
+    /* Larger icon */
+    color: #4E5969;
+    /* Default icon color */
+    transition: color 0.3s;
+}
+
+.card-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-title {
+    font-size: 14px;
+    color: #606266;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s;
+}
+
+.card-value {
+    font-size: 14px;
+    color: #303133;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-value span {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 4px;
 }
 </style>

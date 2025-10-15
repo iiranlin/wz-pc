@@ -776,3 +776,28 @@ export function updateMenuHideStatus(menus) {
     return menu
   })
 }
+
+
+/**
+ * 通过 menuUrl 查找对应菜单项
+ * @param {Array} menus - 菜单树数组
+ * @param {string} menuUrl - 要查找的菜单 URL
+ * @returns {Object|null} 匹配到的菜单项或 null
+ */
+export function findMenuByUrl(menus, menuUrl) {
+  for (const item of menus) {
+    // 当前节点匹配
+    if (item.menuUrl === menuUrl) {
+      return item
+    }
+
+    // 如果有 children 继续递归
+    if (Array.isArray(item.children) && item.children.length > 0) {
+      const found = findMenuByUrl(item.children, menuUrl)
+      if (found) return found
+    }
+  }
+
+  // 没有找到返回 null
+  return null
+}
