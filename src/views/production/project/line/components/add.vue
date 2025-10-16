@@ -107,6 +107,37 @@
             </template>
           </el-form-item>
         </template>
+        <!-- 指挥部负责人 -->
+        <template #commandPostLeaderSlot="{ formModel }">
+          <el-form-item
+            prop="commandPostLeader"
+            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+            label="归属建设项目"
+            class="label-right-align"
+          >
+            <template v-if="type !== 'view' && !commandPostLeader">
+              <el-select
+                v-model="formModel.commandPostLeader"
+                filterable
+                required
+                style="width: 100%"
+                placeholder="请选择"
+                @change="selectChange"
+              >
+                <el-option
+                  v-for="item in commandPostLeaderOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </template>
+            <template v-else>
+              <span>{{ formModel.commandPostLeaderName }}</span>
+            </template>
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -121,6 +152,7 @@ import { getToken } from '@/utils/auth'
 import attachmentTable from '@/views/components/attachmentTable'
 import { extractSelectOptions } from '@/utils/index'
 import { getUserInfo } from '@/utils/user-info'
+import {userPage} from '@/api/system/user'
 
 export default {
   name: "SectionAdd",
@@ -155,6 +187,7 @@ export default {
         { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
       ],
       constructionOptions: [],
+      commandPostLeaderOptions:[]
     }
   },
   computed: {
@@ -167,6 +200,7 @@ export default {
   },
   created () {
     // this.getDeptTree()
+    this.getUserList()
   },
   mounted () {
 
@@ -182,6 +216,27 @@ export default {
 
   },
   methods: {
+  async   getUserList(){
+    const res = await userPage({
+        pageNum:1,
+        pageSize:1000,
+        deptId:this.userInfo.instituteId
+      })
+      if(res.code == 0){
+
+        this.commandPostLeaderOptions = res.data.list.map(x => ({
+          ...x,
+          label:x.nickName,
+          value:x.id
+        })) 
+      }
+    },
+    selectChange (val) {
+      const selectItem = this.commandPostLeaderOptions.find(item => item.value === val)
+      this.$refs.vFormRef.setFormData({
+        commandPostLeaderName: selectItem?.label || ''
+      })
+    },
     onUnitChange (val) {
       this.$refs.vFormRef.setFormData({
         constructionUnit: this.constructionOptions.find(item => item.value === val)?.label
