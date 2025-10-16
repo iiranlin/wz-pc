@@ -136,10 +136,10 @@ export default {
           code: "2",
           name: "已收货",
         },
-        {
-          code: "3",
-          name: "部分退货",
-        },
+        // {
+        //   code: "3",
+        //   name: "部分退货",
+        // },
         {
           code: "4",
           name: "已退货",
