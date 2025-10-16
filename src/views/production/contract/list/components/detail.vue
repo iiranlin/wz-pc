@@ -110,6 +110,14 @@
 
         </template>
 
+         <!-- 保函扫描件 -->
+        <template #fileListBHSMJSlot="scope">
+          <el-form-item prop="files" label="保函扫描件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.files" :limit="100" :fileSize="500" :fileType="['pdf']"
+              :preview="type === 'view'" />
+          </el-form-item>
+        </template>
+
         <template #table>
           <TabTable
             ref="tabTableRef"
@@ -286,6 +294,7 @@ export default {
             contractStatus: data.contractStatus == '2',
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
+            files: JSON.parse(data.files || '[]'),
           }
           // validityGuarantee 重新组合为数组
           newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
@@ -350,6 +359,7 @@ export default {
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
             fileList: [{ fileList },{fileList:fileList1}],
+            files: JSON.stringify(formData.files || []),
             materialList: this.tableData.map(x => ({
               ...x,
               id: null,
