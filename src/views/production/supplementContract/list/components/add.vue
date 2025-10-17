@@ -141,6 +141,28 @@
           </el-form-item>
         </template>
 
+                <!-- 原合同金额 -->
+        <template #originalContractAmountSlot="{ formModel }">
+          <el-form-item
+            prop="originalContractAmount"
+            label="原合同金额"
+            class="label-right-align"
+          >
+           {{ formModel.originalContractAmount }}
+          </el-form-item>
+        </template>
+
+                <!-- 原合同编号 -->
+        <template #originalContractNumberSlot="{ formModel }">
+          <el-form-item
+            prop="originalContractNumber"
+            label="原合同编号"
+            class="label-right-align"
+          >
+           {{ formModel.originalContractNumber }}
+          </el-form-item>
+        </template>
+
         <!-- 附件 -->
         <template #fileListSlot="scope">
           <el-form-item
@@ -172,6 +194,13 @@
               :fileType="['pdf']"
               :preview="type === 'view'"
             />
+          </el-form-item>
+        </template>
+         <!-- 签订依据附件 -->
+        <template #fileListCDYJSlot="scope">
+          <el-form-item prop="files" label="签订依据附件" class="label-right-align" >
+            <fileUpload v-model="scope.formModel.files" :limit="100" :fileSize="500" :fileType="['pdf','jpg','png','jpeg']"
+              :preview="type === 'view'" />
           </el-form-item>
         </template>
 
@@ -386,6 +415,7 @@ export default {
             contractStatus: data.contractStatus == "2",
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
+            files: JSON.parse(data.files || "[]"),
           };
           // validityGuarantee 重新组合为数组
           newData.validityGuarantee = [
@@ -473,6 +503,7 @@ export default {
               { id: this.type === "update" ? this.id : null },
               formData,
               {
+                  files: JSON.stringify(formData.files || []),
                 parentId: this.parentId,
                 fileList: [{ fileList }, { fileList: fileList1 }],
                 materialList: this.tableData.map((x) => ({
