@@ -1,7 +1,7 @@
 <template>
     <div class="app-container container_flex">
        
-        <table-index ref="tableIndex" :loading="loading" idName="businessId" :tableData="dataList" :property="property"
+        <table-index ref="tableIndex" :loading="loading" :selectShow="false"  idName="businessId" :tableData="dataList" :property="property"
             :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton"
             @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink">
         </table-index>

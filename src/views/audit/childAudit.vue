@@ -1,7 +1,7 @@
 <template>
   <div class="app-container container_flex">
-    <table-index ref="tableIndex" :loading="loading" idName="taskId" :tableIndexs="tableIndex" :tableData="list"
-      :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+    <table-index ref="tableIndex" :selectShow="false" :loading="loading" idName="taskId" :tableIndexs="tableIndex"
+      :tableData="list" :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
       @handleButton="handleButton" @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink"
       :button-disable="buttonDisabled" />
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
@@ -66,15 +66,15 @@ export default {
     };
   },
   mounted() {
-   getUserMenu().then(menu => {
+    getUserMenu().then(menu => {
 
-     console.log(menu.data,'sidebarMenu');
-     const menuId = findMenuByUrl(menu.data,'audit')?.id;
-     this.$store.dispatch("menuProperty", menuId).then((data) => {
-       this.listQuery.pageSize = data.defaultPageSize || 30;
-       this.property = data;
-     });
-   })
+      console.log(menu.data, 'sidebarMenu');
+      const menuId = findMenuByUrl(menu.data, 'audit')?.id;
+      this.$store.dispatch("menuProperty", menuId).then((data) => {
+        this.listQuery.pageSize = data.defaultPageSize || 30;
+        this.property = data;
+      });
+    })
   },
   methods: {
     numberChange(val) {
