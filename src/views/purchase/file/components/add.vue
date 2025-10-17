@@ -183,7 +183,7 @@
 						:rules="[{ required: true, message: '请上传采购文件审查登记表', trigger: 'change' }]" label="采购文件审查登记表"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="1" :fileSize="500"
-							:fileType="['jpg','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
 					</el-form-item>
 				</template>
 
