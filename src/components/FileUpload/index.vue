@@ -122,7 +122,7 @@ export default {
     },
     customUpload (option) {
       if(option.file){
-        this.$download.fileUpload(minioUpload, {...this.formData, file: option.file}).then((data) => {
+        this.$download.fileUpload(minioUpload, {...this.formData,minioType:this.formData.businessType, file: option.file}).then((data) => {
           this.handleUploadSuccess(data)
         })
       }

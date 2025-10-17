@@ -148,7 +148,7 @@
             label="原合同金额"
             class="label-right-align"
           >
-           {{ formModel.originalContractAmount }}
+           {{ formModel.originalContractAmount }} 元
           </el-form-item>
         </template>
 
@@ -333,6 +333,7 @@ export default {
       await Api.detail(this.parentId).then(({ data }) => {
         this.$refs.vFormRef.setFormData({
           ...data,
+          contractNo: '',
           oldName: data.contractName,
           contractName: "",
           validityGuarantee: [],

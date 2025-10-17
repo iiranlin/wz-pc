@@ -131,7 +131,7 @@
             label="原合同金额"
             class="label-right-align"
           >
-           {{ formModel.originalContractAmount }}
+           {{ formModel.originalContractAmount }} 元
           </el-form-item>
         </template>
 

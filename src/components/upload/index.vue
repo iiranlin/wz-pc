@@ -325,7 +325,7 @@ export default {
 
           // 使用await等待MinIO上传完成，确保loading状态正确
           try {
-            const data = await this.$download.fileUpload(url, { ...this.formData, file: option.file });
+            const data = await this.$download.fileUpload(url, { ...this.formData, minioType:this.formData.businessType, file: option.file });
             this.handleUploadSuccess(data, option.file);
           } catch (err) {
             this.handleUploadError(err, option.file);
