@@ -112,7 +112,7 @@
           <el-form-item
             prop="commandPostLeader"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="归属建设项目"
+            label="指挥部负责人"
             class="label-right-align"
           >
             <template v-if="type !== 'view' && !commandPostLeader">
