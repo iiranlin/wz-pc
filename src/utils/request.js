@@ -28,7 +28,7 @@ service.interceptors.request.use(config => {
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
     if (getToken() && !isToken) {
         config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
-        config.headers['myreadiskey'] = getToken()
+        config.headers['myrediskey'] = getToken()
     }
     // 添加 Client-Type 请求头
     config.headers['Client-Type'] = 'PC'
