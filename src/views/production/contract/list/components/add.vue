@@ -71,7 +71,6 @@
           <el-form-item prop="fileList" label="合同附件" class="label-right-align">
             <fileUpload v-model="scope.formModel.fileList" :limit="1" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'"
-              :useOss="true"
               />
           </el-form-item>
 

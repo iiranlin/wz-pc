@@ -175,7 +175,6 @@
               :limit="1"
               :fileSize="500"
               :fileType="['pdf']"
-              :useOss="true"
               :preview="type === 'view'"
             />
           </el-form-item>
