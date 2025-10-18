@@ -88,10 +88,13 @@
                     <div class="notice-content" v-if="noticeOptions.length > 0">
                         <ul style="min-height: 205px;">
                             <li v-for="(item, index) in noticeOptions" :key="item.id">
-
-                                <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1 }}、{{
-                                    item.content }}</p>
+                                <el-tooltip class="item" effect="dark" :content="item.content" placement="top">
+                                    <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1
+                                        }}、{{
+                                            item.content }}</p>
+                                </el-tooltip>
                                 <p class="notice-date">{{ parseTime(item.createDate, '{y}-{m}-{d}') }}</p>
+
                             </li>
                         </ul>
                         <div class="pagination-container">
@@ -240,8 +243,8 @@ export default {
                     { title: '供应商', value: res.data.sellerTotal || '0', unit: '个' },
                     { title: '合同数量', value: res.data.contractTotal || '0', unit: '个', },
                     { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已收货金额', value: (res.data.PUTTOTAL  / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已入库金额', value: (res.data.STORETOTAL  / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已收货金额', value: (res.data.PUTTOTAL / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已入库金额', value: (res.data.STORETOTAL / 10000).toFixed(2) || '0', unit: '万元' },
                     { title: '已出库金额', value: (res.data.OUTTOTAL / 10000).toFixed(2) || '0', unit: '万元' },
                 ]
             })
