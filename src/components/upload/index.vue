@@ -113,7 +113,7 @@ export default {
     // 是否显示提示
     isShowTip: {
       type: Boolean,
-      default: true
+      default: false
     },
    // 🔹 新增阿里云参数
     useOss: { type: Boolean, default: false },
