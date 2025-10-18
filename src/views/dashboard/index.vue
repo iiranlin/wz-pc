@@ -88,8 +88,9 @@
                     <div class="notice-content" v-if="noticeOptions.length > 0">
                         <ul style="min-height: 205px;">
                             <li v-for="(item, index) in noticeOptions" :key="item.id">
-                              
-                                <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1 }}、{{ item.content }}</p>
+
+                                <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1 }}、{{
+                                    item.content }}</p>
                                 <p class="notice-date">{{ parseTime(item.createDate, '{y}-{m}-{d}') }}</p>
                             </li>
                         </ul>
@@ -132,7 +133,7 @@
                 </div>
             </div>
         </div>
-       
+
         <!--公告弹框-->
         <notice-operate ref="noticeOperate" @noticeOperateClose="batchUpdateOwnMes"></notice-operate>
         <!--通知提醒弹框-->
@@ -149,7 +150,7 @@ import noticeOperate from './components/noticeOperate.vue'
 import notice from './notice.vue'
 import { itemList } from '@/api/prodmgr-inv/project/dataCount.js'
 import { wfTodoCount } from "@/api/system/workflow";
-import {messagePage} from "@/api/system/message";
+import { messagePage } from "@/api/system/message";
 // import { getAllTaskByUser, funcRecentList } from "@/api/examine/to-be-reviewed"
 // import { memoGetOneMonthMemo } from '@/api/system/dashboard.js';
 import moment from 'moment';
@@ -170,7 +171,10 @@ export default {
                 { title: '标段项目', value: '0', unit: '个', },
                 { title: '供应商', value: '0', unit: '个' },
                 { title: '合同数量', value: '0', unit: '个', },
-                { title: '物资总金额', value: '0', unit: '万元' }
+                { title: '物资总金额', value: '0', unit: '万元' },
+                { title: '已收货金额', value: '0', unit: '万元' },
+                { title: '已入库金额', value: '0', unit: '万元' },
+                { title: '已出库金额', value: '0', unit: '万元' },
             ],
             //待办数量对象
             taskNum: {},
@@ -235,7 +239,10 @@ export default {
                     { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', },
                     { title: '供应商', value: res.data.sellerTotal || '0', unit: '个' },
                     { title: '合同数量', value: res.data.contractTotal || '0', unit: '个', },
-                    { title: '物资总金额', value:  (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' }
+                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已收货金额', value: (res.data.PUTTOTAL  / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已入库金额', value: (res.data.STORETOTAL  / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已出库金额', value: (res.data.OUTTOTAL / 10000).toFixed(2) || '0', unit: '万元' },
                 ]
             })
         },
@@ -391,7 +398,7 @@ export default {
 
     .grid-right {
         display: grid;
-        grid-template-rows: repeat(3, 33.33%);
+        grid-template-rows: 43.33% 33.33% 23.33%;
         grid-row-gap: 16px;
     }
 
