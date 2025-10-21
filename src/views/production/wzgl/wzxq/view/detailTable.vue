@@ -110,6 +110,27 @@
       >
       </el-table-column>
     </el-table>
+            <!-- 统计信息 -->
+    <div class="summary-info" v-if="tableData.length > 0">
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <div class="summary-item">
+            <span class="summary-label">总条数：</span>
+            <span class="summary-value amount-text"
+              >{{ tableData.length }} 条</span
+            >
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="summary-item">
+            <span class="summary-label">本次计划数量合计：</span>
+            <span class="summary-value amount-text"
+              >{{ totalPlanAmount.toFixed(2) }} </span
+            >
+          </div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -132,6 +153,11 @@ export default {
     }
   },
   computed: {
+     totalPlanAmount () {
+      return this.tableData.reduce((sum, item) => {
+        return sum + item.planAmount;
+      }, 0);
+    },
   },
   methods: {
 
@@ -148,5 +174,33 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
+}
+/* 统计信息样式 */
+.summary-info {
+  margin-left: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.summary-label {
+  color: #666;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.summary-value {
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
 }
 </style>

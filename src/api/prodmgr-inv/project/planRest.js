@@ -187,3 +187,13 @@ export const overview = (params) => {
     params
   })
 }
+
+
+// 批量导入
+export function batchImport(data) {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/importExcel`,
+    method: 'post',
+    data
+  })
+}

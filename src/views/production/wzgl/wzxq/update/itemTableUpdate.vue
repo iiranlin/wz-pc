@@ -6,7 +6,10 @@
         请设置物资需求信息（合计
         <i style="color: red">{{ tableData.length }}</i> 项）
       </div>
-      <el-button @click="onGoView"> 选择需求物资 </el-button>
+      <div style="display: flex; gap: 10px;">
+        <el-button type="primary" @click="onImport"> 导入需求物资 </el-button>
+        <el-button @click="onGoView"> 选择需求物资 </el-button>
+      </div>
     </div>
 
     <!-- 表格 -->
@@ -65,16 +68,43 @@
         </template>
       </el-table-column>
     </el-table>
+           <!-- 统计信息 -->
+    <div class="summary-info" v-if="tableData.length > 0">
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <div class="summary-item">
+            <span class="summary-label">总条数：</span>
+            <span class="summary-value amount-text"
+              >{{ tableData.length }} 条</span
+            >
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="summary-item">
+            <span class="summary-label">本次计划数量合计：</span>
+            <span class="summary-value amount-text"
+              >{{ totalPlanAmount.toFixed(2) }} </span
+            >
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+    <BatchDialog ref="batchDialogRef" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import BatchDialog from './batchDialog.vue';
+import dayjs from 'dayjs';
 export default {
   data() {
     return {
       tableData: [],
     };
+  },
+  components: {
+    BatchDialog,
   },
   computed: {
     ...mapState(['requestUpdate']),
@@ -87,11 +117,31 @@ export default {
     type() {
       return this.$route.query?.type || ''
     },
+     totalPlanAmount () {
+      return this.tableData.reduce((sum, item) => {
+        return sum + item.planAmount;
+      }, 0);
+    },
   },
   mounted() {
+    this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
     this.tableData = this.getSelectedMaterialList()
   },
   methods: {
+     onDialogOk (data) {
+      // 将批量上传的文件，导入到总的数据中
+      this.tableData = data.map(x => ({
+        ...x,
+        backPlanAmount:0,
+        supplyDate: `${dayjs(x.supplyDate).format('YYYY-MM-DD')}`
+      }))
+      this.setSelectedMaterialList(this.tableData);
+      console.log('批量导入的数据', this.tableData);
+    },
+    onImport(){
+      this.$refs.batchDialogRef.open();
+
+    },
     setTableData(data) {
       this.tableData = data
     },
@@ -168,5 +218,39 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
+}
+/* 金额文字样式 */
+.amount-text {
+  color: #e6a23c;
+  font-weight: 600;
+}
+
+/* 统计信息样式 */
+.summary-info {
+  margin-left: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.summary-label {
+  color: #666;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.summary-value {
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
 }
 </style>
