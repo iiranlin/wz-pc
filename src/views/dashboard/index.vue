@@ -60,8 +60,9 @@
                             <span>数据概况</span>
                         </div>
 
-                        <div  class="title-item-right" @click="handleNoticeMore()">
-                            <el-select size="mini" clearable @change="onProjectChange"  filterable v-model="projectId" placeholder="建设项目筛选">
+                        <div class="title-item-right" @click="handleNoticeMore()">
+                            <el-select size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
+                                placeholder="建设项目筛选">
                                 <el-option v-for="item in lineProjectOptions" :key="item.value" :label="item.label"
                                     :value="item.value"></el-option>
                             </el-select>
@@ -97,7 +98,7 @@
                             <li v-for="(item, index) in noticeOptions" :key="item.id">
                                 <el-tooltip class="item" effect="dark" :content="item.content" placement="top">
                                     <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1
-                                        }}、{{
+                                    }}、{{
                                             item.content }}</p>
                                 </el-tooltip>
                                 <p class="notice-date">{{ parseTime(item.createDate, '{y}-{m}-{d}') }}</p>
@@ -173,8 +174,8 @@ export default {
 
     data() {
         return {
-            projectLoading:false,
-            projectId:'',
+            projectLoading: false,
+            projectId: '',
             activeComponent: 'ChildAudit',
             // NOTE: The following data is hardcoded for demonstration.
             // It should be fetched from a relevant API endpoint.
@@ -238,7 +239,7 @@ export default {
         console.log('dashboard mounted');
     },
     methods: {
-        onProjectChange(val){
+        onProjectChange(val) {
             this.getDataCount(val)
         },
         async getOptions() {
@@ -257,9 +258,9 @@ export default {
             this.getDataCount()
             this.getOptions()
         },
-        getDataCount(projectId='') {
+        getDataCount(projectId = '') {
             this.projectLoading = true
-            itemList({projectId}).then(res => {
+            itemList({ projectId }).then(res => {
                 console.log(res.data.contractTotal, 'res')
                 this.dataOverview = [
                     { title: '建设项目', value: res.data.projectTotal || '0', unit: '个' },
@@ -272,9 +273,9 @@ export default {
                     { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
                 ]
             })
-            .finally(()=>{
-                this.projectLoading = false
-            })
+                .finally(() => {
+                    this.projectLoading = false
+                })
         },
         //获取待办数量
         getAllTaskNumByUser() {
@@ -401,6 +402,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
 .operation-manual-link {
     text-decoration: none;
     color: #165DFF;
@@ -581,6 +583,7 @@ export default {
         }
 
         .notice-container {
+            width: var(--rightWidth);
 
             .notice-content {
                 height: calc(100% - 48px);
@@ -760,6 +763,7 @@ export default {
         .help-container {
             text-align: center;
             position: relative;
+            width: var(--rightWidth);
 
             .video-content {
 
@@ -1034,6 +1038,10 @@ export default {
 /* --- 数据概况新样式 (v2) --- */
 .data-overview-container .overview-content {
     padding: 10px 20px;
+}
+
+.data-overview-container {
+    width: var(--rightWidth);
 }
 
 .overview-col {

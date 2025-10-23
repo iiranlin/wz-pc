@@ -1,3 +1,16 @@
+// 工作台变量
+// 定义scss 变量
+:root {
+    --rightWidth: 33vw;
+}
+
+@media (min-width: 1600px) {
+    :root {
+        --rightWidth: 35vw;
+    }
+}
+
+
 /* 全局css变量 */
 .hiddenTableRow {
   display: none;
