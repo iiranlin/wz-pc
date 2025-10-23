@@ -13,3 +13,12 @@ export const itemList = (params) => {
         params
     })
 }
+/**
+ * 获取建设项目列表
+ */
+export const getLineProjectList = () => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/statistics/projectList`,
+    method: 'get',
+  })
+}

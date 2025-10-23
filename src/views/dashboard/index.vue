@@ -59,8 +59,15 @@
                         <div class="title-item-left">
                             <span>数据概况</span>
                         </div>
+
+                        <div  class="title-item-right" @click="handleNoticeMore()">
+                            <el-select size="mini" clearable @change="onProjectChange"  filterable v-model="projectId" placeholder="建设项目筛选">
+                                <el-option v-for="item in lineProjectOptions" :key="item.value" :label="item.label"
+                                    :value="item.value"></el-option>
+                            </el-select>
+                        </div>
                     </div>
-                    <div class="overview-content">
+                    <div v-loading="projectLoading" class="overview-content">
                         <el-row :gutter="20">
                             <el-col :span="12" v-for="(item, index) in dataOverview" :key="index" class="overview-col">
                                 <div class="overview-card">
@@ -151,7 +158,7 @@ import ChildTodoList from "./childTodoList.vue";
 import memoOperate from "./components/memoOperate.vue"
 import noticeOperate from './components/noticeOperate.vue'
 import notice from './notice.vue'
-import { itemList } from '@/api/prodmgr-inv/project/dataCount.js'
+import { itemList, getLineProjectList } from '@/api/prodmgr-inv/project/dataCount.js'
 import { wfTodoCount } from "@/api/system/workflow";
 import { messagePage } from "@/api/system/message";
 // import { getAllTaskByUser, funcRecentList } from "@/api/examine/to-be-reviewed"
@@ -166,6 +173,8 @@ export default {
 
     data() {
         return {
+            projectLoading:false,
+            projectId:'',
             activeComponent: 'ChildAudit',
             // NOTE: The following data is hardcoded for demonstration.
             // It should be fetched from a relevant API endpoint.
@@ -195,6 +204,7 @@ export default {
                 pageSize: 5,
             },
             total: 0,
+            lineProjectOptions: [],
         }
     },
     computed: {
@@ -228,25 +238,42 @@ export default {
         console.log('dashboard mounted');
     },
     methods: {
+        onProjectChange(val){
+            this.getDataCount(val)
+        },
+        async getOptions() {
+            const res = await getLineProjectList();
+            if (res.success) {
+                this.lineProjectOptions = res.data.map(item => ({
+                    label: item.projectName,
+                    value: item.id
+                }));
+            }
+        },
         init() {
             this.getAllTaskNumByUser();
             this.getMessageList();
             this.getDailyList();
             this.getDataCount()
+            this.getOptions()
         },
-        getDataCount() {
-            itemList().then(res => {
+        getDataCount(projectId='') {
+            this.projectLoading = true
+            itemList({projectId}).then(res => {
                 console.log(res.data.contractTotal, 'res')
                 this.dataOverview = [
                     { title: '建设项目', value: res.data.projectTotal || '0', unit: '个' },
                     { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', },
                     { title: '供应商', value: res.data.sellerTotal || '0', unit: '个' },
                     { title: '合同数量', value: res.data.contractTotal || '0', unit: '个', },
-                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' }, 
-                    { title: '已收货金额', value: ((res.data.PUTTOTAL|| 0) / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已入库金额', value: ((res.data.STORETOTAL||0) / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已出库金额', value: ((res.data.OUTTOTAL||0) / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
                 ]
+            })
+            .finally(()=>{
+                this.projectLoading = false
             })
         },
         //获取待办数量
@@ -519,6 +546,7 @@ export default {
             .title-item-left {
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 font-size: 16px;
                 color: #1d2129;
                 font-weight: 700;
