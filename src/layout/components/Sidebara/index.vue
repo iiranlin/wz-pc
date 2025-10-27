@@ -2,7 +2,7 @@
 	<div>
 		<logo v-if="showLogo" :collapse="isCollapse" />
 		<div class="horizontal_div">
-			<el-menu :default-active="activeMenu" mode="horizontal">
+			<el-menu class="elMenuStyle" :default-active="activeMenu" mode="horizontal">
 				<template v-for="(item, index) in sidebarRoutersHidden">
 					<sidebar-item :key="item.path + index" :index="index" :item="item" v-if="index <= visibleNumber"
 						:base-path="item.path" :firstOrder="true"  />
@@ -58,14 +58,20 @@
 				return this.$store.state.settings.theme;
 			},
 		},
+		beforeMount() {
+    	window.addEventListener('resize', this.setVisibleNumber)
+  	},
+  	beforeDestroy() {
+    	window.removeEventListener('resize', this.setVisibleNumber)
+  	},
 		mounted() {
 			this.setVisibleNumber();
 		},
 		methods: {
 			// 根据宽度计算设置显示栏数
 			setVisibleNumber() {
-				const width = document.body.getBoundingClientRect().width / 2;
-				this.visibleNumber = parseInt(width / 135);
+				const width = document.body.getBoundingClientRect().width / 3;
+				this.visibleNumber = parseInt(width / 120);
 			},
 		}
 	};
@@ -80,6 +86,10 @@
 		float: none;
 		display: inline-block;
 	}
+}
+.elMenuStyle {
+	display: flex; 
+	align-items: center;
 }
 ::v-deep .el-menu--horizontal > .el-submenu .el-submenu__title{
     height: 48px;
