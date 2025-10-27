@@ -52,7 +52,7 @@ router.beforeEach(async (to, from, next) => {
     if(to.path=='/login'){
         const loginType = process.env.VUE_APP_LOGIN_TYPE || 'old'
         if (loginType === 'old') {
-            document.title = "建设物资管理系统";
+            document.title = "物资管理信息化平台";
             const link = document.querySelector('[rel="icon"]');
             link.href ="./iconLogo.png";
         } else {
@@ -66,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
         const link = document.querySelector('[rel="icon"]');
         link.href ="./Logo.png";
     }else{
-        document.title = "建设物资管理系统";
+        document.title = "物资管理信息化平台";
         const link = document.querySelector('[rel="icon"]');
         link.href ="./iconLogo.png";
     }
