@@ -193,7 +193,7 @@
               <span>数量</span>
             </template>
             <template slot-scope="scope">
-              <el-input-number
+              <!-- <el-input-number
                 v-if="type !== 'view'"
                 v-model="scope.row.amount"
                 :min="0"
@@ -201,8 +201,8 @@
                 size="mini"
                 @change="handleFieldChange('amount', scope.row)"
                 style="width: 100%"
-              ></el-input-number>
-              <span v-else>{{ scope.row.amount }}</span>
+              ></el-input-number> -->
+              <span >{{ scope.row.amount }}</span>
             </template>
           </el-table-column>
 
@@ -217,7 +217,7 @@
               <span>到站不含税单价(元)</span>
             </template>
             <template slot-scope="scope">
-              <el-input-number
+              <!-- <el-input-number
                 v-if="type !== 'view'"
                 v-model="scope.row.price"
                 :min="0"
@@ -225,8 +225,8 @@
                 size="mini"
                 @change="handleFieldChange('price', scope.row)"
                 style="width: 100%"
-              ></el-input-number>
-              <span v-else>{{ scope.row.price }}</span>
+              ></el-input-number> -->
+              <span >{{ scope.row.price }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -240,7 +240,7 @@
               <span>物资增值税率（%）</span>
             </template>
             <template slot-scope="scope">
-              <el-input-number
+              <!-- <el-input-number
                 v-if="type !== 'view'"
                 v-model="scope.row.vatRate"
                 :min="0"
@@ -248,8 +248,8 @@
                 size="mini"
                 @change="handleFieldChange('vatRate', scope.row)"
                 style="width: 100%"
-              ></el-input-number>
-              <span v-else>{{ scope.row.vatRate }}%</span>
+              ></el-input-number> -->
+              <span>{{ scope.row.vatRate }}</span>
             </template>
           </el-table-column>
           <el-table-column
