@@ -85,6 +85,15 @@
           </el-form-item>
         </template>
 
+         <!-- 补充合同比例 -->
+        <template #supplementalRatioSlot="{ formModel }">
+          <el-form-item prop="supplementalRatio" label="补充合同比例" class="label-right-align">
+            <template>
+              {{ formModel.supplementalRatio }}%
+            </template>
+          </el-form-item>
+        </template>
+
         <!-- 附件 -->
         <template #fileListSlot="scope">
           <el-form-item

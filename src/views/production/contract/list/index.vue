@@ -62,6 +62,10 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
+        <!-- 补充合同比例 -->
+        <template #supplementalRatio="scope">
+          {{ scope.value }}%
+        </template>
         <template #validityGuarantee="scope">
           {{ scope.data.validityGuarantee|formatDate }} 至 {{ scope.data.validityGuaranteeEnd|formatDate }}
         </template>
