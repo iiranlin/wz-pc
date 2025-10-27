@@ -254,8 +254,8 @@ export default {
           break;
         case "update":
           this.$router.push({
-            name: "addSection",
-            query: { id: idArr[0], type: "update" },
+            name: "addValidityGuarantee",
+            query: { id: idArr[0],contractId:rowArr[0].contractId, type: "update" },
           });
           break;
         case "delete":
