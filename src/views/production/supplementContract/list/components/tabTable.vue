@@ -359,6 +359,38 @@
               <span v-else>{{ scope.row.deliveryDate }}</span>
             </template>
           </el-table-column>
+          <el-table-column
+            v-if="type == 'view'"
+            prop="storeTotal"
+            label="累计入库量"
+            width="150"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="type == 'view'"
+            prop="outTotal"
+            label="累计出库量"
+            width="150"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="type == 'view'"
+            prop="storeTotalRates"
+            label="已到货金额"
+            width="150"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="type == 'view'"
+            prop="outTotalRates"
+            label="出库金额"
+            width="150"
+            align="center"
+          >
+          </el-table-column>
         </el-table>
       </virtual-scroll>
     </div>
