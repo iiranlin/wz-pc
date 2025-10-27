@@ -303,7 +303,7 @@ export default {
         margin-top: 10px;
         width: 222px;
         height: 66px;
-        background: url(../assets/login/Logo.png) no-repeat left top;
+        background: url(../assets/login/Logo2.png) no-repeat left top;
         background-size: contain;
       }
     }
@@ -348,7 +348,7 @@ export default {
       line-height: 999px;
       color: #0F2241;
       overflow: hidden;
-      background: url(../assets/login/Title.png) no-repeat center top;
+      background: url(../assets/login/Title2.png) no-repeat center top;
       background-size: contain;
     }
     .banner-login-btn{

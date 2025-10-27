@@ -21,7 +21,7 @@ export default {
     },
     data() {
         return {
-            title: process.env.VUE_APP_TITLE,
+            title: process.env.VUE_APP_NEW_TITLE,
             logo: logoImg
         }
     }
