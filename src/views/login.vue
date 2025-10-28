@@ -116,7 +116,7 @@ import { getVerificationCode, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
 import logo from "@/assets/logo/logo.png";
-import loginTitle from '../assets/login/Login Title@2x.webp';
+import loginTitle from '../assets/login/Login Title@2x.png';
 import { setToken } from "@/utils/auth";
 export default {
     name: "Login",

@@ -141,7 +141,7 @@ import logo2 from "@/assets/login/Icon(2)@2x.webp";
 import logo3 from "@/assets/login/Icon(3)@2x.webp";
 import logo4 from "@/assets/login/Icon(4)@2x.webp";
 
-import loginTitle from '../assets/login/Login Title@2x.webp';
+import loginTitle from '../assets/login/Login Title@2x.png';
 import { setToken } from "@/utils/auth";
 import { mapGetters, mapState } from 'vuex'
 import { wfTodoCount } from "@/api/system/workflow";
