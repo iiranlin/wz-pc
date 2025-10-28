@@ -175,7 +175,7 @@ export default {
        * 已启用只能变更
        */
       if (btn.buttonCode === 'update') {
-        // return this.selection[0].contractStatus == 2
+        return this.selection[0].contractStatus == 2
       }
       if (btn.buttonCode === 'contractStatus') {
         return this.selection[0].contractStatus == 2
