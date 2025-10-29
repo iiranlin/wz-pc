@@ -180,10 +180,10 @@ export default {
             // NOTE: The following data is hardcoded for demonstration.
             // It should be fetched from a relevant API endpoint.
             dataOverview: [
-                { title: '建设项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ path: '/project/line' }) } },
-                { title: '标段项目', value: '0', unit: '个',  onClickFun: () => { this.$router.push({ path: '/project/section' }) } },
+                { title: '建设项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
+                { title: '标段项目', value: '0', unit: '个',  onClickFun: () => { this.$router.push({ name: 'section' }) } },
                 { title: '供应商', value: '0', unit: '个', onClickFun: undefined },
-                { title: '启用合同数量', value: '0', unit: '个', onClickFun: () => { this.$router.push({ path: '/contract/contractList' }) } },
+                { title: '启用合同数量', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
                 { title: '物资总金额', value: '0', unit: '万元', onClickFun: undefined },
                 { title: '已收货金额', value: '0', unit: '万元', onClickFun: undefined },
                 { title: '已入库金额', value: '0', unit: '万元', onClickFun: undefined },
@@ -240,8 +240,6 @@ export default {
     },
     methods: {
         handleOverviewClick(item) {
-            console.log(item, 'item')
-            console.log(item.onClickFun, "跳转详情")
             if (item.onClickFun) {
                 item.onClickFun()
             }
@@ -270,10 +268,10 @@ export default {
             itemList({ projectId }).then(res => {
                 console.log(res.data.contractTotal, 'res')
                 this.dataOverview = [
-                    { title: '建设项目', value: res.data.projectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ path: '/project/line' }) } },
-                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ path: '/project/section' }) } },
+                    { title: '建设项目', value: res.data.projectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
+                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ name: 'section' }) } },
                     { title: '供应商', value: res.data.sellerTotal || '0', unit: '个', onClickFun: undefined },
-                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ path: '/contract/contractList' }) } },
+                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
                     { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                     { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                     { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
