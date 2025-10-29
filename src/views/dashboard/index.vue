@@ -615,8 +615,8 @@ export default {
                             margin-top: 0;
                             font-size: 14px;
                             color: #4e5969;
-                            width: calc(100% - 190px);
-                            margin-right: 40px;
+                            width: calc(100% - 100px);
+                            margin-right: -30px;
                             white-space: nowrap;
                             text-overflow: ellipsis;
                             overflow: hidden;
