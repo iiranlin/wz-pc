@@ -61,7 +61,7 @@
                         </div>
 
                         <div class="title-item-right" @click="handleNoticeMore()">
-                            <el-select size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
+                            <el-select style="width: 100%;" size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
                                 placeholder="建设项目筛选">
                                 <el-option v-for="item in lineProjectOptions" :key="item.value" :label="item.label"
                                     :value="item.value"></el-option>
@@ -574,6 +574,7 @@ export default {
                 padding: 0px 5px;
                 font-size: 14px;
                 color: #165DFF;
+                width: 50%;
 
                 & :hover {
                     cursor: pointer;
