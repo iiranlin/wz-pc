@@ -12,6 +12,12 @@
             :numberShow="numberShow" :buttonDisable="handleButtonDisable" :selectable="selectable"
             @handleSelectionChange="handleSelectionChange" @selectChange="selectChange" @handleButton="handleButton"
             @emitAblFilter="emitAblFilter">
+            <!-- 内容 -->
+          <template #content="scope">
+            <el-button type="text" @click="toDetails(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
            <!-- <template slot="noticeMessage" slot-scope="scope">
                 <el-link :type="!scope.data.fileList || !scope.data.fileList.length ? 'info' : 'primary'"
                     :disabled="!scope.data.fileList || !scope.data.fileList.length"
@@ -67,6 +73,18 @@ export default {
         this.menuProperty();
     },
     methods: {
+        toDetails(item) {
+            if (item.businessType == 'HTJE') {
+                // 合同金额超过10% businessId
+                this.$router.push({ name: 'detailContract', query: { id: item.businessId, type: 'view' } })
+            } else if (item.businessType == 'RKWZ') {
+                // 入库物资临期提醒
+                this.$router.push({ name: 'imPage', query: { id: item.businessId, type: 'view', storeStatus: 3 } })
+            } else if (item.businessType == 'HTBH') {
+                // 合同保函日期提醒
+                this.$router.push({ name: 'detailContract', query: { id: item.businessId, type: 'view' } })
+            }
+        },
         handleTopButtonDisabled(button) {
             return this.selection.some(row => this.handleButtonDisable(button, row))
         },
