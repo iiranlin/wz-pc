@@ -60,7 +60,7 @@
                             <span>数据概况</span>
                         </div>
 
-                        <div class="title-item-right" @click="handleNoticeMore()">
+                        <div style="width: 50%;" class="title-item-right" @click="handleNoticeMore()">
                             <el-select style="width: 100%;" size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
                                 placeholder="建设项目筛选">
                                 <el-option v-for="item in lineProjectOptions" :key="item.value" :label="item.label"
@@ -95,7 +95,7 @@
                     </div>
                     <div class="notice-content" v-if="noticeOptions.length > 0">
                         <ul style="min-height: 205px;">
-                            <li v-for="(item, index) in noticeOptions" :key="item.id">
+                            <li v-for="(item, index) in noticeOptions" :key="item.id" @click="handlerViewDetails(item)">
                                 <el-tooltip class="item" effect="dark" :content="item.content" placement="top">
                                     <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1
                                     }}、{{
@@ -239,6 +239,18 @@ export default {
         console.log('dashboard mounted');
     },
     methods: {
+        handlerViewDetails(item) {
+            if (item.businessType == 'HTJE') {
+                // 合同金额超过10% businessId
+                this.$router.push({ name: 'detailContract', query: { id: item.businessId, type: 'view' } })
+            } else if (item.businessType == 'RKWZ') {
+                // 入库物资临期提醒
+                this.$router.push({ name: 'imPage', query: { id: item.businessId, type: 'view', storeStatus: 3 } })
+            } else if (item.businessType == 'HTBH') {
+                // 合同保函日期提醒
+                this.$router.push({ name: 'detailContract', query: { id: item.businessId, type: 'view' } })
+            }
+        },
         handleOverviewClick(item) {
             if (item.onClickFun) {
                 item.onClickFun()
@@ -579,7 +591,7 @@ export default {
                 padding: 0px 5px;
                 font-size: 14px;
                 color: #165DFF;
-                width: 50%;
+                // width: 50%;
 
                 & :hover {
                     cursor: pointer;
