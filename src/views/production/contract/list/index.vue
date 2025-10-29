@@ -61,6 +61,7 @@
           @selectChange="selectChange"
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
+          :rowClassName="tableRowClassName"
         >
         <!-- 补充合同比例 -->
         <template #supplementalRatio="scope">
@@ -159,6 +160,14 @@ export default {
     }
   },
   methods: {
+     tableRowClassName({ row, rowIndex }) {
+      console.log(row, 'row')
+      // 条件判断，返回类名
+      if (row.supplementalRatio > 10) {
+        return 'row-warn';
+      } 
+      return '';
+    },
     selectable (row) {
       // 履约比例等于0允许删除
       console.log(row, 'row')
@@ -313,5 +322,11 @@ export default {
   flex: 1;
   height: 100%;
   overflow-y: scroll;
+}
+
+</style>
+<style>
+.row-warn{
+  color: #ea0d0d !important;
 }
 </style>
