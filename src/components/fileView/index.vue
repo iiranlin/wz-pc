@@ -5,24 +5,26 @@
                 <slot></slot>
             </span>
         </div>
-        <Dialog v-if="visible" custom-class="fileViewDialog" :show-close="false"
-            :visible="true" :destroy-on-close="true" @close="handleClose" :close-on-click-modal="false" 
-            :modal-append-to-body="true" @full="handleFullChange" :append-to-body="true">
+        <Dialog v-if="visible" custom-class="fileViewDialog" :show-close="false" :visible="true"
+            :destroy-on-close="true" @close="handleClose" :close-on-click-modal="false" :modal-append-to-body="true"
+            @full="handleFullChange" :append-to-body="true">
             <template slot="title">
                 <div class="filePreviewTitle">
                     <div class="title">{{ title }}</div>
                 </div>
             </template>
-            <div v-loading="loading" :key="key"
-                class="filePreview">
+            <div v-loading="loading" :key="key" class="filePreview">
                 <vue-office-docx v-if="isSuccess && ['docx'].includes(fileType)" :src="url" @rendered="handleRendered"
                     @error="handleError" />
-                <vue-office-pptx v-else-if="isSuccess && ['pptx'].includes(fileType)"
-                    :src="url" @loaded="handleRendered" @error="handleError" />
+                <vue-office-pptx v-else-if="isSuccess && ['pptx'].includes(fileType)" :src="url"
+                    @loaded="handleRendered" @error="handleError" />
                 <vue-office-excel v-else-if="isSuccess && ['xlsx', 'xls'].includes(fileType)" :src="url"
                     :options="excelOptions" @rendered="handleRendered" @error="handleError" />
-                <vue-office-pdf v-else-if="isSuccess && ['pdf'].includes(fileType)" :src="url"
-                    @loaded="handleRendered" />
+                <template v-else-if="isSuccess && ['pdf'].includes(fileType)">
+                    <vue-office-pdf ref="pdf" :page="currentPage" @num-pages="pageCount = $event"
+                        @page-loaded="currentPage = $event" :src="url" @loaded="handleRendered" />
+                </template>
+
                 <div v-else-if="isSuccess && pngTypes.includes(fileType)" class="gifFile">
                     <img :src="url" />
                 </div>
@@ -31,6 +33,11 @@
                 </div>
             </div>
             <div slot="footer" class="filePreviewFooter">
+                <template v-if="isSuccess && fileType === 'pdf'">
+                    <el-button plain round @click="prev" :disabled="currentPage <= 1" style="margin-right: 5px;">上一页</el-button>
+                    <span>第 {{ currentPage }} 页 / 共 {{ pageCount }} 页</span>
+                    <el-button plain round @click="next" :disabled="currentPage >= pageCount" style="margin-inline: 5px;">下一页</el-button>
+                </template>
                 <el-button plain round @click="handleDownload" style="margin-right: 5px;">下 载</el-button>
                 <el-button plain round @click="handleClose">关 闭</el-button>
             </div>
@@ -91,6 +98,9 @@ export default {
     },
     data() {
         return {
+            currentPage: 0, // pdf文件页码
+            pageCount: 0, // pdf文件总页数
+
             svgIcon: {
                 png: imgIcon,
                 jpg: imgIcon,
@@ -143,10 +153,24 @@ export default {
         handleClose() {
             this.visible = false
         },
-        
+
         handleRendered(res) {
             this.isSuccess = true
             this.loading = false
+            this.currentPage = 1; // 加载的时候先加载第一页
+
+        },
+        //上一页
+        prev() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        //下一页
+        next() {
+            if (this.currentPage < this.pageCount) {
+                this.currentPage++;
+            }
         },
         handleError(err) {
             this.loading = false
@@ -163,7 +187,7 @@ export default {
                 this.handleError()
             }
         },
-      async handleDownload() {
+        async handleDownload() {
             const { filePath, fileName, uploadType } = this.fileObject
 
             // 判断是否为OSS文件
@@ -285,15 +309,18 @@ export default {
 
 .fileViewDialog {
     height: 60vh;
+
     .el-dialog__body,
     .el-dialog__footer,
     .el-dialog__header {
         padding: 0 0px;
         box-sizing: border-box;
     }
+
     .el-dialog__body {
         height: calc(100% - 100px);
     }
+
     .filePreviewTitle {
         display: flex;
         flex-direction: row;
@@ -301,6 +328,7 @@ export default {
         align-items: center;
         background-color: #f0f0f0;
         padding: 0 20px;
+
         .title {
             font-size: 16px;
             font-weight: 600;
@@ -332,6 +360,7 @@ export default {
         min-height: 400px;
         overflow-y: auto;
         background-color: #fff;
+
         .gifFile {
             height: 100%;
             width: 100%;
