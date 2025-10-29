@@ -61,7 +61,7 @@
                         </div>
 
                         <div class="title-item-right" @click="handleNoticeMore()">
-                            <el-select size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
+                            <el-select style="width: 100%;" size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
                                 placeholder="建设项目筛选">
                                 <el-option v-for="item in lineProjectOptions" :key="item.value" :label="item.label"
                                     :value="item.value"></el-option>
@@ -71,7 +71,7 @@
                     <div v-loading="projectLoading" class="overview-content">
                         <el-row :gutter="20">
                             <el-col :span="12" v-for="(item, index) in dataOverview" :key="index" class="overview-col">
-                                <div class="overview-card">
+                                <div class="overview-card" @click="handleOverviewClick(item)">
                                     <div class="card-details">
                                         <p class="card-title">{{ item.title }}</p>
                                         <p class="card-value">
@@ -180,14 +180,14 @@ export default {
             // NOTE: The following data is hardcoded for demonstration.
             // It should be fetched from a relevant API endpoint.
             dataOverview: [
-                { title: '建设项目', value: '0', unit: '个' },
-                { title: '标段项目', value: '0', unit: '个', },
-                { title: '供应商', value: '0', unit: '个' },
-                { title: '启用合同数量', value: '0', unit: '个', },
-                { title: '物资总金额', value: '0', unit: '万元' },
-                { title: '已收货金额', value: '0', unit: '万元' },
-                { title: '已入库金额', value: '0', unit: '万元' },
-                { title: '已出库金额', value: '0', unit: '万元' },
+                { title: '建设项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
+                { title: '标段项目', value: '0', unit: '个',  onClickFun: () => { this.$router.push({ name: 'section' }) } },
+                { title: '供应商', value: '0', unit: '个', onClickFun: undefined },
+                { title: '启用合同数量', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
+                { title: '物资总金额', value: '0', unit: '万元', onClickFun: undefined },
+                { title: '已收货金额', value: '0', unit: '万元', onClickFun: undefined },
+                { title: '已入库金额', value: '0', unit: '万元', onClickFun: undefined },
+                { title: '已出库金额', value: '0', unit: '万元', onClickFun: undefined },
             ],
             //待办数量对象
             taskNum: {},
@@ -239,6 +239,11 @@ export default {
         console.log('dashboard mounted');
     },
     methods: {
+        handleOverviewClick(item) {
+            if (item.onClickFun) {
+                item.onClickFun()
+            }
+        },
         onProjectChange(val) {
             this.getDataCount(val)
         },
@@ -263,14 +268,14 @@ export default {
             itemList({ projectId }).then(res => {
                 console.log(res.data.contractTotal, 'res')
                 this.dataOverview = [
-                    { title: '建设项目', value: res.data.projectTotal || '0', unit: '个' },
-                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', },
-                    { title: '供应商', value: res.data.sellerTotal || '0', unit: '个' },
-                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个', },
-                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
-                    { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元' },
+                    { title: '建设项目', value: res.data.projectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
+                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ name: 'section' }) } },
+                    { title: '供应商', value: res.data.sellerTotal || '0', unit: '个', onClickFun: undefined },
+                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
+                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
+                    { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
+                    { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
+                    { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                 ]
             })
                 .finally(() => {
@@ -574,6 +579,7 @@ export default {
                 padding: 0px 5px;
                 font-size: 14px;
                 color: #165DFF;
+                width: 50%;
 
                 & :hover {
                     cursor: pointer;
@@ -614,8 +620,8 @@ export default {
                             margin-top: 0;
                             font-size: 14px;
                             color: #4e5969;
-                            width: calc(100% - 190px);
-                            margin-right: 40px;
+                            width: calc(100% - 100px);
+                            margin-right: -30px;
                             white-space: nowrap;
                             text-overflow: ellipsis;
                             overflow: hidden;
