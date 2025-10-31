@@ -29,7 +29,7 @@
 
 				<template #codeSolt="{ formModel }">
 					<el-form-item prop="code" :rules="[{ required: true, message: '请选择物资大类', trigger: 'change' }]"
-						label-width="140px" label="物资大类" class="label-right-align">
+						label-width="150px" label="物资大类" class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select :disabled="checked" v-model="formModel.code" filterable required
 								style="width: 100%" placeholder="请选择"
@@ -106,7 +106,7 @@
 						:rules="[{ required: true, message: '请输入物资名称', trigger: 'change' }]" label="物资名称"
 						label-width="150px" class="label-right-align">
 						<template v-if="type !== 'view'">
-							<el-input v-model="formModel.purchaseFileName" :disabled="checked" />
+							<el-input v-model="formModel.purchaseFileName" :disabled="checked" placeholder="请输入" />
 						</template>
 						<template v-else>
 							{{ formModel.purchaseFileName }}
@@ -117,7 +117,8 @@
 					<el-form-item prop="quantity" :rules="[{ required: true, message: '请输入数量', trigger: 'change' }]"
 						label="数量" class="label-right-align">
 						<template v-if="type !== 'view'">
-							<el-input-number :min="0.01" v-model="formModel.quantity" :disabled="checked" style="width: 100%;" />
+							<el-input-number :min="0.01" v-model="formModel.quantity" :disabled="checked"
+								style="width: 100%;" />
 						</template>
 						<template v-else>
 							{{ formModel.quantity }}
@@ -125,12 +126,12 @@
 					</el-form-item>
 				</template>
 				<template #unitSlot="{ formModel }">
-					<el-form-item label-width="140px" prop="unit" :rules="[{ required: true, message: '请选择计量单位', trigger: 'change' }]"
-						label="计量单位" class="label-right-align">
+					<el-form-item label-width="140px" prop="unit"
+						:rules="[{ required: true, message: '请选择计量单位', trigger: 'change' }]" label="计量单位"
+						class="label-right-align">
 						<template v-if="type !== 'view'">
 							<el-select :disabled="checked" v-model="formModel.unit" filterable required allow-create
-								style="width: 100%" placeholder="请选择"
-								>
+								style="width: 100%" placeholder="请选择">
 								<el-option v-for="item in dict.type.MeasureUnit" :key="item.value" :label="item.label"
 									:value="item.label">
 								</el-option>
@@ -146,7 +147,8 @@
 						:rules="[{ required: false, message: '请输入预估采购金额', trigger: 'change' }]" label=" 预估采购金额(万元)"
 						class="label-right-align">
 						<template v-if="type !== 'view'">
-							<el-input-number :min="0" v-model="formModel.amount" :disabled="checked" style="width: 100%;" />
+							<el-input-number :min="0" v-model="formModel.amount" :disabled="checked"
+								style="width: 100%;" />
 						</template>
 						<template v-else>
 							{{ formModel.amount }}
@@ -162,14 +164,15 @@
 							</el-date-picker>
 						</template>
 						<template v-else>
-							{{ formModel.registrationDate | dateFormat  }}
+							{{ formModel.registrationDate | dateFormat }}
 						</template>
 					</el-form-item>
 				</template>
 				<template #remakSolt="{ formModel }">
-					<el-form-item prop="remak" label-width="150px" label="备注" class="label-right-align">
+					<el-form-item :rules="[{ required: true, message: '请备注物资相关信息', trigger: 'blur' }]" prop="remak"
+						label-width="150px" label="备注" class="label-right-align">
 						<template v-if="type !== 'view'">
-							<el-input type="text" v-model="formModel.remak" />
+							<el-input type="text" v-model="formModel.remak" placeholder="请备注物资相关信息" />
 						</template>
 						<template v-else>
 							{{ formModel.remak }}
@@ -183,7 +186,7 @@
 						:rules="[{ required: true, message: '请上传采购文件审查登记表', trigger: 'change' }]" label="采购文件审查登记表"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -192,7 +195,7 @@
 						:rules="[{ required: true, message: '请上传招标文件(含技术规格书)', trigger: 'change' }]"
 						label="招标文件(含技术规格书)" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -201,7 +204,7 @@
 						:rules="[{ required: false, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -210,7 +213,8 @@
 						:rules="[{ required: false, message: '请上传采购方案（批复）文件', trigger: 'change' }]" label="采购方案（批复）"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.schemeApproval" :limit="1"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view' || checked"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -218,61 +222,64 @@
 					<el-form-item prop="tenderAnnouncement" label-width="170px" label="招标公告网页版"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.tenderAnnouncement" :limit="1"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidAddendumSolt="scope">
 					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidEvaluationReportSolt="scope">
 					<el-form-item prop="bidEvaluationReport" label-width="140px" label="评标报告" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidEvaluationReport" :limit="1"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCandidateWebSolt="scope">
 					<el-form-item prop="bidCandidateWeb" label-width="170px" label="中标候选人公示网页版"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCandidateWeb" :limit="1"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #acceptanceSolt="scope">
 					<el-form-item prop="acceptance" label-width="190px" label="中标通知书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
 					<el-form-item prop="bidCopy" label-width="170px" label="中标人的投标副本" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCopy" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #contractCopySolt="scope">
 					<el-form-item prop="contractCopy" label-width="140px" label="合同副本" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #commitmentSolt="scope">
 					<el-form-item prop="commitment" label-width="190px" label="供应商质量终身责任承诺书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="1" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #otherSolt="scope">
 					<el-form-item prop="other" label-width="140px" label="其他文件" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.other" :limit="100" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 			</VFormRender>
 		</div>
-      <toBeReviewed ref="toBereview" />
+		<toBeReviewed ref="toBereview" />
 	</div>
 </template>
 
@@ -306,19 +313,19 @@ import dayjs from 'dayjs'
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
 export default {
 	name: "SectionAdd",
-	dicts: ["purchase_code", "flowStatus","MeasureUnit"],
+	dicts: ["purchase_code", "flowStatus", "MeasureUnit"],
 	components: {
 		VFormRender,
 		fileUpload,
 		toBeReviewed
 	},
 	filters: {
-		dateFormat (value, format = 'YYYY-MM-DD') {
+		dateFormat(value, format = 'YYYY-MM-DD') {
 			if (!value) return ''
 			return dayjs(value).format(format)
 		}
 	},
-	data () {
+	data() {
 		const userInfo = getUserInfo()
 		return {
 			purchaseItem: [],
@@ -361,8 +368,8 @@ export default {
 				type: 'create, update'
 			},
 			{ buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
-        	{ buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
-       		{ buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+			{ buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
+			{ buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
 			],
 			constructionOptions: [],
 			gysOptions: [],
@@ -372,10 +379,10 @@ export default {
 		}
 	},
 	computed: {
-		type () {
+		type() {
 			return this.$route.query.type
 		},
-		id () {
+		id() {
 			return this.$route.query?.id || ''
 		},
 		name() {
@@ -385,10 +392,10 @@ export default {
 			return JSON.parse(this.$route.query.auditArr || '[]')
 		},
 	},
-	async created () {
+	async created() {
 		this.findAllListData();
 	},
-	mounted () {
+	mounted() {
 		if (['view', 'update'].includes(this.type)) {
 			this.updateInit(this.id)
 
@@ -410,8 +417,8 @@ export default {
 
 	},
 	methods: {
-		findAllListData () {
-			if(this.type === 'view') {
+		findAllListData() {
+			if (this.type === 'view') {
 				return
 			}
 			getCurrentSection().then(res => {
@@ -422,7 +429,7 @@ export default {
 				})
 			});
 		},
-		onDataChange (data) {
+		onDataChange(data) {
 			if (['delete'].includes(data.type)) {
 				this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
 				return
@@ -432,16 +439,16 @@ export default {
 				return
 			}
 		},
-		onAdd () { },
+		onAdd() { },
 		//初始化
-		init () {
+		init() {
 			this.$nextTick(async () => {
 				this.title = "新建";
 				await this.formFillInPage()
 			});
 		},
 		// 编辑初始化
-		async updateInit (id) {
+		async updateInit(id) {
 			await Api.detail(id).then(res => {
 				this.$nextTick(async () => {
 					this.title = '编辑';
@@ -477,7 +484,7 @@ export default {
 				});
 			});
 		},
-		newButton (buttonCode) {
+		newButton(buttonCode) {
 			if (buttonCode === 'cancel') {
 				this.cancel()
 				return
@@ -508,11 +515,11 @@ export default {
 
 			}
 		},
-		cancel () {
+		cancel() {
 			this.$tab.closeOpenPage(true);
 		},
 
-		buttonShow (item) {
+		buttonShow(item) {
 			if (item.buttonCode === 'save') {
 				return this.type !== 'view'
 			}
@@ -525,7 +532,7 @@ export default {
 			return true
 		},
 		//新建
-		handleCreate () {
+		handleCreate() {
 			this.$refs.vFormRef.validateForm(async (valid) => {
 				if (!valid) {
 					this.$message.warning('请完善信息')
@@ -538,15 +545,15 @@ export default {
 					formData.projefctName = this.projectData.sectionName;
 					formData.projectId = this.projectData.projectId;
 					formData.unitName = this.projectData.constructionCompany;
-					formData.bidDocument = JSON.stringify(formData.bidDocument);
-					formData.registration = JSON.stringify(formData.registration);
+					const bidDocument = JSON.stringify(formData.bidDocument);
+					const registration = JSON.stringify(formData.registration);
 					formData.scheme = JSON.stringify(formData.scheme);
 					formData.schemeApproval = JSON.stringify(formData.schemeApproval);
 
 					formData.tenderAnnouncement = JSON.stringify(formData.tenderAnnouncement)
-					formData.bidAddendum =  JSON.stringify(formData.bidAddendum)
-					formData.bidEvaluationReport =  JSON.stringify(formData.bidEvaluationReport)
-					formData.bidCandidateWeb =  JSON.stringify(formData.bidCandidateWeb)
+					formData.bidAddendum = JSON.stringify(formData.bidAddendum)
+					formData.bidEvaluationReport = JSON.stringify(formData.bidEvaluationReport)
+					formData.bidCandidateWeb = JSON.stringify(formData.bidCandidateWeb)
 					formData.acceptance = JSON.stringify(formData.acceptance)
 					formData.bidCopy = JSON.stringify(formData.bidCopy)
 					formData.contractCopy = JSON.stringify(formData.contractCopy)
@@ -556,7 +563,10 @@ export default {
 						this.type === 'update' ? `modify` : `create`
 					](Object.assign({
 						id: this.type === 'update' ? this.id : ''
-					}, formData, {}))
+					}, formData, {
+						bidDocument,
+						registration
+					}))
 						.then(({
 							message
 						}) => {
@@ -579,7 +589,7 @@ export default {
 				})
 			}, 100)
 		},
-		formFillInPage () {
+		formFillInPage() {
 			return new Promise((resolve) => {
 				formFillInPage('purchase').then(res => {
 					this.$refs['vFormRef'].setFormJson(res.data)
@@ -590,25 +600,25 @@ export default {
 				})
 			})
 		},
-		getItemList (code) {
+		getItemList(code) {
 			purchaseItemFindAllList({ code: code }).then(res => {
 				this.purchaseItem = res.data;
 			});
 		},
 
-		getTypeData (code, purchaseCode) {
+		getTypeData(code, purchaseCode) {
 			purchaseTypeFindAllList({ code: code, purchaseCode, purchaseCode }).then(res => {
 				this.purchaseType = res.data;
 			});
 		},
 
-		getDetailDate (code, purchaseCode, purchaseTypeCode) {
+		getDetailDate(code, purchaseCode, purchaseTypeCode) {
 			purchaseDetailFindAllList({ code: code, purchaseCode: purchaseCode, purchaseTypeCode: purchaseTypeCode }).then(res => {
 				this.purcahseDetail = res.data;
 			});
 		},
 
-		selectDataChange (options, val, key) {
+		selectDataChange(options, val, key) {
 			if (key == 'code') {
 				this.code = val;
 				this.purchaseCode = null;
@@ -658,7 +668,7 @@ export default {
 				});
 			}
 		},
-		selectChange (options, val, key) {
+		selectChange(options, val, key) {
 			this.$refs.vFormRef.setFormData({
 				[key]: options.find(item => item.value === val)?.label
 			})
