@@ -23,7 +23,7 @@
                 </el-col>
             </collapse>
 
-            <el-col :span="20" :xs="24" class="container_flex">
+            <el-col :span="12" :xs="24" class="container_flex">
                 <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
                     :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
                     @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"

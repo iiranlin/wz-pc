@@ -16,7 +16,7 @@
             </collapse>
 
             <!--用户数据-->
-            <el-col :span="14" :xs="24" class="container_flex" v-loading="loading">
+            <el-col :span="12" :xs="24" class="container_flex" v-loading="loading">
                 <right-toolbar ref="rightToolbar" :formData="{}" :searchArr="property.search || []"
                     :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
                     @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset"

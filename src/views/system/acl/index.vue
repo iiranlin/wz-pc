@@ -27,7 +27,7 @@
             </collapse>
             
             <!--用户数据-->
-            <el-col :span="20" :xs="24" class="container_flex" v-loading="loading">
+            <el-col :span="12" :xs="24" class="container_flex" v-loading="loading">
                 <el-table class="container_table" height="100%" :data="arrAclList" ref="product" border lazy row-key="id"
                     :row-class-name="rowClassNameFun" :header-row-class-name="headerRowClassName" @select="selectFun"
                     @select-all="selectAllFun" :header-cell-style="{ background: '#fafafa' }">
