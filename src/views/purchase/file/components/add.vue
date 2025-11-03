@@ -186,7 +186,8 @@
 						:rules="[{ required: true, message: '请上传采购文件审查登记表', trigger: 'change' }]" label="采购文件审查登记表"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="1" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -195,7 +196,8 @@
 						:rules="[{ required: true, message: '请上传招标文件(含技术规格书)', trigger: 'change' }]"
 						label="招标文件(含技术规格书)" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="1" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -204,7 +206,8 @@
 						:rules="[{ required: false, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="1" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
 
@@ -425,7 +428,9 @@ export default {
 				this.projectData = res.data;
 				this.$refs['vFormRef'].setFormData({
 					projefctName: res.data.projectName,
-					unitName: res.data.constructionCompany
+					unitName: res.data.constructionCompany,
+					sectionShortName: res.data.projectShortName,
+					projectName: res.data.projectName,
 				})
 			});
 		},
@@ -549,6 +554,9 @@ export default {
 					const registration = JSON.stringify(formData.registration);
 					formData.scheme = JSON.stringify(formData.scheme);
 					formData.schemeApproval = JSON.stringify(formData.schemeApproval);
+
+					formData.projectName = this.projectData.projectName;
+					formData.sectionShortName = this.projectData.projectShortName;
 
 					formData.tenderAnnouncement = JSON.stringify(formData.tenderAnnouncement)
 					formData.bidAddendum = JSON.stringify(formData.bidAddendum)

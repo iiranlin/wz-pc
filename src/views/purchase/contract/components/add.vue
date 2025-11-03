@@ -1,85 +1,48 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: type === 'view' }">
-      <VFormRender
-        @formValueChange="formValueChange"
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: type === 'view' }"
-      >
+      <VFormRender @formValueChange="formValueChange" :form-json="formJson" :form-data="formData"
+        :option-data="optionData" ref="vFormRef" :global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
         <template #projefctNameSolt="{ formModel }">
-          <el-form-item
-            prop="projefctName"
-            label-width="120px"
-            label="标段项目"
-            class="label-right-align"
-          >
+          <el-form-item prop="projefctName"  label="标段项目" class="label-right-align">
             <template v-if="type === 'create'">
               <span class="titleCss" :title="projectData.sectionName">{{
                 projectData.sectionName
-              }}</span>
+                }}</span>
             </template>
             <template v-else>
               <span class="titleCss" :title="formModel.projefctName">{{
                 formModel.projefctName
-              }}</span>
+                }}</span>
             </template>
           </el-form-item>
         </template>
 
         <template #unitNameSlot="{ formModel }">
-          <el-form-item
-            prop="unitName"
-            label-width="130px"
-            label="买方"
-            class="label-right-align"
-          >
+          <el-form-item prop="unitName" label-width="130px" label="买方" class="label-right-align">
             <template v-if="type === 'create'">
               <span class="titleCss" :title="projectData.constructionCompany">{{
                 projectData.constructionCompany
-              }}</span>
+                }}</span>
             </template>
             <template v-else>
               <span class="titleCss" :title="formModel.unitName">{{
                 formModel.unitName
-              }}</span>
+                }}</span>
             </template>
           </el-form-item>
         </template>
         <template #codeSolt="{ formModel }">
-          <el-form-item
-            prop="code"
-            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label-width="175px"
-            label="物资大类"
-            class="label-right-align"
-          >
+          <el-form-item prop="code" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label-width="175px"
+            label="物资大类" class="label-right-align">
             <template v-if="type !== 'view'">
-              <el-select
-                v-model="formModel.code"
-                filterable
-                required
-                style="width: 100%"
-                placeholder="请选择"
-                @change="
-                  (val) =>
-                    selectDataChange(dict.type.purchase_code, val, 'code')
-                "
-              >
-                <el-option
-                  v-for="item in dict.type.purchase_code"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
+              <el-select v-model="formModel.code" filterable required style="width: 100%" placeholder="请选择" @change="
+                (val) =>
+                  selectDataChange(dict.type.purchase_code, val, 'code')
+              ">
+                <el-option v-for="item in dict.type.purchase_code" :key="item.value" :label="item.label"
+                  :value="item.value">
                 </el-option>
               </el-select>
             </template>
@@ -90,30 +53,15 @@
         </template>
 
         <template #purchaseCodeSolt="{ formModel }">
-          <el-form-item
-            prop="purchaseCode"
-            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label-width="120px"
-            label="类别"
-            class="label-right-align"
-          >
+          <el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+             label="类别" class="label-right-align">
             <template v-if="type !== 'view'">
-              <el-select
-                v-model="formModel.purchaseCode"
-                filterable
-                required
-                style="width: 100%"
-                placeholder="请选择"
+              <el-select v-model="formModel.purchaseCode" filterable required style="width: 100%" placeholder="请选择"
                 @change="
                   (val) => selectDataChange(purchaseItem, val, 'purchaseCode')
-                "
-              >
-                <el-option
-                  v-for="item in purchaseItem"
-                  :key="item.purchaseCode"
-                  :label="item.purchaseName"
-                  :value="item.purchaseCode"
-                >
+                ">
+                <el-option v-for="item in purchaseItem" :key="item.purchaseCode" :label="item.purchaseName"
+                  :value="item.purchaseCode">
                 </el-option>
               </el-select>
             </template>
@@ -124,31 +72,16 @@
         </template>
 
         <template #purchaseTypeCodeSolt="{ formModel }">
-          <el-form-item
-            prop="purchaseTypeCode"
-            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label-width="130px"
-            label="物资种类"
-            class="label-right-align"
-          >
+          <el-form-item prop="purchaseTypeCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+            label-width="130px" label="物资种类" class="label-right-align">
             <template v-if="type !== 'view'">
-              <el-select
-                v-model="formModel.purchaseTypeCode"
-                filterable
-                required
-                style="width: 100%"
-                placeholder="请选择"
+              <el-select v-model="formModel.purchaseTypeCode" filterable required style="width: 100%" placeholder="请选择"
                 @change="
                   (val) =>
                     selectDataChange(purchaseType, val, 'purchaseTypeCode')
-                "
-              >
-                <el-option
-                  v-for="item in purchaseType"
-                  :key="item.purchaseTypeCode"
-                  :label="item.purchaseTypeName"
-                  :value="item.purchaseTypeCode"
-                >
+                ">
+                <el-option v-for="item in purchaseType" :key="item.purchaseTypeCode" :label="item.purchaseTypeName"
+                  :value="item.purchaseTypeCode">
                 </el-option>
               </el-select>
             </template>
@@ -159,31 +92,16 @@
         </template>
 
         <template #purchaseDetailCodeSolt="{ formModel }">
-          <el-form-item
-            prop="purchaseDetailCode"
-            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label-width="175px"
-            label="物资细目"
-            class="label-right-align"
-          >
+          <el-form-item prop="purchaseDetailCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+            label-width="175px" label="物资细目" class="label-right-align">
             <template v-if="type !== 'view'">
-              <el-select
-                v-model="formModel.purchaseDetailCode"
-                filterable
-                required
-                style="width: 100%"
-                placeholder="请选择"
-                @change="
+              <el-select v-model="formModel.purchaseDetailCode" filterable required style="width: 100%"
+                placeholder="请选择" @change="
                   (val) =>
                     selectDataChange(purcahseDetail, val, 'purchaseDetailCode')
-                "
-              >
-                <el-option
-                  v-for="item in purcahseDetail"
-                  :key="item.purchaseDetailCode"
-                  :label="item.purchaseDetailName"
-                  :value="item.purchaseDetailCode"
-                >
+                ">
+                <el-option v-for="item in purcahseDetail" :key="item.purchaseDetailCode"
+                  :label="item.purchaseDetailName" :value="item.purchaseDetailCode">
                 </el-option>
               </el-select>
             </template>
@@ -195,68 +113,46 @@
 
         <!-- 附件 -->
         <template #htfbsmjSlot="{ formModel }">
-          <el-form-item
-            prop="htfbsmj"
-            label-width="130px"
-            :rules="[
-              {
-                required: true,
-                message: '请上传合同副本扫描件',
-                trigger: 'change',
-              },
-            ]"
-            label="合同副本扫描件"
-            class="label-right-align"
-          >
-            <fileUpload
-              :isShowTip="false"
-              v-model="formModel.htfbsmj"
-              :limit="1"
-              :fileSize="500"
-              :fileType="['pdf','jpg','png','jpeg','doc','docx']"
-              :preview="type === 'view' || checked"
-               
-            />
+          <el-form-item prop="htfbsmj" label-width="130px" :rules="[
+            {
+              required: true,
+              message: '请上传合同副本扫描件',
+              trigger: 'change',
+            },
+          ]" label="合同副本扫描件" class="label-right-align">
+            <fileUpload :isShowTip="false" v-model="formModel.htfbsmj" :limit="1" :fileSize="500"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
+          </el-form-item>
+        </template>
+        <template #attachmentFileSolt="{ formModel }">
+          <el-form-item prop="hthbfj" label-width="160px" label="核备附件(支持多个)" class="label-right-align" :rules="[
+            {
+              required: true,
+              message: '请上传核备附件',
+              trigger: 'change',
+            },
+          ]">
+            <fileUpload :isShowTip="false" v-model="formModel.hthbfj" :limit="10" :fileSize="500"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
           </el-form-item>
         </template>
 
         <template #gyszlzscnsSlot="{ formModel }">
-          <el-form-item
-            prop="gyszlzscns"
-            label-width="175px"
-            :rules="[
-              {
-                required: true,
-                message: '请上传供应商质量终身承诺书',
-                trigger: 'change',
-              },
-            ]"
-            label="供应商质量终身承诺书"
-            class="label-right-align"
-          >
-            <fileUpload
-              :isShowTip="false"
-              v-model="formModel.gyszlzscns"
-              :limit="1"
-              :fileSize="500"
-              :fileType="['pdf','jpg','png','jpeg','doc','docx']"
-              :preview="type === 'view' || checked"
-               
-            />
+          <el-form-item prop="gyszlzscns" label-width="175px" :rules="[
+            {
+              required: true,
+              message: '请上传供应商质量终身承诺书',
+              trigger: 'change',
+            },
+          ]" label="供应商质量终身承诺书" class="label-right-align">
+            <fileUpload :isShowTip="false" v-model="formModel.gyszlzscns" :limit="1" :fileSize="500"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
           </el-form-item>
         </template>
         <template #tlzycpSlot="{ formModel }">
-          <el-form-item
-            prop="railwaySpecial"
-            label-width="120px"
-            label="铁路专用产品"
-            class="label-right-align"
-          >
+          <el-form-item prop="railwaySpecial" label-width="120px" label="铁路专用产品" class="label-right-align">
             <template v-if="type !== 'view'">
-              <el-radio-group
-                v-model="formModel.railwaySpecial"
-                @change="onRailwayChange"
-              >
+              <el-radio-group v-model="formModel.railwaySpecial" @change="onRailwayChange">
                 <el-radio label="1">是</el-radio>
                 <el-radio label="0">否</el-radio>
               </el-radio-group>
@@ -268,34 +164,14 @@
           </el-form-item>
         </template>
 
-        <template #attachmentFileSolt="{ formModel, sfrIdx }">
-          <el-form-item
-            prop="attachmentFile"
-            label-width="150px"
-            label="核备附件(支持多个)"
-            class="label-right-align"
-          >
-            <fileUpload
-              v-model="formModel.contractLicense[sfrIdx].attachmentFile"
-              :limit="10"
-              :fileSize="500"
-              :fileType="['pdf','jpg','png','jpeg','doc','docx']"
-              :preview="type === 'view'"
-               
-            />
-          </el-form-item>
-        </template>
-        <template #table>
-          <TabTable
-            ref="tabTableRef"
-            :tableData="tableData"
-            @data-change="onDataChange"
-            :sellerName="currentSellerName"
-          />
+
+
+        <template #contentSlot="{ formModel }">
+          <contentSlot v-model="formModel" ref="contentSlotRef" :isView="type === 'view'" :formRef="$refs.vFormRef"  />
         </template>
       </VFormRender>
     </div>
-      <toBeReviewed ref="toBereview" />
+    <toBeReviewed ref="toBereview" />
   </div>
 </template>
 
@@ -313,13 +189,15 @@ import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { useSlots } from "vue";
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
+import contentSlot from "./contentSlot.vue";
 export default {
   name: "SectionAdd",
   dicts: ["purchase_code", "flowStatus"],
   components: {
     VFormRender,
     fileUpload,
-    toBeReviewed
+    toBeReviewed,
+    contentSlot
   },
   data() {
     const userInfo = getUserInfo();
@@ -389,7 +267,7 @@ export default {
     name() {
       return this.$route.query?.name || "";
     },
-    queryAuditArr () {
+    queryAuditArr() {
       return JSON.parse(this.$route.query.auditArr || '[]')
     },
   },
@@ -411,7 +289,7 @@ export default {
     formValueChange(e) {
       this.currentFormData = e;
     },
-	// 动态修改表单配置，并重置表单结构
+    // 动态修改表单配置，并重置表单结构
     async onRailwayChange(e) {
       const formConfig = JSON.parse(sessionStorage.getItem("formConfigJson"));
       if (e == 0) {
@@ -447,14 +325,16 @@ export default {
       return JSON.stringify(formConfig);
     },
     findAllListData() {
-      if(this.type === 'view') {
-				return
-			}
+      if (this.type === 'view') {
+        return
+      }
       getCurrentSection().then((res) => {
         this.projectData = res.data;
         this.$refs["vFormRef"].setFormData({
           projefctName: res.data.projectName,
           unitName: res.data.constructionCompany,
+          sectionShortName: res.data.projectShortName,
+          projectName: res.data.projectName,
         });
       });
       // purchaseItemFindAllList().then(res => {
@@ -479,17 +359,24 @@ export default {
         return;
       }
     },
-    onAdd() {},
+    onAdd() { },
     //初始化
     init() {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage();
-        setTimeout(() => {
-          this.$refs.vFormRef.setFormData({
-            railwaySpecial: '1',
-          });
-        }, 100);
+        this.$refs.vFormRef.setFormData({
+          contractDetailsList: [{
+            materialName: "",
+            specModel: "",
+            unit: 0,
+            amount: 0,
+            price: 0,
+            vatRate: 0,
+            totalAmount: 0,
+            railwaySpecial: '0',
+          }]
+        });
       });
     },
     // 编辑初始化
@@ -508,19 +395,29 @@ export default {
           const newData = {
             ...res.data,
           };
-          const paramsContractLicense = [];
-          newData.contractLicense.map((item, index) => {
-            item.attachmentFile =
-              item.attachmentFile != "" ? JSON.parse(item.attachmentFile) : [];
-            paramsContractLicense.push(item);
-          });
-          newData.contractLicense = paramsContractLicense;
+          // const paramsContractLicense = [];
+          // newData.contractLicense.map((item, index) => {
+          //   item.attachmentFile =
+          //     item.attachmentFile != "" ? JSON.parse(item.attachmentFile) : [];
+          //   paramsContractLicense.push(item);
+          // });
+          // newData.contractLicense = paramsContractLicense;
+
+          newData.contractDetailsList = newData.contractDetailsList.map(x => ({
+            ...x,
+            validityGuarantee: x.railwaySpecial == 1 ? [x.startTime, x.endTime] : [],
+
+          }))
 
           // 回显附件
           newData.htfbsmj =
             newData.files != "" ? JSON.parse(newData.files).htfbsmj : [];
           newData.gyszlzscns =
             newData.files != "" ? JSON.parse(newData.files).gyszlzscns : [];
+          newData.hthbfj =
+            newData.files != "" ? JSON.parse(newData.files).hthbfj : [];
+
+            console.log(newData.hthbfj)
 
           // 缓存回显数据
           this.backData = newData;
@@ -556,7 +453,7 @@ export default {
         this.$refs.toBereview.init('reject', this.queryAuditArr, this.name)
         return
       }
-       if (buttonCode === 'edit') {
+      if (buttonCode === 'edit') {
         this.$tab.closePage(true)
         this.$router.push({
           name: 'detailPurchaseContract',
@@ -578,11 +475,11 @@ export default {
       if (item.buttonCode === "save") {
         return this.type !== "view";
       }
-      if(item.buttonCode === 'pass' || item.buttonCode === 'reject'){
-        return [2].includes(this.detail.status) && this.name !== 'toBeDeal' && this.name !=='handle'
+      if (item.buttonCode === 'pass' || item.buttonCode === 'reject') {
+        return [2].includes(this.detail.status) && this.name !== 'toBeDeal' && this.name !== 'handle'
       }
-      if(item.buttonCode === 'edit'){
-        return [0].includes(this.detail.status) && this.name =='handle'
+      if (item.buttonCode === 'edit') {
+        return [0].includes(this.detail.status) && this.name == 'handle'
       }
       return true;
     },
@@ -596,30 +493,39 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
-          formData.projefctName = this.projectData.sectionName;
+          formData.projefctName = this.projectData.projectName;
+          formData.projectName = this.projectData.projectName;
+          formData.sectionShortName = this.projectData.projectShortName;
           formData.projectId = this.projectData.projectId;
           formData.unitName = this.projectData.constructionCompany;
           formData.bidDocument = JSON.stringify(formData.bidDocument);
           formData.registration = JSON.stringify(formData.registration);
           formData.scheme = JSON.stringify(formData.scheme);
           formData.schemeApproval = JSON.stringify(formData.schemeApproval);
-          const paramsContractLicense = [];
+          // const paramsContractLicense = [];
 
-          if (formData.railwaySpecial == 1) {
-            formData.contractLicense.map((item, index) => {
-              item.attachmentFile = JSON.stringify(item.attachmentFile);
-              paramsContractLicense.push(item);
-            });
-            formData.contractLicense = paramsContractLicense;
-          } else {
-            formData.contractLicense = [];
-          }
+          // if (formData.railwaySpecial == 1) {
+          //   formData.contractLicense.map((item, index) => {
+          //     item.attachmentFile = JSON.stringify(item.attachmentFile);
+          //     paramsContractLicense.push(item);
+          //   });
+          //   formData.contractLicense = paramsContractLicense;
+          // } else {
+          //   formData.contractLicense = [];
+          // }
 
           // 附件
           const files = JSON.stringify({
             htfbsmj: formData.htfbsmj,
             gyszlzscns: formData.gyszlzscns,
+            hthbfj: formData.hthbfj,
           });
+          formData.contractDetailsList = formData.contractDetailsList.map(x => ({
+            ...x,
+            startTime: x.railwaySpecial == 1 ? x.validityGuarantee[0] : '',
+            endTime: x.railwaySpecial == 1 ? x.validityGuarantee[1] : '',
+
+          }))
           await Api[this.type === "update" ? `modify` : `create`](
             Object.assign(
               {
@@ -640,16 +546,16 @@ export default {
         }
       });
     },
-    saveBack(){
+    saveBack() {
       this.$tab.closeOpenPage(true)
-      setTimeout(()=>{
+      setTimeout(() => {
 
         this.$router.push({
-          name:'/nuclear/contract'
+          name: '/nuclear/contract'
         })
-      },100)
+      }, 100)
     },
-    checkoutStatus(flag) {},
+    checkoutStatus(flag) { },
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("purchaseContract").then((res) => {
@@ -685,56 +591,56 @@ export default {
         this.purcahseDetail = res.data;
       });
     },
-    selectDataChange (options, val, key) {
-			if (key == 'code') {
-				this.code = val;
-				this.purchaseCode = null;
-				this.purchaseTypeCode = null;
-				this.purchaseDetailCode = null;
-				this.purchaseItem = [];
-				this.purchaseType = [];
-				this.purcahseDetail = [];
-				this.$refs['vFormRef'].setFormData({
-					name: options.find(item => item.value === val).label,
-					purchaseCode: null,
-					purchaseName: null,
-					purchaseTypeCode: null,
-					purchaseTypeName: null,
-					purchaseDetailCode: null,
-					purchaseDetailName: null,
-				});
-				this.getItemList(val);
-			} else if (key == 'purchaseCode') {
-				this.purchaseCode = val;
-				this.purchaseTypeCode = null;
-				this.purchaseDetailCode = null;
-				this.purchaseType = [];
-				this.purcahseDetail = [];
-				this.$refs['vFormRef'].setFormData({
-					purchaseName: options.find(item => item.purchaseCode === val).purchaseName,
-					purchaseTypeCode: null,
-					purchaseTypeName: null,
-					purchaseDetailCode: null,
-					purchaseDetailName: null,
-				});
-				this.getTypeData(this.code, this.purchaseCode);
-			} else if (key == 'purchaseTypeCode') {
-				this.purchaseTypeCode = val;
-				this.purchaseDetailCode = null;
-				this.purcahseDetail = [];
-				this.$refs['vFormRef'].setFormData({
-					purchaseTypeName: options.find(item => item.purchaseTypeCode === val).purchaseTypeName,
-					purchaseDetailCode: null,
-					purchaseDetailName: null,
-				});
-				this.getDetailDate(this.code, this.purchaseCode, this.purchaseTypeCode);
-			} else if (key == 'purchaseDetailCode') {
-				this.$refs['vFormRef'].setFormData({
-					purchaseDetailName: options.find(item => item.purchaseDetailCode === val)
-						.purchaseDetailName
-				});
-			}
-		},
+    selectDataChange(options, val, key) {
+      if (key == 'code') {
+        this.code = val;
+        this.purchaseCode = null;
+        this.purchaseTypeCode = null;
+        this.purchaseDetailCode = null;
+        this.purchaseItem = [];
+        this.purchaseType = [];
+        this.purcahseDetail = [];
+        this.$refs['vFormRef'].setFormData({
+          name: options.find(item => item.value === val).label,
+          purchaseCode: null,
+          purchaseName: null,
+          purchaseTypeCode: null,
+          purchaseTypeName: null,
+          purchaseDetailCode: null,
+          purchaseDetailName: null,
+        });
+        this.getItemList(val);
+      } else if (key == 'purchaseCode') {
+        this.purchaseCode = val;
+        this.purchaseTypeCode = null;
+        this.purchaseDetailCode = null;
+        this.purchaseType = [];
+        this.purcahseDetail = [];
+        this.$refs['vFormRef'].setFormData({
+          purchaseName: options.find(item => item.purchaseCode === val).purchaseName,
+          purchaseTypeCode: null,
+          purchaseTypeName: null,
+          purchaseDetailCode: null,
+          purchaseDetailName: null,
+        });
+        this.getTypeData(this.code, this.purchaseCode);
+      } else if (key == 'purchaseTypeCode') {
+        this.purchaseTypeCode = val;
+        this.purchaseDetailCode = null;
+        this.purcahseDetail = [];
+        this.$refs['vFormRef'].setFormData({
+          purchaseTypeName: options.find(item => item.purchaseTypeCode === val).purchaseTypeName,
+          purchaseDetailCode: null,
+          purchaseDetailName: null,
+        });
+        this.getDetailDate(this.code, this.purchaseCode, this.purchaseTypeCode);
+      } else if (key == 'purchaseDetailCode') {
+        this.$refs['vFormRef'].setFormData({
+          purchaseDetailName: options.find(item => item.purchaseDetailCode === val)
+            .purchaseDetailName
+        });
+      }
+    },
     selectChange(options, val, key) {
       this.$refs.vFormRef.setFormData({
         [key]: options.find((item) => item.value === val)?.label,
