@@ -2,7 +2,7 @@
   <div class="license-panel">
     <!-- 顶部标题 + 按钮 -->
     <div class="panel-header">
-      <div class="title">操作</div>
+      <div class="title"> {{ !isView ? '操作' :'' }} </div>
       <el-button v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">
         新增
       </el-button>

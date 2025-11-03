@@ -476,7 +476,7 @@ export default {
         return this.type !== "view";
       }
       if (item.buttonCode === 'pass' || item.buttonCode === 'reject') {
-        return [2].includes(this.detail.status) && this.name !== 'toBeDeal' && this.name !== 'handle'
+        return [2].includes(this.detail.status) && this.name == 'audit' 
       }
       if (item.buttonCode === 'edit') {
         return [0].includes(this.detail.status) && this.name == 'handle'
