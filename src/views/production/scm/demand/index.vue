@@ -74,7 +74,7 @@
           </template>
           <!-- 附件 -->
           <template #fileList="scope">
-            <fileUpload v-model="scope.data.fileList" :preview="true" />
+            <fileUpload v-model="scope.data.fileList" :preview="true" :limit="9999" />
           </template>
         </table-index>
         <pagination

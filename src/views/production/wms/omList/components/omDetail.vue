@@ -19,7 +19,7 @@
           <el-form-item prop="fileList" label="领料单" class="label-right-align">
             <fileUpload
               v-model="scope.formModel.fileList"
-              :limit="1"
+              :limit="9999"
               :fileSize="50"
               :fileType="['pdf']"
               :preview="true"

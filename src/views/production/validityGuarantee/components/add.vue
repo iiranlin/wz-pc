@@ -97,7 +97,7 @@
           >
             <fileUpload
               v-model="scope.formModel.validityGuaranteeFile"
-              :limit="1"
+              :limit="9999"
               :fileSize="500"
               :fileType="['pdf']"
               :preview="type === 'view'"

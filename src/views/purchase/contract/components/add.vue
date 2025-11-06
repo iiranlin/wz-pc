@@ -120,7 +120,7 @@
               trigger: 'change',
             },
           ]" label="合同副本扫描件" class="label-right-align">
-            <fileUpload :isShowTip="false" v-model="formModel.htfbsmj" :limit="1" :fileSize="500"
+            <fileUpload :isShowTip="false" v-model="formModel.htfbsmj" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
           </el-form-item>
         </template>
@@ -132,7 +132,7 @@
               trigger: 'change',
             },
           ]">
-            <fileUpload :isShowTip="false" v-model="formModel.hthbfj" :limit="10" :fileSize="500"
+            <fileUpload :isShowTip="false" v-model="formModel.hthbfj" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
           </el-form-item>
         </template>
@@ -145,7 +145,7 @@
               trigger: 'change',
             },
           ]" label="供应商质量终身承诺书" class="label-right-align">
-            <fileUpload :isShowTip="false" v-model="formModel.gyszlzscns" :limit="1" :fileSize="500"
+            <fileUpload :isShowTip="false" v-model="formModel.gyszlzscns" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
           </el-form-item>
         </template>

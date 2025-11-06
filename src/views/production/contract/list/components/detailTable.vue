@@ -62,7 +62,7 @@
           <fileUpload
             v-if="scope.row.fileList[0]"
             :value="scope.row.fileList[0].fileList"
-            :limit="1"
+            :limit="9999"
             :fileSize="500"
             :fileType="['pdf']"
             :preview="'view'"

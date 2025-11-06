@@ -17,19 +17,19 @@
         <!-- 附件 -->
         <template #file1Slot="scope">
           <el-form-item prop="fileList" label-width="200px" label="报检材料上传（支持多个）" class="label-right-align">
-            <fileUpload :value="scope.formModel.fileList01" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList01" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
           <el-form-item prop="fileList" label="质量证明文件" class="label-right-align">
-            <fileUpload :value="scope.formModel.fileList02" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList02" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
           <el-form-item prop="fileList" label="报验结果" class="label-right-align">
-            <fileUpload :value="scope.formModel.fileList03" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList03" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
         <template #returnDetailSlot>
@@ -127,6 +127,7 @@
                 <fileUpload
                   :value="scope.row.fileList01"
                   :preview="true"
+                  :limit="9999"
                   :isShowTip="false"
                 />
               </template>
@@ -136,6 +137,7 @@
                 <fileUpload
                   :value="scope.row.fileList02"
                   :preview="true"
+                  :limit="9999"
                   :isShowTip="false"
                 />
               </template>
@@ -150,6 +152,7 @@
               <template slot-scope="scope">
                 <fileUpload
                   :value="scope.row.fileList03"
+                  :limit="9999"
                   :preview="true"
                   :isShowTip="false"
                 />

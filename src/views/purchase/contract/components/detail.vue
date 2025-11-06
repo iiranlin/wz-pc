@@ -106,7 +106,7 @@
 				<template #attachmentFileSolt="{ formModel, sfrIdx }">
 					<el-form-item prop="attachmentFile" label-width="150px" label="核备附件(支持多个)"
 						class="label-right-align">
-						<fileUpload v-model="formModel.contractLicense[sfrIdx].attachmentFile" :limit="10"
+						<fileUpload v-model="formModel.contractLicense[sfrIdx].attachmentFile" :limit="9999"
 						 :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>

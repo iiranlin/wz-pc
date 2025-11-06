@@ -22,10 +22,10 @@
             class="label-right-align"
             v-if="backNode == '1'"
           >
-            <fileUpload :value="scope.formModel.fileList01" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList01" :preview="true" :limit="9999" />
           </el-form-item>
           <el-form-item prop="fileList" label="检测报告" class="label-right-align" v-else>
-            <fileUpload :value="scope.formModel.fileList03" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList03" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
         <!-- 附件 -->
@@ -36,7 +36,7 @@
             class="label-right-align"
             v-if="backNode == '1'"
           >
-            <fileUpload :value="scope.formModel.fileList02" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList02" :preview="true" :limit="9999" />
           </el-form-item>
           <el-form-item
             prop="fileList"
@@ -44,7 +44,7 @@
             class="label-right-align"
             v-else
           >
-            <fileUpload :value="scope.formModel.fileList04" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList04" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
         <!-- 附件 -->
@@ -55,7 +55,7 @@
             class="label-right-align"
             v-if="backNode == '2'"
           >
-            <fileUpload :value="scope.formModel.fileList05" :preview="true" />
+            <fileUpload :value="scope.formModel.fileList05" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
         <template #returnDetailSlot>
@@ -108,6 +108,7 @@
                   :value="scope.row.fileList"
                   :preview="true"
                   :isShowTip="false"
+                  :limit="9999"
                 />
               </template>
             </el-table-column>

@@ -69,7 +69,7 @@
         <!-- 附件 -->
         <template #fileListSlot="scope">
           <el-form-item prop="fileList" label="合同附件" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList" :limit="1" :fileSize="500" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'"
               />
           </el-form-item>
@@ -78,7 +78,7 @@
 
         <template #fileListGgSlot="scope">
           <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList1" :limit="1" :fileSize="500" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.fileList1" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
 
@@ -86,7 +86,7 @@
         <!-- 保函扫描件 -->
         <template #fileListBHSMJSlot="scope">
           <el-form-item prop="files" label="保函扫描件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
-            <fileUpload v-model="scope.formModel.files" :limit="100" :fileSize="500" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.files" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
 

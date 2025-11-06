@@ -26,7 +26,7 @@
           >
             <fileUpload
               v-model="scope.row.fileList"
-              :limit="1"
+              :limit="9999"
               :fileSize="500"
               :fileType="['pdf']"
               :preview="true"

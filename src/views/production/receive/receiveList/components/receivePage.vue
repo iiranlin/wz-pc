@@ -60,7 +60,7 @@
             <fileUpload
               v-model="scope.formModel.fileList03"
               :preview="true"
-              :limit="1"
+              :limit="9999"
               :fileSize="50"
               :fileType="['pdf']"
             />
@@ -73,6 +73,7 @@
               v-model="scope.formModel.zczp"
               :preview="true"
               :fileSize="500"
+              :limit="9999"
               :fileType="['pdf']"
               :isShowTip="false"
             />
@@ -90,7 +91,7 @@
             <fileUpload
               v-model="scope.formModel.fileList01"
               :preview="type == 'view'"
-              :limit="100"
+              :limit="9999"
               :fileSize="500"
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
@@ -116,7 +117,7 @@
             <fileUpload
               v-model="scope.formModel.fileList02"
               :preview="type == 'view'"
-              :limit="100"
+              :limit="9999"
               :fileSize="500"
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
@@ -133,7 +134,7 @@
             <fileUpload
               v-model="scope.formModel.fileList04"
               :preview="type == 'view'"
-              :limit="100"
+              :limit="9999"
               :fileSize="500"
               :fileType="['pdf','jpg','png','jpeg']"
               :isShowTip="false"
@@ -282,6 +283,7 @@
                   :value="scope.row.fileList01"
                   :preview="true"
                   :isShowTip="false"
+                  :limit="9999"
                 />
               </template>
             </el-table-column>
@@ -291,6 +293,7 @@
                   :value="scope.row.fileList02"
                   :preview="true"
                   :isShowTip="false"
+                  :limit="9999"
                 />
               </template>
             </el-table-column>
@@ -350,7 +353,7 @@
                   v-model="scope.row.fileList03"
                   :preview="type == 'view'"
                   :isShowTip="false"
-                  :limit="1"
+                  :limit="9999"
                   :fileSize="500"
                   :fileType="['pdf','jpg','png','jpeg']"
 

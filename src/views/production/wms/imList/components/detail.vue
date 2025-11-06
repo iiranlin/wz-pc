@@ -21,6 +21,7 @@
               v-model="scope.formModel.fileList01"
               :value="scope.formModel.fileList01"
               :preview="true"
+              :limit="9999"
             />
           </el-form-item>
         </template>
@@ -31,6 +32,7 @@
               v-model="scope.formModel.fileList02"
               :value="scope.formModel.fileList02"
               :preview="true"
+              :limit="9999"
             />
           </el-form-item>
         </template>
@@ -41,6 +43,7 @@
               v-model="scope.formModel.fileList03"
               :value="scope.formModel.fileList03"
               :preview="true"
+              :limit="9999"
             />
           </el-form-item>
         </template>
@@ -141,6 +144,7 @@
                   :value="scope.row.fileList01"
                   :preview="true"
                   :isShowTip="false"
+                  :limit="9999"
                 />
               </template>
             </el-table-column>
@@ -150,6 +154,7 @@
                   :value="scope.row.fileList02"
                   :preview="true"
                   :isShowTip="false"
+                  :limit="9999"
                 />
               </template>
             </el-table-column>
@@ -174,6 +179,7 @@
                   v-model="scope.row.fileList03"
                   :preview="true"
                   :isShowTip="false"
+                  :limit="9999"
                 />
               </template>
             </el-table-column>

@@ -66,7 +66,7 @@
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="核备附件(支持多个)" prop="attachmentFile">
-					<fileUpload v-model="contractLicense.attachmentFile" :limit="100" :fileSize="false" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
+					<fileUpload v-model="contractLicense.attachmentFile" :limit="9999" :fileSize="false" :fileType="['pdf','jpg','png','jpeg','doc','docx']"
 						:preview="false"   />
 				</el-form-item>
 				<el-form-item>

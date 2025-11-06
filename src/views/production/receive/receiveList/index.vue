@@ -86,7 +86,7 @@
           </template>
           <!-- 附件 -->
           <template #fileList="scope">
-            <fileUpload :valve="scope.value" :preview="true" />
+            <fileUpload :valve="scope.value" :preview="true" :limit="9999" />
           </template>
         </table-index>
         <pagination

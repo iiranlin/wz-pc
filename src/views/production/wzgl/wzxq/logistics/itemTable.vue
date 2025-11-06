@@ -130,6 +130,7 @@
         <template slot-scope="scope">
           <fileUpload
             :value="scope.row.fileByList | filterFiles('hgz')"
+            :limit="9999"
             :preview="true"
           />
         </template>
@@ -143,6 +144,7 @@
         <template slot-scope="scope">
           <fileUpload
             :value="scope.row.fileByList | filterFiles('cjbg')"
+            :limit="9999"
             :preview="true"
           />
         </template>

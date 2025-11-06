@@ -25,7 +25,7 @@
             <fileUpload
               v-model="scope.formModel.fileList"
               :preview="type == 'view' || preview"
-              :limit="1"
+              :limit="9999"
               :fileSize="500"
               :isShowTip="false"
               :fileType="['pdf','jpg','png','jpeg']"

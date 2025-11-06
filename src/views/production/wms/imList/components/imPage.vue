@@ -47,7 +47,7 @@
 	              v-model="scope.formModel.fileList02"
 	              :value="scope.formModel.fileList02"
 	              :preview="type == 'view'"
-	              :limit="1"
+	              :limit="9999"
 	              :fileSize="500"
 	              :fileType="['pdf','jpg','png','jpeg']"
 	              :isShowTip="false"
@@ -66,7 +66,7 @@
 	              v-model="scope.formModel.fileList03"
 	              :value="scope.formModel.fileList03"
 	              :preview="type == 'view'"
-	              :limit="1"
+	              :limit="9999"
 	              :fileSize="500"
 	              :fileType="['pdf','jpg','png','jpeg']"
 	              :isShowTip="false"
@@ -187,6 +187,7 @@
 	                  :value="scope.row.fileList01"
 	                  :preview="true"
 	                  :isShowTip="false"
+										:limit="9999"
 	                />
 	              </template>
 	            </el-table-column>
@@ -196,6 +197,7 @@
 	                  :value="scope.row.fileList02"
 	                  :preview="true"
 	                  :isShowTip="false"
+										:limit="9999"
 	                />
 	              </template>
 	            </el-table-column>
@@ -234,7 +236,7 @@
 	                  v-model="scope.row.fileList03"
 	                  :preview="type == 'view'"
 	                  :isShowTip="false"
-	                  :limit="1"
+	                  :limit="9999"
 	                  :fileSize="500"
 	                  :fileType="['pdf','jpg','png','jpeg']"
 	                />

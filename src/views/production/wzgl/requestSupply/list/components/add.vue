@@ -38,7 +38,7 @@
               <fileUpload
                 v-model="form.xqjhbfj"
                 businessType="51"
-                :limit="1"
+                :limit="9999"
                 :fileSize="500"
                 :fileType="['pdf']"
                 :preview="false"
