@@ -39,6 +39,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
+          <el-form-item label="接收短信:">
+            <el-radio-group v-model="form.smsStatus">
+              <el-radio label="1">开启</el-radio>
+              <el-radio label="0">关闭</el-radio>
+            </el-radio-group>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -130,6 +136,7 @@ export default {
         phone: '',
         email: '',
         tel: '',
+        smsStatus: 1
       },
       // 表单校验
       rules: {
