@@ -44,8 +44,8 @@
                             <span>{{ activeComponentTitle }}</span>
                         </div>
                     </div>
-                    <div style="width: 50.2vw;height: calc(100% - 60px);">
-                        <ChildAudit v-if="activeComponent === 'ChildAudit'"></ChildAudit>
+                    <div style="width: 50.2vw;height: calc(100% - 60px);" :key="key">
+                        <ChildAudit  v-if="activeComponent === 'ChildAudit'"></ChildAudit>
                         <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"></ChildToBeDeal>
                         <ChildHandle v-if="activeComponent === 'ChildHandle'"></ChildHandle>
                         <ChildTodoList v-if="activeComponent === 'ChildTodoList'"></ChildTodoList>
@@ -174,6 +174,7 @@ export default {
 
     data() {
         return {
+            key:0,
             projectLoading: false,
             projectId: '',
             activeComponent: 'ChildAudit',
@@ -274,6 +275,8 @@ export default {
             this.getDailyList();
             this.getDataCount()
             this.getOptions()
+
+            this.key +=1
         },
         getDataCount(projectId = '') {
             this.projectLoading = true
