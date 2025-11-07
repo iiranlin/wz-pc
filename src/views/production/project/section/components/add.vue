@@ -155,6 +155,36 @@
             </template>
           </el-form-item>
         </template>
+        <!-- 物代公司联络人 -->
+        <template #materialAgentLeaderSlot="{ formModel }">
+          <el-form-item
+            prop="materialAgentLeaderId"
+            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+            label="物代公司联络人"
+            class="label-right-align"
+          >
+            <template v-if="type !== 'view'">
+              <el-select
+                v-model="formModel.materialAgentLeaderId"
+                filterable
+                required
+                style="width: 100%"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in materialAgentLeaderOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </template>
+            <template v-else>
+              <span>{{ formModel.materialAgentLeader }}</span>
+            </template>
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -169,6 +199,7 @@ import { getToken } from '@/utils/auth'
 import attachmentTable from '@/views/components/attachmentTable'
 import { newListByDeptCode } from '@/api/system/dept.js'
 import { extractSelectOptions } from '@/utils/index'
+import { userListAll } from '@/api/system/user';
 export default {
   name: "SectionAdd",
   dicts: ['JLDW'],
@@ -198,6 +229,7 @@ export default {
       constructionCompanyOptions: [],
       supervisionUnitOptions: [],
       materialAgentCompanyOptions: [],
+      materialAgentLeaderOptions: [],
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '取消', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
@@ -256,6 +288,7 @@ export default {
           this.title = "编辑";
           await this.formFillInPage()
           this.getLineOptions()
+          this.selectChange(this.materialAgentCompanyOptions, data.materialAgentCompanyId, 'materialAgentCompany')
           
           // 处理监理单位数据：将逗号分隔的字符串转换为数组
           if (data.supervisionUnitId && typeof data.supervisionUnitId === 'string') {
@@ -382,7 +415,7 @@ export default {
         })
       })
     },
-    selectChange (options, val, key) {
+    async selectChange (options, val, key) {
       if (Array.isArray(val)) {
         // 多选情况：将选中的值转换为逗号分隔的字符串
         const labels = val.map(v => options.find(item => item.value === v)?.label).filter(Boolean)
@@ -394,9 +427,32 @@ export default {
         this.$refs.vFormRef.setFormData({
           [key]: options.find(item => item.value === val)?.label
         })
-      }
-    }
 
+        // 选择物代公司时，获取对应公司的物代公司联络人
+        if (key === 'materialAgentCompany') {
+          this.getmaterialAgentLeaderOptions(val);
+        }
+      }
+    },
+    async getmaterialAgentLeaderOptions(deptId) {
+      const params = {
+        pageNum: 1,
+        pageSize: -1,
+        isAsc: '',
+        orderByColumn: '',
+        deptId: deptId,
+        status: 0
+      };
+
+      await userListAll(params).then(({ data }) => {
+        this.materialAgentLeaderOptions = data.list.map(item => {
+          return {
+            value: item.id,
+            label: item.nickName
+          }
+        });
+      })
+    }
   },
 }
 </script>
