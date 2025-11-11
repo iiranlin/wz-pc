@@ -32,9 +32,9 @@
         </div>
       </div>
       <div class="login-banner">
-        <h1>物资管理解决方案</h1>
+        <!-- <h1>物资管理解决方案</h1> -->
         <!-- <video :src="logoBg" width="1920" height="600" autoplay="autoplay" loop="loop" muted="true"></video> -->
-        <img :src="logoBg1" alt="" width="100%" height="400px">
+        <img :src="logoBg1" alt="" width="1231px" height="507px" style="margin-left: -16px; margin-top: -107px;">
       </div>
       <div class="login-list">
         <div class="list-content">
@@ -131,7 +131,7 @@
 
 <script>
 import logoBg from '../assets/login/Banner.mp4';
-import logoBg1 from '../assets/login/BannerMask@2x.webp';
+import logoBg1 from '../assets/login/BannerMask@2x.png';
 import { getCookie, setCookie, removeCookie } from "@/utils/auth";
 import { getVerificationCode, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
@@ -346,7 +346,7 @@ export default {
     width: 100%;
     height: 74px;
     line-height: 74px;
-    background-image: linear-gradient(180deg, #f5faff 0%, rgba(245, 250, 255, 0) 100%);
+    // background-image: linear-gradient(180deg, #f5faff 0%, rgba(245, 250, 255, 0) 100%);
     background: #fff;
     z-index: 4;
     .top-content{
@@ -405,10 +405,12 @@ export default {
     }
   }
   .login-banner{
+    display: flex;
+    justify-content: center;
     position: relative;
     width: 100%;
     height: 400px;
-    background: #F5FAFF;
+    background: #fff;
     overflow: hidden;
     margin-top: 74px;
     &::before {
@@ -418,7 +420,7 @@ export default {
       transform: translateX(-960px);
       width: 75px;
       height: 100%;
-      background-image: linear-gradient(270deg, rgba(245, 250, 255, 0) 0%, #f5fafe 100%);
+      // background-image: linear-gradient(270deg, rgba(245, 250, 255, 0) 0%, #f5fafe 100%);
       z-index: 2;
     }
      &::after {
@@ -428,7 +430,7 @@ export default {
       transform: translateX(960px);
       width: 75px;
       height: 100%;
-      background-image: linear-gradient(-270deg, rgba(245, 250, 255, 0) 0%, #f5fafe 100%);
+      // background-image: linear-gradient(-270deg, rgba(245, 250, 255, 0) 0%, #f5fafe 100%);
       z-index: 2;
     }
     h1{
@@ -445,7 +447,7 @@ export default {
       line-height: 999px;
       color: #0F2241;
       overflow: hidden;
-      background: url(../assets/login/Title2.png) no-repeat center top;
+      // background: url(../assets/login/Title2.png) no-repeat center top;
       background-size: contain;
     }
     .banner-login-btn{
