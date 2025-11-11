@@ -170,6 +170,14 @@
                 required
                 style="width: 100%"
                 placeholder="请选择"
+                @change="
+                  (val) =>
+                    selectChange(
+                      materialAgentLeaderOptions,
+                      val,
+                      'materialAgentLeader'
+                    )
+                "
               >
                 <el-option
                   v-for="item in materialAgentLeaderOptions"
@@ -435,6 +443,14 @@ export default {
       }
     },
     async getmaterialAgentLeaderOptions(deptId) {
+
+      // 变化后清空物代公司联络人选项和已选值
+      this.materialAgentLeaderOptions = [];
+      this.$refs.vFormRef.setFormData({
+        materialAgentLeader: '',
+        materialAgentLeaderId: ''
+      });
+
       const params = {
         pageNum: 1,
         pageSize: -1,
