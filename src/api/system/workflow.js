@@ -94,7 +94,7 @@ export const auditList = (params) => {
 //获取下级审批人
 export function activitiAssigneeList(taskId) {
   return request({
-      url: `${VUE_APP_WORK_FLOW_SERVER}/wf/nextAssignee/${taskId}`,
+      url: `${VUE_APP_WORK_FLOW_SERVER}/wf/nextAssignee/V1/${taskId}`,
       method: 'get',
   })
 }

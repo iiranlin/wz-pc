@@ -45,6 +45,7 @@
     <activiti-assignee
       ref="activitiAssignee"
       @activitiAssigneeSelected="activitiAssigneeSelected"
+      :multiple="multiple"
     ></activiti-assignee>
   </Dialog>
 </template>
@@ -67,6 +68,7 @@ export default {
       }
     };
     return {
+      multiple:false,
       title: '',
       visible: false,
       toBeReviewedForm: {
@@ -107,8 +109,11 @@ export default {
       activitiAssigneeList(this.selected[0].taskId).then(({ data }) => {
         let assigneeList = data;
 
-        if (!!assigneeList && assigneeList.length !== 0) {
-          this.$refs.activitiAssignee.init(assigneeList);
+        if (!!assigneeList.data && assigneeList.data.length !== 0) {
+          if(assigneeList.nextTaskType ==="APPOINT_AND"){
+            this.multiple = true;
+          }
+          this.$refs.activitiAssignee.init(assigneeList.data);
         } else if (type === 'passEdit') {
           this.activitiCompleteWithEdit();
         } else {

@@ -128,6 +128,7 @@
             <el-radio label="AND">并行会签（可同时审批，每个人必须同意）</el-radio>
             <el-radio label="OR">或签（有一人同意即可）</el-radio>
             <el-radio label="APPOINT">或签（上级指定本级审核人）</el-radio>
+            <el-radio label="APPOINT_AND">上级指定本级审核人并签（可多人）</el-radio>
           </el-radio-group>
         </el-form-item>
       </div>
