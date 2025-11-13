@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       storeStatus: {
+        0: "驳回",
         1: "待检测",
         2: "部分退货",
         3: "检测通过",
@@ -137,6 +138,10 @@ export default {
         {
           code: "5",
           name: "审核中",
+        },
+        {
+          code: "0",
+          name: "已驳回",
         },
       ],
       treeCurrentKey: "",
@@ -323,7 +328,7 @@ export default {
       //入库审核按钮控制  （未入库和已驳回才能点击）
       if (button.buttonCode == "ruku") {
         return (
-          this.selection[0].storeStatus != "1" && this.selection[0].storeStatus != "6"
+          this.selection[0].storeStatus != "1" && this.selection[0].storeStatus != "0"
         );
       }
       //撤回按钮控制（审核中才能撤回）

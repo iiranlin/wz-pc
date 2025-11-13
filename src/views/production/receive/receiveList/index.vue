@@ -121,6 +121,7 @@ export default {
   data() {
     return {
       status: {
+        0:"已驳回",
         1: "未收货",
         2: "已收货",
         3: "部分退货",
@@ -148,6 +149,10 @@ export default {
           code: "5",
           name: "审核中",
         },
+        {
+          code:"0",
+          name:"已驳回"
+        }
       ],
       treeCurrentKey: "",
       // 遮罩层
@@ -244,7 +249,7 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "receive":
-          if (rowArr[0].takeStatus != "1") {
+          if (rowArr[0].takeStatus != "1" && rowArr[0].takeStatus != "0") {
             this.$modal.msgError("未收货状态才能收货");
             return;
           }
@@ -316,7 +321,7 @@ export default {
     buttonDisabledTop(button) {
       //状态不是未收货，按钮全不能操作
       if(button.buttonCode == "receive"){
-        return this.selection[0].takeStatus != 1;
+        return this.selection[0].takeStatus != 1 && this.selection[0].takeStatus != 0;
       }
       // 非审核中不允许撤回
       if(button.buttonCode == "withdraw"){
@@ -324,7 +329,7 @@ export default {
       }
       // 未收货不能下载
       if( button.buttonCode == "download"){
-        return this.selection[0].takeStatus == 1 || this.selection[0].takeStatus == 5;
+        return this.selection[0].takeStatus == 1 || this.selection[0].takeStatus == 5|| this.selection[0].takeStatus == 0;
       }
       
     },
