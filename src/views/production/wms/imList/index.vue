@@ -111,7 +111,7 @@ export default {
   data() {
     return {
       storeStatus: {
-        0: "驳回",
+        0: "已驳回",
         1: "待检测",
         2: "部分退货",
         3: "检测通过",
