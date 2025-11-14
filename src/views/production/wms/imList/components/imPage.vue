@@ -364,7 +364,7 @@
 	      this.loading = true;
 	      //不同的状态调用不同的明细接口
 	      var name =
-	        this.storeStatus == "5" || this.storeStatus == "6"
+	        this.storeStatus == "5" || this.storeStatus == "6"|| this.storeStatus == "0"
 	          ? "detailStoreBack"
 	          : "detailStore";
 	      this.$nextTick(async () => {

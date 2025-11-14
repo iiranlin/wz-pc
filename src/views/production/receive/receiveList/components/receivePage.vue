@@ -428,6 +428,8 @@ export default {
           buttonIcon: "Blue-Save",
           type: "create, update",
         },
+        { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+
       ],
       constructionOptions: [],
       gysOptions: [],
@@ -499,7 +501,9 @@ export default {
     init(id) {
       this.$nextTick(async () => {
         this.loading = true;
-        const api = this.takeStatus == 5 || this.takeStatus == void 0 ? 'detailTakeBack' : 'detailTake';
+        // 审核中或已驳回
+        console.log(this.takeStatus, "--------------this.takeStatus-------------");
+        const api = this.takeStatus == 5 || this.takeStatus == void 0  ? 'detailTakeBack' : 'detailTake';
         await Api[api](id).then(({ data }) => {
           this.approvalStatus = data.approvalStatus;
           this.$nextTick(async () => {
@@ -564,6 +568,19 @@ export default {
         this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
         return
       }
+
+      if (buttonCode === 'edit') {
+        this.$tab.closePage(true)
+        this.$router.push({
+          name: 'receivePage',
+          query: {
+            id: this.id,
+            type: 'create',
+          }
+        })
+        return
+
+      }
     },
     cancel() {
       this.$router.go(-1);
@@ -583,6 +600,10 @@ export default {
         }
         // 2 审核中  0已驳回 3审核通过
         return this.approvalStatus == "2";
+      }
+
+       if (item.buttonCode === 'edit') {
+        return ["0"].includes(this.approvalStatus) && this.name == 'handle'
       }
       return true;
     },
@@ -620,7 +641,6 @@ export default {
         }
 
         if (valid) {
-          this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
           //组装附件
           var fileByList = formData.fileByList ? JSON.parse(formData.fileByList) : {};

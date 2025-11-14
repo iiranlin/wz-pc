@@ -251,6 +251,8 @@ export default {
           buttonIcon: "Blue-EditCard",
           type: "",
         },
+        { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+        
       ],
       constructionOptions: [],
       gysOptions: [],
@@ -327,6 +329,19 @@ export default {
         this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
       } else if (buttonCode === "passEdit") {
         this.$refs.toBereview.init("passEdit", this.queryAuditArr, this.name);
+      }else if (buttonCode === 'edit') {
+        this.$tab.closePage(true)
+        this.$router.push({
+          name: 'imPage',
+          // id=1969943908570083329&supplyId=1965983364125192193&type=create&storeStatus=1
+          query: {
+            id: this.id,
+            type: 'update',
+            storeStatus:'0'
+          }
+        })
+        return
+
       }
     },
     cancel() {
@@ -336,11 +351,15 @@ export default {
     buttonShow(item) {
       // 审核中才能显示同意和不同意按钮
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
-        return this.storeStatus == "5" && this.name !== 'toBeDeal';
+        return this.storeStatus == "5" &&  !['toBeDeal','handle'].includes(this.name);
       }
 
       if (item.buttonCode === "cancel") {
         return true;
+      }
+      if (item.buttonCode === 'edit') {
+        console.log(item, this.name);
+        return ["0"].includes(this.storeStatus) && this.name == 'handle'
       }
     },
     formFillInPage() {
