@@ -1,5 +1,5 @@
 <template>
-    <div class="login-container">
+    <div class="login-container-portal">
       <div class="top-bar">
         <div class="top-content">
           <div class="logo"></div>
@@ -34,7 +34,7 @@
       <div class="login-banner">
         <!-- <h1>物资管理解决方案</h1> -->
         <!-- <video :src="logoBg" width="1920" height="600" autoplay="autoplay" loop="loop" muted="true"></video> -->
-        <img :src="logoBg1" alt="" width="1231px" height="507px" style="margin-left: -16px; margin-top: -107px;">
+        <img :src="logoBg1" alt="" width="1200px" height="400px" style="margin-left: -16px; ">
       </div>
       <div class="login-list">
         <div class="list-content">
@@ -304,12 +304,21 @@ export default {
 
     },
     beforeDestroy() {
-
+// 确保离开页面时恢复滚动条
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
     }
 };
 </script>
 
 <style lang="scss" scoped>
+
+@font-face {
+  font-family: "NumberFont";
+  src: url("~@/assets/font/digitalFont.TTF") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 * {
 		padding: 0;
 		margin: 0;
@@ -338,8 +347,9 @@ export default {
   top: -3px;
   position: relative;
 }
-.login-container{
+.login-container-portal{
   .top-bar {
+    box-shadow:0px 3px 6px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 0;
     left: 0;
@@ -412,7 +422,7 @@ export default {
     height: 400px;
     background: #fff;
     overflow: hidden;
-    margin-top: 74px;
+    margin-top: 84px;
     &::before {
       content: "";
       position: absolute;
@@ -565,6 +575,7 @@ export default {
             font-family:LcdD;
             color:#3a7be3;
             font-size:44px;
+            font-family: 'NumberFont';
           }
 
         }
