@@ -391,6 +391,27 @@
             align="center"
           >
           </el-table-column>
+          <!-- 合同比例 发货数量 -->
+          <el-table-column
+            v-if="type == 'view'"
+            prop="sendTotal"
+            label="发货数量"
+            width="150"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="type == 'view'"
+            prop="sendRatio"
+            label="发货比例"
+            width="150"
+            align="center"
+          >
+          <template slot-scope="scope" 
+          >
+            {{ scope.row.sendRatio }}%
+        </template>
+          </el-table-column>
         </el-table>
       </virtual-scroll>
     </div>
