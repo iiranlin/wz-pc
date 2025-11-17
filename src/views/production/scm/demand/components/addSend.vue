@@ -37,6 +37,7 @@
             prop="zczp"
             label="装车照片"
             class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
            
           >
             <fileUpload
