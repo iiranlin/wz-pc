@@ -33,6 +33,25 @@
           />
         </el-select>
       </template>
+        <template #projectName="data">
+        <el-select
+          class="select-box"
+          v-model="formData[data.data.fieldCode]"
+          :placeholder="
+             '请选择建设项目'
+          "
+          clearable
+          style="width: 100%"
+          size="small"
+        >
+          <el-option
+            v-for="(item, key) in lineOptions "
+            :key="key"
+            :label="item.label"
+            :value="item.label"
+          />
+        </el-select>
+      </template>
      <!-- 日期范围搜索 -->
       <template #date>
         <el-date-picker
@@ -101,6 +120,7 @@
 <script>
 
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
+import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 import indexMixin from "@/views/mixins";
 import workFlowView from '@/components/workFlowView'
 export default {
@@ -141,6 +161,7 @@ export default {
       numberShow: true,
       // 表格数据
       list: [],
+      lineOptions:[],
       // 弹出层标题
       title: "",
 
@@ -168,6 +189,8 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+
+    this.getLineOptions()
   },
 
   methods: {
@@ -267,6 +290,14 @@ export default {
         this.total = data.total
       }).finally(() => {
         this.loading = false
+      })
+    },
+    getLineOptions(){
+      WzglApi.lineSelectOptions().then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
       })
     },
     handleSelectionChange (ids, single, multiple, selection) {
