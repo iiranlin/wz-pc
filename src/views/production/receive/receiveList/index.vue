@@ -255,7 +255,7 @@ export default {
           }
           this.$router.push({
             name: "receivePage",
-            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create",takeStatus:rowArr[0].takeStatus },
+            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create",takeStatus:rowArr[0].takeStatus == 0 ? 1 : rowArr[0].takeStatus },
           });
           break;
         case "withdraw":

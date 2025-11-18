@@ -503,7 +503,7 @@ export default {
         this.loading = true;
         // 审核中或已驳回
         console.log(this.takeStatus, "--------------this.takeStatus-------------");
-        const api = this.takeStatus == 5 || this.takeStatus == void 0  ? 'detailTakeBack' : 'detailTake';
+        const api = this.takeStatus == 5 || this.takeStatus == void 0 || this.takeStatus == 0  ? 'detailTakeBack' : 'detailTake';
         await Api[api](id).then(({ data }) => {
           this.approvalStatus = data.approvalStatus;
           this.$nextTick(async () => {
