@@ -1,11 +1,17 @@
 <template>
   <div class="license-panel">
+
     <!-- 顶部标题 + 按钮 -->
     <div class="panel-header">
-      <div class="title"> {{ !isView ? '操作' :'' }} </div>
-      <el-button v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">
-        新增
-      </el-button>
+      <div class="title"> {{ !isView ? '操作' : '' }} </div>
+      <div>
+        <el-button v-if="!isView" type="primary" @click="onImport"> 导入需求物资 </el-button>
+
+        <el-button v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">
+          新增
+        </el-button>
+      
+      </div>
     </div>
 
 
@@ -14,8 +20,8 @@
     <div v-for="(item, index) in contractDetailsList" :key="index" class="panel-row">
       <div class="row-left">
         <h3>物资明细 {{ index + 1 }}</h3>
-        <el-row :class="{borderTop: isView}">
-          <el-col :span="8" >
+        <el-row :class="{ borderTop: isView }">
+          <el-col :span="8">
             <el-form-item label="物资名称" :prop="`contractDetailsList.${index}.materialName`" class="label-right-align"
               :rules="[{ required: true, message: '请输入物资名称', trigger: 'blur' }]">
               <template v-if="!isView">
@@ -89,7 +95,7 @@
             <el-form-item label="合价(万元)" :prop="`contractDetailsList.${index}.totalAmount`" class="label-right-align"
               :rules="[{ required: true, message: '请输入合价', trigger: 'blur' }]">
               <template v-if="!isView">
-                <el-input type="number" v-model="item.totalAmount" placeholder="请输入合价"  @change="onAmountChange"/>
+                <el-input type="number" v-model="item.totalAmount" placeholder="请输入合价" @change="onAmountChange" />
               </template>
               <template v-else>
                 <span>{{ item.totalAmount }}</span>
@@ -121,8 +127,7 @@
         <el-row :gutter="20" v-if="item.railwaySpecial == 1">
           <el-col :span="8">
             <el-form-item :prop="`contractDetailsList.${index}.licenseCategory`" label="许可/认证类别"
-              :rules="[{ required: true, message: '请输入许可/认证类别', trigger: 'blur' }]"
-              class="label-right-align">
+              :rules="[{ required: true, message: '请输入许可/认证类别', trigger: 'blur' }]" class="label-right-align">
               <template v-if="!isView">
                 <el-input v-model="item.licenseCategory" placeholder="请输入许可/认证类别" />
               </template>
@@ -135,9 +140,7 @@
 
           <el-col :span="8">
             <el-form-item :prop="`contractDetailsList.${index}.issuanceUnit`" label="发证单位" class="label-right-align"
-              :rules="[{ required: true, message: '请输入发证单位', trigger: 'blur' }]"
-            
-            >
+              :rules="[{ required: true, message: '请输入发证单位', trigger: 'blur' }]">
               <template v-if="!isView">
                 <el-input v-model="item.issuanceUnit" placeholder="请输入发证单位" />
               </template>
@@ -150,8 +153,7 @@
 
           <el-col :span="8">
             <el-form-item :prop="`contractDetailsList.${index}.quantity`" label="证书编号" class="label-right-align"
-              :rules="[{ required: true, message: '请输入证书编号', trigger: 'blur' }]"
-            >
+              :rules="[{ required: true, message: '请输入证书编号', trigger: 'blur' }]">
               <template v-if="!isView">
                 <el-input v-model="item.quantity" placeholder="请输入证书编号" />
               </template>
@@ -173,7 +175,7 @@
               </template>
 
               <template v-else>
-                <span>{{ item.validityGuarantee[0] | formatDate }} - {{ item.validityGuarantee[1] |formatDate }}</span>
+                <span>{{ item.validityGuarantee[0] | formatDate }} - {{ item.validityGuarantee[1] | formatDate }}</span>
               </template>
             </el-form-item>
           </el-col>
@@ -186,11 +188,13 @@
       </div>
     </div>
 
+    <BatchDialog ref="batchDialogRef" @onOk="onDialogOk" />
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs';
+import BatchDialog from './batchDialog.vue';
 
 export default {
   props: {
@@ -205,8 +209,11 @@ export default {
     },
     formRef: {
       type: Function,
-      default: ()=>{}
+      default: () => { }
     }
+  },
+  components: {
+    BatchDialog,
   },
   computed: {
     contractDetailsList: {
@@ -225,8 +232,17 @@ export default {
     }
   },
   methods: {
-    onAmountChange(e){
-      console.log("amount changed:", e , this.value);
+    onDialogOk (data) {
+      // 将批量上传的文件，导入到总的数据中
+     this.contractDetailsList = data
+      console.log('批量导入的数据', this.tableData);
+    },
+     onImport(){
+      this.$refs.batchDialogRef.open();
+
+    },
+    onAmountChange(e) {
+      console.log("amount changed:", e, this.value);
       // 将totalAmount 求和
       this.value.amount = this.contractDetailsList.reduce((sum, item) => {
         return sum + Number(item.totalAmount || 0);
@@ -258,9 +274,11 @@ export default {
 </script>
 
 <style scoped>
-.borderTop{
-  border-top: 1px solid #ebeef5;;
+.borderTop {
+  border-top: 1px solid #ebeef5;
+  ;
 }
+
 .license-panel {
   background: #fff;
   border: 1px solid #ebeef5;
