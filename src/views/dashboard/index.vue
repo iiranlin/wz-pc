@@ -11,7 +11,7 @@
 
                     <div class="title-item">
                         <div class="title-item-left">
-                            <span>数据概览</span>
+                            <span>业务数据概览</span>
                         </div>
                         <div class="title-item-right">
                             <el-select size="mini" class="summary-select" v-model="summaryRange"
@@ -225,10 +225,10 @@ export default {
             ],
             summaryStats: [
                 { key: 'planCount', label: '计划数', value: 0, unit: '条', route: { name: 'wzxqList' } },
-                { key: 'shippingCount', label: '发货数', value: 0, unit: '单', route: { name: 'sendList' } },
-                { key: 'takeCount', label: '收货数', value: 0, unit: '单', route: { name: 'receiveList' }},
-                { key: 'inCount', label: '入库数', value: 0, unit: '单', route: { name: 'imList'  }},
-                { key: 'outCount', label: '出库数', value: 0, unit: '单', route: { name: 'omList' }},
+                { key: 'shippingCount', label: '发货数', value: 0, unit: '次', route: { name: 'sendList' } },
+                { key: 'takeCount', label: '收货数', value: 0, unit: '次', route: { name: 'receiveList' }},
+                { key: 'inCount', label: '入库数', value: 0, unit: '次', route: { name: 'imList'  }},
+                { key: 'outCount', label: '出库数', value: 0, unit: '次', route: { name: 'omList' }},
             ],
             needSummaryLoading:false,
             needProjectLoading:false,
@@ -394,10 +394,10 @@ export default {
 
                  this.summaryStats = [
                 { key: 'planCount', label: '计划数', value: res.data.planCount || 0, unit: '条', route: { name: 'wzxqList' } },
-                { key: 'shippingCount', label: '发货数', value: res.data.shippingCount || 0, unit: '单', route: { name: 'sendList' } },
-                { key: 'takeCount', label: '收货数', value: res.data.takeCount || 0, unit: '单', route: { name: 'receiveList' }},
-                { key: 'inCount', label: '入库数', value:res.data.inCount || 0, unit: '单', route: { name: 'imList'  }},
-                { key: 'outCount', label: '出库数', value: res.data.outCount || 0, unit: '单', route: { name: 'omList' }},
+                { key: 'shippingCount', label: '发货数', value: res.data.shippingCount || 0, unit: '次', route: { name: 'sendList' } },
+                { key: 'takeCount', label: '收货数', value: res.data.takeCount || 0, unit: '次', route: { name: 'receiveList' }},
+                { key: 'inCount', label: '入库数', value:res.data.inCount || 0, unit: '次', route: { name: 'imList'  }},
+                { key: 'outCount', label: '出库数', value: res.data.outCount || 0, unit: '次', route: { name: 'omList' }},
             ]
             })
                 .finally(() => {
