@@ -36,7 +36,7 @@
 
                     <!--待办-->
                     <div class="wait-container" style="padding-bottom: 0;">
-                        <div class="title-item-left">
+                        <div class="title-item-left" style="padding-bottom: 16px;">
                             <span>待办事项</span>
                         </div>
                         <ul>
