@@ -35,33 +35,37 @@
            
 
                     <!--待办-->
-                    <div class="wait-container">
+                    <div class="wait-container" style="padding-bottom: 0;">
                         <div class="title-item-left">
                             <span>待办事项</span>
                         </div>
                         <ul>
-                            <li @click="handleWaitClick('audit')">
+                            <li :class="{ 'wait-item-active': activeWaitType === 'audit' }"
+                                @click="handleWaitClick('audit')">
                                 <img src="/static/icon-wait-examine.svg">
                                 <div class="wait-content">
                                     <p>待审核</p>
                                     <p class="wait-examine-num"><span>{{ taskNum.auditNum || 0 }}</span>个</p>
                                 </div>
                             </li>
-                            <li @click="handleWaitClick('handle')">
+                            <li :class="{ 'wait-item-active': activeWaitType === 'handle' }"
+                                @click="handleWaitClick('handle')">
                                 <img src="/static/icon-wait-handle.svg">
                                 <div class="wait-content">
                                     <p>待处理</p>
                                     <p class="wait-handle-num"><span>{{ taskNum.handleNum || 0 }}</span>个</p>
                                 </div>
                             </li>
-                            <li @click="handleWaitClick('todoList')">
+                            <li :class="{ 'wait-item-active': activeWaitType === 'todoList' }"
+                                @click="handleWaitClick('todoList')">
                                 <img src="/static/icon-wait-launch.svg">
                                 <div class="wait-content">
                                     <p>我的发起</p>
                                     <p class="wait-launch-num"><span>{{ taskNum.launchNum || 0 }}</span>个</p>
                                 </div>
                             </li>
-                            <li @click="handleWaitClick('toBeDeal')">
+                            <li :class="{ 'wait-item-active': activeWaitType === 'toBeDeal' }"
+                                @click="handleWaitClick('toBeDeal')">
                                 <img src="/static/icon-over-examine.svg">
                                 <div class="wait-content">
                                     <p>已审核</p>
@@ -72,13 +76,13 @@
                     </div>
                     <!--待办事项-->
                     <div class="calendar-container gird-item" style="margin-top: -16px;">
-                        <div class="title-item">
+                        <!-- <div class="title-item" style="padding: 0 0 0 20px; height: 32px; ">
                             <div class="title-item-left">
                                 <span>{{ activeComponentTitle }}</span>
                             </div>
-                        </div>
+                        </div> -->
                         <div :style="{
-                            width: sideTheme === 'theme-top' ? '57.2vw' : '50.2vw',
+                            width: sideTheme === 'theme-top' ? '57.6vw' : '51.9vw',
                             height: 'calc(100% - 60px)'
                         }" :key="key">
                             <ChildAudit v-if="activeComponent === 'ChildAudit'"></ChildAudit>
@@ -231,6 +235,7 @@ export default {
             projectLoading: false,
             projectId: '',
             activeComponent: 'ChildAudit',
+            activeWaitType: 'audit',
             // NOTE: The following data is hardcoded for demonstration.
             // It should be fetched from a relevant API endpoint.
             dataOverview: [
@@ -487,6 +492,7 @@ export default {
             this.recentList = chunkedArray;
         },
         handleWaitClick(name) {
+            this.activeWaitType = name;
             if (name === 'audit') {
                 this.activeComponent = 'ChildAudit';
             } else if (name === 'handle') {
@@ -633,34 +639,54 @@ h3 {
 
 
 
-        ul {
-            margin: 0px;
-            padding: 0px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            position: relative;
-            padding: 23px 0;
-            // border-top: 1px solid #F2F3F5;
-            border-bottom: 1px solid #F2F3F5;
-
-            li {
+            ul {
+                margin: 0px;
+                padding: 0px;
                 display: flex;
+                justify-content: space-between;
                 align-items: center;
-                flex: 1;
-                background: #ffffff;
-                position: relative;
-                border-right: 1px solid #F2F3F5;
                 height: 100%;
+                position: relative;
+                // padding: 23px 0;
+                // border-top: 1px solid #F2F3F5;
+                border-bottom: 1px solid #F2F3F5;
 
-                &:last-child {
-                    border-right: 0;
-                }
-
-                .wait-content {
-                    margin-left: 12px;
+                li {
                     display: flex;
+                    align-items: center;
+                    flex: 1;
+                    background: #ffffff;
+                    position: relative;
+                    border-right: 1px solid #F2F3F5;
+                    height: 100%;
+                    transition: background 0.2s ease, box-shadow 0.2s ease;
+
+                    &:last-child {
+                        border-right: 0;
+                    }
+
+                    &.wait-item-active {
+                        background: #f2f6ff;
+                        box-shadow: 0 8px 16px rgba(22, 93, 255, 0.12);
+
+                        .wait-content {
+                            & p:nth-child(1) {
+                                color: #165dff;
+                            }
+
+                            & p:nth-child(2) {
+                                color: #165dff;
+
+                                span {
+                                    color: #165dff;
+                                }
+                            }
+                        }
+                    }
+
+                    .wait-content {
+                        margin-left: 12px;
+                        display: flex;
                     align-items: center;
                     flex-direction: column;
                     justify-content: flex-start;
