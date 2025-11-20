@@ -14,6 +14,20 @@ export const itemList = (params) => {
     })
 }
 
+
+/**
+ * 获取建设项目下拉
+ * @param {*} params 
+ * @returns 
+ */
+export const lineSelectOptions = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialProject/getProjectByUser`,
+        method: 'get',
+        params
+    })
+}
+
 /**
  * 详情
  * @param {*} params 
