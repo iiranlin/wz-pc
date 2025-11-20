@@ -1,57 +1,56 @@
-import request,{ download } from '@/utils/request'
+import request, { download } from "@/utils/request";
 let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
 
 /**
  * 合同列表
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const itemList = (params) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/list`,
-        method: 'get',
-        params
-    })
-}
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/list`,
+    method: "get",
+    params,
+  });
+};
 
 /**
  * 详情
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const detail = (id) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detail/${id}`,
-    method: 'get',
-  })
-}
+    method: "get",
+  });
+};
 
 /**
  * 新增
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const add = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/create`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 /**
  * 批量删除
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const batchRemove = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/batchRemove`,
-    method: 'post',
-    data
-  })
-}
-
+    method: "post",
+    data,
+  });
+};
 
 /**
  * 删除
@@ -59,89 +58,89 @@ export const batchRemove = (data) => {
 export const remove = (id) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/remove/${id}`,
-    method: 'post',
-  })
-}
+    method: "post",
+  });
+};
 
 /**
  * 修改
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const edit = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/modify`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 /**
  * 保存
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const save = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/save`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 /**
  * 导出
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export function adjustInExport(data) {
-  return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
+  return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data);
 }
 
 // 合同变更
 export const changeList = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/changeContract`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 // 撤销
 export const recall = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/recall`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 // 获取多个计划下所有明细
 export const getAllDetail = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/getByParentIdList`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 // 提交计划
 export const submit = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/merger`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 // 获取所有供应商
 export const getSeller = (params) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/getSeller`,
-    method: 'get',
-    params
-  })
-}
+    method: "get",
+    params,
+  });
+};
 
 /**
  * 分布需求列表提交
@@ -149,51 +148,51 @@ export const getSeller = (params) => {
  * @returns
  */
 export const submitTodo = (data) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/submit`,
-        method: 'post',
-        data
-    })
-}
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/submit`,
+    method: "post",
+    data,
+  });
+};
 
 // 提交给供应商
 export const submitToSeller = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/submitSeller`,
-    method: 'post',
-    data
-  })
-}
+    method: "post",
+    data,
+  });
+};
 
 // 下载供应商计划表
 export const downloadPlan = (data) => {
-  return download(`${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/export`, data)
-}
+  return download(`${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/export`, data);
+};
 
 // 需求退回
 export const demandBack = (params) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/backUp`,
-    method: 'get',
-    params
-  })
-}
+    method: "get",
+    params,
+  });
+};
 
 // 供应概览查询
 export const overview = (params) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/detailGyMx`,
-    method: 'get',
-    params
-  })
-}
-
+    method: "get",
+    params,
+  });
+};
 
 // 批量导入
 export function batchImport(data) {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/importExcel`,
-    method: 'post',
-    data
-  })
+    method: "post",
+    data,
+    minioSm4: true, //上传不需要加密
+  });
 }
