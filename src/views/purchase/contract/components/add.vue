@@ -126,11 +126,7 @@
         </template>
         <template #attachmentFileSolt="{ formModel }">
           <el-form-item prop="hthbfj" label-width="160px" label="核备附件(支持多个)" class="label-right-align" :rules="[
-            {
-              required: true,
-              message: '请上传核备附件',
-              trigger: 'change',
-            },
+            
           ]">
             <fileUpload :isShowTip="false" v-model="formModel.hthbfj" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
