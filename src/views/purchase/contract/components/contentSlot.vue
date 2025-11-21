@@ -5,19 +5,19 @@
     <div class="panel-header">
       <div class="title"> {{ !isView ? '操作' : '' }} </div>
       <div>
-        <el-button v-if="!isView" type="primary" @click="onImport"> 导入需求物资 </el-button>
+        <el-button v-if="!isView" type="primary" size="mini" @click="onImport"> 导入需求物资 </el-button>
 
         <el-button v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">
           新增
         </el-button>
-      
+
       </div>
     </div>
 
-
-
+    <div>{{ contractDetailsList.length }}</div>
     <!-- 动态表单项 -->
-    <div v-for="(item, index) in contractDetailsList" :key="index" class="panel-row">
+    <div v-for="(item, index) of contractDetailsList" :key="item.id || index" class="panel-row">
+      {{ index }}
       <div class="row-left">
         <h3>物资明细 {{ index + 1 }}</h3>
         <el-row :class="{ borderTop: isView }">
@@ -199,9 +199,11 @@ import BatchDialog from './batchDialog.vue';
 export default {
   props: {
     value: {
-      type: Array,
-      default: () => [
-      ]
+      type: Object,
+      default: () => ({
+        contractDetailsList: [],
+        amount: 0
+      })
     },
     isView: {
       type: Boolean,
@@ -221,7 +223,11 @@ export default {
         return this.value.contractDetailsList;
       },
       set(val) {
-        this.$emit("input", val);
+        // 这里一定要把整个 form 对象 emit 回去
+        this.$emit('input', {
+          ...this.value,
+          contractDetailsList: val
+        });
       }
     }
   },
@@ -232,12 +238,25 @@ export default {
     }
   },
   methods: {
-    onDialogOk (data) {
+    onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
-     this.contractDetailsList = data
-      console.log('批量导入的数据', this.tableData);
+
+      setTimeout(() => {
+        console.log(data, '便利签data')
+        const list = data.map(x => ({
+          ...x,
+          validityGuarantee: x.startTime ? [x.startTime, x.endTime] : []
+        }));
+        this.value.contractDetailsList = list
+
+        this.formRef.setFormData('contractDetailsList', list)
+
+        console.log('批量导入的数据', this.contractDetailsList);
+      }, 1500)
+
+      //  this.contractDetailsList = data
     },
-     onImport(){
+    onImport() {
       this.$refs.batchDialogRef.open();
 
     },
@@ -255,19 +274,35 @@ export default {
 
     },
     addItem() {
-      this.contractDetailsList.push({
-        materialName: "",
-        specModel: "",
-        unit: 0,
-        amount: 0,
-        price: 0,
-        vatRate: 0,
-        totalAmount: 0,
-        railwaySpecial: '0',
-      });
+      const list = this.contractDetailsList.slice();
+
+      console.log('add', list)
+      setTimeout(() => {
+        list.push({
+          materialName: "",
+          specModel: "",
+          unit: '',
+          amount: '',
+          price: '',
+          vatRate: '',
+          totalAmount: '',
+          railwaySpecial: '0',
+          id: crypto.randomUUID(),
+        });
+        this.contractDetailsList = list;
+
+        this.formRef.setFormData('contractDetailsList', list)
+
+
+      }, 1500)
     },
     removeItem(index) {
-      this.contractDetailsList.splice(index, 1);
+      const list = this.contractDetailsList.slice();
+      list.splice(index, 1);
+      this.value.contractDetailsList = list
+
+      this.formRef.setFormData('contractDetailsList', list)
+
     }
   }
 };

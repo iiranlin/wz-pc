@@ -44,11 +44,12 @@
 
     <el-table :data="fileList" border style="width: 100%; margin-top: 20px">
       <el-table-column prop="fileName" label="文件名" />
-      <el-table-column prop="number" label="物资条数" />
+      <el-table-column prop="number" label="物资条数" width="120" />
       <el-table-column
         prop="fileSize"
         label="文件大小"
         :formatter="formatFileSize"
+        
       />
       <el-table-column prop="status" label="状态" />
     </el-table>
@@ -78,13 +79,14 @@
 
 <script>
 import { batchImport } from '@/api/prodmgr-inv/project/planRest.js'
+import {customUpload} from '@/api/prodmgr-inv/project/file'
 
 export default {
   name: "batchDialog",
   data () {
     return {
       loading: false,
-      title: '导入用料计划物资',
+      title: '导入需求物资',
       visible: false,
       tableData: [],
       fileList: [],
@@ -92,8 +94,8 @@ export default {
     }
   },
   computed: {
-    contractId () {
-      return this.$route.query.id
+    projectId () {
+      return this.$route.query.id || ''
     }
   },
   methods: {
@@ -138,10 +140,11 @@ export default {
     handleUpload ({ file }) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('contractId ', this.contractId);
+      formData.append('businessType',4)
+      formData.append('businessData ', this.projectId);
       this.loading = true;
 
-      batchImport(formData).then(res => {
+      customUpload(formData).then(res => {
         this.fileList = [res.data]
       }).finally(() => {
         this.loading = false;
