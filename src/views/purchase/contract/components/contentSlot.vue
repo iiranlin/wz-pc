@@ -1,31 +1,48 @@
 <template>
   <div class="license-panel">
-
     <!-- 顶部标题 + 按钮 -->
     <div class="panel-header">
-      <div class="title"> {{ !isView ? '操作' : '' }} </div>
+      <div class="title">{{ !isView ? "操作" : "" }}</div>
       <div>
-        <el-button v-if="!isView" type="primary" size="mini" @click="onImport"> 导入需求物资 </el-button>
-
-        <el-button v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">
-          新增
+        <el-button v-if="!isView" type="primary" size="mini" @click="onImport">
+          导入需求物资
         </el-button>
 
+        <el-button
+          v-if="!isView"
+          type="primary"
+          size="mini"
+          icon="el-icon-plus"
+          @click="addItem"
+        >
+          新增
+        </el-button>
       </div>
     </div>
 
-    <div>{{ contractDetailsList.length }}</div>
     <!-- 动态表单项 -->
-    <div v-for="(item, index) of contractDetailsList" :key="item.id || index" class="panel-row">
-      {{ index }}
+    <div
+      v-for="(item, index) of contractDetailsList"
+      :key="item.id || index"
+      class="panel-row"
+    >
       <div class="row-left">
         <h3>物资明细 {{ index + 1 }}</h3>
         <el-row :class="{ borderTop: isView }">
           <el-col :span="8">
-            <el-form-item label="物资名称" :prop="`contractDetailsList.${index}.materialName`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入物资名称', trigger: 'blur' }]">
+            <el-form-item
+              label="物资名称"
+              :prop="`contractDetailsList.${index}.materialName`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入物资名称', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input v-model="item.materialName" placeholder="请输入物资名称" />
+                <el-input
+                  v-model="item.materialName"
+                  placeholder="请输入物资名称"
+                />
               </template>
               <template v-else>
                 <span>{{ item.materialName }}</span>
@@ -33,19 +50,35 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="规格型号" :prop="`contractDetailsList.${index}.specModel`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入规格型号', trigger: 'blur' }]">
+            <el-form-item
+              label="规格型号"
+              :prop="`contractDetailsList.${index}.specModel`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入规格型号', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input v-model="item.specModel" placeholder="请输入规格型号" />
+                <el-input
+                  v-model="item.specModel"
+                  placeholder="请输入规格型号"
+                />
               </template>
               <template v-else>
                 <span>{{ item.specModel }}</span>
               </template>
             </el-form-item>
           </el-col>
+
           <el-col :span="8">
-            <el-form-item label="计量单位" :prop="`contractDetailsList.${index}.unit`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入计量单位', trigger: 'blur' }]">
+            <el-form-item
+              label="计量单位"
+              :prop="`contractDetailsList.${index}.unit`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入计量单位', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
                 <el-input v-model="item.unit" placeholder="请输入计量单位" />
               </template>
@@ -57,10 +90,20 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="数量" :prop="`contractDetailsList.${index}.amount`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入数量', trigger: 'blur' }]">
+            <el-form-item
+              label="数量"
+              :prop="`contractDetailsList.${index}.amount`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入数量', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input type="number" v-model="item.amount" placeholder="请输入数量" />
+                <el-input
+                  type="number"
+                  v-model="item.amount"
+                  placeholder="请输入数量"
+                />
               </template>
               <template v-else>
                 <span>{{ item.amount }}</span>
@@ -68,10 +111,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="单价(万元)" :prop="`contractDetailsList.${index}.price`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入单价', trigger: 'blur' }]">
+            <el-form-item
+              label="单价(万元)"
+              :prop="`contractDetailsList.${index}.price`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入单价', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input type="number" v-model="item.price" placeholder="请输入单价" />
+                <el-input
+                  type="number"
+                  v-model="item.price"
+                  placeholder="请输入单价"
+                />
               </template>
               <template v-else>
                 <span>{{ item.price }}</span>
@@ -79,10 +132,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="税率(%)" :prop="`contractDetailsList.${index}.vatRate`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入税率', trigger: 'blur' }]">
+            <el-form-item
+              label="税率(%)"
+              :prop="`contractDetailsList.${index}.vatRate`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入税率', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input type="number" v-model="item.vatRate" placeholder="请输入税率" />
+                <el-input
+                  type="number"
+                  v-model="item.vatRate"
+                  placeholder="请输入税率"
+                />
               </template>
               <template v-else>
                 <span>{{ item.vatRate }}</span>
@@ -92,21 +155,79 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="合价(万元)" :prop="`contractDetailsList.${index}.totalAmount`" class="label-right-align"
-              :rules="[{ required: true, message: '请输入合价', trigger: 'blur' }]">
+            <el-form-item
+              label="合价(万元)"
+              :prop="`contractDetailsList.${index}.totalAmount`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入合价', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input type="number" v-model="item.totalAmount" placeholder="请输入合价" @change="onAmountChange" />
+                <el-input
+                  type="number"
+                  v-model="item.totalAmount"
+                  placeholder="请输入合价"
+                  @change="onAmountChange"
+                />
               </template>
               <template v-else>
                 <span>{{ item.totalAmount }}</span>
               </template>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item :prop="`contractDetailsList.${index}.railwaySpecial`" label="铁路专用产品"
-              class="label-right-align">
+                    <el-col :span="8">
+            <el-form-item
+              label="物资品牌"
+              :prop="`contractDetailsList.${index}.brand`"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入物资品牌', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-radio-group v-model="item.railwaySpecial" @change="onRailwayChange">
+                <el-input
+                  v-model="item.brand"
+                  placeholder="请输入物资品牌"
+                />
+              </template>
+              <template v-else>
+                <span>{{ item.brand }}</span>
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="技术标准"
+              :prop="`contractDetailsList.${index}.technicalStandard`"
+              class="label-right-align"
+             
+            >
+              <template v-if="!isView">
+                <el-input
+                  v-model="item.technicalStandard"
+                  placeholder="请输入技术标准"
+                />
+              </template>
+              <template v-else>
+                <span>{{ item.technicalStandard }}</span>
+              </template>
+            </el-form-item>
+          </el-col>
+         
+        </el-row>
+        <el-row>
+           <el-col :span="8">
+            <el-form-item
+              :prop="`contractDetailsList.${index}.railwaySpecial`"
+              label="铁路专用产品"
+              class="label-right-align"
+            >
+              <template v-if="!isView">
+                <el-radio-group
+                  v-model="item.railwaySpecial"
+                  @change="onRailwayChange"
+                >
                   <el-radio label="1">是</el-radio>
                   <el-radio label="0">否</el-radio>
                 </el-radio-group>
@@ -126,10 +247,23 @@
         </el-row>
         <el-row :gutter="20" v-if="item.railwaySpecial == 1">
           <el-col :span="8">
-            <el-form-item :prop="`contractDetailsList.${index}.licenseCategory`" label="许可/认证类别"
-              :rules="[{ required: true, message: '请输入许可/认证类别', trigger: 'blur' }]" class="label-right-align">
+            <el-form-item
+              :prop="`contractDetailsList.${index}.licenseCategory`"
+              label="许可/认证类别"
+              :rules="[
+                {
+                  required: true,
+                  message: '请输入许可/认证类别',
+                  trigger: 'blur',
+                },
+              ]"
+              class="label-right-align"
+            >
               <template v-if="!isView">
-                <el-input v-model="item.licenseCategory" placeholder="请输入许可/认证类别" />
+                <el-input
+                  v-model="item.licenseCategory"
+                  placeholder="请输入许可/认证类别"
+                />
               </template>
 
               <template v-else>
@@ -139,10 +273,19 @@
           </el-col>
 
           <el-col :span="8">
-            <el-form-item :prop="`contractDetailsList.${index}.issuanceUnit`" label="发证单位" class="label-right-align"
-              :rules="[{ required: true, message: '请输入发证单位', trigger: 'blur' }]">
+            <el-form-item
+              :prop="`contractDetailsList.${index}.issuanceUnit`"
+              label="发证单位"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入发证单位', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input v-model="item.issuanceUnit" placeholder="请输入发证单位" />
+                <el-input
+                  v-model="item.issuanceUnit"
+                  placeholder="请输入发证单位"
+                />
               </template>
 
               <template v-else>
@@ -152,10 +295,19 @@
           </el-col>
 
           <el-col :span="8">
-            <el-form-item :prop="`contractDetailsList.${index}.quantity`" label="证书编号" class="label-right-align"
-              :rules="[{ required: true, message: '请输入证书编号', trigger: 'blur' }]">
+            <el-form-item
+              :prop="`contractDetailsList.${index}.quantity`"
+              label="证书编号"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请输入证书编号', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-input v-model="item.quantity" placeholder="请输入证书编号" />
+                <el-input
+                  v-model="item.quantity"
+                  placeholder="请输入证书编号"
+                />
               </template>
 
               <template v-else>
@@ -166,16 +318,32 @@
         </el-row>
         <el-row v-if="item.railwaySpecial == 1">
           <el-col :span="8">
-            <el-form-item :prop="`contractDetailsList.${index}.validityGuarantee`" label="有效日期"
-              class="label-right-align" :rules="[{ required: true, message: '请选择有效日期', trigger: 'blur' }]">
+            <el-form-item
+              :prop="`contractDetailsList.${index}.validityGuarantee`"
+              label="有效日期"
+              class="label-right-align"
+              :rules="[
+                { required: true, message: '请选择有效日期', trigger: 'blur' },
+              ]"
+            >
               <template v-if="!isView">
-                <el-date-picker v-model="item.validityGuarantee" type="daterange" range-separator="至"
-                  start-placeholder="开始日期" end-placeholder="结束日期" format="yyyy-MM-DD" value-format="yyyy-MM-DD">
+                <el-date-picker
+                  v-model="item.validityGuarantee"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-DD"
+                  value-format="yyyy-MM-DD"
+                >
                 </el-date-picker>
               </template>
 
               <template v-else>
-                <span>{{ item.validityGuarantee[0] | formatDate }} - {{ item.validityGuarantee[1] | formatDate }}</span>
+                <span
+                  >{{ item.validityGuarantee[0] | formatDate }} -
+                  {{ item.validityGuarantee[1] | formatDate }}</span
+                >
               </template>
             </el-form-item>
           </el-col>
@@ -183,8 +351,14 @@
       </div>
 
       <div class="row-right" v-if="!isView">
-        <el-button icon="el-icon-delete" size="mini" type="danger" circle @click="removeItem(index)"
-          v-if="contractDetailsList.length > 1" />
+        <el-button
+          icon="el-icon-delete"
+          size="mini"
+          type="danger"
+          circle
+          @click="removeItem(index)"
+          v-if="contractDetailsList.length > 1"
+        />
       </div>
     </div>
 
@@ -193,8 +367,8 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
-import BatchDialog from './batchDialog.vue';
+import dayjs from "dayjs";
+import BatchDialog from "./batchDialog.vue";
 
 export default {
   props: {
@@ -202,17 +376,17 @@ export default {
       type: Object,
       default: () => ({
         contractDetailsList: [],
-        amount: 0
-      })
+        amount: 0,
+      }),
     },
     isView: {
       type: Boolean,
-      default: false
+      default: false,
     },
     formRef: {
       type: Function,
-      default: () => { }
-    }
+      default: () => {},
+    },
   },
   components: {
     BatchDialog,
@@ -223,42 +397,36 @@ export default {
         return this.value.contractDetailsList;
       },
       set(val) {
+        console.log("SETTER 执行了，新的列表:", val);
+        console.log("SETTER 当前 props.value:", this.value);
         // 这里一定要把整个 form 对象 emit 回去
-        this.$emit('input', {
-          ...this.value,
-          contractDetailsList: val
-        });
-      }
-    }
+        const newdata = JSON.parse(
+          JSON.stringify({ ...this.value, contractDetailsList: val })
+        );
+        this.$emit("input", newdata);
+      },
+    },
   },
+
   filters: {
     formatDate(value) {
       if (!value) return "";
       return dayjs(value).format("YYYY-MM-DD");
-    }
+    },
   },
   methods: {
     onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
 
-      setTimeout(() => {
-        console.log(data, '便利签data')
-        const list = data.map(x => ({
+        const list = data.map((x) => ({
           ...x,
-          validityGuarantee: x.startTime ? [x.startTime, x.endTime] : []
+          validityGuarantee: x.startTime ? [x.startTime, x.endTime] : [],
         }));
-        this.value.contractDetailsList = list
 
-        this.formRef.setFormData('contractDetailsList', list)
-
-        console.log('批量导入的数据', this.contractDetailsList);
-      }, 1500)
-
-      //  this.contractDetailsList = data
+        this.formRef.setFormData({ contractDetailsList: list });
     },
     onImport() {
       this.$refs.batchDialogRef.open();
-
     },
     onAmountChange(e) {
       console.log("amount changed:", e, this.value);
@@ -266,52 +434,37 @@ export default {
       this.value.amount = this.contractDetailsList.reduce((sum, item) => {
         return sum + Number(item.totalAmount || 0);
       }, 0);
-      this.formRef.setFormData('amount', this.value.amount);
-
+      this.formRef.setFormData({ amount: this.value.amount });
     },
     async onRailwayChange(e) {
       console.log("railwaySpecial changed:", e);
-
     },
     addItem() {
-      const list = this.contractDetailsList.slice();
+      
+      this.contractDetailsList.push({
+        materialName: "",
+        specModel: "",
+        unit: "",
+        amount: "",
+        price: "",
+        vatRate: "",
+        totalAmount: "",
+        railwaySpecial: "0",
+        brand: "",
+        technicalStandard:""
 
-      console.log('add', list)
-      setTimeout(() => {
-        list.push({
-          materialName: "",
-          specModel: "",
-          unit: '',
-          amount: '',
-          price: '',
-          vatRate: '',
-          totalAmount: '',
-          railwaySpecial: '0',
-          id: crypto.randomUUID(),
-        });
-        this.contractDetailsList = list;
-
-        this.formRef.setFormData('contractDetailsList', list)
-
-
-      }, 1500)
+      });
     },
-    removeItem(index) {
-      const list = this.contractDetailsList.slice();
-      list.splice(index, 1);
-      this.value.contractDetailsList = list
-
-      this.formRef.setFormData('contractDetailsList', list)
-
-    }
-  }
+    removeItem (index) {
+      this.contractDetailsList.splice(index, 1);
+    },
+  },
 };
 </script>
 
 <style scoped>
 .borderTop {
   border-top: 1px solid #ebeef5;
-  ;
 }
 
 .license-panel {

@@ -371,6 +371,8 @@ export default {
             vatRate: 0,
             totalAmount: 0,
             railwaySpecial: '0',
+             brand: "",
+             technicalStandard:""
           }]
         });
       });

@@ -6,7 +6,6 @@
     :show-close="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    append-to-body
     :destroy-on-close="true"
     width="850px"
   >
