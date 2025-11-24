@@ -83,6 +83,13 @@ Vue.use(SearchBar)
 import watermark from 'vue-watermark'
 Vue.use(watermark)
 
+// 全局filter 注册 formatDate 过滤器 默认格式 'YYYY-MM-DD HH:mm:ss'
+import dayjs from 'dayjs'
+Vue.filter('formatDate', function(value, format = 'YYYY年MM月DD日') {
+  if (!value) return '';
+  return dayjs(value).format(format);
+});
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -305,6 +305,14 @@
 							}
 						})
 						break;
+					case 'detailView':
+						this.$router.push({
+							name:'selfContractList',
+							query:{
+								id:idArr[0]
+							}
+						})
+						break;
 					case 'submit':
 						this.handSubmit(idArr)
 						break;
