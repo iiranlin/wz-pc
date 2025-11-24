@@ -27,8 +27,8 @@ export const downloadSettlementList = (params) => {
  * 1:需求计划表下载
  * 2:采购合同许可证台账下载
  **/ 
-export const customDownload = (data) => {
-  return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, data)
+export const customDownload = (params) => {
+  return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')
 }
 
 /**
