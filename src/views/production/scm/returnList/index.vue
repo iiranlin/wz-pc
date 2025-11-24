@@ -1,77 +1,38 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single"
+      @newButton="newButton"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #issueType="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in options"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <template #issueType="scope">
             {{ status[scope.value] }}
           </template>
           <!-- 退货单号 -->
           <template #backNumber="scope">
             <el-button type="text" @click="toThd(scope.data)">
-              {{ scope.data.issueType == 1 ?  scope.value : scope.data.backQualNumber }}
+              {{ scope.data.issueType == 1 ? scope.value : scope.data.backQualNumber }}
             </el-button>
           </template>
-            <template #backDate="scope">
-              {{ scope.data.issueType == 1 ?  scope.value : scope.data.backQualDate | formatDate }}
+          <template #backDate="scope">
+            {{ scope.data.issueType == 1 ? scope.value : scope.data.backQualDate | formatDate }}
           </template>
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
@@ -86,13 +47,8 @@
             </el-button>
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
   </div>
@@ -161,9 +117,12 @@ export default {
   },
   filters: {
     formatDate(value) {
-      if(!value) return ''
+      if (!value) return ''
       return dayjs(value).format("YYYY-MM-DD");
     },
+  },
+  activated() {
+    this.getList();
   },
   async created() {
     let id = this.$route.meta.id;
@@ -205,9 +164,9 @@ export default {
     /** 查询菜单列表 */
     getList() {
       const userInfo = getUserInfo();
-      console.log(userInfo,'=========')
+      console.log(userInfo, '=========')
       this.loading = true;
-      Api.listGysRetreat(Object.assign({sellerId:userInfo.id}, this.listQuery, this.formData))
+      Api.listGysRetreat(Object.assign({ sellerId: userInfo.id }, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -222,7 +181,7 @@ export default {
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton(buttonCode, idArr, rowArr, { buttonData }) {},
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) { },
 
     clickReset() {
       this.handleQuery();
@@ -243,7 +202,7 @@ export default {
         query: {
           type: "view",
           id: row.id,
-          backNode:row.issueType
+          backNode: row.issueType
         },
       });
     },

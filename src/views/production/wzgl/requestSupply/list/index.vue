@@ -1,67 +1,29 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :buttonDisable="handleButtonDisabled"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="handleButtonDisabled"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #status>
-        <el-select
-          v-model="formData.status"
-          filterable
-          clearable
-          placeholder="请选择"
-          style="width:100%"
-        >
-          <el-option
-            v-for="item in Object.keys(status).map((x) => ({
-              label: status[x],
-              value: x,
-            }))"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <el-select v-model="formData.status" filterable clearable placeholder="请选择" style="width:100%">
+          <el-option v-for="item in Object.keys(status).map((x) => ({
+            label: status[x],
+            value: x,
+          }))" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-          :buttonDisable="handleTableButtonDisable"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
+          :buttonDisable="handleTableButtonDisable">
           <template #status="scope">
             {{ status[scope.value] }}
           </template>
@@ -71,23 +33,12 @@
             </el-button>
           </template>
           <template #fileList="scope">
-            <fileUpload
-              v-if="scope.value"
-              :value="scope.value"
-              :limit="9999"
-              :fileSize="500"
-              :fileType="['pdf']"
-              :preview="'view'"
-            />
+            <fileUpload v-if="scope.value" :value="scope.value" :limit="9999" :fileSize="500" :fileType="['pdf']"
+              :preview="'view'" />
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
     <Add ref="addRef" @createSuccess="onSuccess" />
@@ -102,14 +53,14 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import fileUpload from '@/components/upload'
 import DemandBack from './components/demandBack.vue'
-import {findByBusinessType} from '@/utils/index.js'
+import { findByBusinessType } from '@/utils/index.js'
 export default {
   // 供应需求列表
   name: "wzxqList",
-  components: { Add, fileUpload,DemandBack },
+  components: { Add, fileUpload, DemandBack },
   mixins: [indexMixin],
 
-  data () {
+  data() {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const status = {
       '0': '未提交',
@@ -155,7 +106,10 @@ export default {
 
     };
   },
-  async created () {
+  activated() {
+    this.getList();
+  },
+  async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
@@ -163,7 +117,7 @@ export default {
   },
 
   methods: {
-    handleTableButtonDisable (item, row) {
+    handleTableButtonDisable(item, row) {
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       if (item.buttonCode === 'flowSee') {
         return !['0', '3', '2', '4'].includes(row.planStatus)
@@ -178,10 +132,10 @@ export default {
       }
       return false
     },
-    onSuccess () {
+    onSuccess() {
       this.getList()
     },
-    handleButtonDisabled (item) {
+    handleButtonDisabled(item) {
       // 删除按钮，只能未提交和已驳回的才可以删除
       if (item.buttonCode === 'delete') {
         return this.selection.some(item => {
@@ -208,7 +162,7 @@ export default {
       }
       return false;
     },
-    onGoDetail (row) {
+    onGoDetail(row) {
       this.$router.push({
         name: 'requestDetail',
         query: {
@@ -217,17 +171,17 @@ export default {
         }
       })
     },
-    numberChange (val) {
+    numberChange(val) {
       this.numberShow = val;
     },
-    newButton (buttonCode, formId, buttonData) {
+    newButton(buttonCode, formId, buttonData) {
       this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData)
     },
-    handleCheckAllChange (columns) {
+    handleCheckAllChange(columns) {
       this.$refs.tableIndex.init(columns);
     },
     //选择框回调
-    selectChange (row) {
+    selectChange(row) {
       let { formData, isWatch } = row;
       if (!isWatch) {
         this.handleQuery(formData);
@@ -237,39 +191,39 @@ export default {
     },
 
 
-    emitAblFilter (listQuery) {
+    emitAblFilter(listQuery) {
       this.listQuery = Object.assign({}, this.listQuery, listQuery);
       this.handleQuery();
     },
-    handleQuery (row = {}, type = '') {
+    handleQuery(row = {}, type = '') {
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
       this.getList();
     },
     /** 查询菜单列表 */
-    getList () {
+    getList() {
       this.loading = true
       Api.itemList(Object.assign({
         pageStatus: '1'
       }, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list.map((x) => ({
-            ...x,
-            // fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
-            fileList: findByBusinessType(x.fileList,'51'),
-          }));
+          ...x,
+          // fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
+          fileList: findByBusinessType(x.fileList, '51'),
+        }));
         this.total = data.total
       }).finally(() => {
         this.loading = false
       })
     },
-    handleSelectionChange (ids, single, multiple, selection) {
+    handleSelectionChange(ids, single, multiple, selection) {
       this.ids = ids;
       this.single = single;
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton (buttonCode, idArr, rowArr, { buttonData }) {
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
@@ -303,7 +257,7 @@ export default {
           break;
       }
     },
-    demandBack (id) {
+    demandBack(id) {
       this.$refs.demandBackRef.updateInit(id)
       // this.$modal.confirm("是否确认退回？").then(() => {
       //   return Api.demandBack({ id })
@@ -312,7 +266,7 @@ export default {
       // })
     },
     // 提交审核
-    handleExamine (id) {
+    handleExamine(id) {
       this.$modal.confirm("是否确认提交审核?").then(function () {
         return Api.examine({ id });
       }).then(() => {
@@ -321,7 +275,7 @@ export default {
       })
     },
     // 撤回
-    handleRecall (id) {
+    handleRecall(id) {
       this.$modal.confirm("是否确认撤回?").then(function () {
         return Api.recall({ id });
       }).then(() => {
@@ -329,7 +283,7 @@ export default {
         this.getList();
       })
     },
-    handleDelete (ids) {
+    handleDelete(ids) {
       this.$modal.confirm("是否确认删除?").then(function () {
         return Api.batchRemove({ ids });
       }).then(() => {
@@ -337,13 +291,13 @@ export default {
         this.$modal.msgSuccess("删除成功");
       })
     },
-    handleExport (obj) {
+    handleExport(obj) {
       Api.downloadPlan(obj.id)
     },
-    clickReset () {
+    clickReset() {
       this.handleQuery();
     },
-    cleanClick (data) {
+    cleanClick(data) {
       for (const key of data) {
         if (key.indexOf("Start") != -1 || key.indexOf("End") != -1) {
           this.$refs.formData.resetQueryDateRange(key);

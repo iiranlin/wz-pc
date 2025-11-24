@@ -49,7 +49,7 @@
                 if (scope.value) {
                   $refs.sectionDialogRef.open(
                     // 合同编号:合同名称；  string 类型，分号隔开
-                    scope.data.recentyearcms.split(';').map(x => ({
+                    scope.data.recentYearContractName.split(';').map(x => ({
                       number: x.split(':')[0],
                       name: x.split(':')[1]
                     }))
@@ -142,6 +142,9 @@ export default {
       if (!value || !Array.isArray(value)) return 0;
       return value.length;
     },
+  },
+  activated() {
+    this.getList();
   },
   async created() {
     let id = this.$route.meta.id;

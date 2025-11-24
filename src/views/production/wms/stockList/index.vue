@@ -1,92 +1,39 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :buttonDisable="buttonDisabledTop"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="buttonDisabledTop"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #planCompleteStatus="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in options"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
       <template #relatedCount="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in kucunOptions"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in kucunOptions" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <template #planCompleteStatus="scope">
             {{ scope.value == "1" ? "已完成" : "未完成" }}
           </template>
           <template #relatedCount="scope">
-            {{ scope.value=='0'?'无':'有' }}
+            {{ scope.value == '0' ? '无' : '有' }}
           </template>
           <!-- 需求ID -->
           <template #planNumber="scope">
@@ -95,13 +42,8 @@
             </el-button>
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
   </div>
@@ -172,6 +114,9 @@ export default {
       hasOwn: true,
     };
   },
+  activated() {
+    this.getList();
+  },
   async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
@@ -212,7 +157,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      Api.listStock(Object.assign({ }, this.listQuery, this.formData))
+      Api.listStock(Object.assign({}, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -231,13 +176,13 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "om":
-            this.$router.push({
-              name: "omPage",
-              query: {
-                type: "create",
-                id: idArr[0],
-              },
-            });
+          this.$router.push({
+            name: "omPage",
+            query: {
+              type: "create",
+              id: idArr[0],
+            },
+          });
           break;
         case "stockDetail":
           this.$router.push({

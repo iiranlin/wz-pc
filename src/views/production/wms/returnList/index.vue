@@ -1,46 +1,20 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single"
+      @newButton="newButton"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <!-- 退货单号 -->
           <template #backQualNumber="scope">
             <el-button type="text" @click="toThd(scope.data)">
@@ -56,17 +30,12 @@
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
             <!-- <el-button type="text" @click="toFhd(scope.data)"> -->
-              {{ scope.value }}
+            {{ scope.value }}
             <!-- </el-button> -->
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
   </div>
@@ -118,6 +87,9 @@ export default {
       hasOwn: true,
     };
   },
+  activated() {
+    this.getList();
+  },
   async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
@@ -159,7 +131,7 @@ export default {
     getList() {
       this.loading = true;
       const userInfo = getUserInfo();
-      Api.listCrRetreat(Object.assign({deptId:userInfo.deptId}, this.listQuery, this.formData))
+      Api.listCrRetreat(Object.assign({ deptId: userInfo.deptId }, this.listQuery, this.formData))
         .then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
@@ -174,7 +146,7 @@ export default {
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton(buttonCode, idArr, rowArr, { buttonData }) {},
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) { },
 
     clickReset() {
       this.handleQuery();
@@ -206,7 +178,7 @@ export default {
     toShd(row) {
       this.$router.push({
         name: "receivePage",
-        query: { id: row.id, type: "view",takeStatus:row.takeStatus },
+        query: { id: row.id, type: "view", takeStatus: row.takeStatus },
       });
     },
   },

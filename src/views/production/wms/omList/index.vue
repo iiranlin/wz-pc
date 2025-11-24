@@ -1,46 +1,20 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single"
+      @newButton="newButton"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <!-- 出库单号 -->
           <template #outNumber="scope">
             <el-button type="text" @click="toOm(scope.data)">
@@ -54,13 +28,8 @@
             </el-button>
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
   </div>
@@ -112,6 +81,9 @@ export default {
       hasOwn: true,
     };
   },
+  activated() {
+    this.getList();
+  },
   async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
@@ -120,17 +92,17 @@ export default {
   },
 
   methods: {
-   async handleDonwload(id) {
-    try {
-      this.loading = true;
-      await FileApi.downloadOutOfTheWarehouse({id});
-      
-    } catch (error) {
-      this.$modal.msgError("下载失败，请重试");
-    } finally {
-      this.loading = false;
-    }
-  },
+    async handleDonwload(id) {
+      try {
+        this.loading = true;
+        await FileApi.downloadOutOfTheWarehouse({ id });
+
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
+      }
+    },
     numberChange(val) {
       this.numberShow = val;
     },
@@ -179,7 +151,7 @@ export default {
       this.selection = selection;
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
-        this.proxyPrint(buttonCode, rowArr, buttonData);
+      this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
         case "download":
           this.handleDonwload(idArr[0])

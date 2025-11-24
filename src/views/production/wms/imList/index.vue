@@ -1,69 +1,28 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :buttonDisable="buttonDisabledTop"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="buttonDisabledTop"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #storeStatus="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in options"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-          :row-class-name="tableRowClassName"
-          :button-disable="buttonDisabled"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
+          :row-class-name="tableRowClassName" :button-disable="buttonDisabled">
           <template #storeStatus="scope">
             {{ storeStatus[scope.value] }}
           </template>
@@ -76,23 +35,15 @@
           <!-- 收货单号 -->
           <template #takeNumber="scope">
             <el-button type="text" @click="toReceive(scope.data)">
-            {{ scope.value }}
+              {{ scope.value }}
             </el-button>
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
-    <workFlowView
-      :bill-data="selectedRow"
-      :work-flow-view-visible.sync="workFlowViewVisible"
-    />
+    <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
   </div>
 </template>
 
@@ -105,7 +56,7 @@ import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "imList",
-  components: {workFlowView},
+  components: { workFlowView },
   mixins: [indexMixin],
 
   data() {
@@ -179,6 +130,9 @@ export default {
       workFlowViewVisible: false,
       selectedRow: null,
     };
+  },
+  activated() {
+    this.getList();
   },
   async created() {
     let id = this.$route.meta.id;
@@ -256,7 +210,7 @@ export default {
           break;
         case "process":
           this.workFlowViewVisible = true;
-          this.selectedRow = { businessId: rowArr[0].storeMiddleId?rowArr[0].storeMiddleId:idArr[0]};
+          this.selectedRow = { businessId: rowArr[0].storeMiddleId ? rowArr[0].storeMiddleId : idArr[0] };
           break;
         case "download":
           this.handleDonwload(idArr[0])
@@ -264,23 +218,23 @@ export default {
       }
     },
     async handleDonwload(id) {
-    try {
-      this.loading = true;
-      await FileApi.downloadStorageList({id});
-    
-    } catch (error) {
-      this.$modal.msgError("下载失败，请重试");
-      console.error('下载入库单失败:', error);
-    } finally {
-      this.loading = false;
-    }
-  },
+      try {
+        this.loading = true;
+        await FileApi.downloadStorageList({ id });
+
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+        console.error('下载入库单失败:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
     // 撤回
     handleRecall(id) {
       this.$modal
         .confirm("是否确认撤回?")
         .then(function () {
-          return Api.recall({ businessId:id,businessType:'RKLC' });
+          return Api.recall({ businessId: id, businessType: 'RKLC' });
         })
         .then(() => {
           this.$modal.msgSuccess("撤回成功");
@@ -303,14 +257,14 @@ export default {
     toIm(row) {
       this.$router.push({
         name: "imPage",
-        query: { id: row.id, type: "view",storeStatus: row.storeStatus },
+        query: { id: row.id, type: "view", storeStatus: row.storeStatus },
       });
     },
     //收货单
     toReceive(row) {
       this.$router.push({
         name: "receivePageCrk",
-        query: { id: row.id, type: "view",takeStatus:row.takeStatus },
+        query: { id: row.id, type: "view", takeStatus: row.takeStatus },
       });
     },
     //收货超过20天未入库显示红色
@@ -334,13 +288,13 @@ export default {
       //撤回按钮控制（审核中才能撤回）
       if (button.buttonCode == "withdraw") {
         return (
-         this.selection[0].storeStatus != "5"
+          this.selection[0].storeStatus != "5"
         );
       }
       // 下载按钮控制（检测通过和部分退货和已退货）
       if (button.buttonCode == "download") {
         return (
-         !['3','2','4'].includes(this.selection[0].storeStatus) 
+          !['3', '2', '4'].includes(this.selection[0].storeStatus)
         );
       }
     },

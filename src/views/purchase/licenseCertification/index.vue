@@ -123,6 +123,9 @@ export default {
       return value.length;
     },
   },
+  activated() {
+    this.getList();
+  },
   async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
@@ -224,7 +227,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.customDownload({ businessType:2, businessData:JSON.stringify(this.formData) });
+        await FileApi.customDownload({ businessType: 2, businessData: JSON.stringify(this.formData) });
         // this.$modal.msgSuccess("下载验收单成功");
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");

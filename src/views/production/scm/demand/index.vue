@@ -1,68 +1,28 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :button-disable="buttonDisabledTop"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :button-disable="buttonDisabledTop"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #status="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in options"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-          :button-disable="buttonDisabled"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
+          :button-disable="buttonDisabled">
           <template #status="scope">
             {{ status[scope.value] }}
           </template>
@@ -77,13 +37,8 @@
             <fileUpload v-model="scope.data.fileList" :preview="true" :limit="9999" />
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
     <confirm ref="confirm" :id="id" @createSuccess="getList" />
@@ -96,7 +51,7 @@ import indexMixin from "@/views/mixins";
 import Confirm from "./components/confirm.vue";
 import fileUpload from "@/components/upload";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
-import {findByBusinessType} from '@/utils/index.js'
+import { findByBusinessType } from '@/utils/index.js'
 export default {
   // 建设项目
   name: "demand",
@@ -166,6 +121,9 @@ export default {
       id: "",
     };
   },
+  activated() {
+    this.getList();
+  },
   async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
@@ -212,7 +170,7 @@ export default {
           this.list = data.list.map((x) => ({
             ...x,
             // fileList: x.fileList.length > 0 ? x.fileList[0].fileList : [],
-            fileList: findByBusinessType(x.fileList,'51'),
+            fileList: findByBusinessType(x.fileList, '51'),
           }));
         })
         .finally(() => {
@@ -255,7 +213,7 @@ export default {
             query: {
               id: idArr[0],
               type: "create",
-              planId:idArr[0],
+              planId: idArr[0],
             },
           });
           break;
@@ -278,16 +236,16 @@ export default {
           break;
       }
     },
-   async handleDonwload(id) {
-    try {
-      this.loading = true;
-      await FileApi.downloadSettlementList({id});
-    } catch (error) {
-      this.$modal.msgError("下载失败，请重试");
-    } finally {
-      this.loading = false;
-    }
-  },
+    async handleDonwload(id) {
+      try {
+        this.loading = true;
+        await FileApi.downloadSettlementList({ id });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
+      }
+    },
 
     clickReset() {
       this.handleQuery();
@@ -315,8 +273,8 @@ export default {
       }
       //已确认或供货中才能点击发货按钮,数量不等于0
       if (button.buttonCode == "send") {
-       // 未确认禁用及数量0禁用
-        return this.selection[0].status == "2" ||  this.selection[0].remainTotal <=0;
+        // 未确认禁用及数量0禁用
+        return this.selection[0].status == "2" || this.selection[0].remainTotal <= 0;
         // return this.selection[0].status != "4" && this.selection[0].status != "3";
       }
       // 已完成才能下载

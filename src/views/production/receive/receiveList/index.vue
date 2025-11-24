@@ -1,68 +1,28 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :buttonDisable="buttonDisabledTop"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="buttonDisabledTop"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #takeStatus="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in options"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-          :buttonDisable="buttonDisabledTable"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
+          :buttonDisable="buttonDisabledTable">
           <template #takeStatus="scope">
             {{ status[scope.value] }}
           </template>
@@ -75,7 +35,7 @@
           <!-- 发货单号 -->
           <template #shipmentBatchNumber="scope">
             <el-button type="text" @click="toFhd(scope.data)">
-            {{ scope.value }}
+              {{ scope.value }}
             </el-button>
           </template>
           <!-- 物流单号 -->
@@ -89,17 +49,9 @@
             <fileUpload :valve="scope.value" :preview="true" :limit="9999" />
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
-         <workFlowView
-          :bill-data="selectedRow"
-         :work-flow-view-visible.sync="workFlowViewVisible"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
+        <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
       </el-col>
     </el-row>
   </div>
@@ -115,13 +67,13 @@ import workFlowView from "@/components/workFlowView";
 export default {
   // 建设项目
   name: "receive",
-  components: { fileUpload ,workFlowView},
+  components: { fileUpload, workFlowView },
   mixins: [indexMixin],
 
   data() {
     return {
       status: {
-        0:"已驳回",
+        0: "已驳回",
         1: "未收货",
         2: "已收货",
         3: "部分退货",
@@ -150,8 +102,8 @@ export default {
           name: "审核中",
         },
         {
-          code:"0",
-          name:"已驳回"
+          code: "0",
+          name: "已驳回"
         }
       ],
       treeCurrentKey: "",
@@ -189,6 +141,9 @@ export default {
       workFlowViewVisible: false,
       selectedRow: null,
     };
+  },
+  activated() {
+    this.getList();
   },
   async created() {
     let id = this.$route.meta.id;
@@ -255,28 +210,28 @@ export default {
           }
           this.$router.push({
             name: "receivePage",
-            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create",takeStatus:rowArr[0].takeStatus == 0 ? 1 : rowArr[0].takeStatus },
+            query: { id: idArr[0], supplyId: rowArr[0].supplyId, type: "create", takeStatus: rowArr[0].takeStatus == 0 ? 1 : rowArr[0].takeStatus },
           });
           break;
         case "withdraw":
           this.handleRecall(idArr[0]);
           break;
-          //流程查看
+        //流程查看
         case "flowSee":
           this.workFlowViewVisible = true;
-          this.selectedRow = { businessId: rowArr[0].backMiddleId?rowArr[0].backMiddleId:idArr[0]};
+          this.selectedRow = { businessId: rowArr[0].backMiddleId ? rowArr[0].backMiddleId : idArr[0] };
           break;
         case "download":
           this.handleDonwload(idArr[0])
           break;
       }
     },
-        // 撤回
+    // 撤回
     handleRecall(id) {
       this.$modal
         .confirm("是否确认撤回?")
         .then(function () {
-          return wmsApi.recall({ businessId:id,businessType:'SHLC' });
+          return wmsApi.recall({ businessId: id, businessType: 'SHLC' });
         })
         .then(() => {
           this.$modal.msgSuccess("撤回成功");
@@ -300,7 +255,7 @@ export default {
     toReceive(row) {
       this.$router.push({
         name: "receivePage",
-        query: { id: row.id, type: "view",takeStatus:row.takeStatus },
+        query: { id: row.id, type: "view", takeStatus: row.takeStatus },
       });
     },
     //跳转货运详情
@@ -314,43 +269,43 @@ export default {
     toWuliu(row) {
       this.$router.push({
         name: "logisticsView_receive",
-        query: { id: row.planId, type: "view",batch:row.shipmentBatchNumber },
+        query: { id: row.planId, type: "view", batch: row.shipmentBatchNumber },
       });
     },
     //上方按钮控制
     buttonDisabledTop(button) {
       //状态不是未收货，按钮全不能操作
-      if(button.buttonCode == "receive"){
+      if (button.buttonCode == "receive") {
         return this.selection[0].takeStatus != 1 && this.selection[0].takeStatus != 0;
       }
       // 非审核中不允许撤回
-      if(button.buttonCode == "withdraw"){
-        return this.selection[0].takeStatus != 5; 
+      if (button.buttonCode == "withdraw") {
+        return this.selection[0].takeStatus != 5;
       }
       // 未收货不能下载
-      if( button.buttonCode == "download"){
-        return this.selection[0].takeStatus == 1 || this.selection[0].takeStatus == 5|| this.selection[0].takeStatus == 0;
+      if (button.buttonCode == "download") {
+        return this.selection[0].takeStatus == 1 || this.selection[0].takeStatus == 5 || this.selection[0].takeStatus == 0;
       }
-      
+
     },
     buttonDisabledTable(button, row) {
       // 未收货不允许查看流程
-      if (button.buttonCode == "flowSee"  ) {
+      if (button.buttonCode == "flowSee") {
         return row.takeStatus == "1"
       }
-      
+
     },
-   async handleDonwload(id) {
-    try {
-      this.loading = true;
-      await FileApi.downloadHandoverAcceptanceForm({id});
-      // this.$modal.msgSuccess("下载验收单成功");
-    } catch (error) {
-      this.$modal.msgError("下载失败，请重试");
-    } finally {
-      this.loading = false;
-    }
-  },
+    async handleDonwload(id) {
+      try {
+        this.loading = true;
+        await FileApi.downloadHandoverAcceptanceForm({ id });
+        // this.$modal.msgSuccess("下载验收单成功");
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 };
 </script>

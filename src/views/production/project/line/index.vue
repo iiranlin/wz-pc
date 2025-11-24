@@ -107,7 +107,9 @@ export default {
   name: "line",
   components: { Add, SectionDialog, ConstrctDialog },
   mixins: [indexMixin],
-
+  activated() {
+    this.getList();
+  },
   data () {
     return {
       treeCurrentKey: "",

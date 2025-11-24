@@ -1,68 +1,28 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :button-disable="buttonDisabledTop"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :button-disable="buttonDisabledTop"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
       <template #status="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-            ($t(`please_select`) || '请选择') +
-            i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in options"
-            :key="key"
-            :label="item.name"
-            :value="item.code"
-          />
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-          :button-disable="buttonDisabled"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
+          :button-disable="buttonDisabled">
           <template #status="scope">
             {{ status[scope.value] }}
           </template>
@@ -89,19 +49,11 @@
             <fileUpload v-model="scope.data.fileList" :preview="true" :limit="9999" />
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
-     <workFlowView
-      :bill-data="selectedRow"
-      :work-flow-view-visible.sync="workFlowViewVisible"
-    />
+    <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     <add-adress ref="addAdress" :shipmentBatchNumber="shipmentBatchNumber" />
   </div>
 </template>
@@ -115,7 +67,7 @@ import workFlowView from '@/components/workFlowView'
 export default {
   // 建设项目
   name: "sendList",
-  components: { AddAdress, fileUpload,workFlowView },
+  components: { AddAdress, fileUpload, workFlowView },
   mixins: [indexMixin],
 
   data() {
@@ -141,12 +93,12 @@ export default {
           name: "已完成",
         },
         {
-          code:"8",
-          name:"审核中",
+          code: "8",
+          name: "审核中",
         },
         {
-          code:"9",
-          name:"驳回"
+          code: "9",
+          name: "驳回"
         }
       ],
       treeCurrentKey: "",
@@ -185,6 +137,9 @@ export default {
       workFlowViewVisible: false,
       selectedRow: null,
     };
+  },
+  activated() {
+    this.getList();
   },
   async created() {
     let id = this.$route.meta.id;
@@ -258,7 +213,7 @@ export default {
           // }
           this.$router.push({
             name: "addSend",
-            query: { id: idArr[0], type:rowArr[0].status == 2 ?'view': "update", planId: rowArr[0].planId ,status:rowArr[0].status},
+            query: { id: idArr[0], type: rowArr[0].status == 2 ? 'view' : "update", planId: rowArr[0].planId, status: rowArr[0].status },
           });
           break;
         case "delete":
@@ -336,7 +291,7 @@ export default {
     toWuliu(row) {
       this.$router.push({
         name: "logisticsView_scm",
-        query: { id: row.planId, type: "view" ,batch:row.shipmentBatchNumber},
+        query: { id: row.planId, type: "view", batch: row.shipmentBatchNumber },
       });
     },
     //发货单
@@ -355,15 +310,15 @@ export default {
         return true;
       }
       //状态不是未发货,不能查看流程
-      if(button.buttonCode == 'flowSee'){
+      if (button.buttonCode == 'flowSee') {
         return row.status == 1;
       }
     },
     //上方按钮控制
     buttonDisabledTop(button) {
       //状态不是未发货，按钮全不能操作,审核中也不能操作
-      if(button.buttonCode == 'update'){
-        return this.selection[0].status == 3|| this.selection[0].status == 8;
+      if (button.buttonCode == 'update') {
+        return this.selection[0].status == 3 || this.selection[0].status == 8;
       }
       // 驳回后允许确认发货
       if (button.buttonCode == "confirm") {
