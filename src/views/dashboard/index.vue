@@ -2,55 +2,95 @@
     <div class="home-container">
         <!--网格布局-->
         <div class="gird-container">
+
             <div class="grid-left">
-                <!--待办-->
-                <div class="wait-container">
+                <!--左侧数据概览-->
+                <div class="summary-container gird-item" >
                     <h3>你好，{{ username }}，欢迎回来！</h3>
-                    <ul>
-                        <li @click="handleWaitClick('audit')">
-                            <img src="/static/icon-wait-examine.svg">
-                            <div class="wait-content">
-                                <p>待审核</p>
-                                <p class="wait-examine-num"><span>{{ taskNum.auditNum || 0 }}</span>个</p>
-                            </div>
-                        </li>
-                        <li @click="handleWaitClick('handle')">
-                            <img src="/static/icon-wait-handle.svg">
-                            <div class="wait-content">
-                                <p>待处理</p>
-                                <p class="wait-handle-num"><span>{{ taskNum.handleNum || 0 }}</span>个</p>
-                            </div>
-                        </li>
-                        <li @click="handleWaitClick('todoList')">
-                            <img src="/static/icon-wait-launch.svg">
-                            <div class="wait-content">
-                                <p>我的发起</p>
-                                <p class="wait-launch-num"><span>{{ taskNum.launchNum || 0 }}</span>个</p>
-                            </div>
-                        </li>
-                        <li @click="handleWaitClick('toBeDeal')">
-                            <img src="/static/icon-over-examine.svg">
-                            <div class="wait-content">
-                                <p>已审核</p>
-                                <p class="over-examine-num"><span>{{ taskNum.auditedNum || 0 }}</span>个</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <!--日历-->
-                <div class="calendar-container gird-item">
+                    <div style="border-top: 1px solid #F2F3F5;"></div>
+
                     <div class="title-item">
                         <div class="title-item-left">
-                            <span>{{ activeComponentTitle }}</span>
+                            <span>业务数据概览</span>
+                        </div>
+                        <div class="title-item-right">
+                            <el-select size="mini" class="summary-select" v-model="summaryRange"
+                                @change="handleSummaryRangeChange">
+                                <el-option v-for="option in summaryRangeOptions" :key="option.value"
+                                    :label="option.label" :value="option.value"></el-option>
+                            </el-select>
                         </div>
                     </div>
-                    <div style="width: 50.2vw;height: calc(100% - 60px);" :key="key">
-                        <ChildAudit  v-if="activeComponent === 'ChildAudit'"></ChildAudit>
-                        <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"></ChildToBeDeal>
-                        <ChildHandle v-if="activeComponent === 'ChildHandle'"></ChildHandle>
-                        <ChildTodoList v-if="activeComponent === 'ChildTodoList'"></ChildTodoList>
+                    <div class="summary-content" v-loading="summaryLoading">
+                        <div class="summary-card" v-for="item in summaryStats" :key="item.key"
+                            @click="handleSummaryNavigate(item)">
+                            <p class="summary-label">{{ item.label }}</p>
+                            <p class="summary-value">
+                                <span>{{ item.value }}</span>
+                                <em>{{ item.unit }}</em>
+                            </p>
+                        </div>
                     </div>
                 </div>
+           
+
+                    <!--待办-->
+                    <div class="wait-container" style="padding-bottom: 0;">
+                        <div class="title-item-left" style="padding-bottom: 16px;">
+                            <span>待办事项</span>
+                        </div>
+                        <ul>
+                            <li :class="{ 'wait-item-active': activeWaitType === 'audit' }"
+                                @click="handleWaitClick('audit')">
+                                <img src="/static/icon-wait-examine.svg">
+                                <div class="wait-content">
+                                    <p>待审核</p>
+                                    <p class="wait-examine-num"><span>{{ taskNum.auditNum || 0 }}</span>个</p>
+                                </div>
+                            </li>
+                            <li :class="{ 'wait-item-active': activeWaitType === 'handle' }"
+                                @click="handleWaitClick('handle')">
+                                <img src="/static/icon-wait-handle.svg">
+                                <div class="wait-content">
+                                    <p>待处理</p>
+                                    <p class="wait-handle-num"><span>{{ taskNum.handleNum || 0 }}</span>个</p>
+                                </div>
+                            </li>
+                            <li :class="{ 'wait-item-active': activeWaitType === 'todoList' }"
+                                @click="handleWaitClick('todoList')">
+                                <img src="/static/icon-wait-launch.svg">
+                                <div class="wait-content">
+                                    <p>我的发起</p>
+                                    <p class="wait-launch-num"><span>{{ taskNum.launchNum || 0 }}</span>个</p>
+                                </div>
+                            </li>
+                            <li :class="{ 'wait-item-active': activeWaitType === 'toBeDeal' }"
+                                @click="handleWaitClick('toBeDeal')">
+                                <img src="/static/icon-over-examine.svg">
+                                <div class="wait-content">
+                                    <p>已审核</p>
+                                    <p class="over-examine-num"><span>{{ taskNum.auditedNum || 0 }}</span>个</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--待办事项-->
+                    <div class="calendar-container gird-item" style="margin-top: -16px;">
+                        <!-- <div class="title-item" style="padding: 0 0 0 20px; height: 32px; ">
+                            <div class="title-item-left">
+                                <span>{{ activeComponentTitle }}</span>
+                            </div>
+                        </div> -->
+                        <div :style="{
+                            width: sideTheme === 'theme-top' ? '57.6vw' : '51.9vw',
+                            height: 'calc(100% - 60px)'
+                        }" :key="key">
+                            <ChildAudit v-if="activeComponent === 'ChildAudit'"></ChildAudit>
+                            <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"></ChildToBeDeal>
+                            <ChildHandle v-if="activeComponent === 'ChildHandle'"></ChildHandle>
+                            <ChildTodoList v-if="activeComponent === 'ChildTodoList'"></ChildTodoList>
+                        </div>
+                    </div>
             </div>
             <div class="grid-right">
                 <!--数据概况-->
@@ -61,8 +101,8 @@
                         </div>
 
                         <div style="width: 50%;" class="title-item-right" @click="handleNoticeMore()">
-                            <el-select style="width: 100%;" size="mini" clearable @change="onProjectChange" filterable v-model="projectId"
-                                placeholder="建设项目筛选">
+                            <el-select style="width: 100%;" size="mini" clearable @change="onProjectChange" filterable
+                                v-model="projectId" placeholder="建设项目筛选">
                                 <el-option v-for="item in lineProjectOptions" :key="item.value" :label="item.label"
                                     :value="item.value"></el-option>
                             </el-select>
@@ -98,7 +138,7 @@
                             <li v-for="(item, index) in noticeOptions" :key="item.id" @click="handlerViewDetails(item)">
                                 <el-tooltip class="item" effect="dark" :content="item.content" placement="top">
                                     <p class="notice-text">{{ (listQuery.pageNum - 1) * listQuery.pageSize + index + 1
-                                    }}、{{
+                                        }}、{{
                                             item.content }}</p>
                                 </el-tooltip>
                                 <p class="notice-date">{{ parseTime(item.createDate, '{y}-{m}-{d}') }}</p>
@@ -166,7 +206,7 @@ import { messagePage } from "@/api/system/message";
 // import { memoGetOneMonthMemo } from '@/api/system/dashboard.js';
 import moment from 'moment';
 // import { sysMsgSettingSelectOwnMesPage, sysMsgSettingBatchUpdateOwnMes } from "@/api/system/messageToDo";
-import { mapGetters } from "vuex";
+import { mapGetters,mapState } from "vuex";
 
 export default {
     name: 'Index',
@@ -174,15 +214,33 @@ export default {
 
     data() {
         return {
-            key:0,
+            key: 0,
+            //左侧概览相关
+            summaryLoading: false,
+            summaryRange: '1',
+            summaryRangeOptions: [
+                { label: '本周', value: '1' },
+                { label: '本月', value: '2' },
+                { label: '本年', value: '3' },
+            ],
+            summaryStats: [
+                { key: 'planCount', label: '计划数', value: 0, unit: '条', route: { name: 'wzxqList' } },
+                { key: 'shippingCount', label: '发货数', value: 0, unit: '次', route: { name: 'sendList' } },
+                { key: 'takeCount', label: '收货数', value: 0, unit: '次', route: { name: 'receiveList' }},
+                { key: 'inCount', label: '入库数', value: 0, unit: '次', route: { name: 'imList'  }},
+                { key: 'outCount', label: '出库数', value: 0, unit: '次', route: { name: 'omList' }},
+            ],
+            needSummaryLoading:false,
+            needProjectLoading:false,
             projectLoading: false,
             projectId: '',
             activeComponent: 'ChildAudit',
+            activeWaitType: 'audit',
             // NOTE: The following data is hardcoded for demonstration.
             // It should be fetched from a relevant API endpoint.
             dataOverview: [
                 { title: '建设项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
-                { title: '标段项目', value: '0', unit: '个',  onClickFun: () => { this.$router.push({ name: 'section' }) } },
+                { title: '标段项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'section' }) } },
                 { title: '供应商', value: '0', unit: '个', onClickFun: undefined },
                 { title: '启用合同数量', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
                 { title: '物资总金额', value: '0', unit: '万元', onClickFun: undefined },
@@ -190,6 +248,8 @@ export default {
                 { title: '已入库金额', value: '0', unit: '万元', onClickFun: undefined },
                 { title: '已出库金额', value: '0', unit: '万元', onClickFun: undefined },
             ],
+            selectProjectId:'',
+            selectType:'1',
             //待办数量对象
             taskNum: {},
             //通知信息
@@ -211,8 +271,12 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'userInfo'
+            'userInfo',
         ]),
+        ...mapState({
+            theme: state => state.settings.theme,
+            sideTheme: state => state.settings.sideTheme,
+        }),
         username() {
             return `${this.userInfo.nickName}(${this.userInfo.username})`;
         },
@@ -240,6 +304,28 @@ export default {
         console.log('dashboard mounted');
     },
     methods: {
+        // 左侧数据概览周期切换
+        handleSummaryRangeChange(range) {
+            this.selectType = range
+            this.needSummaryLoading = true
+            this.fetchSummaryData(this.selectType);
+        },
+        // 汇总数据填充（保留模拟数据，方便后续替换成接口）
+        fetchSummaryData(range) {
+            this.getDataCount()
+        },
+        // 左侧概览点击跳转
+        handleSummaryNavigate(item) {
+            if (typeof item.onClick === 'function') {
+                item.onClick();
+                return;
+            }
+            if (item.route) {
+                this.$router.push(item.route).catch(() => { });
+                return;
+            }
+            this.$emit('summary-card-click', item);
+        },
         handlerViewDetails(item) {
             if (item.businessType == 'HTJE') {
                 // 合同金额超过10% businessId
@@ -258,7 +344,10 @@ export default {
             }
         },
         onProjectChange(val) {
-            this.getDataCount(val)
+            this.selectProjectId = val
+            this.needProjectLoading = true
+            this.needSummaryLoading = true
+            this.getDataCount(this.selectProjectId)
         },
         async getOptions() {
             const res = await getLineProjectList();
@@ -270,31 +359,53 @@ export default {
             }
         },
         init() {
+            this.fetchSummaryData()
             this.getAllTaskNumByUser();
             this.getMessageList();
             this.getDailyList();
             this.getDataCount()
             this.getOptions()
 
-            this.key +=1
+            this.key += 1
         },
-        getDataCount(projectId = '') {
-            this.projectLoading = true
-            itemList({ projectId }).then(res => {
+        getDataCount() {
+            if(!this.needProjectLoading && !this.needSummaryLoading){
+                this.projectLoading = true
+                this.needSummaryLoading = true
+            }
+            if(this.needProjectLoading){
+                this.projectLoading = true
+            }
+            if(this.needSummaryLoading ) {
+                this.summaryLoading = true
+            }
+            itemList({ projectId:this.selectProjectId,type:this.selectType }).then(res => {
                 console.log(res.data.contractTotal, 'res')
                 this.dataOverview = [
                     { title: '建设项目', value: res.data.projectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
-                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ name: 'section' }) } },
+                    { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'section' }) } },
                     { title: '供应商', value: res.data.sellerTotal || '0', unit: '个', onClickFun: undefined },
-                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个',onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
+                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
                     { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                     { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                     { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                     { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
                 ]
+
+                 this.summaryStats = [
+                { key: 'planCount', label: '计划数', value: res.data.planCount || 0, unit: '条', route: { name: 'wzxqList' } },
+                { key: 'shippingCount', label: '发货数', value: res.data.shippingCount || 0, unit: '次', route: { name: 'sendList' } },
+                { key: 'takeCount', label: '收货数', value: res.data.takeCount || 0, unit: '次', route: { name: 'receiveList' }},
+                { key: 'inCount', label: '入库数', value:res.data.inCount || 0, unit: '次', route: { name: 'imList'  }},
+                { key: 'outCount', label: '出库数', value: res.data.outCount || 0, unit: '次', route: { name: 'omList' }},
+            ]
             })
                 .finally(() => {
                     this.projectLoading = false
+                    this.summaryLoading = false
+
+                    this.needProjectLoading = false
+                    this.needSummaryLoading = false
                 })
         },
         //获取待办数量
@@ -381,6 +492,7 @@ export default {
             this.recentList = chunkedArray;
         },
         handleWaitClick(name) {
+            this.activeWaitType = name;
             if (name === 'audit') {
                 this.activeComponent = 'ChildAudit';
             } else if (name === 'handle') {
@@ -422,6 +534,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+h3 {
+    color: #1d2129;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
 
 .operation-manual-link {
     text-decoration: none;
@@ -443,7 +561,7 @@ export default {
 
     .grid-left {
         display: grid;
-        grid-template-rows: 27% 75%;
+        grid-template-rows: auto auto 1fr;
         grid-row-gap: 16px;
         margin-right: 16px;
     }
@@ -454,48 +572,121 @@ export default {
         grid-row-gap: 16px;
     }
 
+    .summary-container {
+        padding-bottom: 8px;
+
+        .summary-select {
+            width: 120px;
+        }
+
+        .summary-content {
+            padding: 0 20px 20px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-gap: 12px;
+        }
+
+        .summary-card {
+            background: #F7F8FA;
+            border-radius: 6px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+
+            &:hover {
+                border: 1px solid #165DFF;
+                box-shadow: 0 8px 16px rgba(16, 30, 115, 0.08);
+            }
+
+            .summary-label {
+                font-size: 14px;
+                color: #4E5969;
+                margin-bottom: 8px;
+            }
+
+            .summary-value {
+                font-size: 22px;
+                font-weight: 600;
+                color: #1D2129;
+                display: flex;
+                align-items: flex-end;
+
+                span {
+                    line-height: 1;
+                }
+
+                em {
+                    font-style: normal;
+                    font-size: 12px;
+                    color: #86909C;
+                    margin-left: 4px;
+                    line-height: 1.2;
+                }
+            }
+        }
+    }
+
     .wait-container {
         border-radius: 4px;
         background: #FFF;
         padding: 20px;
         display: flex;
         flex-direction: column;
+        font-size: 16px;
+        color: #1d2129;
+        font-weight: 700;
 
-        h3 {
-            color: #1d2129;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
 
-        ul {
-            margin: 0px;
-            padding: 0px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            position: relative;
-            padding: 23px 0;
-            border-top: 1px solid #F2F3F5;
-            border-bottom: 1px solid #F2F3F5;
 
-            li {
+            ul {
+                margin: 0px;
+                padding: 0px;
                 display: flex;
+                justify-content: space-between;
                 align-items: center;
-                flex: 1;
-                background: #ffffff;
-                position: relative;
-                border-right: 1px solid #F2F3F5;
                 height: 100%;
+                position: relative;
+                // padding: 23px 0;
+                // border-top: 1px solid #F2F3F5;
+                border-bottom: 1px solid #F2F3F5;
 
-                &:last-child {
-                    border-right: 0;
-                }
-
-                .wait-content {
-                    margin-left: 12px;
+                li {
                     display: flex;
+                    align-items: center;
+                    flex: 1;
+                    background: #ffffff;
+                    position: relative;
+                    border-right: 1px solid #F2F3F5;
+                    height: 100%;
+                    transition: background 0.2s ease, box-shadow 0.2s ease;
+
+                    &:last-child {
+                        border-right: 0;
+                    }
+
+                    &.wait-item-active {
+                        background: #f2f6ff;
+                        box-shadow: 0 8px 16px rgba(22, 93, 255, 0.12);
+
+                        .wait-content {
+                            & p:nth-child(1) {
+                                color: #165dff;
+                            }
+
+                            & p:nth-child(2) {
+                                color: #165dff;
+
+                                span {
+                                    color: #165dff;
+                                }
+                            }
+                        }
+                    }
+
+                    .wait-content {
+                        margin-left: 12px;
+                        display: flex;
                     align-items: center;
                     flex-direction: column;
                     justify-content: flex-start;
@@ -548,6 +739,10 @@ export default {
     }
 
     .gird-container {
+        width: 100%;
+        /* 必须有 */
+        overflow: hidden;
+        /* 防止子内容撑破 */
         display: grid;
         grid-template-columns: 60% 40%;
 

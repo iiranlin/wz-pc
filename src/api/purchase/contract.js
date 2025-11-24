@@ -63,3 +63,13 @@ export function licenseCreate(data) {
     data
   })
 }
+
+// 批量导入
+export function batchImport(data) {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseContractLicense/importExcel`,
+    method: "post",
+    data,
+    minioSm4: true, //上传不需要加密
+  });
+}
