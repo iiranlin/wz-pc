@@ -21,7 +21,12 @@ export const downloadSettlementList = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialExport/settlementList`, params, 'get')
 }
 
-// 通用下载接口
+/**
+ * 通用下载接口
+ * businessType businessData
+ * 1:需求计划表下载
+ * 2:采购合同许可证台账下载
+ **/ 
 export const customDownload = (data) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, data)
 }
@@ -35,6 +40,7 @@ export const customUpload = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialBaseImport/import`,
     method: 'post',
-    data
+    data,
+    // 上传不加密
   })
 }
