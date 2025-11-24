@@ -115,3 +115,12 @@ export const itemSubmit = (data) => {
     data
   })
 }
+
+// 查询物价明细，预警价格
+export const itemPrice = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseContractDetails/searchDetailsPriceReport`,
+    method: 'post',
+    data
+  })
+}
