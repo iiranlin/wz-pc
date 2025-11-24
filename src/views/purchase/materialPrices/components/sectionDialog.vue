@@ -19,11 +19,12 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="name" label="名称" align="center"> </el-table-column>
+      <el-table-column prop="number" label="合同编号" align="center"> </el-table-column>
+      <el-table-column prop="name" label="合同名称" align="center"> </el-table-column>
     </el-table>
 
     <div slot="footer" class="dialog-footer">
-      <el-button round @click="visible = false">取消</el-button>
+      <el-button round @click="visible = false">关闭</el-button>
     </div>
   </Dialog>
 </template>

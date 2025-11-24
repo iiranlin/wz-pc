@@ -4,11 +4,11 @@
       :buttonDisable="handleButtonDisabled"></button-top>
     <form-data ref="formData" label-width="150px" :showSearch="showSearch" :searchArr="property.search || []"
       @handleQuery="handleQuery" :formData="formData">
-      <!-- 状态选择查询 -->
-      <template #expiredStatus>
-        <el-select v-model="formData.expiredStatus" filterable clearable placeholder="请选择" style="width: 100%">
-          <el-option v-for="item in Object.keys(expiredStatus).map((x) => ({
-            label: expiredStatus[x],
+      <!-- 对比市场价 -->
+      <template #rate>
+        <el-select v-model="formData.rate" filterable clearable placeholder="请选择" style="width: 100%">
+          <el-option v-for="item in Object.keys(rate).map((x) => ({
+            label: rate[x],
             value: x,
           }))" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
@@ -31,10 +31,10 @@
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
           :buttonDisable="handleTableButtonDisable">
           <template #status="scope">
-            {{ expiredStatus[scope.value] }}
+            {{ rate[scope.value] }}
           </template>
 
-       
+
 
           <template #date="scope">
             <span>
@@ -42,18 +42,21 @@
             </span>
           </template>
 
-             <!-- 近一年采购合同 -->
-          <template #lastContract="scope">
-            <el-button type="text"  @click="
-                () => {
-                  if (scoped.data.sectionList.length)
-                    $refs.sectionDialogRef.open(
-                      scoped.data.sectionList.map((x) => ({
-                        name: x.sectionName,
-                      }))
-                    );
+          <!-- 近一年采购合同 -->
+          <template #recentYearCount="scope">
+            <el-button type="text" @click="
+              () => {
+                if (scope.value) {
+                  $refs.sectionDialogRef.open(
+                    // 合同编号:合同名称；  string 类型，分号隔开
+                    scope.data.recentyearcms.split(';').map(x => ({
+                      number: x.split(':')[0],
+                      name: x.split(':')[1]
+                    }))
+                  );
                 }
-              ">
+              }
+            ">
               {{ scope.value }}
             </el-button>
           </template>
@@ -76,10 +79,11 @@ import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
 import Add from "./components/add.vue";
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
+import SectionDialog from "./components/sectionDialog.vue";
 export default {
   // 甲供物资审核
   name: "wzxqList",
-  components: { workFlowView, Add },
+  components: { workFlowView, Add, SectionDialog },
   mixins: [indexMixin],
   computed: {
     id() {
@@ -89,12 +93,14 @@ export default {
 
   data() {
     // 状态
-    const expiredStatus = { 
-      '2': "未过期",
-      '1': "已过期",
+    const rate = {
+      '2': "低于10%",
+      '1': "低于20%",
+      '3': "高于10%",
+      '4': "高于20%",
     };
     return {
-      expiredStatus,
+      rate,
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -238,7 +244,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.customDownload({ businessType:2, businessData:JSON.stringify(this.formData) });
+        await FileApi.customDownload({ businessType: 2, businessData: JSON.stringify(this.formData) });
         // this.$modal.msgSuccess("下载验收单成功");
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
@@ -247,7 +253,7 @@ export default {
       }
     },
     // 提交审核
-    handleExamine(ids, planType, expiredStatus) {
+    handleExamine(ids, planType, rate) {
       this.$modal.confirm("是否确认提交审核?").then(() => {
         this.$reviewerDialog({
           type: "WZML",
