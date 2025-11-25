@@ -78,6 +78,7 @@
 
 <script>
 import { batchImport } from '@/api/prodmgr-inv/project/planRest.js'
+import {customUpload} from '@/api/prodmgr-inv/project/file'
 
 export default {
   name: "batchDialog",
@@ -138,10 +139,11 @@ export default {
     handleUpload ({ file }) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('contractId ', this.contractId);
+      formData.append('businessType',3)
+      formData.append('businessData ', this.contractId);
       this.loading = true;
 
-      batchImport(formData).then(res => {
+      customUpload(formData).then(res => {
         this.fileList = [res.data]
       }).finally(() => {
         this.loading = false;

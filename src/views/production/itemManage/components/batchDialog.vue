@@ -1,44 +1,18 @@
 <template>
-  <Dialog
-    :title="title"
-    :visible.sync="visible"
-    v-if="visible"
-    :show-close="true"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    append-to-body
-    :destroy-on-close="true"
-    width="850px"
-  >
+  <Dialog :title="title" :visible.sync="visible" v-if="visible" :show-close="true" :close-on-click-modal="false"
+    :close-on-press-escape="false" append-to-body :destroy-on-close="true" width="850px">
     <div style="display: flex; gap: 20px">
-      <el-upload
-        class="upload-demo"
-        drag
-        action=""
-        :http-request="handleUpload"
-        :before-upload="beforeUpload"
-        :show-file-list="false"
-        accept=".xlsx,.xls"
-        v-loading="loading"
-      >
+      <el-upload class="upload-demo" drag action="" :http-request="handleUpload" :before-upload="beforeUpload"
+        :show-file-list="false" accept=".xlsx,.xls" v-loading="loading">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
-      <div
-        class="el-upload__tip"
-        style="display: flex; align-items: center"
-        slot="tip"
-      >
+      <div class="el-upload__tip" style="display: flex; align-items: center" slot="tip">
         <div>
           1、每次上传一个excel格式文件，不超过100MB。<br />
           2、请严格按模板格式上传。 <br />
           3、相同物资不计入物资条数。<br />
-          4、<a
-            style="color: #409eff; cursor: pointer"
-            download
-            href="/物资目录导入模板.xlsx"
-            >模板下载</a
-          >
+          4、<a style="color: #409eff; cursor: pointer" download href="/物资目录导入模板.xlsx">模板下载</a>
         </div>
       </div>
     </div>
@@ -46,31 +20,16 @@
     <el-table :data="fileList" border style="width: 100%; margin-top: 20px">
       <el-table-column prop="fileName" label="文件名" />
       <el-table-column prop="number" label="物资条数" />
-      <el-table-column
-        prop="fileSize"
-        label="文件大小"
-        :formatter="formatFileSize"
-      />
+      <el-table-column prop="fileSize" label="文件大小" :formatter="formatFileSize" />
       <el-table-column prop="status" label="状态" />
     </el-table>
 
-    <el-alert
-      v-if="fileList.length > 0 && fileList[0].reason.length > 0"
-      title="提示"
-      type="warning"
-      :closable="false"
-      style="margin-top: 16px; width: 100%"
-    >
+    <el-alert v-if="fileList.length > 0 && fileList[0].reason.length > 0" title="提示" type="warning" :closable="false"
+      style="margin-top: 16px; width: 100%">
       <template>
         <div style="height: 250px">
-          <virtual-list
-            :data-key="'index'"
-            :data-sources="reasonListWithIndex"
-            :data-component="reasonItemComponent"
-            :estimate-size="32"
-            :keeps="20"
-            style="height: 100%; overflow-y: auto"
-          />
+          <virtual-list :data-key="'index'" :data-sources="reasonListWithIndex" :data-component="reasonItemComponent"
+            :estimate-size="32" :keeps="20" style="height: 100%; overflow-y: auto" />
         </div>
       </template>
     </el-alert>
@@ -84,6 +43,7 @@
 <script>
 import { itemBatchImport } from "@/api/prodmgr-inv/project/item.js";
 import VirtualList from "vue-virtual-scroll-list";
+import { customUpload } from '@/api/prodmgr-inv/project/file'
 
 // 定义列表项组件
 const ReasonItem = {
@@ -155,7 +115,7 @@ export default {
     beforeUpload(file) {
       const isExcel =
         file.type ===
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         file.name.endsWith(".xlsx") ||
         file.name.endsWith(".xls");
       const isLt100M = file.size / 1024 / 1024 < 100;
@@ -170,8 +130,10 @@ export default {
     handleUpload({ file }) {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append('businessType', 2)
+
       this.loading = true;
-      itemBatchImport(formData)
+      customUpload(formData)
         .then((res) => {
           this.fileList = [res.data];
           // 判断 reason 是否存在且有内容
@@ -196,6 +158,7 @@ export default {
   color: #409eff;
   cursor: pointer;
 }
+
 .slotIcon-color-content {
   color: red;
 }
