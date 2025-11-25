@@ -112,7 +112,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="单价(万元)"
+              label="单价(元)"
               :prop="`contractDetailsList.${index}.price`"
               class="label-right-align"
               :rules="[
@@ -156,7 +156,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="合价(万元)"
+              label="合价(元)"
               :prop="`contractDetailsList.${index}.totalAmount`"
               class="label-right-align"
               :rules="[
@@ -424,17 +424,18 @@ export default {
         }));
 
         this.formRef.setFormData({ contractDetailsList: list });
+        this.onAmountChange()
     },
     onImport() {
       this.$refs.batchDialogRef.open();
     },
     onAmountChange(e) {
-      console.log("amount changed:", e, this.value);
       // 将totalAmount 求和
       this.value.amount = this.contractDetailsList.reduce((sum, item) => {
         return sum + Number(item.totalAmount || 0);
-      }, 0);
-      this.formRef.setFormData({ amount: this.value.amount });
+      }, 0)
+      // 转换万元且保留2位小数
+      this.formRef.setFormData({ amount: (this.value.amount/10000).toFixed(2)  });
     },
     async onRailwayChange(e) {
       console.log("railwaySpecial changed:", e);
