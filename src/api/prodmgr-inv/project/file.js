@@ -46,6 +46,6 @@ export const customUpload = (data) => {
     url: `${VUE_APP_PRODMGR_INV}/materialBaseImport/import`,
     method: 'post',
     data,
-    // 上传不加密
+    minioSm4: true, //上传不需要加密
   })
 }
