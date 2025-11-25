@@ -54,6 +54,7 @@ import Add from './components/add.vue'
 import fileUpload from '@/components/upload'
 import DemandBack from './components/demandBack.vue'
 import { findByBusinessType } from '@/utils/index.js'
+import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 export default {
   // 供应需求列表
   name: "wzxqList",
@@ -292,7 +293,7 @@ export default {
       })
     },
     handleExport(obj) {
-      Api.downloadPlan(obj.id)
+      FileApi.customDownload({businessType:1,businessData:obj.id})
     },
     clickReset() {
       this.handleQuery();

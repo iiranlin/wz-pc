@@ -95,7 +95,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.downloadOutOfTheWarehouse({ id });
+        await FileApi.customDownload({businessType:6, businessData:id });
 
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");

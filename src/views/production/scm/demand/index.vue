@@ -239,7 +239,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.downloadSettlementList({ id });
+        await FileApi.customDownload({ businessType:3,businessData:id });
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
       } finally {

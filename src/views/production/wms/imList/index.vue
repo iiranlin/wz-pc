@@ -220,7 +220,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.downloadStorageList({ id });
+        await FileApi.customDownload({businessType:5, businessData:id });
 
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");

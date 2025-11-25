@@ -88,6 +88,7 @@ import Add from './components/add.vue'
 import fileUpload from '@/components/upload'
 import workFlowView from '@/components/workFlowView'
 import dayjs from 'dayjs'
+import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 export default {
 	// 自购物资文件核备
 	name: "purchaseFile",
@@ -331,7 +332,7 @@ export default {
 			}
 		},
 		handleExport(obj) {
-			Api.downloadExport(obj.id)
+			FileApi.customDownload({businessType:7,businessData:obj.id})
 		},
 		handSubmit(idArr) {
 			this.$modal.confirm("是否确认提交审核?").then(() => {

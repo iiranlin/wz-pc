@@ -298,7 +298,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.downloadHandoverAcceptanceForm({ id });
+        await FileApi.customDownload({businessType:4,businessData : id });
         // this.$modal.msgSuccess("下载验收单成功");
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
