@@ -13,6 +13,12 @@
           </el-option>
         </el-select>
       </template>
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -52,6 +58,7 @@ import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import dayjs from 'dayjs'
+import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 export default {
   // 补充合同列表
   name: "contractList",
@@ -77,6 +84,7 @@ export default {
       list: [],
       // 弹出层标题
       title: "",
+      lineoptions: [],
 
       //列表显示字段
       property: {},
@@ -103,6 +111,7 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+    this.getLineOptions()
   },
   filters: {
     formatDate(value) {
@@ -111,6 +120,14 @@ export default {
     }
   },
   methods: {
+    getLineOptions() {
+      LineApi.lineSelectOptions().then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
     selectable(row) {
       // 履约比例等于0允许删除
       console.log(row, 'row')
