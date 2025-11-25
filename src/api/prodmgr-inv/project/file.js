@@ -26,6 +26,11 @@ export const downloadSettlementList = (params) => {
  * businessType businessData
  * 1:需求计划表下载
  * 2:采购合同许可证台账下载
+ * 3:供应需求结算单下载
+ * 4:收货列表-下载验收单
+ * 5:入库列表-下载入库单
+ * 6:出库列表-下载出库单
+ * 7:采购文件核备-下载采购文件
  **/ 
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')
