@@ -20,23 +20,28 @@
       </el-table-column>
       <el-table-column prop="sendTotal" label="已发货" align="center">
         <template slot-scope="scope">
-          <span class="link" @click="goDetail(scope.row.sendTotal,'sendList')" style="color:#409EFF;cursor:pointer;">
+          <span class="link" @click="goDetail(scope.row.sendTotal, 'sendList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.sendTotal }}
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="putTotal" label="验收通过" align="center">
+        <template slot-scope="scope">
+          <span class="link" @click="goDetail(scope.row.putTotal, 'receiveList')" style="color:#409EFF;cursor:pointer;">
+            {{ scope.row.putTotal }}
+          </span>
+        </template>
       </el-table-column>
       <el-table-column prop="storeTotal" label="已报检入库" align="center">
-         <template slot-scope="scope">
-          <span class="link" @click="goDetail(scope.row.storeTotal,'imList')" style="color:#409EFF;cursor:pointer;">
+        <template slot-scope="scope">
+          <span class="link" @click="goDetail(scope.row.storeTotal, 'imList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.storeTotal }}
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="outCkTotal" label="已出库" align="center">
-         <template slot-scope="scope">
-          <span class="link" @click="goDetail(scope.row.outCkTotal,'omList')" style="color:#409EFF;cursor:pointer;">
+        <template slot-scope="scope">
+          <span class="link" @click="goDetail(scope.row.outCkTotal, 'omList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.outCkTotal }}
           </span>
         </template>
@@ -63,12 +68,12 @@ export default {
     }
   },
   methods: {
-    goDetail(num,routername) {
-      if(num==0){
+    goDetail(num, routername) {
+      if (num == 0) {
         return;
       }
       this.$router.push({
-        name:routername
+        name: routername
       })
     }
 
