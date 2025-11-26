@@ -30,8 +30,8 @@
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
           :buttonDisable="handleTableButtonDisable">
-          <template #status="scope">
-            {{ rate[scope.value] }}
+          <template #rate="scope">
+            {{ scope.value }}%
           </template>
 
 
@@ -128,6 +128,7 @@ export default {
       // 查询参数
       formData: {
         parentId: null,
+        rate: '1',
       },
       formDataClick: {},
       total: 0,
@@ -149,6 +150,10 @@ export default {
   async created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
+      if (data.fields) {
+        const item = data.fields.find((x) => x.fieldCode == "recentYearCount");
+        if (item) item.fixedColumn = "right";
+      }
       this.property = data;
     });
   },
