@@ -186,6 +186,7 @@ import { getUserInfo } from "@/utils/user-info";
 import { useSlots } from "vue";
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
 import contentSlot from "./contentSlot.vue";
+import dayjs from "dayjs";
 export default {
   name: "SectionAdd",
   dicts: ["purchase_code", "flowStatus"],
@@ -403,7 +404,7 @@ export default {
 
           newData.contractDetailsList = newData.contractDetailsList.map(x => ({
             ...x,
-            validityGuarantee: x.railwaySpecial == 1 ? [x.startTime, x.endTime] : [],
+            validityGuarantee: x.railwaySpecial == 1 ? [dayjs(x.startTime).format('YYYY-MM-DD') , dayjs( x.endTime).format('YYYY-MM-DD')] : [],
 
           }))
 
