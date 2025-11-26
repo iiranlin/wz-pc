@@ -27,6 +27,21 @@
                     noOptionsText="无数据" :flat="true" :show-count="true" :value-consists-of="valueConsistsOf"
                     @input="handleTreeSelectInputEvent" placeholder="请选择适用单位" />
             </el-form-item>
+            <el-form-item label="建设项目" prop="projectId" class="border-radius50">
+                      <el-select
+                        v-model="formData.projectId"
+                        clearable
+                        :multiple="true"
+                        placeholder="建设项目"
+                        style="width: 1154px"
+                        >
+                        <el-option v-for="item in projects"
+                        :key="item.id"
+                        :label="item.projectName"
+                        :value="item.id"
+                        />
+                    </el-select>
+            </el-form-item>
             <el-form-item label="流程描述" prop="remark" class="border-radius50">
                 <el-input v-model="formData.remark" type="textarea" style="width: 1154px;" placeholder="请输入流程描述"
                     maxlength="500" show-word-limit />
@@ -82,6 +97,7 @@
 import { addCategory, updateCategory } from "@/api/workflow/category"
 import { deptTreeAll } from '@/api/system/dept'
 import { commonTree } from '@/api/system/dict'
+import { getAllProject } from '@/api/prodmgr-inv/project/line.js'
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -95,6 +111,7 @@ export default {
             title: '新增流程',
             valueConsistsOf: 'ALL',
             deptOptions: [],
+            projects:[],
             formData: {
                 // 流程名称
                 processName: '',
@@ -102,6 +119,7 @@ export default {
                 billType: '',
                 // 适用单位
                 useOrgId: null,
+                projectId:null,
                 useOrgName: [],
                 // 状态 状态 0-启用 1-停用
                 enableStatus: '0',
@@ -148,6 +166,7 @@ export default {
     created() {
         this.deptTreeAll();
         this.commonTree();
+        this.searchProject();
     },
     methods: {
         init(row, buttonCode) {
@@ -163,7 +182,15 @@ export default {
                     this.id = row.id;
                     let data = Object.assign({}, row);
                     const useOrgName = data.useOrgName && data.useOrgName.split(',');
+                // 处理 projectId - 将字符串转换为数组
+                    let projectIdArry = [];
+                    if (data.projectId) {
+                        // 如果 projectId 是逗号分隔的字符串，转换为数组
+                        projectIdArry = data.projectId.split(',').map(id => id.trim());
+                    }
+
                     this.formData = {
+                        projectId: projectIdArry, // 这里赋值为数组
                         processName: data.processName,
                         billType: this.dictObj[data.billType],
                         useOrgId: data.useOrgId && data.useOrgId.split(',').map((item, i) => item + ',' + useOrgName[i]),
@@ -177,6 +204,7 @@ export default {
                     this.formData.formItems = [];
                     this.formData.useOrgId = null;
                     this.formData.useOrgName = [];
+                    this.formData.projectId = []; // 新增时初始化为空数组
                 }
                 buttonCode === 'update' ? this.title = "编辑流程" : this.title = "新增流程";
             })
@@ -239,6 +267,14 @@ export default {
                     }
                     params.formItems = JSON.stringify(params.formItems);
                     const idArr = params.useOrgId.map(item => item.split(',')[0])
+
+                    // 处理 projectId - 确保是字符串
+                    if (Array.isArray(params.projectId)) {
+                        params.projectId = params.projectId.join(',');
+                    }
+
+
+
                     params.useOrgId = idArr.join(',');
                     params.useOrgName = params.useOrgName.join(',');
                     let requestMapUrl = addCategory;
@@ -260,6 +296,17 @@ export default {
                 }
             })
         },
+        //获取所有建设项目
+        searchProject(){
+            let param={
+                "pageSize":10000,
+                "pageNum":1
+            };
+            getAllProject().then(({ data }) => {
+                console.log(data);
+                this.projects = data;
+            })
+        }
     }
 }
 </script>

@@ -14,6 +14,19 @@ export const itemList = (params) => {
     })
 }
 
+/**
+ * 获取所有建设项目列表
+ * @param {*} params 
+ * @returns 
+ */
+export const getAllProject = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialProject/getAllProject`,
+        method: 'get',
+        params
+    })
+}
+
 
 /**
  * 获取建设项目下拉
