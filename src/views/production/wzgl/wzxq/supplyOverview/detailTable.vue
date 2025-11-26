@@ -25,14 +25,14 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="putTotal" label="验收通过" align="center">
+      <el-table-column prop="putTotal" label="已收货" align="center">
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.putTotal, 'receiveList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.putTotal }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="storeTotal" label="已报检入库" align="center">
+      <el-table-column prop="storeTotal" label="已入库" align="center">
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.storeTotal, 'imList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.storeTotal }}
