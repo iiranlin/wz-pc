@@ -103,6 +103,81 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
 
+Vue.directive('decimal', {
+  bind(el, binding) {
+    const input = el.querySelector('input');
+    if (!input) return;
+
+    // 默认小数位数为 2
+    const decimalLimit = typeof binding.value === 'number' ? binding.value : 2;
+    
+    // 标记是否正在输入中文
+    let isComposing = false;
+
+    // 中文输入法开始
+    input.addEventListener('compositionstart', () => {
+      isComposing = true;
+    });
+
+    // 中文输入法结束
+    input.addEventListener('compositionend', () => {
+      isComposing = false;
+      handleInput();
+    });
+
+    const handleInput = () => {
+      // 如果正在输入中文,不处理
+      if (isComposing) return;
+
+      let val = input.value;
+      
+      // 保存光标位置
+      const cursorPosition = input.selectionStart;
+
+      // 允许数字、一个小数点、一个负号
+      val = val.replace(/[^\d.-]/g, '');
+
+      // 负号只能在开头
+      const hasNegative = val.startsWith('-');
+      val = val.replace(/-/g, '');
+      if (hasNegative) val = '-' + val;
+
+      // 处理多个小数点,只保留第一个
+      const parts = val.split('.');
+      if (parts.length > 2) {
+        val = parts[0] + '.' + parts.slice(1).join('');
+      }
+
+      // 限制小数位数
+      if (val.indexOf('.') !== -1) {
+        const arr = val.split('.');
+        if (arr[1] && arr[1].length > decimalLimit) {
+          arr[1] = arr[1].slice(0, decimalLimit);
+          val = arr.join('.');
+        }
+      }
+
+      // 只有值真正改变时才更新
+      if (input.value !== val) {
+        input.value = val;
+        // 触发 Vue 的 input 事件以更新 v-model
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    };
+
+    input.addEventListener('input', handleInput);
+    
+    // 保存处理函数以便后续清理
+    el._decimalHandler = handleInput;
+  },
+  unbind(el) {
+    const input = el.querySelector('input');
+    if (input && el._decimalHandler) {
+      input.removeEventListener('input', el._decimalHandler);
+    }
+  }
+});
+
 Vue.config.productionTip = false
 new Vue({
   el: '#app',
