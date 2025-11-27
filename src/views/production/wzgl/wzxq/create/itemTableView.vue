@@ -6,92 +6,24 @@
         请选择用料物资（已选择
         <i style="color: red">{{ Object.keys(selectedMap).length }}</i> 项）
       </div>
-      <el-input
-        v-model="searchKeyword"
-        placeholder="请输入规格型号搜索"
-        clearable
-        prefix-icon="el-icon-search"
-        size="small"
-        style="width: 200px"
-      ></el-input>
+      <el-input v-model="searchKeyword" placeholder="请输入规格型号搜索" clearable prefix-icon="el-icon-search" size="small"
+        style="width: 200px"></el-input>
     </div>
 
     <!-- 表格 -->
-    <el-table
-      ref="tableRef"
-      :data="filteredData"
-      style="width: 100%"
-      border
-      @selection-change="noop"
-      @select="handleSelect"
-      @select-all="handleSelectAll"
-      max-height="500"
-    >
-      <el-table-column
-        align="center"
-        type="selection"
-        width="55"
-        fixed
-        :selectable="selectable"
-      ></el-table-column>
-      <el-table-column
-        type="index"
-        align="center"
-        label="序号"
-        width="60"
-        fixed
-      ></el-table-column>
-      <el-table-column
-        prop="materialName"
-        align="center"
-        label="物资名称"
-        width="250"
-        fixed
-      ></el-table-column>
-      <el-table-column
-        prop="specModel"
-        align="center"
-        label="规格型号"
-        width="250"
-        fixed
-      ></el-table-column>
+    <el-table ref="tableRef" :data="filteredData" style="width: 100%" border @selection-change="noop"
+      @select="handleSelect" @select-all="handleSelectAll" max-height="500">
+      <el-table-column align="center" type="selection" width="55" fixed :selectable="selectable"></el-table-column>
+      <el-table-column type="index" align="center" label="序号" width="60" fixed></el-table-column>
+      <el-table-column prop="materialName" align="center" label="物资名称" width="250" fixed></el-table-column>
+      <el-table-column prop="specModel" align="center" label="规格型号" width="250" fixed></el-table-column>
 
-      <el-table-column
-        prop="unit"
-        label="计量单位"
-        align="center"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="amount"
-        label="合同数量"
-        align="center"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="cumulativeAmount"
-        label="已累计计划数量"
-        align="center"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="deliveryDate"
-        label="供应时间"
-        align="center"
-        width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="deliveryLocation"
-        label="交货地点"
-        align="center"
-        width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="receiver"
-        label="收货人及联系方式"
-        align="center"
-        min-width="200"
-      ></el-table-column>
+      <el-table-column prop="unit" label="计量单位" align="center" width="120"></el-table-column>
+      <el-table-column prop="amount" label="合同数量" align="center" width="120"></el-table-column>
+      <el-table-column prop="cumulativeAmount" label="已累计计划数量" align="center" width="150"></el-table-column>
+      <el-table-column prop="deliveryDate" label="供应时间" align="center" width="200"></el-table-column>
+      <el-table-column prop="deliveryLocation" label="交货地点" align="center" width="200"></el-table-column>
+      <el-table-column prop="receiver" label="收货人及联系方式" align="center" min-width="200"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -106,7 +38,7 @@ export default {
       default: () => []
     }
   },
-  data () {
+  data() {
     return {
       searchKeyword: '',
       selectedMap: {}, // 使用对象或Map来存储全局选中项（按id）
@@ -116,7 +48,7 @@ export default {
   computed: {
     ...mapState(['request']),
     // 根据搜索词过滤表格数据
-    filteredData () {
+    filteredData() {
       if (!this.searchKeyword) return this.allData;
       return this.allData.filter(row =>
         row.specModel.toLowerCase().includes(this.searchKeyword.toLowerCase())
@@ -125,11 +57,11 @@ export default {
   },
   watch: {
     // 每次搜索结果变更后，重新设置选中状态
-    filteredData () {
+    filteredData() {
       this.$nextTick(this.restoreSelection);
     },
     allData: {
-      handler (newVal) {
+      handler(newVal) {
         if (newVal && newVal.length > 0) {
           this.syncStoreSelectedData();
         }
@@ -138,12 +70,12 @@ export default {
     },
   },
   methods: {
-    selectable (row) {
-      // 合同数量 不等于 已累计计划数量
-      return +row.amount !== +row.cumulativeAmount
+    selectable(row) {
+      // 合同数量不能为负数,且合同数量不等于已累计计划数量
+      return +row.amount > 0 && +row.amount !== +row.cumulativeAmount
     },
     // 新增方法：同步store中已选中的数据到组件
-    syncStoreSelectedData () {
+    syncStoreSelectedData() {
       if (this.hasRestoredFromStore) return;
       const selected = this.getSelectedMaterialList();
       if (selected.length > 0) {
@@ -167,17 +99,17 @@ export default {
       }
       this.hasRestoredFromStore = true; // ✅ 防止后续重新勾选
     },
-    getSelectedMaterialList () {
+    getSelectedMaterialList() {
       return this.request.selectedMaterialList
     },
-    async noop () {
+    async noop() {
       // 忽略默认 selection-change 行为
       await new Promise(resolve => setTimeout(resolve, 10))
       this.$emit('onSelectRow', Object.values(this.selectedMap))
     },
 
     // 恢复当前页已选中的行
-    restoreSelection () {
+    restoreSelection() {
       this.$refs.tableRef && this.$refs.tableRef.clearSelection();
       this.filteredData.forEach(row => {
         if (this.selectedMap[row.id]) {
@@ -186,7 +118,7 @@ export default {
       });
     },
     // 排序函数：已选项置顶
-    sortData () {
+    sortData() {
       this.allData.sort((a, b) => {
         const aSelected = !!this.selectedMap[a.id];
         const bSelected = !!this.selectedMap[b.id];
@@ -196,7 +128,7 @@ export default {
     },
 
     // 用户单选时记录勾选状态
-    handleSelect (selection, row) {
+    handleSelect(selection, row) {
       if (selection.find(r => r.id === row.id)) {
         this.$set(this.selectedMap, row.id, row);
       } else {
@@ -206,7 +138,7 @@ export default {
     },
 
     // 用户点击“全选”或“取消全选”
-    handleSelectAll (selection) {
+    handleSelectAll(selection) {
       const currentIds = this.filteredData.map(row => row.id);
       currentIds.forEach(id => {
         const row = this.allData.find(r => r.id === id);
@@ -219,7 +151,7 @@ export default {
       // this.sortData(); // 排序
     },
   },
-  mounted () {
+  mounted() {
     this.restoreSelection();
   }
 };
@@ -237,6 +169,7 @@ export default {
 
 // 修复固定列滚动条点击问题
 ::v-deep .el-table {
+
   .el-table__fixed,
   .el-table__fixed-right {
     pointer-events: none; // 禁用固定列的鼠标事件
