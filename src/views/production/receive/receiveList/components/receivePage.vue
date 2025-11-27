@@ -1,55 +1,23 @@
 <template>
   <div class="app-container container_flex" v-loading="loading">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: type === 'view' }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: type === 'view' }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
         <!-- 供货商/操作人 -->
         <template #supplierNameSlot="scope">
-          <el-form-item
-            prop="sellerName"
-            label="供货商"
-            class="label-right-align"
-            v-if="type != 'view'"
-          >
+          <el-form-item prop="sellerName" label="供货商" class="label-right-align" v-if="type != 'view'">
             <el-input v-model="scope.formModel.sellerName" readonly></el-input>
           </el-form-item>
-          <el-form-item
-            prop="createUserName"
-            label="操作人"
-            class="label-right-align"
-            v-else
-          >
+          <el-form-item prop="createUserName" label="操作人" class="label-right-align" v-else>
             {{ scope.formModel.createUserName }}
           </el-form-item>
         </template>
         <!-- 发货日期/收货日期 -->
         <template #shippingDateSlot="scope">
-          <el-form-item
-            prop="shippingDate"
-            label="发货日期"
-            class="label-right-align"
-            v-if="type != 'view'"
-          >
-            <el-date-picker
-              v-model="scope.formModel.shippingDate"
-              type="date"
-              style="width: 100%"
-              v-if="type != 'view'"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              readonly
-            ></el-date-picker>
+          <el-form-item prop="shippingDate" label="发货日期" class="label-right-align" v-if="type != 'view'">
+            <el-date-picker v-model="scope.formModel.shippingDate" type="date" style="width: 100%" v-if="type != 'view'"
+              value-format="yyyy-MM-dd" format="yyyy-MM-dd" readonly></el-date-picker>
           </el-form-item>
           <el-form-item prop="takeDate" label="收货时间" class="label-right-align" v-else>
             {{ scope.formModel.takeDate }}
@@ -57,45 +25,23 @@
         </template>
         <template #file3Slot="scope">
           <el-form-item prop="fileList" label="发货单" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList03"
-              :preview="true"
-              :limit="9999"
-              :fileSize="50"
-              :fileType="['pdf']"
-            />
+            <fileUpload v-model="scope.formModel.fileList03" :preview="true" :limit="9999" :fileSize="50"
+              :fileType="['pdf']" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #zcFileSlot="scope">
           <el-form-item prop="zczp" label="装车照片" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.zczp"
-              :preview="true"
-              :fileSize="500"
-              :limit="9999"
-              :fileType="['pdf']"
-              :isShowTip="false"
-            />
+            <fileUpload v-model="scope.formModel.zczp" :preview="true" :fileSize="500" :limit="9999" :fileType="['pdf']"
+              :isShowTip="false" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item
-            
-            prop="fileList01"
-            label="自检单"
-            class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList01"
-              :preview="type == 'view'"
-              :limit="9999"
-              :fileSize="500"
-              :fileType="['pdf','jpg','png','jpeg']"
-              :isShowTip="false"
-            />
+          <el-form-item prop="fileList01" label="自检单" class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.fileList01" :preview="type == 'view'" :limit="9999" :fileSize="500"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
           </el-form-item>
           <!-- <el-form-item prop="fileList02" label-width="120px" label="到货确认照片" class="label-right-align" v-else>
             <fileUpload
@@ -109,57 +55,30 @@
           </el-form-item> -->
         </template>
         <!-- 附件 -->
-        <template #file2Slot="scope" >
-          <el-form-item prop="fileList02" label="到货确认照片" class="label-right-align"
-          label-width="120px"
-           :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList02"
-              :preview="type == 'view'"
-              :limit="9999"
-              :fileSize="500"
-              :fileType="['pdf','jpg','png','jpeg']"
-              :isShowTip="false"
-            />
+        <template #file2Slot="scope">
+          <el-form-item prop="fileList02" label="到货确认照片" class="label-right-align" label-width="120px"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.fileList02" :preview="type == 'view'" :limit="9999" :fileSize="500"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
           </el-form-item>
         </template>
 
-         <!-- 交货单附件 -->
-        <template #file4Slot="scope" >
-          <el-form-item prop="fileList04" label="交货单附件" class="label-right-align"
-          label-width="120px"
-           :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList04"
-              :preview="type == 'view'"
-              :limit="9999"
-              :fileSize="500"
-              :fileType="['pdf','jpg','png','jpeg']"
-              :isShowTip="false"
-            />
+        <!-- 交货单附件 -->
+        <template #file4Slot="scope">
+          <el-form-item prop="fileList04" label="交货单附件" class="label-right-align" label-width="120px"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.fileList04" :preview="type == 'view'" :limit="9999" :fileSize="500"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
           </el-form-item>
         </template>
-    
+
         <!-- 收货时间 -->
         <template #dateSlot="scope">
-          <el-form-item
-          label-width="120px"
-            prop="takeDate"
-            label="收货时间"
-            class="label-right-align"
-            :rules="[{ required: true, message: '请选择收货时间', trigger: 'change' }]"
-          >
-            <el-date-picker
-              v-model="scope.formModel.takeDate"
-              type="datetime"
-              :picker-options="pickerOptions"
-              style="width: 100%"
-              v-if="type != 'view'"
-              value-format="yyyy-MM-dd HH:mm"
-              format="yyyy-MM-dd HH:mm"
-            ></el-date-picker>
+          <el-form-item label-width="120px" prop="takeDate" label="收货时间" class="label-right-align"
+            :rules="[{ required: true, message: '请选择收货时间', trigger: 'change' }]">
+            <el-date-picker v-model="scope.formModel.takeDate" type="datetime" :picker-options="pickerOptions"
+              style="width: 100%" v-if="type != 'view'" value-format="yyyy-MM-dd HH:mm"
+              format="yyyy-MM-dd HH:mm"></el-date-picker>
             <span v-else>
               {{ scope.formModel.takeDate }}
             </span>
@@ -182,189 +101,67 @@
           </el-form-item> -->
         </template>
         <template #detailSlot>
-          <el-table
-            :data="tableData"
-            border
-            style="width: 100%"
-            :max-height="600"
-            ref="dataTable"
-            :row-class-name="tableRowClassName"
-          >
-            <el-table-column
-              type="index"
-              label="序号"
-              width="55"
-              align="center"
-              fixed="left"
-            />
+          <el-table :data="tableData" border style="width: 100%" :max-height="600" ref="dataTable"
+            :row-class-name="tableRowClassName">
+            <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
             <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
-            <el-table-column
-              prop="specModel"
-              label="规格型号"
-              width="200"
-              align="center"
-            ></el-table-column>
+            <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
 
-            <el-table-column
-              prop="unit"
-              label="计量单位"
-              width="100"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="planAmount"
-              label="需求数量"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="sendTotal"
-              label="本次发货数量"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="packagingFm"
-              label="包装形式"
-              width="160"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="manufactureDate"
-              label="生产日期"
-              width="150"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="expirationDate"
-              label="有效期截止日期"
-              width="150"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="addr"
-              label="使用地点"
-              width="200"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="field2"
-              label="收货地址"
-              width="200"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="supplyDate"
-              label="供应时间"
-              width="160"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="receiver"
-              label="收货人及联系方式"
-              width="180"
-            ></el-table-column>
-            <el-table-column
-              prop="field0"
-              label="投资方"
-              width="150"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="field1"
-              label="投资比例"
-              width="150"
-              align="center"
-            ></el-table-column>
+            <el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
+            <el-table-column prop="planAmount" label="需求数量" width="120" align="center"></el-table-column>
+            <el-table-column prop="sendTotal" label="本次发货数量" width="120" align="center"></el-table-column>
+            <el-table-column prop="packagingFm" label="包装形式" width="160" align="center"></el-table-column>
+            <el-table-column prop="manufactureDate" label="生产日期" width="150" align="center"></el-table-column>
+            <el-table-column prop="expirationDate" label="有效期截止日期" width="150" align="center"></el-table-column>
+            <el-table-column prop="addr" label="使用地点" width="200" align="center"></el-table-column>
+            <el-table-column prop="field2" label="收货地址" width="200" align="center"></el-table-column>
+            <el-table-column prop="supplyDate" label="供应时间" width="160" align="center"></el-table-column>
+            <el-table-column prop="receiver" label="收货人及联系方式" width="180"></el-table-column>
+            <el-table-column prop="field0" label="投资方" width="150" align="center"></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
-                <fileUpload
-                  :value="scope.row.fileList01"
-                  :preview="true"
-                  :isShowTip="false"
-                  :limit="9999"
-                />
+                <fileUpload :value="scope.row.fileList01" :preview="true" :isShowTip="false" :limit="9999" />
               </template>
             </el-table-column>
             <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
               <template slot-scope="scope">
-                <fileUpload
-                  :value="scope.row.fileList02"
-                  :preview="true"
-                  :isShowTip="false"
-                  :limit="9999"
-                />
+                <fileUpload :value="scope.row.fileList02" :preview="true" :isShowTip="false" :limit="9999" />
               </template>
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-            <el-table-column
-              prop="putTotal"
-              label="实收数量"
-              width="120"
-              fixed="right"
-              align="center"
-            >
+            <el-table-column prop="putTotal" label="实收数量" width="120" fixed="right" align="center">
               <template slot-scope="scope">
-                <el-input-number
-                  v-model="scope.row.putTotal"
-                  :min="0"
-                  @change="changePut(scope.row)"
-                  size="mini"
-                  style="width: 100%"
-                  v-if="type != 'view' && show"
-                ></el-input-number>
+                <el-input-number v-model="scope.row.putTotal" :min="0" @change="changePut(scope.row)" size="mini"
+                  style="width: 100%" v-if="type != 'view' && show"></el-input-number>
                 <span v-else>
                   {{ scope.row.putTotal }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="refundTotal"
-              label="退货数量"
-              width="120"
-              fixed="right"
-              align="center"
-            >
+            <el-table-column prop="refundTotal" label="退货数量" width="120" fixed="right" align="center">
               <template slot-scope="scope">
-                <el-input-number
-                  v-model="scope.row.refundTotal"
-                  :min="0"
-                  size="mini"
-                  style="width: 100%"
-                  v-if="type != 'view' && show"
-                  @change="changeRefund(scope.row)"
-                ></el-input-number>
+                <el-input-number v-model="scope.row.refundTotal" :min="0" size="mini" style="width: 100%"
+                  v-if="type != 'view' && show" @change="changeRefund(scope.row)"></el-input-number>
                 <span v-else>
                   {{ scope.row.refundTotal }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="projectShortName"
-              label="退货附件"
-              width="180"
-              fixed="right"
-            >
+            <el-table-column prop="projectShortName" label="退货附件" width="180" fixed="right">
               <template slot-scope="scope">
-                <fileUpload
-                  v-if="Number(scope.row.refundTotal) > 0"
-                  :value="scope.row.fileList03"
-                  v-model="scope.row.fileList03"
-                  :preview="type == 'view'"
-                  :isShowTip="false"
-                  :limit="9999"
-                  :fileSize="500"
-                  :fileType="['pdf','jpg','png','jpeg']"
-
-                />
+                <fileUpload v-if="Number(scope.row.refundTotal) > 0" :value="scope.row.fileList03"
+                  v-model="scope.row.fileList03" :preview="type == 'view'" :isShowTip="false" :limit="9999"
+                  :fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
               </template>
             </el-table-column>
           </el-table>
         </template>
       </VFormRender>
     </div>
-      <toBeReviewed ref="toBereview" />
+    <toBeReviewed ref="toBereview" />
+    <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
   </div>
 </template>
 
@@ -378,17 +175,21 @@ import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import dayjs from "dayjs";
 import toBeReviewed from "@/views/audit/components/toBeReviewed";
+import workFlowView from '@/components/workFlowView'
 export default {
   name: "receivePage",
   components: {
     VFormRender,
     fileUpload,
     toBeReviewed,
+    workFlowView
   },
   data() {
     const userInfo = getUserInfo();
     return {
-      approvalStatus:"",
+      selectedRow: null,
+      workFlowViewVisible: false,
+      approvalStatus: "",
       maxManualIndex: 1,
       buyer: userInfo?.deptName,
       loading: false,
@@ -429,6 +230,7 @@ export default {
           type: "create, update",
         },
         { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
 
       ],
       constructionOptions: [],
@@ -458,8 +260,8 @@ export default {
     supplyId() {
       return this.$route.query?.supplyId || "";
     },
-    takeStatus(){
-      return this.$route.query?.takeStatus ;
+    takeStatus() {
+      return this.$route.query?.takeStatus;
     },
     queryAuditArr() {
       return JSON.parse(this.$route.query.auditArr || "[]");
@@ -468,7 +270,7 @@ export default {
       return this.$route.query?.name || "";
     },
   },
-  async created() {},
+  async created() { },
   mounted() {
     this.init(this.id);
     if (this.type == "view") {
@@ -503,7 +305,7 @@ export default {
         this.loading = true;
         // 审核中或已驳回
         console.log(this.takeStatus, "--------------this.takeStatus-------------");
-        const api = this.takeStatus == 5 || this.takeStatus == void 0 || this.takeStatus == 0  ? 'detailTakeBack' : 'detailTake';
+        const api = this.takeStatus == 5 || this.takeStatus == void 0 || this.takeStatus == 0 ? 'detailTakeBack' : 'detailTake';
         await Api[api](id).then(({ data }) => {
           this.approvalStatus = data.approvalStatus;
           this.$nextTick(async () => {
@@ -538,7 +340,7 @@ export default {
               expirationDate: x.expirationDate
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
-              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
+              supplyDate: x.supplyDate ? dayjs(x.supplyDate).format("YYYY-MM-DD") : '',
               putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认实收数量=发货数量
               zczp: x.fileByList ? JSON.parse(x.fileByList).zczp || [] : [], //装车照片
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
@@ -581,6 +383,10 @@ export default {
         return
 
       }
+      if (buttonCode === 'flowSee') {
+        this.workFlowViewVisible = true
+        this.selectedRow = { businessId: this.id }
+      }
     },
     cancel() {
       this.$router.go(-1);
@@ -590,20 +396,26 @@ export default {
       if (item.buttonCode === "save") {
         return this.type !== "view";
       }
-       // 审核中才能显示同意和不同意按钮
+      // 审核中才能显示同意和不同意按钮
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
-        if(['toBeDeal','handle'].includes(this.name)){
+        if (['toBeDeal', 'handle'].includes(this.name)) {
           return false
         }
-        if(this.takeStatus == 5){
+        if (this.takeStatus == 5) {
           return false
         }
         // 2 审核中  0已驳回 3审核通过
         return this.approvalStatus == "2";
       }
 
-       if (item.buttonCode === 'edit') {
+      if (item.buttonCode === 'edit') {
         return ["0"].includes(this.approvalStatus) && this.name == 'handle'
+      }
+
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        return !['1'].includes(this.takeStatus) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
       }
       return true;
     },
@@ -706,7 +518,7 @@ export default {
               },
             });
           });
-           
+
         }
       });
     },
@@ -773,11 +585,13 @@ export default {
   align-items: center;
   height: 60px;
 }
+
 .flex .title {
   font-weight: 600;
   color: #000;
   padding-left: 12px;
 }
+
 .slotIcon-color-content {
   color: red;
 }

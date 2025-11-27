@@ -1,186 +1,69 @@
 <template>
   <div class="app-container container_flex" v-loading="loading">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: true }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: true }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: true }">
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList01" label-width="200px"  label="报检材料上传（支持多个）" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList01"
-              :value="scope.formModel.fileList01"
-              :preview="true"
-              :limit="9999"
-            />
+          <el-form-item prop="fileList01" label-width="200px" label="报检材料上传（支持多个）" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList01" :value="scope.formModel.fileList01" :preview="true"
+              :limit="9999" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
           <el-form-item prop="fileList02" label="质量证明文件" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList02"
-              :value="scope.formModel.fileList02"
-              :preview="true"
-              :limit="9999"
-            />
+            <fileUpload v-model="scope.formModel.fileList02" :value="scope.formModel.fileList02" :preview="true"
+              :limit="9999" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
           <el-form-item prop="fileList03" label="报验结果" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.fileList03"
-              :value="scope.formModel.fileList03"
-              :preview="true"
-              :limit="9999"
-            />
+            <fileUpload v-model="scope.formModel.fileList03" :value="scope.formModel.fileList03" :preview="true"
+              :limit="9999" />
           </el-form-item>
         </template>
         <template #detailSlot>
-          <el-table
-            :data="tableData"
-            border
-            style="width: 100%"
-            :max-height="600"
-            ref="dataTable"
-            :row-class-name="tableRowClassName"
-          >
-            <el-table-column
-              type="index"
-              label="序号"
-              width="55"
-              align="center"
-              fixed="left"
-            />
+          <el-table :data="tableData" border style="width: 100%" :max-height="600" ref="dataTable"
+            :row-class-name="tableRowClassName">
+            <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
             <el-table-column prop="materialName" label="物资名称" width="200">
             </el-table-column>
-            <el-table-column
-              prop="specModel"
-              label="规格型号"
-              width="200"
-            ></el-table-column>
+            <el-table-column prop="specModel" label="规格型号" width="200"></el-table-column>
 
-            <el-table-column
-              prop="unit"
-              label="计量单位"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="planAmount"
-              label="需求数量"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="putTotal"
-              label="本次实收数量"
-              width="120"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="packagingFm"
-              label="包装形式"
-              width="160"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="manufactureDate"
-              label="生产日期"
-              width="150"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="expirationDate"
-              label="有效期截止日期"
-              width="150"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="addr"
-              label="使用地点"
-              width="200"
-              align="center"
-            ></el-table-column>
+            <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
+            <el-table-column prop="planAmount" label="需求数量" width="120" align="center"></el-table-column>
+            <el-table-column prop="putTotal" label="本次实收数量" width="120" align="center"></el-table-column>
+            <el-table-column prop="packagingFm" label="包装形式" width="160" align="center"></el-table-column>
+            <el-table-column prop="manufactureDate" label="生产日期" width="150" align="center"></el-table-column>
+            <el-table-column prop="expirationDate" label="有效期截止日期" width="150" align="center"></el-table-column>
+            <el-table-column prop="addr" label="使用地点" width="200" align="center"></el-table-column>
             <el-table-column prop="field2" label="收货地址" width="200"></el-table-column>
-            <el-table-column
-              prop="supplyDate"
-              label="供应时间"
-              width="160"
-              align="center"
-            ></el-table-column>
+            <el-table-column prop="supplyDate" label="供应时间" width="160" align="center"></el-table-column>
 
-            <el-table-column
-              prop="receiver"
-              label="收货人及联系方式"
-              width="180"
-            ></el-table-column>
-            <el-table-column
-              prop="field0"
-              label="投资方"
-              width="150"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="field1"
-              label="投资比例"
-              width="150"
-              align="center"
-            ></el-table-column>
+            <el-table-column prop="receiver" label="收货人及联系方式" width="180"></el-table-column>
+            <el-table-column prop="field0" label="投资方" width="150" align="center"></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
             <el-table-column prop="projectShortName" label="合格证附件" width="200">
               <template slot-scope="scope">
-                <fileUpload
-                  :value="scope.row.fileList01"
-                  :preview="true"
-                  :isShowTip="false"
-                  :limit="9999"
-                />
+                <fileUpload :value="scope.row.fileList01" :preview="true" :isShowTip="false" :limit="9999" />
               </template>
             </el-table-column>
             <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
               <template slot-scope="scope">
-                <fileUpload
-                  :value="scope.row.fileList02"
-                  :preview="true"
-                  :isShowTip="false"
-                  :limit="9999"
-                />
+                <fileUpload :value="scope.row.fileList02" :preview="true" :isShowTip="false" :limit="9999" />
               </template>
             </el-table-column>
-            <el-table-column
-              prop="storeTotal"
-              label="入库数量"
-              width="120"
-              align="center"
-            >
+            <el-table-column prop="storeTotal" label="入库数量" width="120" align="center">
             </el-table-column>
-            <el-table-column
-              prop="refundZjTotal"
-              label="退货数量"
-              width="120"
-              align="center"
-            >
+            <el-table-column prop="refundZjTotal" label="退货数量" width="120" align="center">
             </el-table-column>
             <el-table-column prop="projectShortName" label="退货附件" width="200">
               <template slot-scope="scope">
-                <fileUpload
-                  :value="scope.row.fileList03"
-                  v-model="scope.row.fileList03"
-                  :preview="true"
-                  :isShowTip="false"
-                  :limit="9999"
-                />
+                <fileUpload :value="scope.row.fileList03" v-model="scope.row.fileList03" :preview="true"
+                  :isShowTip="false" :limit="9999" />
               </template>
             </el-table-column>
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
@@ -188,6 +71,7 @@
         </template>
       </VFormRender>
       <toBeReviewed ref="toBereview" />
+      <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     </div>
   </div>
 </template>
@@ -202,16 +86,20 @@ import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import toBeReviewed from "@/views/audit/components/toBeReviewed";
 import dayjs from "dayjs";
+import workFlowView from '@/components/workFlowView'
 export default {
   name: "imDetail",
   components: {
     VFormRender,
     fileUpload,
     toBeReviewed,
+    workFlowView
   },
   data() {
     const userInfo = getUserInfo();
     return {
+      selectedRow: null,
+      workFlowViewVisible: false,
       maxManualIndex: 1,
       buyer: userInfo?.deptName,
       loading: false,
@@ -252,7 +140,8 @@ export default {
           type: "",
         },
         { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
-        
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
+
       ],
       constructionOptions: [],
       gysOptions: [],
@@ -280,7 +169,7 @@ export default {
       return this.$route.query?.name || "";
     },
   },
-  async created() {},
+  async created() { },
   mounted() {
     this.init(this.id);
   },
@@ -310,7 +199,7 @@ export default {
               expirationDate: x.expirationDate
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
-              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
+              supplyDate: x.supplyDate ? dayjs(x.supplyDate).format("YYYY-MM-DD") : '',
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
@@ -329,7 +218,7 @@ export default {
         this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
       } else if (buttonCode === "passEdit") {
         this.$refs.toBereview.init("passEdit", this.queryAuditArr, this.name);
-      }else if (buttonCode === 'edit') {
+      } else if (buttonCode === 'edit') {
         this.$tab.closePage(true)
         this.$router.push({
           name: 'imPage',
@@ -337,11 +226,14 @@ export default {
           query: {
             id: this.id,
             type: 'update',
-            storeStatus:'0'
+            storeStatus: '0'
           }
         })
         return
 
+      } else if (buttonCode === 'flowSee') {
+        this.workFlowViewVisible = true
+        this.selectedRow = { businessId: this.id }
       }
     },
     cancel() {
@@ -351,7 +243,7 @@ export default {
     buttonShow(item) {
       // 审核中才能显示同意和不同意按钮
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
-        return this.storeStatus == "5" &&  !['toBeDeal','handle'].includes(this.name);
+        return this.storeStatus == "5" && !['toBeDeal', 'handle'].includes(this.name);
       }
 
       if (item.buttonCode === "cancel") {
@@ -360,6 +252,11 @@ export default {
       if (item.buttonCode === 'edit') {
         console.log(item, this.name);
         return ["0"].includes(this.storeStatus) && this.name == 'handle'
+      }
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        return !['1'].includes(this.storeStatus) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
       }
     },
     formFillInPage() {
@@ -391,11 +288,13 @@ export default {
   align-items: center;
   height: 60px;
 }
+
 .flex .title {
   font-weight: 600;
   color: #000;
   padding-left: 12px;
 }
+
 .slotIcon-color-content {
   color: red;
 }

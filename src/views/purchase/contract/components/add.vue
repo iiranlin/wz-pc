@@ -5,16 +5,16 @@
       <VFormRender @formValueChange="formValueChange" :form-json="formJson" :form-data="formData"
         :option-data="optionData" ref="vFormRef" :global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
         <template #projefctNameSolt="{ formModel }">
-          <el-form-item prop="projefctName"  label="标段项目" class="label-right-align">
+          <el-form-item prop="projefctName" label="标段项目" class="label-right-align">
             <template v-if="type === 'create'">
               <span class="titleCss" :title="projectData.sectionName">{{
                 projectData.sectionName
-                }}</span>
+              }}</span>
             </template>
             <template v-else>
               <span class="titleCss" :title="formModel.projefctName">{{
                 formModel.projefctName
-                }}</span>
+              }}</span>
             </template>
           </el-form-item>
         </template>
@@ -24,12 +24,12 @@
             <template v-if="type === 'create'">
               <span class="titleCss" :title="projectData.constructionCompany">{{
                 projectData.constructionCompany
-                }}</span>
+              }}</span>
             </template>
             <template v-else>
               <span class="titleCss" :title="formModel.unitName">{{
                 formModel.unitName
-                }}</span>
+              }}</span>
             </template>
           </el-form-item>
         </template>
@@ -53,8 +53,8 @@
         </template>
 
         <template #purchaseCodeSolt="{ formModel }">
-          <el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-             label="类别" class="label-right-align">
+          <el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label="类别"
+            class="label-right-align">
             <template v-if="type !== 'view'">
               <el-select v-model="formModel.purchaseCode" filterable required style="width: 100%" placeholder="请选择"
                 @change="
@@ -126,7 +126,7 @@
         </template>
         <template #attachmentFileSolt="{ formModel }">
           <el-form-item prop="hthbfj" label-width="160px" label="核备附件(支持多个)" class="label-right-align" :rules="[
-            
+
           ]">
             <fileUpload :isShowTip="false" v-model="formModel.hthbfj" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view' || checked" />
@@ -163,11 +163,12 @@
 
 
         <template #contentSlot="{ formModel }">
-          <contentSlot v-model="formModel" ref="contentSlotRef" :isView="type === 'view'" :formRef="$refs.vFormRef"  />
+          <contentSlot v-model="formModel" ref="contentSlotRef" :isView="type === 'view'" :formRef="$refs.vFormRef" />
         </template>
       </VFormRender>
     </div>
     <toBeReviewed ref="toBereview" />
+    <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
   </div>
 </template>
 
@@ -187,6 +188,7 @@ import { useSlots } from "vue";
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
 import contentSlot from "./contentSlot.vue";
 import dayjs from "dayjs";
+import workFlowView from '@/components/workFlowView'
 export default {
   name: "SectionAdd",
   dicts: ["purchase_code", "flowStatus"],
@@ -194,11 +196,14 @@ export default {
     VFormRender,
     fileUpload,
     toBeReviewed,
-    contentSlot
+    contentSlot,
+    workFlowView
   },
   data() {
     const userInfo = getUserInfo();
     return {
+      selectedRow: null,
+      workFlowViewVisible: false,
       code: null,
       purchaseCode: null,
       purchaseTypeCode: null,
@@ -243,6 +248,7 @@ export default {
         { buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
         { buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
         { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
       ],
       constructionOptions: [],
       gysOptions: [],
@@ -372,8 +378,8 @@ export default {
             vatRate: 0,
             totalAmount: 0,
             railwaySpecial: '0',
-             brand: "",
-             technicalStandard:""
+            brand: "",
+            technicalStandard: ""
           }]
         });
       });
@@ -404,7 +410,7 @@ export default {
 
           newData.contractDetailsList = newData.contractDetailsList.map(x => ({
             ...x,
-            validityGuarantee: x.railwaySpecial == 1 ? [dayjs(x.startTime).format('YYYY-MM-DD') , dayjs( x.endTime).format('YYYY-MM-DD')] : [],
+            validityGuarantee: x.railwaySpecial == 1 ? [dayjs(x.startTime).format('YYYY-MM-DD'), dayjs(x.endTime).format('YYYY-MM-DD')] : [],
 
           }))
 
@@ -416,7 +422,7 @@ export default {
           newData.hthbfj =
             newData.files != "" ? JSON.parse(newData.files).hthbfj : [];
 
-            console.log(newData.hthbfj)
+          console.log(newData.hthbfj)
 
           // 缓存回显数据
           this.backData = newData;
@@ -465,6 +471,11 @@ export default {
         return
 
       }
+      if (buttonCode === 'flowSee') {
+        this.workFlowViewVisible = true
+        this.selectedRow = { businessId: this.id }
+        return
+      }
     },
     cancel() {
       this.$tab.closeOpenPage(true)
@@ -475,11 +486,17 @@ export default {
         return this.type !== "view";
       }
       if (item.buttonCode === 'pass' || item.buttonCode === 'reject') {
-        return [2].includes(this.detail.status) && this.name == 'audit' 
+        return [2].includes(this.detail.status) && this.name == 'audit'
       }
       if (item.buttonCode === 'edit') {
         return [0].includes(this.detail.status) && this.name == 'handle'
       }
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        return ![1].includes(this.detail.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
+      }
+
       return true;
     },
     //新建

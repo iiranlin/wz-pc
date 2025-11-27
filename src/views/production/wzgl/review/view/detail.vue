@@ -1,44 +1,22 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: true }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: true }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: true }">
         <template #table>
-          <detailTable
-            ref="itemTableRef"
-            :tableData="tableData"
-            @selectionChange="selectionChange"
-          />
+          <detailTable ref="itemTableRef" :tableData="tableData" @selectionChange="selectionChange" />
         </template>
-                     <!-- 附件 -->
+        <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item
-            prop="fileList"
-            label="计划附件"
-            class="label-right-align"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="9999"
-              :preview="type === 'view' "
-              :isShowTip="false"
-              :fileType="['pdf']"
-            />
+          <el-form-item prop="fileList" label="计划附件" class="label-right-align">
+            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :preview="type === 'view'" :isShowTip="false"
+              :fileType="['pdf']" />
           </el-form-item>
         </template>
       </VFormRender>
       <toBeReviewed ref="toBereview" />
+      <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     </div>
   </div>
 </template>
@@ -48,6 +26,7 @@ import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
+import workFlowView from '@/components/workFlowView'
 
 import VFormRender from '@/components/form-render/index'
 import { formFillInPage } from '@/api/form/form'
@@ -60,7 +39,7 @@ import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import router from '@/router';
 import fileUpload from "@/components/upload";
-import {findByBusinessType} from '@/utils/index.js'
+import { findByBusinessType } from '@/utils/index.js'
 
 export default {
   // 需求审核详情
@@ -69,10 +48,13 @@ export default {
     attachmentTable,
     detailTable,
     toBeReviewed,
-    fileUpload
+    fileUpload,
+    workFlowView
   },
-  data () {
+  data() {
     return {
+      selectedRow: null,
+      workFlowViewVisible: false,
       loading: false,
       title: '新增',
       checked: false,
@@ -100,6 +82,7 @@ export default {
         { buttonName: '修改后通过', buttonCode: 'passEdit', buttonIcon: 'Blue-Edit', type: '' },
         { buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
         { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
       ],
       constructionOptions: [],
       selectRows: [],
@@ -109,25 +92,25 @@ export default {
     }
   },
   computed: {
-    type () {
+    type() {
       return this.$route.query.type
     },
-    id () {
+    id() {
       return this.$route.query?.id || ''
     },
-    projectId () {
+    projectId() {
       return this.$route.query?.projectId || ''
     },
     ...mapState(['request']),
-    queryAuditArr () {
+    queryAuditArr() {
       return JSON.parse(this.$route.query.auditArr || '[]')
     },
-    name () {
+    name() {
       return this.$route.query?.name || ''
     }
   },
 
-  mounted () {
+  mounted() {
 
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
@@ -141,10 +124,10 @@ export default {
 
   },
   methods: {
-    selectionChange (data) {
+    selectionChange(data) {
       this.selectRows = data
     },
-    async getCurrentSection () {
+    async getCurrentSection() {
       const res = await SectionApi.getCurrentSection()
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
@@ -154,7 +137,7 @@ export default {
     },
 
     //初始化
-    init () {
+    init() {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
@@ -163,15 +146,15 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit (id) {
+    async updateInit(id) {
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
           this.tableData = data.details
           // fileList回显
-          const fileList = findByBusinessType(data.fileList,'54')
-          this.$refs.vFormRef.setFormData({ ...data,fileList, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
+          const fileList = findByBusinessType(data.fileList, '54')
+          this.$refs.vFormRef.setFormData({ ...data, fileList, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
           this.detail = data
           //   form action
           this.$refs.vFormRef.setReadMode(true)
@@ -180,7 +163,7 @@ export default {
       });
     },
 
-    async newButton (buttonCode) {
+    async newButton(buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
       } else if (buttonCode === 'pass') {
@@ -200,14 +183,17 @@ export default {
           }
         })
 
+      } else if (buttonCode === 'flowSee') {
+        this.workFlowViewVisible = true
+        this.selectedRow = { businessId: this.id }
       }
 
     },
-    cancel () {
+    cancel() {
       this.$tab.closeOpenPage(true)
     },
 
-    buttonShow (item) {
+    buttonShow(item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
@@ -221,21 +207,26 @@ export default {
       }
       // 同意
       if (item.buttonCode === 'pass') {
-        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal' && this.name !=='handle' 
+        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal' && this.name !== 'handle'
       }
       // 修改后同意
       if (item.buttonCode === 'passEdit') {
-        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal'&& this.name !=='handle' 
+        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal' && this.name !== 'handle'
       }
       // 不同意
       if (item.buttonCode === 'reject') {
-        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal'&& this.name !=='handle' 
+        return ['2'].includes(this.detail.planStatus) && this.name !== 'toBeDeal' && this.name !== 'handle'
+      }
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        return !['1'].includes(this.detail.planStatus) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
       }
 
 
       return false
     },
-    formFillInPage () {
+    formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage('detailReviewRequest').then(res => {
 

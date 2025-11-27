@@ -195,8 +195,8 @@
 					<el-form-item prop="bidDocument" label-width="190px"
 						:rules="[{ required: true, message: '请上传招标文件(含技术规格书)', trigger: 'change' }]"
 						label="招标文件(含技术规格书)" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
 							:preview="type === 'view' || checked" />
 					</el-form-item>
 				</template>
@@ -231,8 +231,9 @@
 				</template>
 				<template #bidAddendumSolt="scope">
 					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
+						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidEvaluationReportSolt="scope">
@@ -252,8 +253,9 @@
 				</template>
 				<template #acceptanceSolt="scope">
 					<el-form-item prop="acceptance" label-width="190px" label="中标通知书" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
+						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
@@ -264,14 +266,16 @@
 				</template>
 				<template #contractCopySolt="scope">
 					<el-form-item prop="contractCopy" label-width="140px" label="合同副本" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
+						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #commitmentSolt="scope">
 					<el-form-item prop="commitment" label-width="190px" label="供应商质量终身责任承诺书" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
+						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #otherSolt="scope">
@@ -283,6 +287,7 @@
 			</VFormRender>
 		</div>
 		<toBeReviewed ref="toBereview" />
+		<workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
 	</div>
 </template>
 
@@ -314,13 +319,15 @@ import {
 } from '@/utils/user-info'
 import dayjs from 'dayjs'
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
+import workFlowView from '@/components/workFlowView'
 export default {
 	name: "SectionAdd",
 	dicts: ["purchase_code", "flowStatus", "MeasureUnit"],
 	components: {
 		VFormRender,
 		fileUpload,
-		toBeReviewed
+		toBeReviewed,
+		workFlowView
 	},
 	filters: {
 		dateFormat(value, format = 'YYYY-MM-DD') {
@@ -331,6 +338,8 @@ export default {
 	data() {
 		const userInfo = getUserInfo()
 		return {
+			selectedRow: null,
+			workFlowViewVisible: false,
 			purchaseItem: [],
 			code: null,
 			purchaseCode: null,
@@ -373,6 +382,7 @@ export default {
 			{ buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: '' },
 			{ buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: '' },
 			{ buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
+			{ buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
 			],
 			constructionOptions: [],
 			gysOptions: [],
@@ -519,6 +529,11 @@ export default {
 				return
 
 			}
+			if (buttonCode === 'flowSee') {
+				this.workFlowViewVisible = true
+				this.selectedRow = { businessId: this.id }
+				return
+			}
 		},
 		cancel() {
 			this.$tab.closeOpenPage(true);
@@ -529,10 +544,15 @@ export default {
 				return this.type !== 'view'
 			}
 			if (item.buttonCode === 'pass' || item.buttonCode === 'reject') {
-				return [2].includes(this.detail.status) && this.name == 'audit' 
+				return [2].includes(this.detail.status) && this.name == 'audit'
 			}
 			if (item.buttonCode === 'edit') {
 				return [0].includes(this.detail.status) && this.name == 'handle'
+			}
+			// 已提交、已生效、修改后同意、已驳回、允许查看流程
+			// 流程查看 
+			if (item.buttonCode === 'flowSee') {
+				return ![1].includes(this.detail.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
 			}
 			return true
 		},

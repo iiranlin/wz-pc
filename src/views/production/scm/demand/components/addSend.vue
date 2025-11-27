@@ -1,53 +1,23 @@
 <template>
   <div class="app-container container_flex" v-loading="loading">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: type === 'view' }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: type === 'view' }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
         <!-- 附件 -->
         <template #fileSlot="scope">
-          <el-form-item
-            prop="fileList"
-            label="发货单附件"
-            class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="9999"
-              :preview="type === 'view' && status !=2"
-              :isShowTip="false"
-              :fileType="['pdf','jpg','png','jpeg']"
-            />
+          <el-form-item prop="fileList" label="发货单附件" class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :preview="type === 'view' && status != 2"
+              :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
           </el-form-item>
         </template>
-         <!-- 装车照片附件 -->
+        <!-- 装车照片附件 -->
         <template #fhSlot="scope">
-          <el-form-item
-            prop="zczp"
-            label="装车照片"
-            class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
-           
-          >
-            <fileUpload
-              v-model="scope.formModel.zczp"
-              :limit="9999"
-              :preview="type === 'view' && status !=2"
-              :isShowTip="false"
-              :fileType="['pdf','jpg','png','jpeg']"
-              :isImgToPdf="true"
-            />
+          <el-form-item prop="zczp" label="装车照片" class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.zczp" :limit="9999" :preview="type === 'view' && status != 2"
+              :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isImgToPdf="true" />
           </el-form-item>
         </template>
         <!-- 供应需求ID和需求项目切换 -->
@@ -70,20 +40,10 @@
           </el-form-item>
         </template> -->
         <template #shippingNumberSlot="scope">
-          <el-form-item
-            prop="contractName"
-            label="合同名称"
-            class="label-right-align"
-            v-if="type != 'view'"
-          >
+          <el-form-item prop="contractName" label="合同名称" class="label-right-align" v-if="type != 'view'">
             <el-input v-model="scope.formModel.contractName" readonly></el-input>
           </el-form-item>
-          <el-form-item
-            prop="shipmentBatchNumber"
-            label="发货单号"
-            class="label-right-align"
-            v-else
-          >
+          <el-form-item prop="shipmentBatchNumber" label="发货单号" class="label-right-align" v-else>
             {{ scope.formModel.shipmentBatchNumber }}
           </el-form-item>
         </template>
@@ -91,7 +51,8 @@
           <TabTable ref="tabTableRef" :tableData="tableData" />
         </template>
       </VFormRender>
-       <toBeReviewed ref="toBereview" />
+      <toBeReviewed ref="toBereview" />
+      <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     </div>
   </div>
 </template>
@@ -106,6 +67,7 @@ import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
 import { mapState } from "vuex";
+import workFlowView from '@/components/workFlowView'
 import dayjs from "dayjs";
 import toBeReviewed from "@/views/audit/components/toBeReviewed";
 export default {
@@ -114,11 +76,14 @@ export default {
     VFormRender,
     fileUpload,
     TabTable,
-    toBeReviewed
+    toBeReviewed,
+    workFlowView
   },
   data() {
     const userInfo = getUserInfo();
     return {
+      selectedRow: null,
+      workFlowViewVisible: false,
       maxManualIndex: 1,
       buyer: userInfo?.deptName,
       loading: false,
@@ -158,10 +123,13 @@ export default {
           buttonIcon: "Blue-Save",
           type: "create, update",
         },
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
+
       ],
       constructionOptions: [],
       gysOptions: [],
       tableData: [],
+      detail: {}
     };
   },
   computed: {
@@ -171,14 +139,14 @@ export default {
     id() {
       return this.$route.query?.id || "";
     },
-    status(){
+    status() {
       // status = 2 表示货运中，仅允许修改附件，其余和view模式一样
       return this.$route.query?.status || "";
     },
-    planId(){
+    planId() {
       return this.$route.query?.planId || "";
     },
-    name(){
+    name() {
       return this.$route.query?.name || "";
     },
     queryAuditArr() {
@@ -186,14 +154,14 @@ export default {
     },
     ...mapState(["request"]),
   },
-  async created() {},
+  async created() { },
   activated() {
     if (this.type == "view") {
       this.$nextTick(() => {
         this.$tab.updatePage({
           path: "/scm/addSend",
           meta: {
-            title: this.status == 2 ?'修改发货信息': "货运详情",
+            title: this.status == 2 ? '修改发货信息' : "货运详情",
           },
         });
       });
@@ -334,7 +302,7 @@ export default {
             expirationDate: x.expirationDate
               ? dayjs(x.expirationDate).format("YYYY-MM-DD")
               : "",
-            supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
+            supplyDate: x.supplyDate ? dayjs(x.supplyDate).format("YYYY-MM-DD") : '',
             id: x.planDetailId,
             fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
             fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
@@ -342,6 +310,7 @@ export default {
           this.tableData = detail;
           console.log(this.tableData, "-------this.tableData------");
           this.setSelectedItemList(this.tableData);
+          this.detail = newData;
         });
       });
     },
@@ -362,6 +331,12 @@ export default {
         this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
         return;
       }
+
+      if (buttonCode === 'flowSee') {
+        this.workFlowViewVisible = true
+        this.selectedRow = { businessId: this.id }
+        return
+      }
     },
     cancel() {
       this.$router.go(-1);
@@ -371,9 +346,15 @@ export default {
       if (item.buttonCode === "save") {
         return this.type !== "view" || this.status == 2;
       }
-  // 审核中才能显示同意和不同意按钮
+      // 审核中才能显示同意和不同意按钮
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
-       return this.name == 'audit'
+        return this.name == 'audit'
+      }
+
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        return !['1'].includes(this.detail.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
       }
 
       return true;
