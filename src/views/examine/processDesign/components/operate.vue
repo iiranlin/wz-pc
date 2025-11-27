@@ -32,7 +32,7 @@
                         v-model="formData.projectId"
                         clearable
                         :multiple="true"
-                        placeholder="建设项目"
+                        placeholder="默认全部建设项目"
                         style="width: 1154px"
                         >
                         <el-option v-for="item in projects"
