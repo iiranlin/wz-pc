@@ -29,7 +29,7 @@
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
-          :buttonDisable="handleTableButtonDisable">
+          :buttonDisable="handleTableButtonDisable" :row-class-name="tableRowClassName">
           <template #rate="scope">
             {{ scope.value }}%
           </template>
@@ -159,6 +159,12 @@ export default {
   },
 
   methods: {
+    //对比市场价低于20 就变红色
+    tableRowClassName({ row, rowIndex }) {
+      if (row.rate < -20) {
+        return "highlight-row-red";
+      }
+    },
     onDialogOk(data) {
       this.getList();
     },
@@ -323,5 +329,10 @@ export default {
   flex: 1;
   height: 100%;
   overflow-y: scroll;
+}
+</style>
+<style>
+.highlight-row-red {
+  color: red;
 }
 </style>
