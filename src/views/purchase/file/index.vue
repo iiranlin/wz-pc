@@ -36,12 +36,18 @@
 					:showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
 					@handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
 					@cleanClick="cleanClick"></right-toolbar>
-				<table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
-					:property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
-					@selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+				<table-index ref="tableIndex" :buttonDisable="tableButtonDisable" :loading="loading"
+					:tableIndexs="tableIndex" :tableData="list" :property="property" :numberShow="numberShow"
+					@handleSelectionChange="handleSelectionChange" @selectChange="selectChange"
+					@emitAblFilter="emitAblFilter" @handleButton="handleButton">
 					<!-- 合同状态 -->
 					<template #status="scope">
 						{{ status[scope.value] }}
+					</template>
+					<!-- 合同ID -->
+					<template #purchaseNumber="scope">
+						<!-- 跳转详情 -->
+						<el-button type="text" @click.stop="handleClick(scope.data)">{{ scope.value }}</el-button>
 					</template>
 					<template #registration="scope">
 						<fileUpload :value="fileListStr(scope.value)" :limit="9999" :fileSize="500"
@@ -173,6 +179,20 @@ export default {
 		}
 	},
 	methods: {
+		handleClick(row) {
+			this.$router.push({
+				name: 'detailPurchase',
+				query: {
+					id: row.id,
+					type: 'view'
+				}
+			})
+		},
+		tableButtonDisable(buttonInfo, row) {
+			if (buttonInfo.buttonCode === 'flowSee') {
+				return row.status == 1
+			}
+		},
 		goArchivedMaterials(data) {
 			this.$router.push({
 				name: 'updatePurchase',
@@ -332,7 +352,7 @@ export default {
 			}
 		},
 		handleExport(obj) {
-			FileApi.customDownload({businessType:7,businessData:obj.id})
+			FileApi.customDownload({ businessType: 7, businessData: obj.id })
 		},
 		handSubmit(idArr) {
 			this.$modal.confirm("是否确认提交审核?").then(() => {
