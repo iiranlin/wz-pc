@@ -35,12 +35,18 @@
 					:showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
 					@handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
 					@cleanClick="cleanClick"></right-toolbar>
-				<table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
-					:property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
-					@selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+				<table-index ref="tableIndex" :buttonDisable="tableButtonDisable" :loading="loading"
+					:tableIndexs="tableIndex" :tableData="list" :property="property" :numberShow="numberShow"
+					@handleSelectionChange="handleSelectionChange" @selectChange="selectChange"
+					@emitAblFilter="emitAblFilter" @handleButton="handleButton">
 					<!-- 合同状态 -->
 					<template #status="scope">
 						{{ status[scope.value] }}
+					</template>
+					<!-- 合同ID -->
+					<template #purchaseNumber="scope">
+						<!-- 跳转详情 -->
+						<el-button type="text" @click.stop="handleClick(scope.data)">{{ scope.value }}</el-button>
 					</template>
 				</table-index>
 				<pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum"
@@ -190,6 +196,16 @@ export default {
 		}
 	},
 	methods: {
+
+		handleClick(row) {
+			this.$router.push({
+				name: 'detailPurchaseContract',
+				query: {
+					id: row.id,
+					type: 'view'
+				}
+			})
+		},
 		fileListStr(val) {
 			if (val) {
 				return JSON.parse(val)[0];
@@ -200,6 +216,11 @@ export default {
 				this.purchaseType = res.data;
 			});
 
+		},
+		tableButtonDisable(buttonInfo, row) {
+			if (buttonInfo.buttonCode === 'flowSee') {
+				return row.status == 1
+			}
 		},
 		buttonDisable(btn) {
 			if (btn.buttonCode === 'submit') {
