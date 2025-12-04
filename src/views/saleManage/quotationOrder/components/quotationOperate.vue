@@ -61,7 +61,7 @@
                                             :rules="[{ required: true, message: '请输入数量', trigger: ['change', 'blur'] }]">
                                             <span v-if="queryType == 'view'">{{ scope.row.matlNum.toFixed(2) }}</span>
                                             <el-input-number style="width: 100%" v-else controls-position="right"
-                                                :min="1" :precision="2" :max="1000000" v-model.trim="scope.row.matlNum"
+                                                :min="1" :precision="4" :max="1000000" v-model.trim="scope.row.matlNum"
                                                 @change="() => numberChange(scope.row)" />
                                         </el-form-item>
                                     </template>
@@ -75,7 +75,7 @@
                                         <el-form-item :prop="'detailedForm.' + scope.$index + '.taxPrice'"
                                             :rules="[{ required: true, message: '请输入单价', trigger: ['change', 'blur'] }]">
                                             <span v-if="queryType == 'view'">{{
-                                                $textMethod.money(scope.row.taxPrice)}}</span>
+                                                $textMethod.money(scope.row.taxPrice) }}</span>
                                             <money-input v-else v-model="scope.row.taxPrice"
                                                 @change="() => numberChange(scope.row)" />
                                         </el-form-item>
@@ -90,7 +90,7 @@
                                         <el-form-item :prop="'detailedForm.' + scope.$index + '.taxRate'"
                                             :rules="[{ required: true, message: '请选择税率', trigger: ['change', 'blur'] }]">
                                             <span v-if="queryType == 'view'">{{ scope.row.taxRate |
-                                                orderTypeFilter(dict.type.taxPre)}}</span>
+                                                orderTypeFilter(dict.type.taxPre) }}</span>
                                             <el-select v-columnFormat="{
                                                 index: scope.$index,
                                                 prop: 'taxRate',

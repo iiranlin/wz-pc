@@ -68,23 +68,19 @@
         </template>
       </el-table-column>
     </el-table>
-           <!-- 统计信息 -->
+    <!-- 统计信息 -->
     <div class="summary-info" v-if="tableData.length > 0">
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">总条数：</span>
-            <span class="summary-value amount-text"
-              >{{ tableData.length }} 条</span
-            >
+            <span class="summary-value amount-text">{{ tableData.length }} 条</span>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">本次计划数量合计：</span>
-            <span class="summary-value amount-text"
-              >{{ totalPlanAmount.toFixed(2) }} </span
-            >
+            <span class="summary-value amount-text">{{ totalPlanAmount.toFixed(4) }} </span>
           </div>
         </el-col>
       </el-row>
@@ -117,7 +113,7 @@ export default {
     type() {
       return this.$route.query?.type || ''
     },
-     totalPlanAmount () {
+    totalPlanAmount() {
       return this.tableData.reduce((sum, item) => {
         return sum + item.planAmount;
       }, 0);
@@ -128,17 +124,17 @@ export default {
     this.tableData = this.getSelectedMaterialList()
   },
   methods: {
-     onDialogOk (data) {
+    onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
       this.tableData = data.map(x => ({
         ...x,
-        backPlanAmount:0,
+        backPlanAmount: 0,
         supplyDate: `${dayjs(x.supplyDate).format('YYYY-MM-DD')}`
       }))
       this.setSelectedMaterialList(this.tableData);
       console.log('批量导入的数据', this.tableData);
     },
-    onImport(){
+    onImport() {
       this.$refs.batchDialogRef.open();
 
     },
@@ -219,6 +215,7 @@ export default {
     align-items: center;
   }
 }
+
 /* 金额文字样式 */
 .amount-text {
   color: #e6a23c;

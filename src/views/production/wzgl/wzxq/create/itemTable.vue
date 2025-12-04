@@ -13,233 +13,115 @@
     </div>
 
     <!-- 表格 -->
-    <el-table
-      ref="tableRef"
-      :data="tableData"
-      style="width: 100%"
-      border
-      max-height="500"
-    >
-      <el-table-column
-        type="index"
-        align="center"
-        label="序号"
-        width="60"
-        fixed
-      ></el-table-column>
-      <el-table-column
-        prop="sellerName"
-        label="供应商"
-        align="center"
-        width="120"
-        fixed
-      ></el-table-column>
-      <el-table-column
-        prop="materialName"
-        label="物资名称"
-        align="center"
-        width="120"
-        fixed
-      ></el-table-column>
-      <el-table-column
-        prop="specModel"
-        label="规格型号"
-        align="center"
-        width="150"
-        fixed
-      ></el-table-column>
-      <el-table-column
-        prop="unit"
-        label="计量单位"
-        align="center"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="amount"
-        label="合同数量"
-        align="center"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="cumulativeAmount"
-        label="累计计划量（含本次）"
-        align="center"
-        width="200"
-      >
+    <el-table ref="tableRef" :data="tableData" style="width: 100%" border max-height="500">
+      <el-table-column type="index" align="center" label="序号" width="60" fixed></el-table-column>
+      <el-table-column prop="sellerName" label="供应商" align="center" width="120" fixed></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" align="center" width="120" fixed></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" align="center" width="150" fixed></el-table-column>
+      <el-table-column prop="unit" label="计量单位" align="center" width="120"></el-table-column>
+      <el-table-column prop="amount" label="合同数量" align="center" width="120"></el-table-column>
+      <el-table-column prop="cumulativeAmount" label="累计计划量（含本次）" align="center" width="200">
         <template slot-scope="scope">
           {{ +scope.row.cumulativeAmount + +(scope.row.planAmount || 0) }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="planAmount"
-        label="本次计划数量"
-        align="center"
-        width="150"
-      >
+      <el-table-column prop="planAmount" label="本次计划数量" align="center" width="150">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>本次计划数量</span>
         </template>
         <template slot-scope="scope">
-          <el-input-number
-            v-model="scope.row.planAmount"
-            :min="0"
-            :max="+scope.row.amount - +scope.row.cumulativeAmount"
-            :precision="2"
-            size="mini"
-            style="width: 100%"
-          ></el-input-number>
+          <el-input-number v-model="scope.row.planAmount" :min="0"
+            :max="+scope.row.amount - +scope.row.cumulativeAmount" :precision="4" size="mini"
+            style="width: 100%"></el-input-number>
         </template>
       </el-table-column>
       <el-table-column prop="supplyDate" label="供应时间" min-width="200">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>供应时间</span>
-          <el-button
-            type="text"
-            icon="el-icon-document-copy"
-            @click="copyLast('supplyDate')"
-            style="margin-left: 8px; font-size: 14px"
-            >填充</el-button
-          >
+          <el-button type="text" icon="el-icon-document-copy" @click="copyLast('supplyDate')"
+            style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-date-picker
-            v-model="scope.row.supplyDate"
-            type="date"
-            size="mini"
-            style="width: 100%"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
+          <el-date-picker v-model="scope.row.supplyDate" type="date" size="mini" style="width: 100%"
+            value-format="yyyy-MM-dd"></el-date-picker>
         </template>
       </el-table-column>
       <el-table-column prop="addr" label="使用地点" min-width="200">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>使用地点</span>
-          <el-button
-            type="text"
-            icon="el-icon-document-copy"
-            @click="copyLast('addr')"
-            style="margin-left: 8px; font-size: 14px"
-            >填充</el-button
-          >
+          <el-button type="text" icon="el-icon-document-copy" @click="copyLast('addr')"
+            style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.addr"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="scope.row.addr" size="mini" style="width: 100%"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="field2" label="收货地址" min-width="200">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>收货地址</span>
-          <el-button
-            type="text"
-            icon="el-icon-document-copy"
-            @click="copyLast('field2')"
-            style="margin-left: 8px; font-size: 14px"
-            >填充</el-button
-          >
+          <el-button type="text" icon="el-icon-document-copy" @click="copyLast('field2')"
+            style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.field2"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="scope.row.field2" size="mini" style="width: 100%"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="receiver" label="收货人及联系方式" min-width="250">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>收货人及联系方式</span>
-          <el-button
-            type="text"
-            icon="el-icon-document-copy"
-            @click="copyLast('receiver')"
-            style="margin-left: 8px; font-size: 14px"
-            >填充</el-button
-          >
+          <el-button type="text" icon="el-icon-document-copy" @click="copyLast('receiver')"
+            style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.receiver"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="scope.row.receiver" size="mini" style="width: 100%"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="field0" label="投资方" min-width="200">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>投资方</span>
-          <el-button
-            type="text"
-            icon="el-icon-document-copy"
-            @click="copyLast('field0')"
-            style="margin-left: 8px; font-size: 14px"
-            >填充</el-button
-          >
+          <el-button type="text" icon="el-icon-document-copy" @click="copyLast('field0')"
+            style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.field0"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="scope.row.field0" size="mini" style="width: 100%"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="field1" label="投资比例" min-width="200">
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
           <span>投资比例</span>
-          <el-button
-            type="text"
-            icon="el-icon-document-copy"
-            @click="copyLast('field1')"
-            style="margin-left: 8px; font-size: 14px"
-            >填充</el-button
-          >
+          <el-button type="text" icon="el-icon-document-copy" @click="copyLast('field1')"
+            style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.field1"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="scope.row.field1" size="mini" style="width: 100%"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="200">
         <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.remark"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-model="scope.row.remark" size="mini" style="width: 100%"></el-input>
         </template>
       </el-table-column>
     </el-table>
-        <!-- 统计信息 -->
+    <!-- 统计信息 -->
     <div class="summary-info" v-if="tableData.length > 0">
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">总条数：</span>
-            <span class="summary-value amount-text"
-              >{{ tableData.length }} 条</span
-            >
+            <span class="summary-value amount-text">{{ tableData.length }} 条</span>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">本次计划数量合计：</span>
-            <span class="summary-value amount-text"
-              >{{ totalPlanAmount.toFixed(2) }} </span
-            >
+            <span class="summary-value amount-text">{{ totalPlanAmount.toFixed(4) }} </span>
           </div>
         </el-col>
       </el-row>
@@ -254,7 +136,7 @@ import BatchDialog from './batchDialog.vue';
 import dayjs from 'dayjs';
 export default {
   // 新增物资填报表格
-  data () {
+  data() {
     return {
       tableData: [],
     };
@@ -264,16 +146,16 @@ export default {
   },
   computed: {
     ...mapState(['request']),
-    id () {
+    id() {
       return this.$route.query?.id || ''
     },
-    totalPlanAmount () {
+    totalPlanAmount() {
       return this.tableData.reduce((sum, item) => {
         return sum + item.planAmount;
       }, 0);
     },
   },
-  mounted () {
+  mounted() {
     this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
 
     this.tableData = this.getSelectedMaterialList().map(x => ({
@@ -283,7 +165,7 @@ export default {
     }))
   },
   methods: {
-       onDialogOk (data) {
+    onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
       this.tableData = data.map(x => ({
         ...x,
@@ -292,11 +174,11 @@ export default {
       this.setSelectedMaterialList(this.tableData);
       console.log('批量导入的数据', this.tableData);
     },
-    onImport(){
+    onImport() {
       this.$refs.batchDialogRef.open();
 
     },
-    copyLast (name) {
+    copyLast(name) {
       if (!this.tableData || this.tableData.length === 0) return;
 
       let lastIndex = -1;
@@ -318,7 +200,7 @@ export default {
         }
       }
     },
-    onGoView () {
+    onGoView() {
       this.$router.push({
         name: 'requestView',
         query: {
@@ -327,10 +209,10 @@ export default {
         }
       })
     },
-    setSelectedMaterialList (data) {
+    setSelectedMaterialList(data) {
       this.$store.dispatch('request/setSelectedMaterialList', data)
     },
-    getSelectedMaterialList (data) {
+    getSelectedMaterialList(data) {
       return this.request.selectedMaterialList
     }
   },

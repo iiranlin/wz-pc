@@ -3,96 +3,35 @@
 
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane label="建设项目" name="total"></el-tab-pane>
-      <el-tab-pane
-        v-for="project in projectTabs"
-        :key="project.name"
-        :label="project.label"
-        :name="project.name"
-      ></el-tab-pane>
+      <el-tab-pane v-for="project in projectTabs" :key="project.name" :label="project.label"
+        :name="project.name"></el-tab-pane>
     </el-tabs>
 
-    <el-table
-      :data="filteredTableData"
-      border
-      style="width: 100%"
-      :max-height="600"
-      v-loading="loading"
-      :row-key="getRowKey"
-      @selection-change="handleSelectionChange"
-      ref="dataTable"
-    >
-      <el-table-column
-        type="index"
-        label="序号"
-        width="55"
-        align="center"
-        fixed="left"
-      />
-      <el-table-column
-        prop="projectShortName"
-        label="项目简称"
-        width="120"
-        align="center"
-      ></el-table-column>
+    <el-table :data="filteredTableData" border style="width: 100%" :max-height="600" v-loading="loading"
+      :row-key="getRowKey" @selection-change="handleSelectionChange" ref="dataTable">
+      <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
+      <el-table-column prop="projectShortName" label="项目简称" width="120" align="center"></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
-      <el-table-column
-        v-if="activeTab === 'total'"
-        prop="sectionName"
-        label="标段项目名称"
-        width="150"
-        align="center"
-      >
+      <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center">
         <template slot-scope="scope">
-          <el-select
-            v-if="scope.row.isManual && type !== 'view'"
-            v-model="scope.row.sectionId"
-            placeholder="请选择标段项目名称"
-            size="mini"
-            style="width: 100%"
-            filterable
-            @change="handleFieldChange('sectionId', scope.row)"
-          >
-            <el-option
-              v-for="item of options['setcionOptions']"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId" placeholder="请选择标段项目名称"
+            size="mini" style="width: 100%" filterable @change="handleFieldChange('sectionId', scope.row)">
+            <el-option v-for="item of options['setcionOptions']" :key="item.value" :label="item.label"
+              :value="item.value"></el-option>
           </el-select>
           <span v-else>{{ scope.row.sectionName }}</span>
         </template>
       </el-table-column>
 
       <!-- 其他列 -->
-      <el-table-column
-        prop="sellerName"
-        label="卖方名称"
-        width="120"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="materialName"
-        label="物资名称"
-        width="250"
-        align="center"
-      >
+      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center"></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" width="250" align="center">
         <template slot-scope="scope">
-          <el-select
-            v-if="scope.row.isManual && type !== 'view'"
-            v-model="scope.row.materialId"
-            placeholder="请选择物资名称"
-            size="mini"
-            style="width: 100%"
-            filterable
-            @change="handleFieldChange('materialId', scope.row)"
-          >
-            <el-option
-              v-for="unit of options['itemOptions']"
-              :key="unit.value"
-              :label="unit.label"
-              :value="unit.value"
-            ></el-option>
+          <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.materialId" placeholder="请选择物资名称"
+            size="mini" style="width: 100%" filterable @change="handleFieldChange('materialId', scope.row)">
+            <el-option v-for="unit of options['itemOptions']" :key="unit.value" :label="unit.label"
+              :value="unit.value"></el-option>
           </el-select>
           <span v-else>{{ scope.row.materialName }} </span>
         </template>
@@ -110,201 +49,86 @@
       <!-- 可编辑amount -->
       <el-table-column prop="amount" label="数量" width="180" align="center">
         <template slot-scope="scope">
-          <el-input-number
-            v-if="type !== 'view'"
-            v-model="scope.row.amount"
-            :min="0"
-            :precision="2"
-            size="mini"
-            @change="handleFieldChange('amount', scope.row)"
-            style="width: 100%"
-          ></el-input-number>
+          <el-input-number v-if="type !== 'view'" v-model="scope.row.amount" :min="0" :precision="4" size="mini"
+            @change="handleFieldChange('amount', scope.row)" style="width: 100%"></el-input-number>
           <span v-else>{{ scope.row.amount }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column
-        prop="cumulativeAmount"
-        label="累计计划量"
-        width="120"
-        align="center"
-      ></el-table-column>
+      <el-table-column prop="cumulativeAmount" label="累计计划量" width="120" align="center"></el-table-column>
 
-      <el-table-column
-        prop="price"
-        label="到站不含税单价(元)"
-        width="160"
-        align="center"
-      >
+      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center">
         <template slot-scope="scope">
-          <el-input-number
-            v-if="type !== 'view'"
-            v-model="scope.row.price"
-            :min="0"
-            :precision="2"
-            size="mini"
-            @change="handleFieldChange('price', scope.row)"
-            style="width: 100%"
-          ></el-input-number>
+          <el-input-number v-if="type !== 'view'" v-model="scope.row.price" :min="0" :precision="2" size="mini"
+            @change="handleFieldChange('price', scope.row)" style="width: 100%"></el-input-number>
           <span v-else>{{ scope.row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="vatRate"
-        label="物资增值税率（%）"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center">
         <template slot-scope="scope">
-          <el-input-number
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type =='add' "
-            v-model="scope.row.vatRate"
-            :min="0"
-            :precision="2"
-            size="mini"
-            style="width: 100%"
-            @change="handleFieldChange('vatRate', scope.row)"
-          ></el-input-number>
+          <el-input-number v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
+            v-model="scope.row.vatRate" :min="0" :precision="2" size="mini" style="width: 100%"
+            @change="handleFieldChange('vatRate', scope.row)"></el-input-number>
           <span v-else>{{ scope.row.vatRate }}%</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="taxPrice"
-        label="到站含税单价(元)"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="totalAmount"
-        label="到站合价含税(元)"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : '' }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="deliveryLocation"
-        label="交货地点"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center">
         <template slot-scope="scope">
-          <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
-            v-model="scope.row.deliveryLocation"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
+            v-model="scope.row.deliveryLocation" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryLocation }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="receiver"
-        label="收货人"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="receiver" label="收货人" width="150" align="center">
         <template slot-scope="scope">
-          <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
-            v-model="scope.row.receiver"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
+            v-model="scope.row.receiver" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.receiver }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="deliveryStatus"
-        label="交货状态"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center">
         <template slot-scope="scope">
-          <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
-            v-model="scope.row.deliveryStatus"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
+            v-model="scope.row.deliveryStatus" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="deliveryTerms"
-        label="交货条件"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center">
         <template slot-scope="scope">
-          <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
-            v-model="scope.row.deliveryTerms"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
+            v-model="scope.row.deliveryTerms" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryTerms }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="deliveryDate"
-        label="交货期"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="deliveryDate" label="交货期" width="150" align="center">
         <template slot-scope="scope">
-          <el-input
-            v-if="type !== 'view' && scope.row.id.split('-').length != 1|| scope.row.type =='add'"
-            v-model="scope.row.deliveryDate"
-            size="mini"
-            style="width: 100%"
-          ></el-input>
+          <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
+            v-model="scope.row.deliveryDate" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryDate }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="cumulativeRatio"
-        label="计划金额比例"
-        width="150"
-        align="center"
-      >
-      <template slot-scope="scope">
-        <span>{{ scope.row.cumulativeRatio }}%</span>
-      </template>
+      <el-table-column prop="cumulativeRatio" label="计划金额比例" width="150" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.cumulativeRatio }}%</span>
+        </template>
       </el-table-column>
-       <el-table-column
-        prop="storeTotal"
-        label="累计入库量"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="storeTotal" label="累计入库量" width="150" align="center">
       </el-table-column>
-        <el-table-column
-        prop="outTotal"
-        label="累计出库量"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="outTotal" label="累计出库量" width="150" align="center">
       </el-table-column>
-        <el-table-column
-        prop="storeTotalRates"
-        label="已到货金额"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="storeTotalRates" label="已到货金额" width="150" align="center">
       </el-table-column>
-        <el-table-column
-        prop="outTotalRates"
-        label="出库金额"
-        width="150"
-        align="center"
-      >
+      <el-table-column prop="outTotalRates" label="出库金额" width="150" align="center">
       </el-table-column>
     </el-table>
 
@@ -314,23 +138,19 @@
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">总条数：</span>
-            <span class="summary-value amount-text"
-              >{{ currentTableData.length }} 条</span
-            >
+            <span class="summary-value amount-text">{{ currentTableData.length }} 条</span>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="summary-item">
             <span class="summary-label">到站合价含税合计：</span>
-            <span class="summary-value amount-text"
-              >{{ totalAmount.toFixed(2) }} 元</span
-            >
+            <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }} 元</span>
           </div>
         </el-col>
       </el-row>
     </div>
 
-   
+
   </div>
 </template>
 
@@ -352,7 +172,7 @@ export default {
     }
 
   },
-  data () {
+  data() {
     return {
       activeTab: 'total', // 当前激活的tab
       currentTableData: [], // 当前显示的表格数据
@@ -369,7 +189,7 @@ export default {
     }
   },
   computed: {
-    filteredTableData () {
+    filteredTableData() {
       let baseData = [];
 
       // 根据当前tab获取基础数据
@@ -397,19 +217,19 @@ export default {
       return baseData;
     },
     // 计算总amount
-    totalQuantity () {
+    totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
         return sum + (parseFloat(item.amount) || 0);
       }, 0);
     },
     // 计算总金额
-    totalAmount () {
+    totalAmount() {
       return this.filteredTableData.reduce((sum, item) => {
 
         return sum + item.totalAmount;
       }, 0);
     },
-    projectTabs () {
+    projectTabs() {
       const projectNames = [...new Set(this.tableData.map(item => item.sectionName).filter(Boolean))];
       return projectNames.map((name, index) => ({
         name: `project-${index}`,
@@ -417,10 +237,10 @@ export default {
         projectName: name
       }));
     },
-    projectId () {
+    projectId() {
       return this.$store.state.project.projectId || this.$route.query.projectId
     },
-    type () {
+    type() {
       return this.$route.query.type
     }
   },
@@ -428,40 +248,40 @@ export default {
   watch: {
     // 监听外部数据变化
     tableData: {
-      handler (newData) {
+      handler(newData) {
         this.updateCurrentData();
       },
       immediate: true,
       deep: true
     },
     // 监听activeTab变化
-    activeTab () {
+    activeTab() {
       this.updateCurrentData();
     },
-    projectId () {
+    projectId() {
       this.getSectionOptions()
     }
   },
-  created () {
+  created() {
     // this.getItemsOptions()
     this.getSectionOptions()
   },
   methods: {
     // 处理搜索输入
-    handleSearch (value) {
+    handleSearch(value) {
       // 搜索功能通过computed属性filteredTableData自动实现
       // 这里可以添加防抖逻辑如果需要的话
       console.log('搜索关键词:', value);
     },
 
     // 处理清空搜索
-    handleClearSearch () {
+    handleClearSearch() {
       this.searchKeyword = '';
       console.log('清空搜索');
       // 数据会通过computed属性自动恢复
     },
 
-    onDialogOk (data) {
+    onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
       const newData = data.map(item => ({
         ...item,
@@ -471,7 +291,7 @@ export default {
       this.tableData.push(...newData)
     },
     // 获取options数据
-    async getItemsOptions () {
+    async getItemsOptions() {
       const res = await ItemApi.itemList(this.params)
       this.options.itemOptions = res.data.list.map(item => {
         return {
@@ -481,7 +301,7 @@ export default {
         }
       })
     },
-    async getSectionOptions () {
+    async getSectionOptions() {
       if (!this.projectId) {
         return
       }
@@ -495,7 +315,7 @@ export default {
       })
     },
     // 新增物资行
-    onAdd () {
+    onAdd() {
 
       // 向父组件发送新增事件
       this.$emit('data-change', {
@@ -509,11 +329,11 @@ export default {
       this.$message.success('已添加新行，请填写物资信息');
     },
 
-    onBatchUpload () {
+    onBatchUpload() {
       this.$refs.batchDialogRef.open();
     },
     // 批量删除选中数据
-    onDelete () {
+    onDelete() {
       this.$confirm('确认删除选中数据吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -529,7 +349,7 @@ export default {
         })
     },
     // 每个字段的变化都触发这个方法
-    handleFieldChange (fieldType, row) {
+    handleFieldChange(fieldType, row) {
 
 
       console.log('handleFieldChange', fieldType, row);
@@ -577,7 +397,7 @@ export default {
           break;
       }
     },
-    calculateTaxPrice (row) {
+    calculateTaxPrice(row) {
       if (row.vatRate && row.price) {
         const taxPrice = (100 + row.vatRate) * row.price / 100
         row.taxPrice = taxPrice
@@ -585,14 +405,14 @@ export default {
         this.calculateTotalAmount(row)
       }
     },
-    calculateTotalAmount (row) {
+    calculateTotalAmount(row) {
       if (row.amount && row.taxPrice) {
         const totalAmount = row.amount * row.taxPrice
         row.totalAmount = totalAmount
       }
     },
     // 处理Tab点击事件
-    handleTabClick (tab) {
+    handleTabClick(tab) {
       this.activeTab = tab.name;
       this.loading = false;
       // 切换Tab后恢复选中状态
@@ -605,7 +425,7 @@ export default {
     },
 
     // 切换Tab后恢复选中状态
-    restoreSelectionAfterTabChange () {
+    restoreSelectionAfterTabChange() {
       const tableRef = this.$refs.dataTable;
       if (!tableRef) return;
       // 获取已经选中所有keys
@@ -628,7 +448,7 @@ export default {
 
 
     // 获取原始数据中的索引
-    getOriginalIndex (row) {
+    getOriginalIndex(row) {
       return this.tableData.findIndex(item =>
         item.id === row.id && item.materialName === row.materialName
       );
@@ -636,11 +456,11 @@ export default {
 
 
     // 返回唯一行 key，用于多选保留状态
-    getRowKey (row) {
+    getRowKey(row) {
       return `${row.id}`;
     },
     // 处理表格的勾选变化 - 修改版本
-    handleSelectionChange (selection) {
+    handleSelectionChange(selection) {
       // 第一次进入时，将selectedRowKeys备份
       const currentSelectedKeys = selection.map(row => this.getRowKey(row));
       // 再添加当前选中的key
@@ -648,11 +468,11 @@ export default {
       this.emitSelectionChange();
     },
     // 新增方法：向父组件发送选中变化事件
-    emitSelectionChange () {
+    emitSelectionChange() {
       const allSelectedRows = this.tableData.filter(row => this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)));
     },
     // ✅ 当切换Tab时刷新表格并恢复多选
-    updateCurrentData () {
+    updateCurrentData() {
       if (!this.selectedRowKeys[this.activeTab]) {
         this.$set(this.selectedRowKeys, this.activeTab, []);
       }
@@ -671,7 +491,7 @@ export default {
       });
     },
     // 验证表格数据
-    onCheck () {
+    onCheck() {
       const validationErrors = this.validateTableData();
 
       if (validationErrors.length === 0) {
@@ -690,7 +510,7 @@ export default {
     },
 
     // 验证表格数据的核心方法
-    validateTableData () {
+    validateTableData() {
       const errors = [];
       const currentData = this.filteredTableData;
 
@@ -743,7 +563,7 @@ export default {
     },
 
     // 格式化验证错误信息
-    formatValidationErrors (errors) {
+    formatValidationErrors(errors) {
       const currentTabName = this.activeTab === 'total' ? '总数据' :
         this.projectTabs.find(p => p.name === this.activeTab)?.label || '当前标签页';
 
@@ -759,7 +579,7 @@ export default {
     },
 
     // 高亮显示有错误的行（可选功能）
-    highlightErrorRows (errors) {
+    highlightErrorRows(errors) {
       // 清除之前的高亮
       this.clearRowHighlight();
 
@@ -780,7 +600,7 @@ export default {
     },
 
     // 清除行高亮
-    clearRowHighlight () {
+    clearRowHighlight() {
       this.$nextTick(() => {
         const tableRef = this.$refs.dataTable;
         if (tableRef && tableRef.$el) {
@@ -827,7 +647,7 @@ export default {
   overflow-y: auto;
 }
 
-::v-deep .el-table tbody tr:hover > td {
+::v-deep .el-table tbody tr:hover>td {
   background-color: #f5f7fa !important;
 }
 
@@ -914,7 +734,7 @@ export default {
 </style>
 
 <style>
-.app-container > div + div {
+.app-container>div+div {
   overflow: auto;
 }
 </style>
