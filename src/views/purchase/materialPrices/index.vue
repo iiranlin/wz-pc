@@ -51,7 +51,9 @@
                     // 合同编号:合同名称；  string 类型，分号隔开
                     scope.data.recentYearContractName.split(';').map(x => ({
                       number: x.split(':')[0],
-                      name: x.split(':')[1]
+                      name: x.split(':')[1],
+                      sectionName: x.split(':')[2],
+                      buyer: x.split(':')[3]
                     }))
                   );
                 }

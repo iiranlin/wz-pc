@@ -1,26 +1,13 @@
 <template>
-  <Dialog
-    :title="title"
-    :visible.sync="visible"
-    v-if="visible"
-    :show-close="true"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    append-to-body
-    :destroy-on-close="true"
-    class="dialog-route"
-    width="60%"
-  >
+  <Dialog :title="title" :visible.sync="visible" v-if="visible" :show-close="true" :close-on-click-modal="false"
+    :close-on-press-escape="false" append-to-body :destroy-on-close="true" class="dialog-route" width="60%">
     <el-table :data="tableData" style="width: 100%;margin-top: 16px;">
-      <el-table-column
-        type="index"
-        label="序号"
-        width="120px"
-        align="center"
-      >
+      <el-table-column type="index" label="序号" width="120px" align="center">
       </el-table-column>
       <el-table-column prop="number" label="合同编号" align="center"> </el-table-column>
       <el-table-column prop="name" label="合同名称" align="center"> </el-table-column>
+      <el-table-column prop="sectionName" label="标段项目" align="center"> </el-table-column>
+      <el-table-column prop="buyer" label="供应商" align="center"> </el-table-column>
     </el-table>
 
     <div slot="footer" class="dialog-footer">
@@ -31,25 +18,25 @@
 
 <script>
 export default {
-    name: "sectionDialog",
-    data () {
-        return {
-            loading: false,
-            title: '详情',
-            visible: false,
-            tableData: []
-        }
-    },
-    methods: {
-        open (data) {
-            this.tableData = data;
-            this.visible = true;
-        },
-        //取消
-        handleCancel () {
-            this.visible = false;
-        },
+  name: "sectionDialog",
+  data() {
+    return {
+      loading: false,
+      title: '详情',
+      visible: false,
+      tableData: []
     }
+  },
+  methods: {
+    open(data) {
+      this.tableData = data;
+      this.visible = true;
+    },
+    //取消
+    handleCancel() {
+      this.visible = false;
+    },
+  }
 }
 </script>
 
