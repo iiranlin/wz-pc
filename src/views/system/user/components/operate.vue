@@ -1,13 +1,13 @@
 <template>
   <!-- 添加或修改部门对话框 -->
-  <Dialog :title="title" :visible.sync="openDataScope" :close-on-click-modal="false" width="700px" append-to-body >
+  <Dialog :title="title" :visible.sync="openDataScope" :close-on-click-modal="false" width="700px" append-to-body>
     <el-form ref="elForm" :model="form" :rules="rules" label-width="85px">
-        <el-row>
-            <el-form-item label="所属部门:" prop="deptId">
-                <treeselect v-model="form.deptId" :options="deptOptions" :normalizer="normalizer" @input="inputTreeselect"
-                @open="handleOpen" @select="selectTreeselect" placeholder="选择所属部门" />
-            </el-form-item>
-        </el-row>
+      <el-row>
+        <el-form-item label="所属部门:" prop="deptId">
+          <treeselect v-model="form.deptId" :options="deptOptions" :normalizer="normalizer" @input="inputTreeselect"
+            @open="handleOpen" @select="selectTreeselect" placeholder="选择所属部门" />
+        </el-form-item>
+      </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="用户账号:" prop="username">
@@ -23,12 +23,13 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="电话号码:" prop="phone">
-            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11" @input="(v)=>(form.phone=v.replace(/[^\d]/g,''))"/>
+            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
+              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" @blur="checkPhoneUnique" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="座机号:" prop="tel">
-            <el-input v-model="form.tel" placeholder="请输入座机号"/>
+            <el-input v-model="form.tel" placeholder="请输入座机号" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -49,14 +50,15 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-            <el-form-item label="排序:" prop="sort">
-                <el-input-number v-model="form.sort" controls-position="right" :min="1" :max="9999"></el-input-number>
-            </el-form-item>
+          <el-form-item label="排序:" prop="sort">
+            <el-input-number v-model="form.sort" controls-position="right" :min="1" :max="9999"></el-input-number>
+          </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="状态">
             <el-radio-group v-model="form.status">
-              <el-radio v-for="dict in dict.type.enableStauts" :key="dict.value" :label="parseInt(dict.value)">{{ dict.label}}
+              <el-radio v-for="dict in dict.type.enableStauts" :key="dict.value" :label="parseInt(dict.value)">{{
+                dict.label }}
               </el-radio>
             </el-radio-group>
           </el-form-item>
@@ -92,16 +94,16 @@
 </template>
 
 <script>
-import { userCreate, userDetail, userModify } from '@/api/system/user'
+import { userCreate, userDetail, userModify, userPhoneRepeat } from '@/api/system/user'
 import { deptTree, getDeptTreeByIdForRank } from '@/api/system/dept'
 import { getListByParentCode } from '@/api/system/dict'
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
-  name:"operate",
+  name: "operate",
   dicts: ['enableStauts'],
-  components: {Treeselect},
+  components: { Treeselect },
   data() {
     var validateUsername = (rule, value, callback) => {
       let reg = /^[\da-z]+$/i
@@ -166,7 +168,7 @@ export default {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               let reg = /^1(3|4|5|6|7|8|9)\d{9}$/
-              if(value){
+              if (value) {
                 if (!reg.test(value)) {
                   callback(
                     new Error(
@@ -187,7 +189,7 @@ export default {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               let reg = /^(?:(?:\d{3}-)?\d{5,8}|^(?:\d{4}-)?\d{5,8})(?:-\d+)?$/
-              if(value){
+              if (value) {
                 if (!reg.test(value)) {
                   callback(
                     new Error(
@@ -204,25 +206,25 @@ export default {
           }
         ],
         email: [
-            {
-                trigger: 'blur',
-                validator: (rule, value, callback) => {
-                    let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
-                    if (value) {
-                        if (!reg.test(value)) {
-                            callback(
-                                new Error(
-                                    '电子邮箱格式错误'
-                                )
-                            )
-                        } else {
-                            callback()
-                        }
-                    } else {
-                        callback()
-                    }
+          {
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              let reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+              if (value) {
+                if (!reg.test(value)) {
+                  callback(
+                    new Error(
+                      '电子邮箱格式错误'
+                    )
+                  )
+                } else {
+                  callback()
                 }
+              } else {
+                callback()
+              }
             }
+          }
         ],
         deptId: [
           { required: true, message: '所属部门不能为空', trigger: 'input' }
@@ -299,7 +301,7 @@ export default {
       }
       return {
         id: node.id,
-        label: `【${node.deptCode}】`+node.deptName,
+        label: `【${node.deptCode}】` + node.deptName,
         children: node.children
       }
     },
@@ -388,17 +390,17 @@ export default {
       })
     },
     create() {
-        this.loading = true
-        userCreate({...this.form,rank:'1'}).then(({ success, message }) => {
-            this.loading = false
-            if (success) {
-                this.$modal.msgSuccess(message)
-                this.openDataScope = false
-                this.$emit('operateSuccess')
-            } else {
-                this.$modal.msgError(message)
-            }
-        })
+      this.loading = true
+      userCreate({ ...this.form, rank: '1' }).then(({ success, message }) => {
+        this.loading = false
+        if (success) {
+          this.$modal.msgSuccess(message)
+          this.openDataScope = false
+          this.$emit('operateSuccess')
+        } else {
+          this.$modal.msgError(message)
+        }
+      })
     },
     userModify() {
       this.$refs['elForm'].validate(valid => {
@@ -416,17 +418,17 @@ export default {
       })
     },
     modify() {
-        this.loading = true
-        userModify(Object.assign({rank:'1'}, this.form, { id: this.id })).then(({ success, message }) => {
-            this.loading = false
-            if (success) {
-                this.$modal.msgSuccess(message)
-                this.openDataScope = false
-                this.$emit('operateSuccess')
-            } else {
-                this.$modal.msgError(message)
-            }
-        })
+      this.loading = true
+      userModify(Object.assign({ rank: '1' }, this.form, { id: this.id })).then(({ success, message }) => {
+        this.loading = false
+        if (success) {
+          this.$modal.msgSuccess(message)
+          this.openDataScope = false
+          this.$emit('operateSuccess')
+        } else {
+          this.$modal.msgError(message)
+        }
+      })
     },
     getUserRankList() {
       getListByParentCode('userRank').then(({ data }) => {
@@ -441,7 +443,7 @@ export default {
     },
     initCustom() {
       return new Promise((resolve) => {
-        getDeptTreeByIdForRank({ id: this.form.deptId}).then(({ data }) => {
+        getDeptTreeByIdForRank({ id: this.form.deptId }).then(({ data }) => {
           this.customOptions = data
           resolve(true)
         })
@@ -449,8 +451,8 @@ export default {
     },
     handleCustom(row, data) {
       let ids = []
-      data.checkedNodes.map(item=>{
-        if(!item.children || !item.children.length){
+      data.checkedNodes.map(item => {
+        if (!item.children || !item.children.length) {
           ids.push(item.id)
         }
       })
@@ -474,6 +476,19 @@ export default {
             checkedArr.push(childItem.id)
           }
           this.selectInitChild(childItem, checkedArr)
+        })
+      }
+    },
+    checkPhoneUnique() {
+      // 仅新增的时候判断，修改不判断
+      if (this.id) {
+        return
+      }
+      if (this.form.phone) {
+        userPhoneRepeat({ phone: this.form.phone }).then(({ data }) => {
+          if (data > 0) {
+            this.$modal.msgWarning('此手机号已创建过账户，请确认是否继续创建')
+          }
         })
       }
     },

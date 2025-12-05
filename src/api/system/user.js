@@ -18,6 +18,19 @@ export function userListAll(params) {
   })
 }
 
+/**
+ * 根据手机号码判断重复
+ * @param {phone string} params 
+ * @returns 返回0就是没有，大于0就是有
+ */
+export function userPhoneRepeat(params) {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/user/countByPhone`,
+    method: 'get',
+    params
+  })
+}
+
 // 新增用户
 export function userCreate(data) {
   return request({
