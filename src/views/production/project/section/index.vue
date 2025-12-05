@@ -1,77 +1,34 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :buttonDisable="buttonDisable"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-    >
-   <template #projectName="data">
-        <el-select
-          class="select-box"
-          v-model="formData[data.data.fieldCode]"
-          :placeholder="
-             '请选择建设项目'
-          "
-          clearable
-          style="width: 100%"
-          size="small"
-        >
-          <el-option
-            v-for="(item, key) in lineOptions "
-            :key="key"
-            :label="item.label"
-            :value="item.label"
-          />
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="buttonDisable"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
         </el-select>
       </template>
-  </form-data>
+    </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <!-- 合同数量 -->
           <template #contractIdList="scoped">
-            <el-button
-              type="text"
-              @click="
-                () => {
-                  if (scoped.data.contractIdList.length)
-                    $refs.sellerDialogRef.open(scoped.data.contractIdList);
-                }
-              "
-            >
+            <el-button type="text" @click="
+              () => {
+                if (scoped.data.contractIdList.length)
+                  $refs.sellerDialogRef.open(scoped.data.contractIdList);
+              }
+            ">
               {{ scoped.data.contractIdList.length }}
             </el-button>
           </template>
@@ -79,13 +36,8 @@
             {{ scoped.data.materialUsedRatio || 0 }}%
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
     <SellerDialog ref="sellerDialogRef" />
@@ -94,7 +46,7 @@
 
 <script>
 import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
-import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as WzglApi from '@/api/prodmgr-inv/project/line.js'
 import * as Api from '@/api/prodmgr-inv/project/section.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
@@ -105,9 +57,9 @@ export default {
   components: { Add, SellerDialog },
   mixins: [indexMixin],
 
-  data () {
+  data() {
     return {
-      lineOptions:[],
+      lineOptions: [],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -146,10 +98,10 @@ export default {
       hasOwn: true,
     };
   },
-  activated () {
+  activated() {
     this.getList();
   },
-  created () {
+  created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
@@ -157,12 +109,12 @@ export default {
     this.getLineOptions()
   },
   watch: {
-    filterText (val) {
+    filterText(val) {
       this.$refs.tree.filter(val);
     },
   },
   methods: {
-        getLineOptions(){
+    getLineOptions() {
       WzglApi.lineSelectOptions().then(({ data }) => {
         this.lineOptions = data.map(x => ({
           label: x.projectName,
@@ -170,28 +122,28 @@ export default {
         }))
       })
     },
-    buttonDisable (btn) {
+    buttonDisable(btn) {
       // 没有合同物资才允许删除
       if (btn.buttonCode === 'delete') {
         return this.selection.some(x => x.contractIdList.length != 0)
       }
       return false
     },
-    filterNode (value, data) {
+    filterNode(value, data) {
       if (!value) return true;
       return !!this.$py.match(data.deptName, value) || data.deptCode.indexOf(value) !== -1;
     },
-    numberChange (val) {
+    numberChange(val) {
       this.numberShow = val;
     },
-    newButton (buttonCode, formId, buttonData) {
+    newButton(buttonCode, formId, buttonData) {
       this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData)
     },
-    handleCheckAllChange (columns) {
+    handleCheckAllChange(columns) {
       this.$refs.tableIndex.init(columns);
     },
     //选择框回调
-    selectChange (row) {
+    selectChange(row) {
       let { formData, isWatch } = row;
       if (!isWatch) {
         this.handleQuery(formData);
@@ -199,7 +151,7 @@ export default {
         this.formData = Object.assign({}, this.formData, formData);
       }
     },
-    deptTree () {
+    deptTree() {
       this.treeLoading = true;
       this.formData.parentId = null;
       deptTree().then(({ data }) => {
@@ -208,7 +160,7 @@ export default {
       });
     },
     // 节点单击事件
-    handleNodeClick (data) {
+    handleNodeClick(data) {
       if (data.id === this.treeCurrentKey) {
         // 再次点击当前节点取消选中,查询全部
         this.formData.parentId = null;
@@ -220,19 +172,19 @@ export default {
       }
       this.getList();
     },
-    emitAblFilter (listQuery) {
+    emitAblFilter(listQuery) {
       this.listQuery = Object.assign({}, this.listQuery, listQuery);
       this.handleQuery();
     },
-    handleQuery (row = {}, type = '') {
-     
+    handleQuery(row = {}, type = '') {
+
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
       this.getList();
     },
     /** 查询菜单列表 */
-    getList () {
+    getList() {
       this.loading = true
       Api.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list
@@ -241,13 +193,13 @@ export default {
         this.loading = false
       })
     },
-    handleSelectionChange (ids, single, multiple, selection) {
+    handleSelectionChange(ids, single, multiple, selection) {
       this.ids = ids;
       this.single = single;
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton (buttonCode, idArr, rowArr, { buttonData }) {
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
@@ -264,7 +216,7 @@ export default {
           break;
       }
     },
-    handleDelete (ids) {
+    handleDelete(ids) {
       this.$modal.confirm("是否确认删除?").then(function () {
         return Api.batchRemove({ ids });
       }).then(() => {
@@ -272,14 +224,14 @@ export default {
         this.$modal.msgSuccess("删除成功");
       })
     },
-    deptSuccess () {
+    deptSuccess() {
       this.handleQuery();
       this.deptTree();
     },
-    clickReset () {
+    clickReset() {
       this.handleQuery();
     },
-    cleanClick (data) {
+    cleanClick(data) {
       for (const key of data) {
         if (key.indexOf("Start") != -1 || key.indexOf("End") != -1) {
           this.$refs.formData.resetQueryDateRange(key);
