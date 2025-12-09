@@ -481,11 +481,8 @@ export default {
     },
     checkPhoneUnique() {
       // 仅新增的时候判断，修改不判断
-      if (this.id) {
-        return
-      }
       if (this.form.phone) {
-        userPhoneRepeat({ phone: this.form.phone }).then(({ data }) => {
+        userPhoneRepeat({ phone: this.form.phone, id: this.id }).then(({ data }) => {
           if (data > 0) {
             this.$modal.msgWarning('此手机号已创建过账户，请确认是否继续创建')
           }
