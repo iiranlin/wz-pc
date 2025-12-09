@@ -13,6 +13,16 @@
           </el-option>
         </el-select>
       </template>
+      <!-- 保函有效期 -->
+      <template #expireStatus>
+        <el-select v-model="formData.expireStatus" filterable required style="width: 100%" placeholder="请选择">
+          <el-option v-for="item in [
+            { label: '执行中', value: '执行中' },
+            { label: '已过期', value: '已过期' }
+          ]" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+      </template>
       <template #projectName="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
           " clearable style="width: 100%" size="small">
