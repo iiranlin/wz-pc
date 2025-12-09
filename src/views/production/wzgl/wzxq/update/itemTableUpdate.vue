@@ -32,7 +32,7 @@
       <el-table-column prop="planAmount" label="本次计划数量" align="center" width="150">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.planAmount" :min="0"
-            :max="+scope.row.amount - +scope.row.cumulativeAmount + +scope.row.backPlanAmount" :precision="2"
+            :max="+scope.row.amount - +scope.row.cumulativeAmount + +scope.row.backPlanAmount" :precision="4"
             size="mini" style="width: 100%"></el-input-number>
         </template>
       </el-table-column>
