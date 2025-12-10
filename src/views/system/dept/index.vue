@@ -2,7 +2,8 @@
   <div class="app-container container_flex">
     <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single"
       @newButton="newButton"></button-top>
-    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery" :formData="formData" />
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData" />
     <el-row type="flex" class="container_h">
       <!--部门数据-->
       <collapse>
@@ -12,9 +13,8 @@
           <div class="head-container ov_head">
             <el-tree v-loading="treeLoading" class="drawer-tree" node-key="id" :indent="0" :data="deptOptions"
               :props="defaultProps" :expand-on-click-node="false" ref="tree" :highlight-current="true"
-              :filter-node-method="filterNode" @node-click="handleNodeClick" 
-              style="width: fit-content; min-width: 100%; overflow-x: auto;"
-              >
+              :filter-node-method="filterNode" @node-click="handleNodeClick"
+              style="width: fit-content; min-width: 100%; overflow-x: auto;">
               <template slot-scope="{ node }">
                 <span class="el-tree-node__label" :title="node.label">{{ node.label }}</span>
               </template>
@@ -32,7 +32,11 @@
           @cleanClick="cleanClick"></right-toolbar>
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="dataList"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton" />
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+          <template #unitType="scope">
+            {{ scope.data.deptCode | filterDept }}
+          </template>
+        </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
           @pagination="getList" />
       </el-col>
@@ -54,6 +58,21 @@ export default {
   name: "dept",
   components: { operate, flowAuth, operateBatch, collapse },
   mixins: [indexMixin],
+  filters: {
+    filterDept(value) {
+      if (!value) return ''
+      const deptEnums = {
+        'TLJ': '路局',
+        'SN': '指挥部',
+        'WZDL': '物代公司',
+        'ZB': '施工单位(局指)',
+        'FB': '施工单位(分部)',
+        'JL': '监理单位',
+        'GYS': '供应商'
+      }
+      return deptEnums[value.split('_')[0]]
+    }
+  },
   data() {
     return {
       treeCurrentKey: "",
