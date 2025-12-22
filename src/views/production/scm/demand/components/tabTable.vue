@@ -18,6 +18,7 @@
 
       <el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
       <el-table-column prop="planAmount" label="本次计划数量" width="120" align="center"></el-table-column>
+      <el-table-column prop="shippedTotal" label="累计发货数量(含本次)" width="120" align="center"></el-table-column>
       <el-table-column v-if="type != 'view'" prop="ssendTotal" label="本次需求未发货数量" width="120"
         align="center"></el-table-column>
       <el-table-column prop="sendTotal" label="发货数量" width="160" align="center" :render-header="renderHeader">
@@ -81,28 +82,18 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="field0"
-        label="投资方"
-        width="150"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="field1"
-        label="投资比例"
-        width="150"
-        align="center"
-      ></el-table-column>
+      <el-table-column prop="field0" label="投资方" width="150" align="center"></el-table-column>
+      <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
       <el-table-column prop="projectShortName" label="合格证附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
-          <fileUpload v-model="scope.row.fileList01" :value="scope.row.fileList01" :limit="9999" :preview="type == 'view' && status !=2"
-            :isShowTip="false"  :fileType="['pdf','jpg','png','jpeg']" />
+          <fileUpload v-model="scope.row.fileList01" :value="scope.row.fileList01" :limit="9999"
+            :preview="type == 'view' && status != 2" :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
         </template>
       </el-table-column>
       <el-table-column prop="projectShortName" label="厂检报告附件" width="200" :render-header="renderHeader">
         <template slot-scope="scope">
-          <fileUpload v-model="scope.row.fileList02" :value="scope.row.fileList02" :limit="9999" :preview="type == 'view' && status !=2"
-            :isShowTip="false"  :fileType="['pdf','jpg','png','jpeg']" />
+          <fileUpload v-model="scope.row.fileList02" :value="scope.row.fileList02" :limit="9999"
+            :preview="type == 'view' && status != 2" :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" width="200">
@@ -141,7 +132,7 @@ export default {
     planId() {
       return this.$route.query?.planId || "";
     },
-    status(){
+    status() {
       // 状态为2 货运中允许修改附件
       return this.$route.query?.status || "";
     }
@@ -221,21 +212,21 @@ export default {
           }, "*")
           : null,
         h("span", {}, column.label),
-        !['projectShortName', 'remark','sendTotal'].includes(column.property) && this.type !== 'view'?
-        h("el-button", {
-          props: {
-            type: "text",
-            icon: "el-icon-document-copy"
-          },
-          style: {
-            marginLeft: "8px",
-            fontSize: "14px"
-          },
-          on: {
-            click: () =>
-              this.copyLast(column.property)
-          }
-        }, "填充") : null
+        !['projectShortName', 'remark', 'sendTotal'].includes(column.property) && this.type !== 'view' ?
+          h("el-button", {
+            props: {
+              type: "text",
+              icon: "el-icon-document-copy"
+            },
+            style: {
+              marginLeft: "8px",
+              fontSize: "14px"
+            },
+            on: {
+              click: () =>
+                this.copyLast(column.property)
+            }
+          }, "填充") : null
       ]);
     },
 
