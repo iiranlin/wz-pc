@@ -1,40 +1,29 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="newButton"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
     <div :class="{ container_flex_form: true }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: true }"
-      >
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: true }">
         <template #table>
-          <detailTable ref="itemTableRef" :tableData="tableData"  />
+          <detailTable ref="itemTableRef" :tableData="tableData" />
         </template>
         <template #logTable>
           <detailLogs />
         </template>
 
-         <!-- 附件 -->
+        <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item
-            prop="fileList"
-            label="计划附件"
-            class="label-right-align"
-          >
-            <fileUpload
-              v-model="scope.formModel.fileList"
-              :limit="9999"
-              :preview="type === 'view' "
-              :isShowTip="false"
-              :fileType="['pdf']"
-            />
+          <el-form-item prop="jhfjFileList" label="计划附件" class="label-right-align">
+            <fileUpload v-model="scope.formModel.jhfjFileList" :limit="9999" :preview="type === 'view'"
+              :isShowTip="false" :fileType="['pdf']" />
+          </el-form-item>
+        </template>
+
+        <!-- 物代提交供应商附件 51-->
+        <template #supplierFileListSlot="scope">
+          <el-form-item prop="supplierFileList" label="需求计划表" class="label-right-align">
+            <fileUpload v-model="scope.formModel.supplierFileList" :limit="9999" :preview="type === 'view'"
+              :isShowTip="false" :fileType="['pdf']" />
           </el-form-item>
         </template>
       </VFormRender>
@@ -56,7 +45,7 @@ import { getUserInfo } from '@/utils/user-info'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import fileUpload from "@/components/upload";
-import {findByBusinessType} from '@/utils/index.js'
+import { findByBusinessType } from '@/utils/index.js'
 export default {
   // 需求列表详情
   components: {
@@ -67,7 +56,7 @@ export default {
     fileUpload
 
   },
-  data () {
+  data() {
     return {
       loading: false,
       title: '新增',
@@ -101,19 +90,19 @@ export default {
     }
   },
   computed: {
-    type () {
+    type() {
       return this.$route.query.type
     },
-    id () {
+    id() {
       return this.$route.query?.id || ''
     },
-    projectId () {
+    projectId() {
       return this.$route.query?.projectId || ''
     },
     ...mapState(['request'])
   },
 
-  mounted () {
+  mounted() {
 
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
@@ -127,8 +116,8 @@ export default {
 
   },
   methods: {
-  
-    async getCurrentSection () {
+
+    async getCurrentSection() {
       const res = await SectionApi.getCurrentSection()
       this.sectionInfo = res.data
       this.$refs.vFormRef.setFormData({
@@ -138,7 +127,7 @@ export default {
     },
 
     //初始化
-    init () {
+    init() {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
@@ -147,14 +136,15 @@ export default {
       });
     },
     // 编辑初始化
-    async updateInit (id) {
+    async updateInit(id) {
       await Api.detail(id).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
           this.tableData = data.details
-            // fileList回显
-          data.fileList = findByBusinessType(data.fileList,'54')
+          // fileList回显
+          data.jhfjFileList = findByBusinessType(data.fileList, '54')
+          data.supplierFileList = findByBusinessType(data.fileList, '51')
           this.$refs.vFormRef.setFormData({ ...data, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
 
           //   form action
@@ -163,24 +153,24 @@ export default {
         });
       });
     },
-    newButton (buttonCode) {
+    newButton(buttonCode) {
       if (buttonCode === 'cancel') {
         this.cancel()
         return
       }
 
     },
-    cancel () {
+    cancel() {
       this.$tab.closeOpenPage({ name: 'requestDetail' });
     },
 
-    buttonShow (item) {
+    buttonShow(item) {
       if (item.buttonCode === 'save') {
         return this.type !== 'view'
       }
       return true
     },
-    formFillInPage () {
+    formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage('detailRequest').then(res => {
 
