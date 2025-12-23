@@ -18,7 +18,7 @@
 
       <el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
       <el-table-column prop="planAmount" label="本次计划数量" width="120" align="center"></el-table-column>
-      <el-table-column prop="shippedTotal" label="累计发货数量(含本次)" width="120" align="center"></el-table-column>
+      <el-table-column prop="shippedTotal" label="累计发货数量(不含本次)" width="120" align="center"></el-table-column>
       <el-table-column v-if="type != 'view'" prop="ssendTotal" label="本次需求未发货数量" width="120"
         align="center"></el-table-column>
       <el-table-column prop="sendTotal" label="发货数量" width="160" align="center" :render-header="renderHeader">
