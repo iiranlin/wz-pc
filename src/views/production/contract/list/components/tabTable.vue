@@ -185,6 +185,8 @@
               <span v-else>{{ scope.row.deliveryDate }}</span>
             </template>
           </el-table-column>
+          <el-table-column v-if="type == 'view'" prop="cumulativeAmount" label="累计下达数量" width="150" align="center">
+          </el-table-column>
           <!-- 合同比例 发货数量 -->
           <el-table-column v-if="type == 'view'" prop="sendTotal" label="发货数量" width="150" align="center">
           </el-table-column>
@@ -193,13 +195,14 @@
               {{ scope.row.sendRatio }}%
             </template>
           </el-table-column>
+          <el-table-column v-if="type == 'view'" prop="storeTotalRates" label="已到货金额" width="150" align="center">
+          </el-table-column>
           <el-table-column v-if="type == 'view'" prop="storeTotal" label="累计入库量" width="150" align="center">
           </el-table-column>
 
           <el-table-column v-if="type == 'view'" prop="outTotal" label="累计出库量" width="150" align="center">
           </el-table-column>
-          <el-table-column v-if="type == 'view'" prop="storeTotalRates" label="已到货金额" width="150" align="center">
-          </el-table-column>
+
           <el-table-column v-if="type == 'view'" prop="outTotalRates" label="出库金额" width="150" align="center">
           </el-table-column>
 
@@ -326,7 +329,7 @@ export default {
     // 计算总amount
     totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.amount) || 0);
+        return sum + (parseFloat(item.cumulativeAmount) || 0);
       }, 0);
     },
     // 计算总金额
