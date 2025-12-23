@@ -214,13 +214,14 @@
         <span class="summary-value amount-text">{{ filteredTableData.length }} 条</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">下达数量：</span>
-        <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
-      </div>
-      <div class="summary-item">
         <span class="summary-label">到站合价：</span>
         <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }}</span>
       </div>
+      <div class="summary-item">
+        <span class="summary-label">下达数量：</span>
+        <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
+      </div>
+
       <div class="summary-item">
         <span class="summary-label">发货数量：</span>
         <span class="summary-value amount-text">{{ totalSendCount.toFixed(2) }}</span>
