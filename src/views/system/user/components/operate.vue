@@ -24,7 +24,7 @@
         <el-col :span="12">
           <el-form-item label="电话号码:" prop="phone">
             <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
-              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" @blur="checkPhoneUnique" />
+              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -377,15 +377,20 @@ export default {
     submitDataScope() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          if (this.form.rank == '4') {
-            if (this.form.deptIds.length) {
-              this.create()
-            } else {
-              this.$modal.msgError('权限范围至少选择一个！')
+          // 检查手机号是否重复
+          this.checkPhoneBeforeSave().then(canProceed => {
+            if (canProceed) {
+              if (this.form.rank == '4') {
+                if (this.form.deptIds.length) {
+                  this.create()
+                } else {
+                  this.$modal.msgError('权限范围至少选择一个！')
+                }
+              } else {
+                this.create()
+              }
             }
-          } else {
-            this.create()
-          }
+          })
         }
       })
     },
@@ -405,15 +410,20 @@ export default {
     userModify() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          if (this.form.rank == '4') {
-            if (this.form.deptIds.length) {
-              this.modify()
-            } else {
-              this.$modal.msgError('权限范围至少选择一个！')
+          // 检查手机号是否重复
+          this.checkPhoneBeforeSave().then(canProceed => {
+            if (canProceed) {
+              if (this.form.rank == '4') {
+                if (this.form.deptIds.length) {
+                  this.modify()
+                } else {
+                  this.$modal.msgError('权限范围至少选择一个！')
+                }
+              } else {
+                this.modify()
+              }
             }
-          } else {
-            this.modify()
-          }
+          })
         }
       })
     },
@@ -479,15 +489,34 @@ export default {
         })
       }
     },
-    checkPhoneUnique() {
-      // 仅新增的时候判断，修改不判断
-      if (this.form.phone) {
+    checkPhoneBeforeSave() {
+      return new Promise((resolve) => {
+        // 如果没有填写手机号，直接通过
+        if (!this.form.phone) {
+          resolve(true)
+          return
+        }
+
+        // 检查手机号是否重复
         userPhoneRepeat({ phone: this.form.phone, id: this.id }).then(({ data }) => {
           if (data > 0) {
-            this.$modal.msgWarning('此手机号已创建过账户，请确认是否继续创建')
+            // 手机号已存在，弹出确认对话框
+            this.$modal.confirm('此手机号已创建过账户，请确认是否继续创建?').then(() => {
+              // 用户点击确认，继续保存
+              resolve(true)
+            }).catch(() => {
+              // 用户点击取消，不保存
+              resolve(false)
+            })
+          } else {
+            // 手机号不重复，直接通过
+            resolve(true)
           }
+        }).catch(() => {
+          // 接口调用失败，也允许继续
+          resolve(true)
         })
-      }
+      })
     },
   }
 }
