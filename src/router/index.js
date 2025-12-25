@@ -118,15 +118,16 @@ export const constantRoutes = [
                 meta: { title: '我的发起', noCache: false },
                 hidden: true
             },
-        ]
-    },
-    {
+            {
         path: '/admin/design',
         name: 'WorkDesign',
         component: () => import('@/views/admin/FormProcessDesign.vue'),
         hidden: true,
         meta: { title: '表单流程设计' }
     },
+        ]
+    },
+
     
     {
         path: '/saleManage',

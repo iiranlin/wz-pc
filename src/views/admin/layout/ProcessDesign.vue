@@ -1,59 +1,22 @@
 <template>
   <el-main>
     <div class="scale">
-      <el-button
-        icon="el-icon-plus"
-        size="small"
-        @click="scale += 10"
-        :disabled="scale >= 150"
-        circle
-      ></el-button>
+      <el-button icon="el-icon-plus" size="small" @click="scale += 10" :disabled="scale >= 150" circle></el-button>
       <span>{{ scale }}%</span>
-      <el-button
-        icon="el-icon-minus"
-        size="small"
-        @click="scale -= 10"
-        :disabled="scale <= 40"
-        circle
-      ></el-button>
+      <el-button icon="el-icon-minus" size="small" @click="scale -= 10" :disabled="scale <= 40" circle></el-button>
       <!--      <el-button @click="validate">校验流程</el-button>-->
     </div>
-    <div
-      class="design"
-      :style="'transform: scale('+ scale / 100 +');'"
-    >
-      <process-tree
-        ref="process-tree"
-        @selectedNode="nodeSelected"
-      />
+    <div class="design" :style="'transform: scale(' + scale / 100 + ');'">
+      <process-tree ref="process-tree" @selectedNode="nodeSelected" />
     </div>
-    <el-drawer
-      :title="selectedNode.name"
-      :visible.sync="showConfig"
-      :modal-append-to-body="false"
-      :size="selectedNode.type === 'CONDITION' ? '600px':'500px'"
-      direction="rtl"
-      :modal="false"
-      destroy-on-close
-    >
+    <el-drawer :title="selectedNode.name" :visible.sync="showConfig" :modal-append-to-body="false"
+      :size="selectedNode.type === 'CONDITION' ? '600px' : '500px'" direction="rtl" :modal="false" destroy-on-close>
       <div slot="title">
-        <el-input
-          v-model="selectedNode.name"
-          size="medium"
-          v-show="showInput"
-          style="width: 300px"
-          @blur="showInput = false"
-        ></el-input>
-        <el-link
-          v-show="!showInput"
-          @click="showInput = true"
-          style="font-size: medium"
-        >
-          <i
-            class="el-icon-edit"
-            style="margin-right: 10px"
-          ></i>
-          {{selectedNode.name}}
+        <el-input v-model="selectedNode.name" size="medium" v-show="showInput" style="width: 300px"
+          @blur="showInput = false"></el-input>
+        <el-link v-show="!showInput" @click="showInput = true" style="font-size: medium">
+          <i class="el-icon-edit" style="margin-right: 10px"></i>
+          {{ selectedNode.name }}
         </el-link>
       </div>
       <div class="node-config-content">
@@ -70,7 +33,7 @@ import NodeConfig from '../../common/process/config/NodeConfig'
 export default {
   name: "ProcessDesign",
   components: { ProcessTree, NodeConfig },
-  data () {
+  data() {
     return {
       scale: 100,
       selected: {},
@@ -79,18 +42,18 @@ export default {
     }
   },
   computed: {
-    selectedNode () {
+    selectedNode() {
       return this.$store.state.process.selectedNode
     }
   },
-  mounted () {
+  mounted() {
 
   },
   methods: {
-    validate () {
+    validate() {
       return this.$refs["process-tree"].validateProcess()
     },
-    nodeSelected (node) {
+    nodeSelected(node) {
       console.log('配置节点', node)
       this.showConfig = true
     }
@@ -118,8 +81,8 @@ export default {
 .scale {
   z-index: 999;
   position: fixed;
-  top: 80px;
-  right: 40px;
+  top: 162px;
+  right: 52px;
 
   span {
     margin: 0 10px;
@@ -135,5 +98,4 @@ export default {
 
 // ::v-deep .el-drawer__body {
 //   overflow-y: auto;
-// }
-</style>
+// }</style>
