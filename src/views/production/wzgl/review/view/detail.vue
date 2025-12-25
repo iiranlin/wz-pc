@@ -7,11 +7,18 @@
         <template #table>
           <detailTable ref="itemTableRef" :tableData="tableData" @selectionChange="selectionChange" />
         </template>
-        <!-- 附件 -->
+         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item prop="fileList" label="计划附件" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :preview="type === 'view'" :isShowTip="false"
-              :fileType="['pdf']" />
+          <el-form-item prop="jhfjFileList" label="计划附件" class="label-right-align">
+            <fileUpload v-model="scope.formModel.jhfjFileList" :limit="9999" :preview="type === 'view'"
+              :isShowTip="false" :fileType="['pdf']" />
+          </el-form-item>
+        </template>
+                <!-- 物代提交供应商附件 51-->
+        <template #supplierFileListSlot="scope">
+          <el-form-item prop="supplierFileList" label="需求计划表" class="label-right-align">
+            <fileUpload v-model="scope.formModel.supplierFileList" :limit="9999" :preview="type === 'view'"
+              :isShowTip="false" :fileType="['pdf']" />
           </el-form-item>
         </template>
       </VFormRender>
@@ -152,9 +159,10 @@ export default {
           this.title = "编辑";
           await this.formFillInPage()
           this.tableData = data.details
-          // fileList回显
-          const fileList = findByBusinessType(data.fileList, '54')
-          this.$refs.vFormRef.setFormData({ ...data, fileList, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
+        // fileList回显
+          data.jhfjFileList = findByBusinessType(data.fileList, '54')
+          data.supplierFileList = findByBusinessType(data.fileList, '51')
+          this.$refs.vFormRef.setFormData({ ...data, createDate: dayjs(data.createDate).format('YYYY-MM-DD HH:mm') })
           this.detail = data
           //   form action
           this.$refs.vFormRef.setReadMode(true)
