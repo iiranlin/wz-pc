@@ -195,7 +195,7 @@
               {{ scope.row.sendRatio }}%
             </template>
           </el-table-column>
-          <el-table-column v-if="type == 'view'" prop="storeTotalRates" label="已到货金额" width="150" align="center">
+          <el-table-column v-if="type == 'view'" prop="storeTotalRates" label="已收货金额" width="150" align="center">
           </el-table-column>
           <el-table-column v-if="type == 'view'" prop="storeTotal" label="累计入库量" width="150" align="center">
           </el-table-column>
@@ -230,19 +230,27 @@
         <span class="summary-value amount-text">{{ totalSendCount.toFixed(2) }}</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">已到货金额：</span>
+        <span class="summary-label">收货数量：</span>
+        <span class="summary-value amount-text">{{ totalPutTotal.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货金额：</span>
         <span class="summary-value amount-text">{{ totalStoreRates.toFixed(2) }}</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">累计入库量：</span>
+        <span class="summary-label">入库量：</span>
         <span class="summary-value amount-text">{{ totalStoreCount.toFixed(2) }}</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">累计出库量：</span>
+        <span class="summary-label">入库金额：</span>
+        <span class="summary-value amount-text">{{ totalStoreTotalRates.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库量：</span>
         <span class="summary-value amount-text">{{ totalOutCount.toFixed(2) }}</span>
       </div>
       <div class="summary-item">
-        <span class="summary-label">已出库金额：</span>
+        <span class="summary-label">出库金额：</span>
         <span class="summary-value amount-text">{{ totalOutRates.toFixed(2) }}</span>
       </div>
     </div>
@@ -339,13 +347,19 @@ export default {
         return sum + (parseFloat(item.totalAmount) || 0);
       }, 0);
     },
+    // 计算累计收货数量
+    totalPutTotal() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.putTotal) || 0);
+      }, 0);
+    },
     // 计算累计发货数量
     totalSendCount() {
       return this.filteredTableData.reduce((sum, item) => {
         return sum + (parseFloat(item.sendTotal) || 0);
       }, 0);
     },
-    // 计算已到货金额
+    // 计算已收货金额
     totalStoreRates() {
       return this.filteredTableData.reduce((sum, item) => {
         return sum + (parseFloat(item.storeTotalRates) || 0);
@@ -355,6 +369,12 @@ export default {
     totalStoreCount() {
       return this.filteredTableData.reduce((sum, item) => {
         return sum + (parseFloat(item.storeTotal) || 0);
+      }, 0);
+    },
+    // 计算累计入库金额
+    totalStoreTotalRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotalRates) || 0);
       }, 0);
     },
     // 计算累计出库量

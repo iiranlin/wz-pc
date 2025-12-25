@@ -135,7 +135,7 @@
                 @change="handleFieldChange('vatRate', scope.row)"
                 style="width: 100%"
               ></el-input-number> -->
-              <span>{{ scope.row.vatRate }}%</span>
+              <span>{{ scope.row.vatRate }}% </span>
             </template>
           </el-table-column>
           <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
@@ -185,6 +185,8 @@
               <span v-else>{{ scope.row.deliveryDate }}</span>
             </template>
           </el-table-column>
+          <el-table-column v-if="type == 'view'" prop="cumulativeAmount" label="累计下达数量" width="150" align="center">
+          </el-table-column>
           <!-- 合同比例 发货数量 -->
           <el-table-column v-if="type == 'view'" prop="sendTotal" label="发货数量" width="150" align="center">
           </el-table-column>
@@ -193,12 +195,14 @@
               {{ scope.row.sendRatio }}%
             </template>
           </el-table-column>
+          <el-table-column v-if="type == 'view'" prop="storeTotalRates" label="已收货金额" width="150" align="center">
+          </el-table-column>
           <el-table-column v-if="type == 'view'" prop="storeTotal" label="累计入库量" width="150" align="center">
           </el-table-column>
+
           <el-table-column v-if="type == 'view'" prop="outTotal" label="累计出库量" width="150" align="center">
           </el-table-column>
-          <el-table-column v-if="type == 'view'" prop="storeTotalRates" label="已到货金额" width="150" align="center">
-          </el-table-column>
+
           <el-table-column v-if="type == 'view'" prop="outTotalRates" label="出库金额" width="150" align="center">
           </el-table-column>
 
@@ -208,20 +212,47 @@
 
     <!-- 统计信息 -->
     <div class="summary-info" v-if="filteredTableData.length > 0">
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div class="summary-item">
-            <span class="summary-label">总条数：</span>
-            <span class="summary-value amount-text">{{ filteredTableData.length }} 条</span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="summary-item">
-            <span class="summary-label">到站合价含税合计：</span>
-            <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }} 元</span>
-          </div>
-        </el-col>
-      </el-row>
+      <div class="summary-item">
+        <span class="summary-label">总条数：</span>
+        <span class="summary-value amount-text">{{ filteredTableData.length }} 条</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">到站合价：</span>
+        <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">下达数量：</span>
+        <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
+      </div>
+
+      <div class="summary-item">
+        <span class="summary-label">发货数量：</span>
+        <span class="summary-value amount-text">{{ totalSendCount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货数量：</span>
+        <span class="summary-value amount-text">{{ totalPutTotal.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货金额：</span>
+        <span class="summary-value amount-text">{{ totalStoreRates.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">入库量：</span>
+        <span class="summary-value amount-text">{{ totalStoreCount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">入库金额：</span>
+        <span class="summary-value amount-text">{{ totalStoreTotalRates.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库量：</span>
+        <span class="summary-value amount-text">{{ totalOutCount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库金额：</span>
+        <span class="summary-value amount-text">{{ totalOutRates.toFixed(2) }}</span>
+      </div>
     </div>
 
     <BatchDialog ref="batchDialogRef" />
@@ -306,14 +337,56 @@ export default {
     // 计算总amount
     totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.amount) || 0);
+        return sum + (parseFloat(item.cumulativeAmount) || 0);
       }, 0);
     },
     // 计算总金额
     totalAmount() {
       return this.filteredTableData.reduce((sum, item) => {
 
-        return sum + Math.abs(item.totalAmount || 0);
+        return sum + (parseFloat(item.totalAmount) || 0);
+      }, 0);
+    },
+    // 计算累计收货数量
+    totalPutTotal() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.putTotal) || 0);
+      }, 0);
+    },
+    // 计算累计发货数量
+    totalSendCount() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.sendTotal) || 0);
+      }, 0);
+    },
+    // 计算已收货金额
+    totalStoreRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotalRates) || 0);
+      }, 0);
+    },
+    // 计算累计入库量
+    totalStoreCount() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotal) || 0);
+      }, 0);
+    },
+    // 计算累计入库金额
+    totalStoreTotalRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotalRates) || 0);
+      }, 0);
+    },
+    // 计算累计出库量
+    totalOutCount() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.outTotal) || 0);
+      }, 0);
+    },
+    // 计算已出库金额
+    totalOutRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.outTotalRates) || 0);
       }, 0);
     },
     projectTabs() {
@@ -780,19 +853,25 @@ export default {
 
 /* 统计信息样式 */
 .summary-info {
-  margin-left: 10px;
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .summary-item {
+  min-width: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 8px 12px;
   background: white;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ebeef5;
 }
 
 .summary-label {
