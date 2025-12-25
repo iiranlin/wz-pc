@@ -3,7 +3,27 @@
         <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
             :button-disable="handleTopButtonDisabled"></button-top>
         <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-            :formData="formData" />
+            :formData="formData">
+            <!-- billType 所属表单使用下拉 -->
+
+            <template #billType>
+                <el-select v-model="formData.billType" filterable required style="width: 100%" placeholder="请选择">
+                    <el-option v-for="item in [
+                        { label: 'FBYLXQ', value: 'FBYLXQ' },
+                        { label: 'YLXQ', value: 'YLXQ' },
+                        { label: 'FBYLJH', value: 'FBYLJH' },
+                        { label: 'YLJH', value: 'YLJH' },
+                        { label: 'WZML', value: 'WZML' },
+                        { label: 'RKLC', value: 'RKLC' },
+                        { label: 'SHLC', value: 'SHLC' },
+                        { label: 'CGWJ', value: 'CGWJ' },
+                        { label: 'CGHT', value: 'CGHT' },
+                        { label: 'FHLC', value: 'FHLC' },
+                    ]" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+            </template>
+        </form-data>
         <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
             :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
             @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
