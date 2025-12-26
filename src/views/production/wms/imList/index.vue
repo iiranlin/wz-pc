@@ -64,7 +64,7 @@ export default {
       storeStatus: {
         0: "已驳回",
         1: "待检测",
-        // 2: "部分退货",
+        2: "部分退货",
         3: "检测通过",
         4: "已退货",
         5: "审核中",
@@ -74,10 +74,10 @@ export default {
           code: "1",
           name: "待检测",
         },
-        // {
-        //   code: "2",
-        //   name: "部分退货",
-        // },
+        {
+          code: "2",
+          name: "部分退货",
+        },
         {
           code: "3",
           name: "检测通过",
@@ -220,7 +220,7 @@ export default {
     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.customDownload({businessType:5, businessData:id });
+        await FileApi.customDownload({ businessType: 5, businessData: id });
 
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
