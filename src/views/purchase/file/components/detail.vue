@@ -227,7 +227,7 @@
 				<template #acceptanceSolt="scope">
 					<el-form-item prop="acceptance" label-width="190px" label="中标通知书" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="9999" :fileSize="500"
-							:fileType="[,'jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
