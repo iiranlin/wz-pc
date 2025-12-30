@@ -423,7 +423,7 @@ export default {
 
 					newData.tenderAnnouncement = newData.tenderAnnouncement != '' ? JSON.parse(newData.tenderAnnouncement) : [];
 					newData.bidAddendum = newData.bidAddendum != '' ? JSON.parse(newData.bidAddendum) : [];
-					newData.bidEvaluationReport = newData.bidAddendum != '' ? JSON.parse(newData.bidEvaluationReport) : [];
+					newData.bidEvaluationReport = newData.bidEvaluationReport != '' ? JSON.parse(newData.bidEvaluationReport) : [];
 					newData.bidCandidateWeb = newData.bidCandidateWeb != '' ? JSON.parse(newData.bidCandidateWeb) : [];
 					newData.acceptance = newData.acceptance != '' ? JSON.parse(newData.acceptance) : [];
 					newData.bidCopy = newData.bidCopy != '' ? JSON.parse(newData.bidCopy) : [];
