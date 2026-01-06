@@ -84,7 +84,7 @@ import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 import SectionDialog from "./components/sectionDialog.vue";
 export default {
   // 甲供物资审核
-  name: "wzxqList",
+  name: "materialPrices",
   components: { workFlowView, Add, SectionDialog },
   mixins: [indexMixin],
   computed: {

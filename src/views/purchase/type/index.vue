@@ -62,7 +62,7 @@ import Add from "./components/add.vue";
 import BatchDialog from "./components/batchDialog.vue";
 export default {
 	// 物资列表
-	name: "purchaseTypePage",
+	name: "/purchase/type",
 	mixins: [indexMixin],
 	dicts: ['purchase_code'],
 	components: {

@@ -130,7 +130,7 @@ import * as TypeApi from "@/api/prodmgr-inv/project/itemType.js";
 import * as DetailApi from "@/api/prodmgr-inv/project/itemDetail.js";
 export default {
   // 物资种类细目字典
-  name: "itemList",
+  name: "itemDetail",
   dicts: ["WZDL"],
   mixins: [indexMixin],
   components: {

@@ -76,7 +76,7 @@ import Add from "./components/add.vue";
 import BatchDialog from "./components/batchDialog.vue";
 export default {
   // 物资种类细目字典
-  name: "itemList",
+  name: "itemView",
   mixins: [indexMixin],
   dicts: ["WZDL"],
   components: {

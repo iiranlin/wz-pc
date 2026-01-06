@@ -97,7 +97,7 @@ import dayjs from 'dayjs'
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 export default {
 	// 自购物资文件核备
-	name: "purchaseFile",
+	name: "/nuclear/file",
 	dicts: ["purchase_code", "flowStatus"],
 	components: {
 		Add,

@@ -66,7 +66,7 @@ import fileUpload from "@/components/upload";
 import workFlowView from "@/components/workFlowView";
 export default {
   // 建设项目
-  name: "receive",
+  name: "receiveList",
   components: { fileUpload, workFlowView },
   mixins: [indexMixin],
 

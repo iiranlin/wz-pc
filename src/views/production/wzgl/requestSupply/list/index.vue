@@ -57,7 +57,7 @@ import { findByBusinessType } from '@/utils/index.js'
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 export default {
   // 供应需求列表
-  name: "wzxqList",
+  name: "gyxqList",
   components: { Add, fileUpload, DemandBack },
   mixins: [indexMixin],
 

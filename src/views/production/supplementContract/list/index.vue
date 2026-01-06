@@ -61,7 +61,7 @@ import dayjs from 'dayjs'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 export default {
   // 补充合同列表
-  name: "contractList",
+  name: "supplementContract",
   components: { Add },
   mixins: [indexMixin],
 

@@ -54,7 +54,7 @@ import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 建设项目
-  name: "stockList",
+  name: "stock",
   components: {},
   mixins: [indexMixin],
 

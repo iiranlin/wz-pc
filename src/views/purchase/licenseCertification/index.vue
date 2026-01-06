@@ -64,7 +64,7 @@ import Add from "./components/add.vue";
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 export default {
   // 甲供物资审核
-  name: "wzxqList",
+  name: "licenseCertification",
   components: { workFlowView, Add },
   mixins: [indexMixin],
   computed: {

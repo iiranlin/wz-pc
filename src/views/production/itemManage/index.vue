@@ -76,7 +76,7 @@ import Add from "./components/add.vue";
 import BatchDialog from "./components/batchDialog.vue";
 export default {
   // 物资列表
-  name: "itemList",
+  name: "item",
   mixins: [indexMixin],
   components: {
     Add,

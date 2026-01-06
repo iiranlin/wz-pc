@@ -111,7 +111,7 @@ import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
 export default {
   // 甲供物资审核
-  name: "wzxqList",
+  name: "itemAudit",
   components: { workFlowView },
   mixins: [indexMixin],
 

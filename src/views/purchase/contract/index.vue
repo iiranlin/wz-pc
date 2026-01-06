@@ -97,7 +97,7 @@ import workFlowView from '@/components/workFlowView'
 import dayjs from 'dayjs'
 export default {
 	// 自购物资文件核备
-	name: "purchaseFile",
+	name: "/nuclear/contract",
 	dicts: ["purchase_code", "flowStatus"],
 	components: {
 		Add,
