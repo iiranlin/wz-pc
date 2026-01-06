@@ -15,13 +15,52 @@ export const itemList = (params) => {
 }
 
 /**
- * 获取建设项目下拉
+ * 获取建设项目下拉| 发货之前和收货后使用
  * @param {*} params 
  * @returns 
  */
 export const lineSelectOptions = (params) => {
     return request({
         url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/selectProject`,
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 获取建设项目下拉| 收货后使用
+ * @param {*} params 
+ * @returns 
+ */
+export const afterLineSelectOptions = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/circulationProject`,
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 获取建设项目下拉| 自购合同
+ * @param {*} params 
+ * @returns 
+ */
+export const contractLineSelectOptions = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialPurchaseContract/purchaseContractProject`,
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 获取建设项目下拉| 自购文件
+ * @param {*} params 
+ * @returns 
+ */
+export const fileLineSelectOptions = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialPurchaseFile/purchaseFileProject`,
         method: 'get',
         params
     })

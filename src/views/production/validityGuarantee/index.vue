@@ -1,73 +1,42 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :buttonDisable="buttonDisable"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      @handleQuery="handleQuery"
-      :formData="formData"
-      labelWidth="110px"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="buttonDisable"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData" labelWidth="110px">
       <template #validityGuarantee>
-        <el-date-picker
-          style="width: 100% !important"
-          v-model="formData.validityGuarantee"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="yyyy-MM-dd"
-        />
+        <el-date-picker style="width: 100% !important" v-model="formData.validityGuarantee" type="daterange"
+          start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+      </template>
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-          @handleButton="handleButton"
-        >
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <template #validityGuarantee="scope">
             {{ scope.data.validityGuarantee | formatDate }} 至
             {{ scope.data.validityGuaranteeEnd | formatDate }}
           </template>
           <!-- 合同数量 -->
           <template #contractIdList="scoped">
-            <el-button
-              type="text"
-              @click="
-                () => {
-                  if (scoped.data.contractIdList.length)
-                    $refs.sellerDialogRef.open(scoped.data.contractIdList);
-                }
-              "
-            >
+            <el-button type="text" @click="
+              () => {
+                if (scoped.data.contractIdList.length)
+                  $refs.sellerDialogRef.open(scoped.data.contractIdList);
+              }
+            ">
               {{ scoped.data.contractIdList.length }}
             </el-button>
           </template>
@@ -75,13 +44,8 @@
             {{ scoped.data.materialUsedRatio || 0 }}%
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
     <SellerDialog ref="sellerDialogRef" />
@@ -95,6 +59,7 @@ import indexMixin from "@/views/mixins";
 import Add from "./components/add.vue";
 import SellerDialog from "./components/sellerDialog.vue";
 import dayjs from "dayjs";
+import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 export default {
   // 保函有效期列表
   name: "validityGuarantee",
@@ -108,6 +73,7 @@ export default {
   },
   data() {
     return {
+      lineoptions: [],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -154,6 +120,7 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+    this.getLineOptions()
   },
   watch: {
     filterText(val) {
@@ -161,6 +128,14 @@ export default {
     },
   },
   methods: {
+    getLineOptions() {
+      LineApi.lineSelectOptions().then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
     buttonDisable(btn) {
       // 没有合同物资才允许删除
       if (btn.buttonCode === "delete") {
@@ -255,7 +230,7 @@ export default {
         case "update":
           this.$router.push({
             name: "addValidityGuarantee",
-            query: { id: idArr[0],contractId:rowArr[0].contractId, type: "update" },
+            query: { id: idArr[0], contractId: rowArr[0].contractId, type: "update" },
           });
           break;
         case "delete":

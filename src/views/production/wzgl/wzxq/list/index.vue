@@ -296,7 +296,7 @@ export default {
       })
     },
     getLineOptions(){
-      WzglApi.lineSelectOptions().then(({ data }) => {
+      WzglApi.lineSelectOptions({pageStatus: '0'}).then(({ data }) => {
         this.lineOptions = data.map(x => ({
           label: x.projectName,
           value: x.projectName

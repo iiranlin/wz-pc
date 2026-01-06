@@ -28,6 +28,13 @@
 					</el-option>
 				</el-select>
 			</template>
+			<!-- 建设物资 -->
+			<template #projectName="data">
+				<el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+					" clearable style="width: 100%" size="small">
+					<el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+				</el-select>
+			</template>
 		</form-data>
 		<el-row type="flex" class="container_h">
 			<!--用户数据-->
@@ -95,6 +102,7 @@ import fileUpload from '@/components/upload'
 import workFlowView from '@/components/workFlowView'
 import dayjs from 'dayjs'
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
+import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 export default {
 	// 自购物资文件核备
 	name: "/nuclear/file",
@@ -108,6 +116,7 @@ export default {
 
 	data() {
 		return {
+			lineOptions: [],
 			status: {
 				'1': '未提交',
 				'2': '审核中',
@@ -171,6 +180,7 @@ export default {
 		});
 		this.findAllListData();
 		this.findItemListData();
+		this.getLineOptions()
 	},
 	filters: {
 		formatDate(value) {
@@ -179,6 +189,14 @@ export default {
 		}
 	},
 	methods: {
+		getLineOptions() {
+			WzglApi.fileLineSelectOptions().then(({ data }) => {
+				this.lineOptions = data.map(x => ({
+					label: x.projectName,
+					value: x.projectName
+				}))
+			})
+		},
 		handleClick(row) {
 			this.$router.push({
 				name: 'detailPurchase',

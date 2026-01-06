@@ -11,6 +11,13 @@
           <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
+      <!-- 建设物资 -->
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -52,6 +59,7 @@ import Confirm from "./components/confirm.vue";
 import fileUpload from "@/components/upload";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import { findByBusinessType } from '@/utils/index.js'
+import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 export default {
   // 建设项目
   name: "demand",
@@ -60,6 +68,7 @@ export default {
 
   data() {
     return {
+      lineOptions:[],
       status: {
         2: "未确认",
         3: "已确认",
@@ -129,9 +138,18 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+    this.getLineOptions()
   },
 
   methods: {
+    getLineOptions() {
+      WzglApi.lineSelectOptions({ pageStatus: '0' }).then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
     numberChange(val) {
       this.numberShow = val;
     },

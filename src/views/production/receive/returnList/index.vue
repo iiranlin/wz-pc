@@ -4,6 +4,13 @@
       @newButton="newButton"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" :labelWidth="150">
+      <!-- 建设物资 -->
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -42,6 +49,7 @@
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
 import { getUserInfo } from "@/utils/user-info";
+import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 export default {
   // 建设项目
   name: "returnList_sh",
@@ -50,6 +58,7 @@ export default {
 
   data() {
     return {
+      lineOptions:[],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -92,9 +101,18 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+    this.getLineOptions()
   },
 
   methods: {
+    getLineOptions() {
+      WzglApi.afterLineSelectOptions().then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
     numberChange(val) {
       this.numberShow = val;
     },

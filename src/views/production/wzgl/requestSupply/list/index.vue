@@ -12,6 +12,13 @@
           }))" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </template>
+      <!-- 建设物资 -->
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -55,6 +62,7 @@ import fileUpload from '@/components/upload'
 import DemandBack from './components/demandBack.vue'
 import { findByBusinessType } from '@/utils/index.js'
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
+import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 export default {
   // 供应需求列表
   name: "gyxqList",
@@ -71,6 +79,7 @@ export default {
       '5': '已完成',
     }
     return {
+      lineOptions:[],
       status: status,
       treeCurrentKey: "",
       // 遮罩层
@@ -115,9 +124,20 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+
+    this.getLineOptions()
+
   },
 
   methods: {
+    getLineOptions() {
+      WzglApi.lineSelectOptions({ pageStatus: '1' }).then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
     handleTableButtonDisable(item, row) {
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       if (item.buttonCode === 'flowSee') {
@@ -293,7 +313,7 @@ export default {
       })
     },
     handleExport(obj) {
-      FileApi.customDownload({businessType:1,businessData:obj.id})
+      FileApi.customDownload({ businessType: 1, businessData: obj.id })
     },
     clickReset() {
       this.handleQuery();
