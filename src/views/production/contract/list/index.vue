@@ -100,7 +100,7 @@ export default {
       list: [],
       // 弹出层标题
       title: "",
-      lineoptions: [],
+      lineOptions: [],
       //列表显示字段
       property: {},
       defaultProps: {

@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      lineoptions: [],
+      lineOptions: [],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
