@@ -15,6 +15,32 @@ export const itemList = (params) => {
 }
 
 /**
+ * 查询主合同物资明细列表
+ * @param {*} params 
+ * @returns 
+ */
+export const mainItemList = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getLatestVersionList`,
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 保存补充合同与主合同选择的关系数据
+ * @param {id:当前数据id,masterDetailId:主合同id} params 
+ * @returns 
+ */
+export const saveContractItem = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/updateMasterDetailId`,
+        method: 'get',
+        params
+    })
+}
+
+/**
  * 详情
  * @param {*} params 
  * @returns 

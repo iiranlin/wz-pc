@@ -98,7 +98,13 @@
                 @change="handleFieldChange('amount', scope.row)"
                 style="width: 100%"
               ></el-input-number> -->
-              <span>{{ scope.row.amount }}</span>
+              <span 
+                :class="{ 'clickable-amount': isAmountClickable(scope.row) }"
+                @click="handleAmountClick(scope.row)"
+                :style="{ cursor: isAmountClickable(scope.row) ? 'pointer' : 'default' }"
+              >
+                {{ scope.row.amount }}
+              </span>
             </template>
           </el-table-column>
 
@@ -256,14 +262,17 @@
     </div>
 
     <BatchDialog ref="batchDialogRef" />
+    <SelectMasterMaterialDialog ref="selectMasterMaterialDialogRef" @save-success="handleMasterMaterialSaveSuccess" />
   </div>
 </template>
 
 <script>
 import BatchDialog from './batchDialog.vue';
+import SelectMasterMaterialDialog from './selectMasterMaterialDialog.vue';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
 import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
+import * as ContractItemApi from '@/api/prodmgr-inv/project/contractItem.js';
 export default {
   name: 'tabTable',
   dicts: ['MeasureUnit'],
@@ -281,6 +290,7 @@ export default {
   },
   components: {
     BatchDialog,
+    SelectMasterMaterialDialog,
     VirtualScroll,
     VirtualColumn
   },
@@ -402,6 +412,9 @@ export default {
     },
     type() {
       return this.$route.query.type
+    },
+    parentId() {
+      return this.$route.query.parentId
     }
   },
 
@@ -806,6 +819,47 @@ export default {
       this.searchKeyword = '';
       console.log('已清除搜索');
     },
+
+    /**
+     * 判断数量是否可点击
+     * 条件: masterDetailId 为 null 且 amount 为负数并且type必须等于view
+     */
+    isAmountClickable(row) {
+      return (row.masterDetailId === null || row.masterDetailId === undefined || row.masterDetailId === '') 
+        && row.amount < 0
+        && this.type === 'view';
+    },
+
+    /**
+     * 处理数量点击事件
+     */
+    handleAmountClick(row) {
+      // 判断是否可点击
+      if (!this.isAmountClickable(row)) {
+        return;
+      }
+
+      // 打开选择主合同物资弹窗
+      this.$refs.selectMasterMaterialDialogRef.open(this.parentId, row);
+    },
+
+    /**
+     * 处理主合同物资保存成功事件
+     */
+    handleMasterMaterialSaveSuccess(savedData) {
+      // 更新当前行的 masterDetailId
+      if (savedData && savedData.id && savedData.masterDetailId) {
+        const rowIndex = this.tableData.findIndex(item => item.id === savedData.id);
+        if (rowIndex !== -1) {
+          // 更新 masterDetailId，这样该行就不再可点击
+          this.$set(this.tableData[rowIndex], 'masterDetailId', savedData.masterDetailId);
+        }
+      }
+      
+      // 触发父组件刷新数据（可选，如果父组件需要知道数据变化）
+      this.$emit('refresh-data');
+      this.$message.success('物资匹配成功，已更新状态');
+    },
   },
 }
 </script>
@@ -888,6 +942,17 @@ export default {
 
 ::v-deep .el-select {
   width: 100%;
+}
+
+/* 可点击数量样式 */
+.clickable-amount {
+  color: #409EFF;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.clickable-amount:hover {
+  color: #66b1ff;
 }
 
 /* 响应式设计 */

@@ -99,6 +99,14 @@
                 style="width: 100%"
               ></el-input-number> -->
               <span>{{ scope.row.amount }}</span>
+              <!-- 负数提示图标 -->
+              <el-tooltip
+                v-if="scope.row.negative && scope.row.negative < 0" 
+                class="el-icon-warning-outline negative-tip-icon clickable"
+                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`" 
+                title="点击查看补充合同列表"
+              >
+             <i  @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i></el-tooltip>
             </template>
           </el-table-column>
 
@@ -256,11 +264,13 @@
     </div>
 
     <BatchDialog ref="batchDialogRef" />
+    <ViewNegativeContractsDialog ref="viewNegativeContractsDialogRef" />
   </div>
 </template>
 
 <script>
 import BatchDialog from './batchDialog.vue';
+import ViewNegativeContractsDialog from './viewNegativeContractsDialog.vue';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
 import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
@@ -281,6 +291,7 @@ export default {
   },
   components: {
     BatchDialog,
+    ViewNegativeContractsDialog,
     VirtualScroll,
     VirtualColumn
   },
@@ -806,6 +817,20 @@ export default {
       this.searchKeyword = '';
       console.log('已清除搜索');
     },
+
+    /**
+     * 处理负数图标点击事件
+     * 打开查看补充合同列表弹窗
+     */
+    handleNegativeIconClick(row) {
+      if (!row.id) {
+        this.$message.warning('数据无效');
+        return;
+      }
+      
+      // 打开查看补充合同弹窗
+      this.$refs.viewNegativeContractsDialogRef.open(row.id);
+    },
   },
 }
 </script>
@@ -888,6 +913,23 @@ export default {
 
 ::v-deep .el-select {
   width: 100%;
+}
+
+/* 负数提示图标样式 */
+.negative-tip-icon {
+  margin-left: 5px;
+  color: #E6A23C;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.negative-tip-icon.clickable {
+  cursor: pointer;
+}
+
+.negative-tip-icon.clickable:hover {
+  color: #D39C2F;
+  transform: scale(1.1);
 }
 
 /* 响应式设计 */

@@ -219,7 +219,7 @@ export default {
           this.handleDelete(idArr)
           break;
         case 'view':
-          this.$router.push({ name: 'detailSupplementContract', query: { id: idArr[0], type: 'view' } })
+          this.$router.push({ name: 'detailSupplementContract', query: { id: idArr[0], type: 'view',parentId:rowArr[0].parentId } })
           break;
         case 'change':
           this.$router.push({ name: 'changeContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })
