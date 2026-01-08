@@ -711,7 +711,7 @@ export default {
         const displayIndex = index + 1; // 显示行号从1开始
 
         // 验证数量字段
-        if (!row.amount || row.amount == 0) {
+        if (!row.amount || row.amount <= 0) {
           rowErrors.push('数量');
         }
 
