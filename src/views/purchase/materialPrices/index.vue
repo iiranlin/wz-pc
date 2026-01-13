@@ -53,8 +53,15 @@
                       number: x.split(':')[0],
                       name: x.split(':')[1],
                       sectionName: x.split(':')[2],
-                      buyer: x.split(':')[3]
-                    }))
+                      buyer: x.split(':')[3],
+                      // 物资名称
+                      materialName: x.split(':')[4],
+                      // 规格型号
+                      materialSpec: x.split(':')[5],
+                      // 不含税单价
+                      materialUnitPrice: x.split(':')[6],
+                    })),
+                    scope.data.id
                   );
                 }
               }
@@ -96,10 +103,16 @@ export default {
   data() {
     // 状态
     const rate = {
-      '2': "低于10%",
-      '1': "低于20%",
-      '3': "高于10%",
-      '4': "高于20%",
+      '-10': "低于10%",
+      '-20': "低于20%",
+      '-30': "低于30%",
+      '-40': "低于40%",
+      '-50': "低于50%",
+      '10': "高于10%",
+      '20': "高于20%",
+      '30': "高于30%",
+      '40': "高于40%",
+      '50': "高于50%",
     };
     return {
       rate,
@@ -130,7 +143,7 @@ export default {
       // 查询参数
       formData: {
         parentId: null,
-        rate: '1',
+        rate: '20',
       },
       formDataClick: {},
       total: 0,

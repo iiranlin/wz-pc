@@ -31,6 +31,7 @@ export const downloadSettlementList = (params) => {
  * 5:入库列表-下载入库单
  * 6:出库列表-下载出库单
  * 7:采购文件核备-下载采购文件
+ * 8:自购物资价格预警弹窗-下载合同列表
  **/ 
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')
