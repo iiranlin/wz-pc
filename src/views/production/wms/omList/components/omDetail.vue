@@ -78,6 +78,22 @@
               align="center"
             >
             </el-table-column>
+            <!-- 合格证 -->
+            <el-table-column prop="_"  label="合格证" width="250">
+              <template #default="scope">
+                 <fileUpload v-if="filterFile(scope.row.fileByCirDetails, 'hgz').length" :value="filterFile(scope.row.fileByCirDetails, 'hgz')" :limit="9999" :fileSize="500" :fileType="['pdf']"
+              :preview="'view'" />
+              </template>
+            </el-table-column>
+
+            <!-- 厂检报告 -->
+            <el-table-column prop="_" label="厂检报告" width="250">
+              <template #default="scope">
+                 <fileUpload v-if="filterFile(scope.row.fileByCirDetails, 'cjbg').length" :value="filterFile(scope.row.fileByCirDetails, 'cjbg')" :limit="9999" :fileSize="500" :fileType="['pdf']"
+              :preview="'view'" />
+              </template>
+            </el-table-column>
+
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
           </el-table>
         </template>
@@ -101,6 +117,7 @@ export default {
     VFormRender,
     fileUpload,
   },
+
   data() {
     const userInfo = getUserInfo();
     return {
@@ -152,6 +169,19 @@ export default {
     this.init(this.id);
   },
   methods: {
+    // 过滤文件方法
+    filterFile(data, type) {
+      if (!data) return [];
+      try {
+        const file = JSON.parse(data);
+        const result = file[type] || [];
+        console.log('filterFile:', type, result);
+        return result;
+      } catch (error) {
+        console.error('filterFile解析错误:', error);
+        return [];
+      }
+    },
     //初始化
     init(id) {
       this.loading = true;
