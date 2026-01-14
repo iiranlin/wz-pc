@@ -333,6 +333,9 @@ export default {
             } else if (item.businessType == 'RKWZ') {
                 // 入库物资临期提醒
                 this.$router.push({ name: 'imPage', query: { id: item.businessId, type: 'view', storeStatus: 3 } })
+            } else if (item.businessType == 'KCWZ') {
+                // 库存详情临期提醒
+                this.$router.push({ name: 'stockDetail', query: { id: item.businessId, type: 'view'} })
             } else if (item.businessType == 'HTBH') {
                 // 合同保函日期提醒
                 this.$router.push({ name: 'detailContract', query: { id: item.businessId, type: 'view' } })
