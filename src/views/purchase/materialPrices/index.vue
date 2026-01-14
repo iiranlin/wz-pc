@@ -143,7 +143,7 @@ export default {
       // 查询参数
       formData: {
         parentId: null,
-        rate: '20',
+        rate: '-20',
       },
       formDataClick: {},
       total: 0,
