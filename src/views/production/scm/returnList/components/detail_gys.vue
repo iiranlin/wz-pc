@@ -18,7 +18,7 @@
         <template #file1Slot="scope">
           <el-form-item
             prop="fileList"
-            label="自检单"
+            label="验收单"
             class="label-right-align"
             v-if="backNode == '1'"
           >
@@ -198,7 +198,7 @@ export default {
             ...data,
             issueType:this.backNode,
             backDate: data.backDate?dayjs(data.backDate).format("YYYY-MM-DD"):'',
-            fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
+            fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //验收单
             fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
             fileList03: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
             fileList04: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //质量证明文件

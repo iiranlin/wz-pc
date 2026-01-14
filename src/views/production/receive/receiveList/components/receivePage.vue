@@ -38,7 +38,7 @@
         </template>
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList01" label="自检单" class="label-right-align"
+          <el-form-item prop="fileList01" label="验收单" class="label-right-align"
             :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
             <fileUpload v-model="scope.formModel.fileList01" :preview="type == 'view'" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
@@ -86,7 +86,7 @@
           <!-- <el-form-item
             v-else
             prop="fileList01"
-            label="自检单"
+            label="验收单"
             class="label-right-align"
             :rules="[{ required: true, message: '请上传', trigger: 'change' }]"
           >
@@ -327,7 +327,7 @@ export default {
             const newData = {
               ...data,
               zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
-              fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
+              fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //验收单
               fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
               fileList03: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
               fileList04: data.fileByList ? JSON.parse(data.fileByList).jhd || [] : [], //交货单
@@ -456,7 +456,7 @@ export default {
           const formData = await this.$refs.vFormRef.getFormData();
           //组装附件
           var fileByList = formData.fileByList ? JSON.parse(formData.fileByList) : {};
-          //自检单
+          //验收单
           if (formData.fileList01.length > 0) {
             this.$set(fileByList, "zjd", formData.fileList01);
           }

@@ -16,7 +16,7 @@
       >
         <!-- 附件 -->
         <template #file1Slot="scope">
-          <el-form-item prop="fileList" label="自检单" class="label-right-align">
+          <el-form-item prop="fileList" label="验收单" class="label-right-align">
             <fileUpload :value="scope.formModel.fileList01" :preview="true" :limit="9999" />
           </el-form-item>
         </template>
@@ -242,7 +242,7 @@ export default {
           const newData = {
             ...data,
             backDate: data.backDate?dayjs(data.backDate).format("YYYY-MM-DD"):'',
-            fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //自检单
+            fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //验收单
             fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
           };
           this.$refs.vFormRef.setFormData(newData);
