@@ -50,6 +50,7 @@ import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import indexMixin from "@/views/mixins";
 import { getUserInfo } from "@/utils/user-info";
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "returnList_sh",
@@ -161,8 +162,23 @@ export default {
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton(buttonCode, idArr, rowArr, { buttonData }) { },
-
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
+       switch (buttonCode) {
+        case "export":
+          this.handleDonwload(idArr[0]);
+          break;
+      }
+     },
+    async handleDonwload(id) {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({ businessType:10,businessData:id });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
+      }
+    },
     clickReset() {
       this.handleQuery();
     },

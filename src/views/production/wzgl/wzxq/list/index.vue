@@ -123,6 +123,7 @@ import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 import indexMixin from "@/views/mixins";
 import workFlowView from '@/components/workFlowView'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 需求列表
   name: "wzxqList",
@@ -237,6 +238,12 @@ export default {
           return !['2'].includes(item.planStatus)
         })
       }
+      // 已生效、供应中、收货完成、已报检入库、已完成、已退回才允许下载
+      if (item.buttonCode === 'export') {
+        return this.selection.some(item => {
+          return !['3', '6', '7', '8', '9', '10'].includes(item.planStatus)
+        })
+      }
 
       return false;
     },
@@ -347,6 +354,19 @@ export default {
           this.workFlowViewVisible = true
           this.selectedRow = { businessId: idArr[0] }
           break;
+        case "export":
+          this.handleDonwload(idArr[0]);
+          break;
+      }
+    },
+    async handleDonwload(id) {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({ businessType:11,businessData:id });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     // 提交审核
