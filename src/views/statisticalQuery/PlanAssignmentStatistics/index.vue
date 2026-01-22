@@ -27,6 +27,13 @@
         :default-value="dateRange"
       />
     </template>
+          <!-- 建设物资 -->
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
     </form-data>
     <right-toolbar
       ref="rightToolbar"
@@ -71,11 +78,13 @@ import { getContractPlanStatistics } from "@/api/prodmgr-inv/project/contract.js
 import indexMixin from "@/views/mixins";
 import dayjs from "dayjs";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 export default {
   name: "planAssignmentStatistics",
   mixins: [indexMixin],
   data() {
     return {
+      lineOptions:[],
       formDataClick: {},
       // 遮罩层
       loading: false,
@@ -118,8 +127,17 @@ export default {
       this.listQuery.pageSize = data.defaultPageSize || 30;
       this.property = data;
     });
+    this.getLineOptions()
   },
   methods: {
+     getLineOptions() {
+      WzglApi.afterLineSelectOptions().then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
     // 初始化默认日期为最近一个月
     initDefaultDate() {
       const end = dayjs();
