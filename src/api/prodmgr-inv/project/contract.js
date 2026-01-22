@@ -137,3 +137,13 @@ export const getContractNameList = (data) => {
     data
   })
 }
+
+// 查询合同计划下达统计
+export const getContractPlanStatistics = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/planExecuteReport`,
+    method: 'post',
+    data
+  })
+}
+

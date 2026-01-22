@@ -36,6 +36,7 @@ export const downloadSettlementList = (params) => {
  * 9:入库管理-退货管理-入库退货单下载
  * 10:初验收货管理-退货管理-收货退货单下载
  * 11:物资计划管理-用料需求管理-计划单下载(暂未确认)
+ * 109:计划下达统计表下载
  **/ 
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')

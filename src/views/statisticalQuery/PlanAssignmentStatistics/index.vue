@@ -51,7 +51,11 @@
       @handleSelectionChange="handleSelectionChange"
       @handleButton="handleButton"
       @emitAblFilter="emitAblFilter"
-    />
+    >
+    <template #date="scope">
+       {{ scope.data.createDateStart | formatDate  }} 至 {{ scope.data.createDateEnd | formatDate }} 
+    </template>
+    </table-index>
     <pagination
       v-show="total > 0"
       :total="total"
@@ -63,9 +67,10 @@
 </template>
 
 <script>
-import { auditList } from "@/api/statisticalQuery/Maplnfo.js";
+import { getContractPlanStatistics } from "@/api/prodmgr-inv/project/contract.js";
 import indexMixin from "@/views/mixins";
 import dayjs from "dayjs";
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   name: "planAssignmentStatistics",
   mixins: [indexMixin],
@@ -96,13 +101,13 @@ export default {
         pageSize: 30,
       },
       formData: {
-        status: "2",
         assignmentDate: [], // 日期范围
       },
       visible: false,
       metaId: this.$route.meta.id,
       selected: [],
       selectedRow: null,
+      globalSearchParams:null
     };
   },
   created() {
@@ -143,7 +148,6 @@ export default {
     // 重置表单时恢复默认日期
     handleResetField() {
       this.formData = {
-        status: "2",
         assignmentDate: [],
       };
       // 恢复默认日期为最近一个月
@@ -177,12 +181,14 @@ export default {
       // 处理日期范围，转换为 startDate 和 endDate
       const params = { ...this.listQuery, ...this.formData };
       if (this.formData.assignmentDate && this.formData.assignmentDate.length === 2) {
-        params.startDate = this.formData.assignmentDate[0];
-        params.endDate = this.formData.assignmentDate[1];
+        params.createDateStart = this.formData.assignmentDate[0];
+        params.createDateEnd = this.formData.assignmentDate[1];
         delete params.assignmentDate; // 移除原始日期范围字段
       }
+
+      this.globalSearchParams = params;
       
-      auditList(params).then(({ data }) => {
+      getContractPlanStatistics(params).then(({ data }) => {
         this.list = data.list;
         this.total = data.total;
         this.loading = false;
@@ -191,11 +197,22 @@ export default {
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
-        case "download":
-          console.log("download");
+        case "export":
+          this.handleDonwload(idArr[0]);
+
           break;
         default:
           break;
+      }
+    },
+    async handleDonwload(id) {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({ businessType:109,businessData:  JSON.stringify(this.globalSearchParams) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
   },
