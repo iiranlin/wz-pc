@@ -226,6 +226,11 @@
         <span class="summary-label">到站合价：</span>
         <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }}</span>
       </div>
+       <!-- 总数量 -->
+      <div class="summary-item">
+        <span class="summary-label">总数量：</span>
+        <span class="summary-value amount-text">{{ totalNum.toFixed(2) }}</span>
+      </div>
       <div class="summary-item">
         <span class="summary-label">下达数量：</span>
         <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
@@ -355,6 +360,13 @@ export default {
       return this.filteredTableData.reduce((sum, item) => {
 
         return sum + (parseFloat(item.totalAmount) || 0);
+      }, 0);
+    },
+     // 计算总数量
+    totalNum() {
+      return this.filteredTableData.reduce((sum, item) => {
+
+        return sum + (parseFloat(item.amount) || 0);
       }, 0);
     },
     // 计算累计收货数量
