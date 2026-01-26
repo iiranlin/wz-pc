@@ -231,7 +231,7 @@
       <!-- 总数量 -->
       <div class="summary-item">
         <span class="summary-label">总数量：</span>
-        <span class="summary-value amount-text">{{ totalNum.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ formatPreciseNumber(totalNum) }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">下达数量：</span>
@@ -356,11 +356,11 @@ export default {
         return sum + (parseFloat(item.cumulativeAmount) || 0);
       }, 0);
     },
-     // 计算总数量
+     // 计算总数量（使用精确加法避免浮点数精度问题）
     totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
-
-        return sum + (parseFloat(item.amount) || 0);
+        const amount = parseFloat(item.amount) || 0;
+        return this.preciseAdd(sum, amount);
       }, 0);
     },
     // 计算总金额
@@ -842,6 +842,45 @@ export default {
       
       // 打开查看补充合同弹窗
       this.$refs.viewNegativeContractsDialogRef.open(row.id);
+    },
+
+    /**
+     * 精确加法，避免 JS 浮点数精度问题
+     * 原理：将小数转为整数运算后再还原
+     * @param {number} num1 - 加数1
+     * @param {number} num2 - 加数2
+     * @returns {number} 精确的加法结果
+     */
+    preciseAdd(num1, num2) {
+      // 获取小数位数
+      const getDecimalLength = (num) => {
+        const str = String(num);
+        const dotIndex = str.indexOf('.');
+        return dotIndex === -1 ? 0 : str.length - dotIndex - 1;
+      };
+      
+      const d1 = getDecimalLength(num1);
+      const d2 = getDecimalLength(num2);
+      const maxDecimal = Math.max(d1, d2);
+      const multiplier = Math.pow(10, maxDecimal);
+      
+      // 转为整数运算后再还原
+      return (Math.round(num1 * multiplier) + Math.round(num2 * multiplier)) / multiplier;
+    },
+
+    /**
+     * 格式化精确数字显示，保留原始精度（不四舍五入）
+     * @param {number} num - 要格式化的数字
+     * @returns {string} 格式化后的字符串
+     */
+    formatPreciseNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) {
+        return '0';
+      }
+      // 使用 toFixed(10) 保留足够精度，然后去除末尾多余的0
+      const str = num.toFixed(10);
+      // 去除末尾的0和可能多余的小数点
+      return str.replace(/\.?0+$/, '') || '0';
     },
   },
 }
