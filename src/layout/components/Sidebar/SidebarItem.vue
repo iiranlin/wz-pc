@@ -1,6 +1,7 @@
 <template>
     <div v-if="!item.hidden">
-        <template v-if="!(item.meta && item.meta.menuType == '2')">
+        <!-- 内部菜单：menuType != '2' 且 componentUrl 不是外链 -->
+        <template v-if="!isExternalMenu(item)">
             <template
                 v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
                 <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
@@ -76,6 +77,18 @@ export default {
         },
     },
     methods: {
+        /**
+         * 判断菜单项是否为外链
+         * 如果 menuType == '2' 或者 componentUrl 以 http/https 开头，则视为外链
+         */
+        isExternalMenu(item) {
+            if (!item || !item.meta) return false;
+            // menuType == '2' 明确标记为外部菜单
+            if (item.meta.menuType == '2') return true;
+            // componentUrl 以 http/https 开头也视为外链
+            const componentUrl = item.meta.componentUrl || '';
+            return this.reg.test(componentUrl);
+        },
         hasOneShowingChild(children = [], parent) {
             if (!children) {
                 children = [];

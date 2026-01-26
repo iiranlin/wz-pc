@@ -64,8 +64,20 @@
         </el-form-item>
       </el-col>
       <el-col :span="6">
-        <el-form-item label="组件地址:" prop="component">
-          <el-input v-model="form.component" maxlength="200" placeholder="请输入组件地址"/>
+        <el-form-item prop="component">
+          <template #label>
+            <span>组件地址:</span>
+            <el-tag v-if="isExternalLink" type="warning" size="mini" style="margin-left: 4px;">外链</el-tag>
+          </template>
+          <el-input v-model="form.component" maxlength="500" placeholder="请输入组件地址或外链URL">
+            <template v-if="isExternalLink" #suffix>
+              <i class="el-icon-link" style="color: #E6A23C;"></i>
+            </template>
+          </el-input>
+          <div v-if="isExternalLink" class="external-link-tip">
+            <i class="el-icon-info"></i>
+            检测到外链地址，点击菜单时将在新窗口打开
+          </div>
         </el-form-item>
       </el-col>
     </el-row>
@@ -142,6 +154,16 @@ export default {
       }
     }
   },
+  computed: {
+    /**
+     * 判断组件地址是否为外链
+     * 如果以 http:// 或 https:// 开头，则视为外链
+     */
+    isExternalLink() {
+      const component = this.form.component || '';
+      return /^(https?:)\/\//.test(component);
+    }
+  },
   data() {
     return {
       menuTypeList: [
@@ -205,3 +227,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.external-link-tip {
+  font-size: 12px;
+  color: #E6A23C;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.external-link-tip i {
+  margin-right: 4px;
+}
+</style>
