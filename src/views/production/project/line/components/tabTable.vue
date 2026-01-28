@@ -175,7 +175,7 @@
       <!-- 总数量 -->
       <div class="summary-item">
         <span class="summary-label">总数量：</span>
-        <span class="summary-value amount-text">{{ formatPreciseNumber(totalNum) }}</span>
+        <span class="summary-value amount-text">{{ totalNum }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">下达数量：</span>
@@ -217,6 +217,7 @@
 </template>
 
 <script>
+import Decimal from 'decimal.js';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
 export default {
@@ -279,12 +280,12 @@ export default {
 
       return baseData;
     },
-    // 计算总数量（使用精确加法避免浮点数精度问题）
+    // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题）
     totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
-        const amount = parseFloat(item.amount) || 0;
-        return this.preciseAdd(sum, amount);
-      }, 0);
+        const amount = new Decimal(item.amount || 0);
+        return sum.plus(amount);
+      }, new Decimal(0)).toNumber();
     },
     // 计算总金额
     totalAmount() {

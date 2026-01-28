@@ -46,6 +46,7 @@
     "clipboard": "2.0.8",
     "core-js": "^3.42.0",
     "dayjs": "^1.11.13",
+    "decimal.js": "^10.6.0",
     "echarts": "4.9.0",
     "el-table-virtual-scroll": "^2.0.2",
     "element-ui": "2.15.6",
