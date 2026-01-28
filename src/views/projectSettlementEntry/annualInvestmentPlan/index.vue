@@ -1,0 +1,319 @@
+<template>
+  <div class="app-container container_flex">
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :buttonDisable="buttonDisable"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
+      :formData="formData">
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
+      <!-- date 计划年度搜索,年选择器，并且保存后端为字符串 -->
+       <template #date="data">
+          <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="选择年份" size="small" value-format="yyyy" style="width: 100%" />
+       </template>
+    </form-data>
+    <el-row type="flex" class="container_h">
+      <!--用户数据-->
+      <el-col :span="20" :xs="24" class="container_flex">
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
+          @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+          <!-- 标段投资计划明细 -->
+          <template #sectionTotal="scoped">
+            <el-button type="text" @click="
+              () => {
+                  $refs.sellerDialogRef.open(scoped.data.contractIdList);
+              }
+            ">
+             展开
+            </el-button>
+          </template>
+        </table-index>
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
+      </el-col>
+    </el-row>
+    <SellerDialog ref="sellerDialogRef" />
+  </div>
+</template>
+
+<script>
+import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
+// import * as WzglApi from '@/api/prodmgr-inv/project/line.js'
+// import * as Api from '@/api/prodmgr-inv/project/settlementDetails.js'
+import indexMixin from "@/views/mixins";
+
+// Mock 数据
+const mockListData = {
+  records: [
+    {
+      id: '1',
+      date: '2026',
+      projectName: '新建南京北站站房',
+      sectionTotal: 25392,
+      constructionUnit: 1706169600000,
+      createUserName: '超级管理员',
+      total: 25392,
+      contractIdList: ['contract1', 'contract2']
+    },
+    {
+      id: '2',
+      date: '2026',
+      projectName: '新建南京上元门过江通道铁路',
+      sectionTotal: 18500,
+      constructionUnit: 1706256000000,
+      createUserName: '超级管理员',
+      total: 18500,
+      contractIdList: ['contract3']
+    },
+    {
+      id: '3',
+      date: '2026',
+      projectName: '新建上海至南京至合肥高速铁路',
+      sectionTotal: 32100,
+      constructionUnit: 1706342400000,
+      createUserName: '超级管理员',
+      total: 32100,
+      contractIdList: []
+    }
+  ],
+  total: 3
+};
+
+const mockLineOptions = [
+  { projectName: '南京铁路' },
+  { projectName: '上海高铁' },
+  { projectName: '杭州地铁' }
+];
+import Add from './components/add.vue'
+import SellerDialog from './components/sellerDialog.vue'
+export default {
+  // 年度投资计划
+  name: "annualInvestmentPlan",
+  components: { Add, SellerDialog },
+  mixins: [indexMixin],
+
+  data() {
+    return {
+      lineOptions: [],
+      treeCurrentKey: "",
+      // 遮罩层
+      loading: false,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 表格序号是否展示
+      numberShow: true,
+      // 表格数据
+      list: [],
+      // 弹出层标题
+      title: "",
+      // 部门树选项
+      deptOptions: undefined,
+      // 部门树遮罩
+      treeLoading: false,
+      //列表显示字段
+      property: {},
+      defaultProps: {
+        children: "children",
+        label: "deptName",
+      },
+      // 查询参数
+      formData: {
+        date: new Date().getFullYear().toString()
+      },
+      formDataClick: {},
+      total: 0,
+      filterText: "",
+      selection: [],
+      hasOwn: true,
+    };
+  },
+  activated() {
+    this.getList();
+  },
+  created() {
+    let id = this.$route.meta.id;
+    this.$store.dispatch("menuProperty", id).then((data) => {
+      this.property = data;
+    });
+    this.getLineOptions()
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
+  },
+  methods: {
+    getLineOptions() {
+      // 注释接口调用，使用mock数据
+      // WzglApi.lineSelectOptions().then(({ data }) => {
+      //   this.lineOptions = data.map(x => ({
+      //     label: x.projectName,
+      //     value: x.projectName
+      //   }))
+      // })
+      
+      // 使用mock数据
+      this.lineOptions = mockLineOptions.map(x => ({
+        label: x.projectName,
+        value: x.projectName
+      }))
+    },
+    buttonDisable(btn) {
+      // 没有合同物资才允许删除
+      if (btn.buttonCode === 'delete') {
+        return this.selection.some(x => x.contractIdList.length != 0)
+      }
+      return false
+    },
+    filterNode(value, data) {
+      if (!value) return true;
+      return !!this.$py.match(data.deptName, value) || data.deptCode.indexOf(value) !== -1;
+    },
+    numberChange(val) {
+      this.numberShow = val;
+    },
+    newButton(buttonCode, formId, buttonData) {
+      this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData)
+    },
+    handleCheckAllChange(columns) {
+      this.$refs.tableIndex.init(columns);
+    },
+    //选择框回调
+    selectChange(row) {
+      let { formData, isWatch } = row;
+      if (!isWatch) {
+        this.handleQuery(formData);
+      } else {
+        this.formData = Object.assign({}, this.formData, formData);
+      }
+    },
+    deptTree() {
+      this.treeLoading = true;
+      this.formData.parentId = null;
+      deptTree().then(({ data }) => {
+        this.deptOptions = data;
+        this.treeLoading = false;
+      });
+    },
+    // 节点单击事件
+    handleNodeClick(data) {
+      if (data.id === this.treeCurrentKey) {
+        // 再次点击当前节点取消选中,查询全部
+        this.formData.parentId = null;
+        this.$refs.tree.setCurrentKey(null);
+        this.treeCurrentKey = "";
+      } else {
+        this.treeCurrentKey = data.id;
+        this.formData.parentId = data.id;
+      }
+      this.getList();
+    },
+    emitAblFilter(listQuery) {
+      this.listQuery = Object.assign({}, this.listQuery, listQuery);
+      this.handleQuery();
+    },
+    handleQuery(row = {}, type = '') {
+
+      this.listQuery.pageNum = 1
+      this.formData = Object.assign({}, this.formData, row);
+      this.formDataClick = Object.assign({}, this.formData, row);
+      this.getList();
+    },
+    /** 查询菜单列表 */
+    getList() {
+      this.loading = true
+      // 注释接口调用，使用mock数据
+      // Api.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+      //   this.list = data.records
+      //   this.total = data.total
+      // }).finally(() => {
+      //   this.loading = false
+      // })
+      
+      // 使用mock数据
+      setTimeout(() => {
+        this.list = mockListData.records
+        this.total = mockListData.total
+        this.loading = false
+      }, 300)
+    },
+    handleSelectionChange(ids, single, multiple, selection) {
+      this.ids = ids;
+      this.single = single;
+      this.multiple = multiple;
+      this.selection = selection;
+    },
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
+      this.proxyPrint(buttonCode, rowArr, buttonData)
+      switch (buttonCode) {
+        case "create":
+          this.$router.push({ name: 'addAnnualInvestmentPlan', query: { type: 'create' } })
+          break;
+        case "update":
+          this.$router.push({ name: 'addAnnualInvestmentPlan', query: { id: idArr[0], type: 'update' } })
+          break;
+        case "delete":
+          this.handleDelete(idArr)
+          break;
+        case 'view':
+          this.$router.push({ name: 'detailSection', query: { id: idArr[0], type: 'view' } })
+          break;
+      }
+    },
+    handleDelete(ids) {
+      this.$modal.confirm("是否确认删除?").then(() => {
+        // 注释接口调用，使用mock删除
+        // return Api.batchRemove({ ids });
+        
+        // mock删除：从mock数据中移除对应id的数据
+        mockListData.records = mockListData.records.filter(item => !ids.includes(item.id))
+        mockListData.total = mockListData.records.length
+        return Promise.resolve()
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      })
+    },
+    deptSuccess() {
+      this.handleQuery();
+      this.deptTree();
+    },
+    clickReset() {
+      this.formData = {
+        date: new Date().getFullYear().toString()
+      }
+      this.handleQuery();
+    },
+    cleanClick(data) {
+      for (const key of data) {
+        if (key.indexOf("Start") != -1 || key.indexOf("End") != -1) {
+          this.$refs.formData.resetQueryDateRange(key);
+        }
+        this.formData[key] = null;
+      }
+      this.handleQuery();
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
+.ov_head {
+  flex: 1;
+  height: 100%;
+  overflow-y: scroll;
+}
+</style>
