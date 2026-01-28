@@ -1,7 +1,7 @@
 <template>
   <div class="app-container container_flex">
   
-    <table-index ref="tableIndex" :visibleAction="false" :loading="loading" :selectShow="false"  idName="businessId" :tableData="dataList" :property="property"
+    <table-index ref="tableIndex"  :loading="loading" :selectShow="false"  idName="businessId" :tableData="dataList" :property="property"
       :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton"
       @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink">
     </table-index>
@@ -74,7 +74,7 @@ export default {
       getUserMenu().then(menu => {
 
      console.log(menu.data,'sidebarMenu');
-     const menuId = findMenuByUrl(menu.data,'audit')?.id;
+     const menuId = findMenuByUrl(menu.data,'todoList')?.id;
      this.$store.dispatch("menuProperty", menuId).then((data) => {
        this.listQuery.pageSize = data.defaultPageSize || 30;
        this.property = data;
