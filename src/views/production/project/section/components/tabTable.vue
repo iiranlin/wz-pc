@@ -163,20 +163,20 @@
       <!-- 总数量 -->
       <div class="summary-item">
         <span class="summary-label">总数量：</span>
-        <span class="summary-value amount-text">{{ formatPreciseNumber(totalNum) }}</span>
+        <span class="summary-value amount-text">{{ totalNum }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">下达数量：</span>
-        <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalQuantity}}</span>
       </div>
 
       <div class="summary-item">
         <span class="summary-label">发货数量：</span>
-        <span class="summary-value amount-text">{{ totalSendCount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalSendCount}}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">收货数量：</span>
-        <span class="summary-value amount-text">{{ totalPutTotal.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalPutTotal }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">收货金额：</span>
@@ -184,7 +184,7 @@
       </div>
       <div class="summary-item">
         <span class="summary-label">入库量：</span>
-        <span class="summary-value amount-text">{{ totalStoreCount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalStoreCount}}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">入库金额：</span>
@@ -192,7 +192,7 @@
       </div>
       <div class="summary-item">
         <span class="summary-label">出库量：</span>
-        <span class="summary-value amount-text">{{ totalOutCount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalOutCount}}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">出库金额：</span>
@@ -205,6 +205,7 @@
 </template>
 
 <script>
+  import Decimal from 'decimal.js';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
 export default {
@@ -267,12 +268,12 @@ export default {
       return baseData;
     },
 
-    // 计算总数量（使用精确加法避免浮点数精度问题）
+    // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题）
     totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
-        const amount = parseFloat(item.amount) || 0;
-        return this.preciseAdd(sum, amount);
-      }, 0);
+        const amount = new Decimal(item.amount || 0);
+        return sum.plus(amount);
+      }, new Decimal(0)).toNumber();
     },
     // 计算总金额
     totalAmount() {
@@ -280,26 +281,26 @@ export default {
         return sum + item.totalAmount;
       }, 0);
     },
-    // 计算下达数量
-    totalQuantity() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const cumulativeAmount =  sum + (parseFloat(item.cumulativeAmount) || 0);
-        return this.preciseAdd(sum, cumulativeAmount);
-      }, 0);
-    },
     // 计算累计收货数量
     totalPutTotal() {
       return this.filteredTableData.reduce((sum, item) => {
-        const putTotal = sum + (parseFloat(item.putTotal) || 0);
-        return this.preciseAdd(sum, putTotal);
-      }, 0);
+        const putTotal = new Decimal(item.putTotal || 0)
+        return sum.plus(putTotal);
+      }, new Decimal(0)).toNumber();
+    },
+    // 计算累计下达数量
+    totalQuantity() {
+      return this.filteredTableData.reduce((sum, item) => {
+        const cumulativeAmount = new Decimal(item.cumulativeAmount || 0)
+        return sum.plus(cumulativeAmount);
+      }, new Decimal(0)).toNumber();
     },
     // 计算累计发货数量
     totalSendCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        const sendTotal = sum + (parseFloat(item.sendTotal) || 0);
-        return this.preciseAdd(sum, sendTotal);
-      }, 0);
+        const sendTotal = new Decimal(item.sendTotal || 0)
+        return sum.plus(sendTotal);
+      }, new Decimal(0)).toNumber();
     },
 
     // 计算已收货金额
@@ -311,9 +312,9 @@ export default {
     // 计算累计入库量
     totalStoreCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        const storeTotal = sum + (parseFloat(item.storeTotal) || 0);
-        return this.preciseAdd(sum, storeTotal);
-      }, 0);
+        const storeTotal = new Decimal(item.storeTotal || 0)
+        return sum.plus(storeTotal);
+      }, new Decimal(0)).toNumber();
     },
     // 计算累计入库金额
     totalStoreTotalRates() {
@@ -324,9 +325,9 @@ export default {
     // 计算累计出库量
     totalOutCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        const outTotal = sum + (parseFloat(item.outTotal) || 0);
-        return this.preciseAdd(sum, outTotal);
-      }, 0);
+        const outTotal = new Decimal(item.outTotal || 0)
+        return sum.plus(outTotal);
+      }, new Decimal(0)).toNumber();
     },
     // 计算已出库金额
     totalOutRates() {
@@ -716,43 +717,6 @@ export default {
           });
         }
       });
-    },
-    /**
-     * 格式化精确数字显示，保留原始精度（不四舍五入）
-     * @param {number} num - 要格式化的数字
-     * @returns {string} 格式化后的字符串
-     */
-    formatPreciseNumber(num) {
-      if (num === null || num === undefined || isNaN(num)) {
-        return '0';
-      }
-      // 使用 toFixed(10) 保留足够精度，然后去除末尾多余的0
-      const str = num.toFixed(10);
-      // 去除末尾的0和可能多余的小数点
-      return str.replace(/\.?0+$/, '') || '0';
-    },
-    /**
-     * 精确加法，避免 JS 浮点数精度问题
-     * 原理：将小数转为整数运算后再还原
-     * @param {number} num1 - 加数1
-     * @param {number} num2 - 加数2
-     * @returns {number} 精确的加法结果
-     */
-    preciseAdd(num1, num2) {
-      // 获取小数位数
-      const getDecimalLength = (num) => {
-        const str = String(num);
-        const dotIndex = str.indexOf('.');
-        return dotIndex === -1 ? 0 : str.length - dotIndex - 1;
-      };
-
-      const d1 = getDecimalLength(num1);
-      const d2 = getDecimalLength(num2);
-      const maxDecimal = Math.max(d1, d2);
-      const multiplier = Math.pow(10, maxDecimal);
-
-      // 转为整数运算后再还原
-      return (Math.round(num1 * multiplier) + Math.round(num2 * multiplier)) / multiplier;
     },
   },
 }
