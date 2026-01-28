@@ -115,20 +115,22 @@
 
       <el-table-column prop="cumulativeAmount" label="累计下达数量" width="150" align="center">
       </el-table-column>
-      <el-table-column prop="sendTotal" label="发货数量" width="150" align="center">
+      <el-table-column  prop="sendTotal" label="发货数量" width="150" align="center">
       </el-table-column>
-      <el-table-column prop="putTotal" label="收货数量" width="150" align="center">
+      <el-table-column prop="sendRatio" label="发货比例" width="150" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.sendRatio }}%
+        </template>
       </el-table-column>
       <el-table-column prop="storeTotalRates" label="已收货金额" width="150" align="center">
       </el-table-column>
-
-      <el-table-column prop="storeTotal" label="累计入库量" width="150" align="center">
+      <el-table-column  prop="storeTotal" label="累计入库量" width="150" align="center">
       </el-table-column>
+
       <el-table-column prop="outTotal" label="累计出库量" width="150" align="center">
       </el-table-column>
-      <el-table-column prop="storeTotalRates" label="已到货金额" width="150" align="center">
-      </el-table-column>
-      <el-table-column prop="outTotalRates" label="出库金额" width="150" align="center">
+
+      <el-table-column  prop="outTotalRates" label="出库金额" width="150" align="center">
       </el-table-column>
     </el-table>
 
