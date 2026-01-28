@@ -13,7 +13,6 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       @handleResetField="handleResetField"
-      labelWidth="170px"
     >
     <template #assignmentDate>
       <!-- 下达日期范围，默认选择最近一个月时间段，年月日格式 -->
@@ -60,7 +59,7 @@
       @emitAblFilter="emitAblFilter"
     >
     <template #date="scope">
-       {{ scope.data.createDateStart | formatDate  }} 至 {{ scope.data.createDateEnd | formatDate }} 
+       {{ scope.data.createDateStart | formatDate  }} 至 {{ scope.data.createDateEnd | formatDate }}
     </template>
     </table-index>
     <pagination
@@ -122,7 +121,7 @@ export default {
   created() {
     // 初始化默认日期为最近一个月
     this.initDefaultDate();
-    
+
     this.$store.dispatch("menuProperty", this.metaId).then((data) => {
       this.listQuery.pageSize = data.defaultPageSize || 30;
       this.property = data;
@@ -142,7 +141,7 @@ export default {
     initDefaultDate() {
       const end = dayjs();
       const start = dayjs().subtract(1, 'month');
-      
+
       this.formData.assignmentDate = [
         start.format('YYYY-MM-DD'),
         end.format('YYYY-MM-DD')
@@ -195,7 +194,7 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      
+
       // 处理日期范围，转换为 startDate 和 endDate
       const params = { ...this.listQuery, ...this.formData };
       if (this.formData.assignmentDate && this.formData.assignmentDate.length === 2) {
@@ -205,7 +204,7 @@ export default {
       }
 
       this.globalSearchParams = params;
-      
+
       getContractPlanStatistics(params).then(({ data }) => {
         this.list = data.list;
         this.total = data.total;
