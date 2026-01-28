@@ -327,4 +327,9 @@ export default {
   font-size: 14px;
   margin-right: 8px;
 }
+.summary-value {
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
 </style>
