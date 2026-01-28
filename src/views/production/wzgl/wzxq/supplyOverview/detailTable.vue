@@ -145,7 +145,9 @@ export default {
     // 本次计划数量总计
     totalQuantity() {
       return this.tableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.planAmount) || 0);
+        // return sum + (parseFloat(item.planAmount) || 0);
+        const planAmount = sum + (parseFloat(item.planAmount) || 0);
+        return this.preciseAdd(sum, planAmount); // 处理小数点精度
       }, 0);
     },
 
@@ -159,7 +161,8 @@ export default {
     // 计算累计发货数量
     totalSendCount() {
       return this.tableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.sendTotal) || 0);
+        const sendTotal =  sum + (parseFloat(item.sendTotal) || 0);
+        return this.preciseAdd(sum, sendTotal);
       }, 0);
     },
     // 计算累计发货金額
@@ -171,7 +174,8 @@ export default {
     // 计算累计收货数量
     totalPutTotal() {
       return this.tableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.putTotal) || 0);
+        const putTotal = sum + (parseFloat(item.putTotal) || 0);
+        return this.preciseAdd(sum, putTotal);
       }, 0);
     },
     // 计算累计收货金額
@@ -183,7 +187,8 @@ export default {
     // 计算累计入库量
     totalStoreCount() {
       return this.tableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotal) || 0);
+        const storeTotal = sum + (parseFloat(item.storeTotal) || 0);
+        return this.preciseAdd(sum, storeTotal);
       }, 0);
     },
     // 计算累计入库金額
@@ -195,7 +200,8 @@ export default {
     // 计算累计出库量
     totalOutCount() {
       return this.tableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.outTotal) || 0);
+        const outTotal = sum + (parseFloat(item.outTotal) || 0);
+        return this.preciseAdd(sum, outTotal);
       }, 0);
     },
     // 计算累计出金額

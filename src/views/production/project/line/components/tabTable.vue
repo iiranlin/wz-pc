@@ -289,26 +289,28 @@ export default {
     // 计算总金额
     totalAmount() {
       return this.filteredTableData.reduce((sum, item) => {
-
         return sum + item.totalAmount;
       }, 0);
     },
     // 计算累计收货数量
     totalPutTotal() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.putTotal) || 0);
+        const putTotal = sum + (parseFloat(item.putTotal) || 0);
+        return this.preciseAdd(sum, putTotal);
       }, 0);
     },
     // 计算累计下达
     totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.cumulativeAmount) || 0);
+        const cumulativeAmount = sum + (parseFloat(item.cumulativeAmount) || 0);
+        return this.preciseAdd(sum, cumulativeAmount);
       }, 0);
     },
     // 计算累计发货数量
     totalSendCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.sendTotal) || 0);
+        const sendTotal = sum + (parseFloat(item.sendTotal) || 0);
+        return this.preciseAdd(sum, sendTotal);
       }, 0);
     },
 
@@ -321,7 +323,8 @@ export default {
     // 计算累计入库量
     totalStoreCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotal) || 0);
+        const storeTotal = sum + (parseFloat(item.storeTotal) || 0);
+        return this.preciseAdd(sum, storeTotal);
       }, 0);
     },
     // 计算累计入库金额
@@ -333,7 +336,8 @@ export default {
     // 计算累计出库量
     totalOutCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.outTotal) || 0);
+        const outTotal = sum + (parseFloat(item.outTotal) || 0);
+        return this.preciseAdd(sum, outTotal);
       }, 0);
     },
     // 计算已出库金额

@@ -101,9 +101,9 @@
               <span>{{ scope.row.amount }}</span>
               <!-- 负数提示图标 -->
               <el-tooltip
-                v-if="scope.row.negative && scope.row.negative < 0" 
+                v-if="scope.row.negative && scope.row.negative < 0"
                 class="el-icon-warning-outline negative-tip-icon clickable"
-                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`" 
+                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`"
                 title="点击查看补充合同列表"
               >
              <i  @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i></el-tooltip>
@@ -350,10 +350,11 @@ export default {
 
       return data;
     },
-    // 计算总amount
+    // 计算总下达数量
     totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.cumulativeAmount) || 0);
+        const cumulativeAmount = sum + (parseFloat(item.cumulativeAmount) || 0);
+        return this.preciseAdd(sum, cumulativeAmount);
       }, 0);
     },
      // 计算总数量（使用精确加法避免浮点数精度问题）
@@ -373,13 +374,15 @@ export default {
     // 计算累计收货数量
     totalPutTotal() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.putTotal) || 0);
+        const putTotal = sum + (parseFloat(item.putTotal) || 0);
+        return this.preciseAdd(sum, putTotal);
       }, 0);
     },
     // 计算累计发货数量
     totalSendCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.sendTotal) || 0);
+        const sendTotal = sum + (parseFloat(item.sendTotal) || 0);
+        return this.preciseAdd(sum, sendTotal);
       }, 0);
     },
     // 计算已收货金额
@@ -391,7 +394,8 @@ export default {
     // 计算累计入库量
     totalStoreCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotal) || 0);
+        const storeTotal = sum + (parseFloat(item.storeTotal) || 0);
+        return this.preciseAdd(sum, storeTotal);
       }, 0);
     },
     // 计算累计入库金额
@@ -403,7 +407,8 @@ export default {
     // 计算累计出库量
     totalOutCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.outTotal) || 0);
+        const outTotal = sum + (parseFloat(item.outTotal) || 0);
+        return this.preciseAdd(sum, outTotal);
       }, 0);
     },
     // 计算已出库金额
@@ -839,7 +844,7 @@ export default {
         this.$message.warning('数据无效');
         return;
       }
-      
+
       // 打开查看补充合同弹窗
       this.$refs.viewNegativeContractsDialogRef.open(row.id);
     },
@@ -858,12 +863,12 @@ export default {
         const dotIndex = str.indexOf('.');
         return dotIndex === -1 ? 0 : str.length - dotIndex - 1;
       };
-      
+
       const d1 = getDecimalLength(num1);
       const d2 = getDecimalLength(num2);
       const maxDecimal = Math.max(d1, d2);
       const multiplier = Math.pow(10, maxDecimal);
-      
+
       // 转为整数运算后再还原
       return (Math.round(num1 * multiplier) + Math.round(num2 * multiplier)) / multiplier;
     },
