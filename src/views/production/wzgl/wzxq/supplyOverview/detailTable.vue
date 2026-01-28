@@ -18,12 +18,19 @@
       </el-table-column>
       <el-table-column prop="planAmount" label="本次计划数量" align="center" width="200">
       </el-table-column>
+      <el-table-column prop="taxPrice" label="价格" align="center" width="200">
+      </el-table-column>
+      <el-table-column prop="planAmountTotalPrice" label="本次计划金额" align="center" width="200">
+      </el-table-column>
       <el-table-column prop="sendTotal" label="已发货" align="center">
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.sendTotal, 'sendList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.sendTotal }}
           </span>
         </template>
+      </el-table-column>
+
+      <el-table-column prop="sendTotalTotalPrice" label="已发货金额" align="center" width="200">
       </el-table-column>
       <el-table-column prop="putTotal" label="已收货" align="center">
         <template slot-scope="scope">
@@ -32,12 +39,17 @@
           </span>
         </template>
       </el-table-column>
+
+      <el-table-column prop="putTotalTotalPrice" label="已收货金额" align="center" width="200">
+      </el-table-column>
       <el-table-column prop="storeTotal" label="已入库" align="center">
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.storeTotal, 'imList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.storeTotal }}
           </span>
         </template>
+      </el-table-column>
+      <el-table-column prop="storeTotalTotalPrice" label="已入库金额" align="center" width="200">
       </el-table-column>
       <el-table-column prop="outCkTotal" label="已出库" align="center">
         <template slot-scope="scope">
@@ -46,7 +58,62 @@
           </span>
         </template>
       </el-table-column>
+      <el-table-column prop="outCkTotalTotalPrice" label="已出库金额" align="center" width="200">
+      </el-table-column>
     </el-table>
+
+
+    <div class="summary-info" v-if="tableData.length > 0">
+      <div class="summary-item">
+        <span class="summary-label">总条数：</span>
+        <span class="summary-value amount-text">{{ tableData.length }} 条</span>
+      </div>
+      <!-- 总数量 -->
+      <div class="summary-item">
+        <span class="summary-label">总数量：</span>
+        <span class="summary-value amount-text">{{ formatPreciseNumber(totalNum) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">计划数量：</span>
+        <span class="summary-value amount-text">{{ totalQuantity}}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">计划金额：</span>
+        <span class="summary-value amount-text">{{totalPlanAmountTotalPrice.toFixed(2)}}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">发货数量：</span>
+        <span class="summary-value amount-text">{{ totalSendCount }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">发货金额：</span>
+        <span class="summary-value amount-text">{{totalSendTotalTotalPrice.toFixed(2)}}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货数量：</span>
+        <span class="summary-value amount-text">{{ totalPutTotal }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货金额：</span>
+        <span class="summary-value amount-text">{{totalPutTotalTotalPrice.toFixed(2)}}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">入库量：</span>
+        <span class="summary-value amount-text">{{ totalStoreCount }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">入库金额：</span>
+        <span class="summary-value amount-text">{{totalStoreTotalTotalPrice.toFixed(2)}}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库量：</span>
+        <span class="summary-value amount-text">{{ totalOutCount}}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库金额：</span>
+        <span class="summary-value amount-text">{{totalOutCkTotalTotalPrice.toFixed(2)}}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -67,7 +134,97 @@ export default {
       return dayjs(value).format(format);
     }
   },
+  computed:{
+    // 计算总数量（使用精确加法避免浮点数精度问题）
+    totalNum() {
+      return this.tableData.reduce((sum, item) => {
+        const amount = parseFloat(item.amount) || 0;
+        return this.preciseAdd(sum, amount);
+      }, 0);
+    },
+    // 本次计划数量总计
+    totalQuantity() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.planAmount) || 0);
+      }, 0);
+    },
+
+    // 本次计划金額
+    totalPlanAmountTotalPrice() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.planAmountTotalPrice) || 0);
+      }, 0);
+    },
+
+    // 计算累计发货数量
+    totalSendCount() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.sendTotal) || 0);
+      }, 0);
+    },
+    // 计算累计发货金額
+    totalSendTotalTotalPrice() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.sendTotalTotalPrice) || 0);
+      }, 0);
+    },
+    // 计算累计收货数量
+    totalPutTotal() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.putTotal) || 0);
+      }, 0);
+    },
+    // 计算累计收货金額
+    totalPutTotalTotalPrice() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.putTotalTotalPrice) || 0);
+      }, 0);
+    },
+    // 计算累计入库量
+    totalStoreCount() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotal) || 0);
+      }, 0);
+    },
+    // 计算累计入库金額
+    totalStoreTotalTotalPrice() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotalTotalPrice) || 0);
+      }, 0);
+    },
+    // 计算累计出库量
+    totalOutCount() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.outTotal) || 0);
+      }, 0);
+    },
+    // 计算累计出金額
+    totalOutCkTotalTotalPrice() {
+      return this.tableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.outCkTotalTotalPrice) || 0);
+      }, 0);
+    },
+  },
+  watch: {
+    'tableData': {
+      deep: true, // 深度观察对象内部的值的变化
+      handler() {
+        this.calculateAmounts(); // 数据变化时重新计算金额
+      },
+      immediate:true,
+    }
+  },
   methods: {
+    calculateAmounts() {
+      this.tableData.forEach(item => {
+        item.planAmountTotalPrice = (item.taxPrice * item.planAmount).toFixed(2)
+        item.sendTotalTotalPrice = (item.taxPrice * item.sendTotal).toFixed(2)
+        item.putTotalTotalPrice = (item.taxPrice * item.putTotal).toFixed(2)
+        item.storeTotalTotalPrice = (item.taxPrice * item.storeTotal).toFixed(2)
+        item.outCkTotalTotalPrice = (item.taxPrice * item.outCkTotal).toFixed(2)
+      })
+    },
+
     goDetail(num, routername) {
       if (num == 0) {
         return;
@@ -75,8 +232,45 @@ export default {
       this.$router.push({
         name: routername
       })
-    }
+    },
 
+    /**
+     * 格式化精确数字显示，保留原始精度（不四舍五入）
+     * @param {number} num - 要格式化的数字
+     * @returns {string} 格式化后的字符串
+     */
+    formatPreciseNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) {
+        return '0';
+      }
+      // 使用 toFixed(10) 保留足够精度，然后去除末尾多余的0
+      const str = num.toFixed(10);
+      // 去除末尾的0和可能多余的小数点
+      return str.replace(/\.?0+$/, '') || '0';
+    },
+    /**
+     * 精确加法，避免 JS 浮点数精度问题
+     * 原理：将小数转为整数运算后再还原
+     * @param {number} num1 - 加数1
+     * @param {number} num2 - 加数2
+     * @returns {number} 精确的加法结果
+     */
+    preciseAdd(num1, num2) {
+      // 获取小数位数
+      const getDecimalLength = (num) => {
+        const str = String(num);
+        const dotIndex = str.indexOf('.');
+        return dotIndex === -1 ? 0 : str.length - dotIndex - 1;
+      };
+
+      const d1 = getDecimalLength(num1);
+      const d2 = getDecimalLength(num2);
+      const maxDecimal = Math.max(d1, d2);
+      const multiplier = Math.pow(10, maxDecimal);
+
+      // 转为整数运算后再还原
+      return (Math.round(num1 * multiplier) + Math.round(num2 * multiplier)) / multiplier;
+    },
   },
 };
 </script>
@@ -104,5 +298,33 @@ export default {
 .my-content {
   background: #fff;
   width: calc(33.33%-150px) !important;
+}
+/* 统计信息样式 */
+.summary-info {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.summary-item {
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ebeef5;
+}
+
+.summary-label {
+  color: #666;
+  font-size: 14px;
+  margin-right: 8px;
 }
 </style>

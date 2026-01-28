@@ -122,6 +122,16 @@
           <span>{{ scope.row.cumulativeRatio }}%</span>
         </template>
       </el-table-column>
+
+      <el-table-column prop="cumulativeAmount" label="累计下达数量" width="150" align="center">
+      </el-table-column>
+      <el-table-column prop="sendTotal" label="发货数量" width="150" align="center">
+      </el-table-column>
+      <el-table-column prop="xxx" label="收货数量" width="150" align="center">
+      </el-table-column>
+      <el-table-column prop="storeTotalRates" label="已收货金额" width="150" align="center">
+      </el-table-column>
+
       <el-table-column prop="storeTotal" label="累计入库量" width="150" align="center">
       </el-table-column>
       <el-table-column prop="outTotal" label="累计出库量" width="150" align="center">
@@ -133,7 +143,7 @@
     </el-table>
 
     <!-- 统计信息 -->
-    <div class="summary-info" v-if="currentTableData.length > 0">
+   <!-- <div class="summary-info" v-if="currentTableData.length > 0">
       <el-row :gutter="20">
         <el-col :span="6">
           <div class="summary-item">
@@ -148,6 +158,55 @@
           </div>
         </el-col>
       </el-row>
+    </div>-->
+
+    <div class="summary-info" v-if="currentTableData.length > 0">
+      <div class="summary-item">
+        <span class="summary-label">总条数：</span>
+        <span class="summary-value amount-text">{{ currentTableData.length }} 条</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">到站合价含税合计：</span>
+        <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }}</span>
+      </div>
+      <!-- 总数量 -->
+      <div class="summary-item">
+        <span class="summary-label">总数量：</span>
+        <span class="summary-value amount-text">{{ formatPreciseNumber(totalNum) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">下达数量：</span>
+        <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
+      </div>
+
+      <div class="summary-item">
+        <span class="summary-label">发货数量：</span>
+        <span class="summary-value amount-text">{{ totalSendCount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货数量：</span>
+        <span class="summary-value amount-text">{{ totalPutTotal.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">收货金额：</span>
+        <span class="summary-value amount-text">{{ totalStoreRates.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">入库量：</span>
+        <span class="summary-value amount-text">{{ totalStoreCount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">入库金额：</span>
+        <span class="summary-value amount-text">{{ totalStoreTotalRates.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库量：</span>
+        <span class="summary-value amount-text">{{ totalOutCount.toFixed(2) }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">出库金额：</span>
+        <span class="summary-value amount-text">{{ totalOutRates.toFixed(2) }}</span>
+      </div>
     </div>
 
 
@@ -190,8 +249,9 @@ export default {
   },
   computed: {
     filteredTableData() {
+      console.log('--------000000000000------')
+      console.log(this.projectTabs)
       let baseData = [];
-
       // 根据当前tab获取基础数据
       if (this.activeTab === 'total') {
         baseData = this.tableData;
@@ -216,10 +276,11 @@ export default {
 
       return baseData;
     },
-    // 计算总amount
-    totalQuantity() {
+    // 计算总数量（使用精确加法避免浮点数精度问题）
+    totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.amount) || 0);
+        const amount = parseFloat(item.amount) || 0;
+        return this.preciseAdd(sum, amount);
       }, 0);
     },
     // 计算总金额
@@ -229,6 +290,56 @@ export default {
         return sum + item.totalAmount;
       }, 0);
     },
+    // 计算累计收货数量
+    totalPutTotal() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.putTotal) || 0);
+      }, 0);
+    },
+    // 计算累计下达
+    totalQuantity() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.cumulativeAmount) || 0);
+      }, 0);
+    },
+    // 计算累计发货数量
+    totalSendCount() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.sendTotal) || 0);
+      }, 0);
+    },
+
+    // 计算已收货金额
+    totalStoreRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotalRates) || 0);
+      }, 0);
+    },
+    // 计算累计入库量
+    totalStoreCount() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotal) || 0);
+      }, 0);
+    },
+    // 计算累计入库金额
+    totalStoreTotalRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.storeTotalRates) || 0);
+      }, 0);
+    },
+    // 计算累计出库量
+    totalOutCount() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.outTotal) || 0);
+      }, 0);
+    },
+    // 计算已出库金额
+    totalOutRates() {
+      return this.filteredTableData.reduce((sum, item) => {
+        return sum + (parseFloat(item.outTotalRates) || 0);
+      }, 0);
+    },
+
     projectTabs() {
       const projectNames = [...new Set(this.tableData.map(item => item.sectionName).filter(Boolean))];
       return projectNames.map((name, index) => ({
@@ -244,7 +355,6 @@ export default {
       return this.$route.query.type
     }
   },
-
   watch: {
     // 监听外部数据变化
     tableData: {
@@ -612,6 +722,44 @@ export default {
         }
       });
     },
+
+    /**
+     * 格式化精确数字显示，保留原始精度（不四舍五入）
+     * @param {number} num - 要格式化的数字
+     * @returns {string} 格式化后的字符串
+     */
+    formatPreciseNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) {
+        return '0';
+      }
+      // 使用 toFixed(10) 保留足够精度，然后去除末尾多余的0
+      const str = num.toFixed(10);
+      // 去除末尾的0和可能多余的小数点
+      return str.replace(/\.?0+$/, '') || '0';
+    },
+    /**
+     * 精确加法，避免 JS 浮点数精度问题
+     * 原理：将小数转为整数运算后再还原
+     * @param {number} num1 - 加数1
+     * @param {number} num2 - 加数2
+     * @returns {number} 精确的加法结果
+     */
+    preciseAdd(num1, num2) {
+      // 获取小数位数
+      const getDecimalLength = (num) => {
+        const str = String(num);
+        const dotIndex = str.indexOf('.');
+        return dotIndex === -1 ? 0 : str.length - dotIndex - 1;
+      };
+
+      const d1 = getDecimalLength(num1);
+      const d2 = getDecimalLength(num2);
+      const maxDecimal = Math.max(d1, d2);
+      const multiplier = Math.pow(10, maxDecimal);
+
+      // 转为整数运算后再还原
+      return (Math.round(num1 * multiplier) + Math.round(num2 * multiplier)) / multiplier;
+    },
   },
 }
 </script>
@@ -659,19 +807,37 @@ export default {
 
 /* 统计信息样式 */
 .summary-info {
-  margin-left: 10px;
+ /* margin-left: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
+
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .summary-item {
-  display: flex;
+  /*display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
   background: white;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);*/
+
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ebeef5;
 }
 
 .summary-label {

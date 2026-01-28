@@ -153,6 +153,7 @@ export default {
   data () {
     return {
       loading: false,
+      tableData: [],
       title: '新增',
       checked: false,
       //   fileList type

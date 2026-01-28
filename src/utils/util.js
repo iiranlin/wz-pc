@@ -129,29 +129,31 @@ export const loadRemoteScript = function(srcPath, callback) {  /*加载远程js�
 }
 
 export function traverseFieldWidgets(widgetList, handler, parent = null, staticWidgetsIncluded) {
-  widgetList.forEach(w => {
-    if (w.formItemFlag || ((w.formItemFlag === false) && staticWidgetsIncluded)) {
-      handler(w, parent)
-    } else if (w.type === 'grid') {
-      w.cols.forEach(col => {
-        traverseFieldWidgets(col.widgetList, handler, w, staticWidgetsIncluded)
-      })
-    } else if (w.type === 'table') {
-      w.rows.forEach(row => {
-        row.cols.forEach(cell => {
-          traverseFieldWidgets(cell.widgetList, handler, w, staticWidgetsIncluded)
+  if(widgetList && widgetList.length>0){
+    widgetList.forEach(w => {
+      if (w.formItemFlag || ((w.formItemFlag === false) && staticWidgetsIncluded)) {
+        handler(w, parent)
+      } else if (w.type === 'grid') {
+        w.cols.forEach(col => {
+          traverseFieldWidgets(col.widgetList, handler, w, staticWidgetsIncluded)
         })
-      })
-    } else if (w.type === 'tab') {
-      w.tabs.forEach(tab => {
-        traverseFieldWidgets(tab.widgetList, handler, w, staticWidgetsIncluded)
-      })
-    } else if (w.type === 'sub-form' || w.type === 'grid-sub-form') {
-      traverseFieldWidgets(w.widgetList, handler, w, staticWidgetsIncluded)
-    } else if (w.category === 'container') {  //自定义容器
-      traverseFieldWidgets(w.widgetList, handler, w, staticWidgetsIncluded)
-    }
-  })
+      } else if (w.type === 'table') {
+        w.rows.forEach(row => {
+          row.cols.forEach(cell => {
+            traverseFieldWidgets(cell.widgetList, handler, w, staticWidgetsIncluded)
+          })
+        })
+      } else if (w.type === 'tab') {
+        w.tabs.forEach(tab => {
+          traverseFieldWidgets(tab.widgetList, handler, w, staticWidgetsIncluded)
+        })
+      } else if (w.type === 'sub-form' || w.type === 'grid-sub-form') {
+        traverseFieldWidgets(w.widgetList, handler, w, staticWidgetsIncluded)
+      } else if (w.category === 'container') {  //自定义容器
+        traverseFieldWidgets(w.widgetList, handler, w, staticWidgetsIncluded)
+      }
+    })
+  }
 }
 
 export function traverseContainerWidgets(widgetList, handler) {
