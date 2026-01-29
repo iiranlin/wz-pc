@@ -39,8 +39,8 @@ const businessType = (data) => {
 
 /**
  * 审核通过
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export const passWorkFlow = (data) => {
     loading()
@@ -53,8 +53,8 @@ export const passWorkFlow = (data) => {
 
 /**
  * 修改后通过
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export const passEditWorkFlow = (data) => {
     return request({
@@ -66,8 +66,8 @@ export const passEditWorkFlow = (data) => {
 
 /**
  * 审批驳回
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export const rejectWorkFlow = (data) => {
     loading()
@@ -80,8 +80,8 @@ export const rejectWorkFlow = (data) => {
 
 /**
  * 审批列表
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const auditList = (params) => {
   return request({
@@ -110,8 +110,8 @@ export function commitNextAssignee(data) {
 
 /**
  * 待办数量
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const wfTodoCount = (params) => {
     return request({
@@ -123,8 +123,8 @@ export const wfTodoCount = (params) => {
 
 /**
  * 待处理列表
- * @param {*} params 
- * @returns 
+ * @param {*} params
+ * @returns
  */
 export const wfHandleList = (params) => {
     return request({
@@ -132,4 +132,12 @@ export const wfHandleList = (params) => {
         method: 'get',
         params
     })
+}
+// 催办功能
+export const urge = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/audit/sendApprovalReminderSMS`,
+    method: 'post',
+    data
+  })
 }

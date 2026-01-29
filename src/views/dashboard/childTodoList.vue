@@ -1,8 +1,8 @@
 <template>
   <div class="app-container container_flex">
-  
+
     <table-index ref="tableIndex"  :loading="loading" :selectShow="false"  idName="businessId" :tableData="dataList" :property="property"
-      :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton"
+      :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton" :button-disable="buttonDisabled"
       @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink">
     </table-index>
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
@@ -14,7 +14,7 @@
 <script>
 import mixins from '@/views/mixins'
 import workFlowView from '@/components/workFlowView'
-import { auditList } from '@/api/system/workflow'
+import { auditList,urge } from '@/api/system/workflow'
 import { FLOW_ROUTE } from '@/utils/constant'
 import { menuConfig } from '@/utils'
 import { findMenuByUrl } from "@/utils/index";
@@ -129,11 +129,38 @@ export default {
       this.multiple = multiple
       this.selected = selected
     },
+    //催办按钮控制
+    buttonDisabled(button, row) {
+      if (button.buttonCode == "urgeHandle" && (row.currentHandlerUserIds || row.isReminder === true)) {
+        return true;
+      }
+    },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData)
-      if (buttonCode == 'flowSee') {
+      if (buttonCode == 'flowSee') { // 流程查看
         this.workFlowViewVisible = true
         this.selectedRow = rowArr[0]
+      }
+      if(buttonCode == 'urgeHandle'){ // 催办功能
+        this.selectedRow = rowArr[0]
+        const params = {
+          businessId: this.selectedRow.businessId,
+          businessCode: this.selectedRow.businessCode,
+          businessType: this.selectedRow.businessType,
+          currentHandlerUserIds: this.selectedRow.currentHandlerUserIds,
+        };
+        this.$modal.confirm("确定要发送催办提醒吗?",'催办确认').then(() => {
+          return urge(params)
+        }).then((data) => {
+          if (data.success) {
+            this.getList();
+            this.$modal.msgSuccess("催办成功");
+          } else {
+            this.getList();
+            this.$modal.msgError(data.message);
+          }
+
+        }).catch(() => {});
       }
     },
     clickReset() {
