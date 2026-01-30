@@ -94,6 +94,7 @@
 
 <script>
 import * as Api from '@/api/purchase/contract.js'
+import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 import {
 	purchaseTypeFindAllList
 } from '@/api/purchase/type.js'
@@ -372,8 +373,15 @@ export default {
 				case 'addCertificate':
 					this.handAddCertificate(rowArr[0]);
 					break;
+        case "download":
+          this.handleExport(rowArr[0])
+          break;
 			}
 		},
+     // 下载合同核备单据信息
+    handleExport(obj) {
+      FileApi.customDownload({ businessType: 111, businessData: obj.id })
+    },
 		handAddCertificate(row) {
 			if (row != undefined) {
 				this.addStatus = true;
