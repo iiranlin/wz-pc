@@ -19,7 +19,7 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="name" label="标段简称" align="center"> </el-table-column>
+      <el-table-column prop="sectionName" label="标段简称" align="center"> </el-table-column>
       <el-table-column prop="amount" label="投资计划金额(万元)" align="center"> </el-table-column>
     </el-table>
 
@@ -30,14 +30,8 @@
 </template>
 
 <script>
-// import * as Api from '@/api/prodmgr-inv/project/contract.js'
+import * as Api from '@/api/prodmgr-inv/project/annualInvestmentPlan.js'
 
-// Mock 弹窗数据 - 标段投资计划明细
-const mockDialogData = {
-  'contract1': { name: '南京铁路一标段', amount: 12500 },
-  'contract2': { name: '南京铁路二标段', amount: 12892 },
-  'contract3': { name: '南京铁路三标段', amount: 18500 }
-};
 
 export default {
   // 标段投资计划明细弹窗 
@@ -52,7 +46,7 @@ export default {
     },
     methods: {
         open (data) {
-         this.getContractNameList(data)
+         this.getList(data)
             // this.tableData = data;
             this.visible = true;
         },
@@ -63,13 +57,11 @@ export default {
         handleCancel () {
             this.visible = false;
         },
-        async getContractNameList (ids){
+        async getList (ids){
           // 注释接口调用，使用mock数据
-          // const res = await Api.getContractNameList(ids)
-          // this.tableData = res.data.map(x => ({name:x}))
+          const res = await Api.detail(ids)
+          this.tableData = res.map(x => ({sectionName:x.sectionName , amount:x.amount}))
           
-          // 使用mock数据
-          this.tableData = (ids || []).map(id => mockDialogData[id] || { name: '未知标段', amount: 0 })
         }
     }
 }

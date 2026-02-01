@@ -11,7 +11,7 @@
         </el-select>
       </template>
       <!-- date 计划年度搜索,年选择器，并且保存后端为字符串 -->
-       <template #date="data">
+       <template #settlementYear="data">
           <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="选择年份" size="small" value-format="yyyy" style="width: 100%" />
        </template>
     </form-data>
@@ -29,7 +29,7 @@
           <template #sectionTotal="scoped">
             <el-button type="text" @click="
               () => {
-                  $refs.sellerDialogRef.open(scoped.data.contractIdList);
+                  $refs.sellerDialogRef.open(scoped.data.id);
               }
             ">
              展开
@@ -46,52 +46,9 @@
 
 <script>
 import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
-// import * as WzglApi from '@/api/prodmgr-inv/project/line.js'
-// import * as Api from '@/api/prodmgr-inv/project/settlementDetails.js'
+import * as WzglApi from '@/api/prodmgr-inv/project/line.js'
+import * as Api from '@/api/prodmgr-inv/project/annualInvestmentPlan.js'
 import indexMixin from "@/views/mixins";
-
-// Mock 数据
-const mockListData = {
-  records: [
-    {
-      id: '1',
-      date: '2026',
-      projectName: '新建南京北站站房',
-      sectionTotal: 25392,
-      constructionUnit: 1706169600000,
-      createUserName: '超级管理员',
-      total: 25392,
-      contractIdList: ['contract1', 'contract2']
-    },
-    {
-      id: '2',
-      date: '2026',
-      projectName: '新建南京上元门过江通道铁路',
-      sectionTotal: 18500,
-      constructionUnit: 1706256000000,
-      createUserName: '超级管理员',
-      total: 18500,
-      contractIdList: ['contract3']
-    },
-    {
-      id: '3',
-      date: '2026',
-      projectName: '新建上海至南京至合肥高速铁路',
-      sectionTotal: 32100,
-      constructionUnit: 1706342400000,
-      createUserName: '超级管理员',
-      total: 32100,
-      contractIdList: []
-    }
-  ],
-  total: 3
-};
-
-const mockLineOptions = [
-  { projectName: '南京铁路' },
-  { projectName: '上海高铁' },
-  { projectName: '杭州地铁' }
-];
 import Add from './components/add.vue'
 import SellerDialog from './components/sellerDialog.vue'
 export default {
@@ -132,7 +89,7 @@ export default {
       },
       // 查询参数
       formData: {
-        date: new Date().getFullYear().toString()
+        settlementYear: new Date().getFullYear().toString()
       },
       formDataClick: {},
       total: 0,
@@ -159,18 +116,12 @@ export default {
   methods: {
     getLineOptions() {
       // 注释接口调用，使用mock数据
-      // WzglApi.lineSelectOptions().then(({ data }) => {
-      //   this.lineOptions = data.map(x => ({
-      //     label: x.projectName,
-      //     value: x.projectName
-      //   }))
-      // })
-      
-      // 使用mock数据
-      this.lineOptions = mockLineOptions.map(x => ({
-        label: x.projectName,
-        value: x.projectName
-      }))
+      WzglApi.lineSelectOptions().then(({ data }) => {
+        this.lineOptions = data.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
     },
     buttonDisable(btn) {
       // 没有合同物资才允许删除
@@ -236,20 +187,12 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true
-      // 注释接口调用，使用mock数据
-      // Api.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
-      //   this.list = data.records
-      //   this.total = data.total
-      // }).finally(() => {
-      //   this.loading = false
-      // })
-      
-      // 使用mock数据
-      setTimeout(() => {
-        this.list = mockListData.records
-        this.total = mockListData.total
+      Api.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+        this.list = data.list
+        this.total = data.total
+      }).finally(() => {
         this.loading = false
-      }, 300)
+      })
     },
     handleSelectionChange(ids, single, multiple, selection) {
       this.ids = ids;
@@ -276,13 +219,7 @@ export default {
     },
     handleDelete(ids) {
       this.$modal.confirm("是否确认删除?").then(() => {
-        // 注释接口调用，使用mock删除
-        // return Api.batchRemove({ ids });
-        
-        // mock删除：从mock数据中移除对应id的数据
-        mockListData.records = mockListData.records.filter(item => !ids.includes(item.id))
-        mockListData.total = mockListData.records.length
-        return Promise.resolve()
+        return Api.batchRemove({ ids });
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -294,7 +231,7 @@ export default {
     },
     clickReset() {
       this.formData = {
-        date: new Date().getFullYear().toString()
+        settlementYear: new Date().getFullYear().toString()
       }
       this.handleQuery();
     },
