@@ -32,12 +32,13 @@ export const downloadSettlementList = (params) => {
  * 6:出库列表-下载出库单
  * 7:采购文件核备-下载采购文件
  * 8:自购物资价格预警弹窗-下载合同列表
- * 
+ *
  * 9:入库管理-退货管理-入库退货单下载
  * 10:初验收货管理-退货管理-收货退货单下载
  * 11:物资计划管理-用料需求管理-计划单下载(暂未确认)
  * 109:计划下达统计表下载
- **/ 
+ * 111:采购合同核备表下载
+ **/
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')
 }
@@ -46,7 +47,7 @@ export const customDownload = (params) => {
  * 通用文件上传接口
  * (@RequestParam("file") MultipartFile file, String businessType, String businessData)
  * businessType  1 合同导入上传；2 甲供物资导入上传； 3 创建需求计划导入上传； 4 自购合同物资明细导入上传
- *  */ 
+ *  */
 export const customUpload = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialBaseImport/import`,

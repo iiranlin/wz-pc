@@ -13,6 +13,7 @@
 
 <script>
 import mixins from '@/views/mixins'
+import dayjs from 'dayjs'
 import workFlowView from '@/components/workFlowView'
 import { auditList,urge } from '@/api/system/workflow'
 import { FLOW_ROUTE } from '@/utils/constant'
@@ -22,6 +23,7 @@ import { getUserMenu } from '@/api/system/menu'
 export default {
   name: "todoList",
   mixins: [mixins],
+  dicts: ['currency'],
   components: {
     workFlowView
   },
@@ -131,8 +133,28 @@ export default {
     },
     //催办按钮控制
     buttonDisabled(button, row) {
-      if (button.buttonCode == "urgeHandle" && (row.currentHandlerUserIds || row.isReminder === true)) {
-        return true;
+      if (button.buttonCode == "urgeHandle" ) {
+        if(!row.currentHandlerUserIds){   //判断有值的话，才可以选择
+          return true; // 禁选
+        } else if(row.isReminder === true){ //判断未催办的话，才可以选择
+          return true; // 禁选
+        } else if(!row.lastHandleDate){ //判断最后操作时间有值的话，才可以选择
+          return true; // 禁选
+        }
+
+        const now = dayjs();
+        const lastHandleTime = dayjs(row.lastHandleDate);
+        const secondsDiff = now.diff(lastHandleTime, 'second'); // 改为秒级别计算
+        // 获取字典配置时间默认小时
+        const reminderTime = +this.dict.type.currency.find(x => x.value === 'reminderTime')?.raw.remark
+
+        // ⚠️ 测试配置: 5秒后显示催办按钮 (正式环境改为: 72 * 60 * 60 = 259200秒)
+        const URGE_THRESHOLD_SECONDS = reminderTime * 60 * 60; // 可手动调整此值进行测试
+
+        console.log(`[催办] 业务编码: ${row.businessCode}, 时间差: ${secondsDiff}秒, 阈值: ${URGE_THRESHOLD_SECONDS}秒`);
+
+        //间隔时间大于规定时间，才可以点击
+        return secondsDiff < URGE_THRESHOLD_SECONDS;
       }
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
