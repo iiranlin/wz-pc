@@ -58,7 +58,7 @@
           ></el-table-column> -->
 
           <!-- 条件渲染：仅在总表中显示 -->
-          <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center">
+          <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="250" align="center">
             <template slot-scope="scope">
               <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId"
                 placeholder="请选择标段项目名称" size="mini" @change="handleFieldChange('sectionId', scope.row)"
