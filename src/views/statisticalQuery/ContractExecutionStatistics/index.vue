@@ -169,7 +169,7 @@
         this.globalSearchParams = params;
         contractPerformStatistics(params).then(({ data }) => {
           this.list = data;
-          // this.total = data.total;
+          this.total = this.list.length;
           this.loading = false;
         });
       },
