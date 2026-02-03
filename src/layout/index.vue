@@ -12,6 +12,8 @@
         <settings />
       </right-panel>
     </div>
+    <!-- 项目选择弹窗（首次加载不可取消） -->
+    <select-project ref="selectProjectDialog" :showCancelButton="true"></select-project>
   </div>
 </template>
 
@@ -21,6 +23,7 @@ import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 import variables from '@/assets/styles/variables.scss'
+import SelectProject from '@/components/SelectProject'
 
 export default {
   name: 'Layout',
@@ -30,7 +33,8 @@ export default {
     RightPanel,
     Settings,
     Sidebar,
-    TagsView
+    TagsView,
+    SelectProject
   },
   mixins: [ResizeMixin],
   computed: {
@@ -57,6 +61,26 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    }
+  },
+  async created() {
+    try {
+      // 获取可选项目列表
+      const res = await this.$store.dispatch('GetSameProjectUser')
+      const projectList = res?.data || []
+      
+      // 如果有多个项目且是首次加载，自动弹出项目选择弹窗
+      if (projectList.length > 1 && !sessionStorage.getItem('firstLoadDialog')) {
+        sessionStorage.setItem('firstLoadDialog', 'true')
+        this.$nextTick(() => {
+          if (this.$refs.selectProjectDialog) {
+            this.$refs.selectProjectDialog.dialogShow = true
+            this.$store.commit('SET_SELECT_PROJECT_DIALOG', true)
+          }
+        })
+      }
+    } catch (error) {
+      console.warn('获取项目列表失败:', error)
     }
   }
 }

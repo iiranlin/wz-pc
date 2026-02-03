@@ -119,3 +119,14 @@ export const testSSO = ()=>{
       method: 'get',
   })
 }
+
+/**
+ * 获取登录账号下相同标段的账号
+ * @returns {Promise} 可选项目列表
+ */
+export function getLoginSelectUser() {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/loginSelect/selectUser`,
+    method: 'GET'
+  })
+}
