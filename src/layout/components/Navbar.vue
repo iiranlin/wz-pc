@@ -27,6 +27,9 @@
                     <el-dropdown-item @click.native="setting = true">
                         <span>布局设置</span>
                     </el-dropdown-item>
+                    <el-dropdown-item divided @click.native="switchProject">
+                        <span>切换项目</span>
+                    </el-dropdown-item>
                     <el-dropdown-item divided @click.native="updatePwd">
                         <span>修改密码</span>
                     </el-dropdown-item>
@@ -59,6 +62,7 @@
         <update-password ref="updatePassword"></update-password>
         <inspection-info ref="inspectionInfo"></inspection-info>
         <helpDoc ref="helpDoc"></helpDoc>
+        <select-project ref="selectProject" :showCancelButton="true"></select-project>
     </div>
 </template>
 
@@ -77,6 +81,7 @@ import { systemPassportConfig } from '@/api/system'
 import { i18nList } from '@/api/system/i18n'
 import helpDoc from './helpDoc'
 import { IDB } from '@/utils'
+import SelectProject from '@/components/SelectProject'
 export default {
     components: {
         Breadcrumb,
@@ -88,7 +93,8 @@ export default {
         Sidebara,
         UpdatePassword,
         InspectionInfo,
-        helpDoc
+        helpDoc,
+        SelectProject
     },
     computed: {
         ...mapGetters([
@@ -147,6 +153,11 @@ export default {
         /**修改密码*/
         updatePwd() {
             this.$refs.updatePassword.initUpdatePassword(true, false, this.name)
+        },
+        /**切换项目*/
+        switchProject() {
+            this.$refs.selectProject.dialogShow = true
+            this.$store.commit('SET_SELECT_PROJECT_DIALOG', true)
         },
         goFeedback() {
             systemPassportConfig().then(({ success, data }) => {

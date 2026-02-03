@@ -1,4 +1,4 @@
-import { login, logout, info } from '@/api/login'
+import { login, logout, info, getLoginSelectUser } from '@/api/login'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { systemConfig } from '@/api/system'
@@ -24,7 +24,9 @@ const user = {
     avatar: '',
     roles: false,
     logoutMode: null,
-    logoutReturnUrl: ''
+    logoutReturnUrl: '',
+    selectProjectDialog: false,
+    selectProjectUserData: []
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -44,6 +46,12 @@ const user = {
     },
     SET_LOGOUTRETURNURL: (state, logoutReturnUrl) =>{
       state.logoutReturnUrl = logoutReturnUrl
+    },
+    SET_SELECT_PROJECT_DIALOG: (state, selectProjectDialog) => {
+      state.selectProjectDialog = selectProjectDialog
+    },
+    SET_SELECT_PROJECT_USER_DATA: (state, selectProjectUserData) => {
+      state.selectProjectUserData = selectProjectUserData
     }
   },
   actions: {
@@ -94,6 +102,27 @@ const user = {
         }).catch(err=>{
           reject(err)
         })
+      })
+    },
+
+    // 获取登录账号下相同标段的账号
+    GetSameProjectUser({ commit }) {
+      return new Promise((resolve, reject) => {
+        getLoginSelectUser()
+          .then(res => {
+            if (res.success) {
+              const userData = res.data || []
+              commit('SET_SELECT_PROJECT_USER_DATA', userData)
+              resolve(res)
+            } else {
+              commit('SET_SELECT_PROJECT_USER_DATA', [])
+              resolve(res)
+            }
+          })
+          .catch(error => {
+            commit('SET_SELECT_PROJECT_USER_DATA', [])
+            reject(error)
+          })
       })
     },
    
