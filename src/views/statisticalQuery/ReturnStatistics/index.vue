@@ -74,7 +74,7 @@
         </el-button>
       </template>
       <template #backNumber="scope">
-        <el-button type="text" @click="toReturnDetailByType(scope.data)">
+        <el-button type="text" style="color: #5854f8" @click="toReturnDetailByType(scope.data)">
           {{ scope.value }}
         </el-button>
       </template>
@@ -243,8 +243,9 @@
             name: "returnDetail_im",
             query: { id: row.cirId, type: "view" },
           });
+        }else {
+          console.log('无匹配类型进入详情页')
         }
-        // this.$router.push({ name: 'detailContract', query: { id: row.contractId, type: 'view' } })
       },
       handleButton(buttonCode, idArr, rowArr, { buttonData }) {
         this.proxyPrint(buttonCode, rowArr, buttonData);

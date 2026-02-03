@@ -59,7 +59,7 @@
           type="text"
           @click="toDetail(scoped.data)"
         >
-          {{ scoped.data.projectName }}
+          {{ scoped.data.projectShortName }}
         </el-button>
       </template>
       <template #planAmountRatio="scoped">
