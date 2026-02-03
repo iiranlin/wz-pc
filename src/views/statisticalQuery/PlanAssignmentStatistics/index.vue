@@ -77,7 +77,7 @@ import { getContractPlanStatistics } from "@/api/prodmgr-inv/project/contract.js
 import indexMixin from "@/views/mixins";
 import dayjs from "dayjs";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
-import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 export default {
   name: "planAssignmentStatistics",
   mixins: [indexMixin],
@@ -130,12 +130,12 @@ export default {
   },
   methods: {
      getLineOptions() {
-      WzglApi.lineSelectOptions({pageStatus: '1'}).then(({ data }) => {
-        this.lineOptions = data.map(x => ({
-          label: x.projectName,
-          value: x.projectName
-        }))
-      })
+       LineApi.getSnAllProjectByUserId().then(({ data }) => {
+         this.lineOptions = data.map(x => ({
+           label: x.projectName,
+           value: x.projectName
+         }))
+       })
     },
     // 初始化默认日期为最近一个月
     initDefaultDate() {

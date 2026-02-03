@@ -46,7 +46,7 @@
 
 <script>
 import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
-import * as WzglApi from '@/api/prodmgr-inv/project/line.js'
+import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as Api from '@/api/prodmgr-inv/project/settlementDetails.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     getLineOptions() {
-      WzglApi.lineSelectOptions().then(({ data }) => {
+      LineApi.getSnAllProjectByUserId().then(({ data }) => {
         this.lineOptions = data.map(x => ({
           label: x.projectName,
           value: x.projectName

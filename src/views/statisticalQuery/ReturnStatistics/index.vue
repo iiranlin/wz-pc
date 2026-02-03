@@ -98,7 +98,7 @@
 <script>
   import indexMixin from "@/views/mixins";
   import dayjs from "dayjs";
-  import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+  import * as LineApi from '@/api/prodmgr-inv/project/line.js'
   import * as FileApi from "@/api/prodmgr-inv/project/file.js";
   import {refundStatistics}  from "@/api/statisticalQuery/ContractStatistics.js";
   import { newListByDeptCode } from '@/api/system/dept.js'
@@ -148,10 +148,10 @@
     },
     methods:{
       getLineOptions() {
-        WzglApi.lineSelectOptions({pageStatus: '1'}).then(({ data }) => {
+        LineApi.getSnAllProjectByUserId().then(({ data }) => {
           this.lineOptions = data.map(x => ({
             label: x.projectName,
-            value: x.projectId
+            value: x.id
           }))
         })
       },

@@ -75,7 +75,7 @@
 <script>
   import indexMixin from "@/views/mixins";
   import dayjs from "dayjs";
-  import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+  import * as LineApi from '@/api/prodmgr-inv/project/line.js'
   import * as FileApi from "@/api/prodmgr-inv/project/file.js";
   import {contractPerformStatistics}  from "@/api/statisticalQuery/ContractStatistics.js";
   import { newListByDeptCode } from '@/api/system/dept.js'
@@ -125,10 +125,10 @@
     },
     methods:{
       getLineOptions() { // 建设项目下拉框读取
-        WzglApi.lineSelectOptions({pageStatus: '1'}).then(({ data }) => {
+        LineApi.getSnAllProjectByUserId().then(({ data }) => {
           this.lineOptions = data.map(x => ({
             label: x.projectName,
-            value: x.projectId
+            value: x.id
           }))
         })
       },
@@ -148,8 +148,6 @@
         this.formData = {
           settlementDate: [],
         };
-        // 恢复默认日期为最近一个月
-        this.initDefaultDate();
         this.handleQuery();
       },
       emitAblFilter(listQuery) {
@@ -202,7 +200,7 @@
       handleButton(buttonCode, idArr, rowArr, { buttonData }) {
         this.proxyPrint(buttonCode, rowArr, buttonData);
         switch (buttonCode) {
-          case "exportFile":
+          case "download":
             this.handleDonwload(idArr[0]);
 
             break;
