@@ -125,3 +125,15 @@ export function adjustInExport(data) {
   return download(`${VUE_APP_PRODMGR_INV}/adjustIn/export`, data)
 }
 
+/**
+ * 获取建设项目下拉
+ * @param {*} params 
+ * @returns 
+ */
+export const getSnAllProjectByUserId = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialProject/getSnAllProjectByUserId`,
+        method: 'get',
+        params
+    })
+}
