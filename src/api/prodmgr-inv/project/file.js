@@ -37,6 +37,7 @@ export const downloadSettlementList = (params) => {
  * 10:初验收货管理-退货管理-收货退货单下载
  * 11:物资计划管理-用料需求管理-计划单下载(暂未确认)
  * 109:计划下达统计表下载
+ * 110:项目结算统计下载
  * 111:采购合同核备表下载
  **/
 export const customDownload = (params) => {

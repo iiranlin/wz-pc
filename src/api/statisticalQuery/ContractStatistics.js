@@ -1,15 +1,25 @@
 import request from '@/utils/request'
-let VUE_APP_WORK_FLOW_SERVER = process.env.VUE_APP_WORK_FLOW_SERVER;
+let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
 
 /**
- * 审批列表
- * @param {*} params 
- * @returns 
+ * 合同执行统计查询列表
+ * @param params
  */
-export const auditList = (params) => {
+export const contractPerformStatistics = (params) => {
   return request({
-      url: `${VUE_APP_WORK_FLOW_SERVER}/wf/todoList`,
-      method: 'get',
-      params
+    url: `${VUE_APP_PRODMGR_INV}/materialProjectStatistics/contractPerformStatistics`,
+    method: 'get',
+    params
+  })
+}
+/**
+ * 退货统计
+ * @param params
+ */
+export const refundStatistics = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialProjectStatistics/refundStatistics`,
+    method: 'get',
+    params
   })
 }

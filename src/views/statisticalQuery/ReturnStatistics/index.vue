@@ -13,25 +13,36 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       @handleResetField="handleResetField"
-      labelWidth="100px">
-        <template #returnProcess="data">
-          <el-select
-            class="select-box"
-            v-model="formData[data.data.fieldCode]"
-            :placeholder="'请选择退货环节'"
-            clearable
-            style="width: 100%"
-            size="small"
-          >
-            <el-option
-              v-for="(item, key) in Object.keys(returnProcess) "
-              :key="item"
-              :label="returnProcess[item]"
-              :value="item"
-            />
-          </el-select>
-        </template>
-      </form-data>
+    >
+      <!-- 买方 -->
+      <template #constructionUnitId="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择买方'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in buyerOptions" :key="key" :label="item.label" :value="item.value" />
+        </el-select>
+      </template>
+
+      <!-- 建设项目 -->
+      <template #projectId="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.value" />
+        </el-select>
+      </template>
+
+      <template #backDate>
+        <!-- 退货日期范围 -->
+        <el-date-picker
+          v-model="formData.backDate"
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </template>
+    </form-data>
+
     <right-toolbar
       ref="rightToolbar"
       :formData="formDataClick"
@@ -44,18 +55,37 @@
       @numberChange="numberChange"
       @cleanClick="cleanClick"
     ></right-toolbar>
+
     <table-index
       ref="tableIndex"
       :loading="loading"
-      idName="taskId"
       :tableIndexs="tableIndex"
+      idName="taskId"
       :tableData="list"
       :property="property"
       :numberShow="numberShow"
       @handleSelectionChange="handleSelectionChange"
       @handleButton="handleButton"
       @emitAblFilter="emitAblFilter"
-    />
+    >
+      <template #contractNo="scope">
+        <el-button type="text" @click="onGoDetail(scope.data)">
+          {{ scope.value }}
+        </el-button>
+      </template>
+      <template #backNumber="scope">
+        <el-button type="text" @click="toReturnDetailByType(scope.data)">
+          {{ scope.value }}
+        </el-button>
+      </template>
+      <template #date="scope">
+        {{ scope.data.backDate }}
+      </template>
+      <template #refundType="scope">
+        {{ scope.data.refundType == '1'?'初验收货':scope.data.refundType == '2'?'质检入库':'无'}}
+      </template>
+    </table-index>
+
     <pagination
       v-show="total > 0"
       :total="total"
@@ -65,114 +95,178 @@
     />
   </div>
 </template>
-
 <script>
-import { auditList } from "@/api/statisticalQuery/ReturnStatistics.js";
-import indexMixin from "@/views/mixins";
-export default {
-  name: "ReturnStatistics",
-  mixins: [indexMixin],
-  data() {
-    const returnProcess = {
-      '1': '验收不通过',
-      '2': '报检不通过',
-    }
-    return {
-      returnProcess: returnProcess,
-      formDataClick: {},
-      // 遮罩层
-      loading: false,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 表格数据
-      list: [],
-      // 日期范围
-      dateRange: [],
-      // 表格序号是否展示
-      numberShow: true,
-      // 页面属性
-      property: { fields: [{ isAdd: 1, isEdit: 1 }] },
-      total: 0,
-      listQuery: {
-        pageNum: 1,
-        pageSize: 30,
-      },
-      formData: {
-        status: "2",
-      },
-      visible: false,
-      metaId: this.$route.meta.id,
-      selected: [],
-      selectedRow: null,
-    };
-  },
-  created() {
-    this.$store.dispatch("menuProperty", this.metaId).then((data) => {
-      this.listQuery.pageSize = data.defaultPageSize || 30;
-      this.property = data;
-    });
-  },
-  methods: {
-    numberChange(val) {
-      this.numberShow = val;
-    },
-    newButton(buttonCode, formId, buttonData) {
-      this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData);
-    },
-    handleCheckAllChange(columns) {
-      this.$refs.tableIndex.init(columns);
-    },
-    clickReset() {
-      this.handleQuery();
-    },
-    clearSearch() {
-      this.getList();
-    },
-    handleQuery(row = {}) {
-      this.listQuery.pageNum = 1;
-      this.formData = Object.assign({}, this.formData, row);
-      this.formDataClick = Object.assign({}, this.formData, row);
-      this.getList();
-    },
-    emitAblFilter(listQuery) {
-      // this.dateRange = [];
-      // this.getList();
-      this.listQuery = Object.assign({}, this.listQuery, listQuery);
-      this.handleQuery();
-    },
-    menuSuccess() {
-      this.handleQuery();
-    },
-    handleSelectionChange(ids, single, multiple, selected) {
-      this.single = single;
-      this.multiple = multiple;
-      this.selected = selected;
-    },
-    /** 查询菜单列表 */
-    getList() {
-      this.loading = true;
-      auditList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
-        this.list = data.list;
-        this.total = data.total;
-        this.loading = false;
-      });
-    },
-    handleButton(buttonCode, idArr, rowArr, { buttonData }) {
-      this.proxyPrint(buttonCode, rowArr, buttonData);
-      switch (buttonCode) {
-        case "download":
-          console.log("download");
-          break;
-        default:
-          break;
+  import indexMixin from "@/views/mixins";
+  import dayjs from "dayjs";
+  import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+  import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+  import {refundStatistics}  from "@/api/statisticalQuery/ContractStatistics.js";
+  import { newListByDeptCode } from '@/api/system/dept.js'
+  export default {
+    name: "ProjectSettlementStatistics",
+    mixins: [indexMixin],
+    data() {
+      return {
+        // 页面属性
+        property: { fields: [{ isAdd: 1, isEdit: 1 }] },
+        metaId: this.$route.meta.id,
+        total: 0,
+        loading:false,
+        listQuery: {
+          pageNum: 1,
+          pageSize: 30,
+        },
+        formData: {
+          backDate: [], // 日期范围
+        },
+        formDataClick: {},
+        lineOptions:[],
+        selected: [],
+        // 表格数据
+        list: [],
+        // 日期范围
+        dateRange: [],
+        // 表格序号是否展示
+        numberShow: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        globalSearchParams:null,
+        buyerOptions:[]
       }
     },
-  },
-};
+    created() {
+      this.$store.dispatch("menuProperty", this.metaId).then((data) => {
+        this.listQuery.pageSize = data.defaultPageSize || 30;
+        this.property = data;
+      });
+      this.getLineOptions()
+      this.getBuyerOptionsOptions()
+    },
+    methods:{
+      getLineOptions() {
+        WzglApi.lineSelectOptions({pageStatus: '1'}).then(({ data }) => {
+          this.lineOptions = data.map(x => ({
+            label: x.projectName,
+            value: x.projectId
+          }))
+        })
+      },
+      getBuyerOptionsOptions() { // 买方(枢纽指挥部)下拉框读取
+        newListByDeptCode({deptCodePrefix:'SN',status:''}).then(({ data }) => {
+          this.buyerOptions = data.map(x => ({
+            value: x.id,
+            label: x.deptName
+          }))
+        })
+      },
+      newButton(buttonCode, formId, buttonData) {
+        this.$refs.tableIndex.newButton(buttonCode, {}, formId, buttonData);
+      },
+      // 重置表单时恢复默认日期
+      handleResetField() {
+        this.formData = {
+          backDate: [],
+        };
+        this.handleQuery();
+      },
+      emitAblFilter(listQuery) {
+        this.listQuery = Object.assign({}, this.listQuery, listQuery);
+        this.handleQuery();
+      },
+      handleQuery(row = {}) {
+        this.listQuery.pageNum = 1;
+        this.formData = Object.assign({}, this.formData, row);
+        this.formDataClick = Object.assign({}, this.formData, row);
+        this.getList();
+      },
+      /** 查询菜单列表 */
+      getList() {
+        this.loading = true;
+        // 处理日期范围，转换为 startDate 和 endDate
+        const params = { ...this.listQuery, ...this.formData };
+        if (this.formData.backDate && this.formData.backDate.length === 2) {
+          params.startDate = this.formData.backDate[0];
+          params.endDate = this.formData.backDate[1];
+          delete params.backDate; // 移除原始日期范围字段
+        }
+
+        this.globalSearchParams = params;
+        refundStatistics(params).then(({ data }) => {
+          this.list = data;
+          if(this.list && this.list.length>0){
+            this.list.map(item =>{
+              item.backDate = dayjs(item.backDate).format('YYYY-MM-DD'); // 将时间戳转换为日期格式
+            })
+          }
+          this.total = this.list.length;
+          this.loading = false;
+        });
+      },
+      handleCheckAllChange(columns) {
+        this.$refs.tableIndex.init(columns);
+      },
+      clickReset() {
+        this.handleQuery();
+      },
+      numberChange(val) {
+        this.numberShow = val;
+      },
+      cleanClick(data) {
+        for (const key of data) {
+          if (key.indexOf('Start') != -1 || key.indexOf('End') != -1) {
+            this.$refs.formData.resetQueryDateRange(key);
+          }
+          this.formData[key] = null;
+        }
+        this.handleQuery();
+      },
+      handleSelectionChange(ids, single, multiple, selected) {
+        this.single = single;
+        this.multiple = multiple;
+        this.selected = selected;
+      },
+      onGoDetail (row) {
+        this.$router.push({ name: 'detailContract', query: { id: row.contractId, type: 'view' } })
+      },
+      toReturnDetailByType(row){
+        if(row.refundType == '1'){ // 初验收货详情界面
+          this.$router.push({
+            name: "returnDetail_sh",
+            query: { id: row.cirId, type: "view" },
+          });
+        }else if(row.refundType == '2'){ // 质检入库详情界面
+          this.$router.push({
+            name: "returnDetail_im",
+            query: { id: row.cirId, type: "view" },
+          });
+        }
+        // this.$router.push({ name: 'detailContract', query: { id: row.contractId, type: 'view' } })
+      },
+      handleButton(buttonCode, idArr, rowArr, { buttonData }) {
+        this.proxyPrint(buttonCode, rowArr, buttonData);
+        switch (buttonCode) {
+          case "download":
+            this.handleDonwload(idArr[0]);
+
+            break;
+          default:
+            break;
+        }
+      },
+      async handleDonwload(id) {
+        try {
+          this.loading = true;
+          await FileApi.customDownload({ businessType:109,businessData:  JSON.stringify(this.globalSearchParams) });
+        } catch (error) {
+          this.$modal.msgError("下载失败，请重试");
+        } finally {
+          this.loading = false;
+        }
+      },
+    }
+  }
 </script>
