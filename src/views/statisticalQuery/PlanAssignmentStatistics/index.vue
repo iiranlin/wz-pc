@@ -130,7 +130,7 @@ export default {
   },
   methods: {
      getLineOptions() {
-       LineApi.getSnAllProjectByUserId().then(({ data }) => {
+       LineApi.lineSelectOptions().then(({ data }) => {
          this.lineOptions = data.map(x => ({
            label: x.projectName,
            value: x.projectName

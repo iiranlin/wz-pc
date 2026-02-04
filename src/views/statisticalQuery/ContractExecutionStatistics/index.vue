@@ -129,7 +129,7 @@
     },
     methods:{
       getLineOptions() { // 建设项目下拉框读取
-        LineApi.getSnAllProjectByUserId().then(({ data }) => {
+        LineApi.lineSelectOptions().then(({ data }) => {
           this.lineOptions = data.map(x => ({
             label: x.projectName,
             value: x.id
