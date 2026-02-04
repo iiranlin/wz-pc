@@ -196,13 +196,8 @@
 
         this.globalSearchParams = params;
         refundStatistics(params).then(({ data }) => {
-          this.list = data;
-          if(this.list && this.list.length>0){
-            this.list.map(item =>{
-              item.backDate = dayjs(item.backDate).format('YYYY-MM-DD'); // 将时间戳转换为日期格式
-            })
-          }
-          this.total = this.list.length;
+          this.list = data.list;
+          this.total = data.total;  
           this.loading = false;
         });
       },

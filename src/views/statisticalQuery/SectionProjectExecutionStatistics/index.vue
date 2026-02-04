@@ -200,8 +200,8 @@ export default {
       const params = { ...this.listQuery, ...this.formData };
       this.globalSearchParams = params;
       getSectionPerformStatistics(params).then(({ data }) => {
-        this.list = data;
-        this.total = this.list.length;
+        this.list = data.list;
+        this.total = data.total;
         this.loading = false;
       });
     },

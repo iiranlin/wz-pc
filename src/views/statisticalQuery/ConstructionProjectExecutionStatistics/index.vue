@@ -202,9 +202,8 @@ export default {
       const params = { ...this.listQuery, ...this.formData };
       this.globalSearchParams = params;
       performStatistics(params).then(({ data }) => {
-        console.log(data)
-        this.list = data;
-        this.total = data.length;
+        this.list = data.list;
+        this.total = data.total;
         this.loading = false;
       });
     },
