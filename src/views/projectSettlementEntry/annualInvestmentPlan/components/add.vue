@@ -45,7 +45,7 @@
             <template v-for="item in sectionOptions">
               <el-form-item
                 :key="item.value"
-                :label="`${item.label}投资计划(万元)`"
+                :label="`${item.label}投资计划(元)`"
                 :prop="`sectionValue_${item.value}`"
                 :rules="[{ required: true, message: '请输入投资计划金额', trigger: ['blur', 'change'] }]"
                 class="label-top-layout"
