@@ -261,7 +261,7 @@
       async handleDonwload(id) {
         try {
           this.loading = true;
-          await FileApi.customDownload({ businessType:109,businessData:  JSON.stringify(this.globalSearchParams) });
+          await FileApi.customDownload({ businessType:115,businessData:  JSON.stringify(this.globalSearchParams) });
         } catch (error) {
           this.$modal.msgError("下载失败，请重试");
         } finally {

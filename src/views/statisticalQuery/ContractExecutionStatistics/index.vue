@@ -61,6 +61,10 @@
           {{ scope.value }}
         </el-button>
       </template>
+      <template #planAmountRatio="scoped">
+        {{scoped.data.planAmountRatio || 0}}%
+      </template>
+
     </table-index>
 
     <pagination
@@ -211,7 +215,7 @@
       async handleDonwload(id) {
         try {
           this.loading = true;
-          await FileApi.customDownload({ businessType:109,businessData:  JSON.stringify(this.globalSearchParams) });
+          await FileApi.customDownload({ businessType:114,businessData:  JSON.stringify(this.globalSearchParams) });
         } catch (error) {
           this.$modal.msgError("下载失败，请重试");
         } finally {
