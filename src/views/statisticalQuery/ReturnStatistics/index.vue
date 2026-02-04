@@ -30,10 +30,10 @@
         </el-select>
       </template>
 
-      <template #backDate>
-        <!-- 退货日期范围 -->
+      <!-- 退货日期范围 -->
+      <template #date>
         <el-date-picker
-          v-model="formData.backDate"
+          v-model="formData.date"
           type="daterange"
           value-format="yyyy-MM-dd"
           range-separator="至"
@@ -78,9 +78,6 @@
           {{ scope.value }}
         </el-button>
       </template>
-      <template #date="scope">
-        {{ scope.data.backDate }}
-      </template>
       <template #refundType="scope">
         {{ scope.data.refundType == '1'?'初验收货':scope.data.refundType == '2'?'质检入库':'无'}}
       </template>
@@ -117,7 +114,7 @@
           pageSize: 30,
         },
         formData: {
-          backDate: [], // 日期范围
+          date: [], // 日期范围
         },
         formDataClick: {},
         lineOptions:[],
@@ -169,7 +166,7 @@
       // 重置表单时恢复默认日期
       handleResetField() {
         this.formData = {
-          backDate: [],
+          date: [],
         };
         this.handleQuery();
       },
@@ -181,21 +178,21 @@
         this.listQuery.pageNum = 1;
         this.formData = Object.assign({}, this.formData, row);
         this.formDataClick = Object.assign({}, this.formData, row);
+        if (this.formData.date) {
+          this.formData.startDate = this.formData.date[0];
+          this.formData.endDate = this.formData.date[1];
+        }
         this.getList();
       },
       /** 查询菜单列表 */
       getList() {
         this.loading = true;
-        // 处理日期范围，转换为 startDate 和 endDate
-        const params = { ...this.listQuery, ...this.formData };
-        if (this.formData.backDate && this.formData.backDate.length === 2) {
-          params.startDate = this.formData.backDate[0];
-          params.endDate = this.formData.backDate[1];
-          delete params.backDate; // 移除原始日期范围字段
-        }
+
+        const params = Object.assign({}, this.listQuery, this.formData);
 
         this.globalSearchParams = params;
         refundStatistics(params).then(({ data }) => {
+
           this.list = data.list;
           this.total = data.total;  
           this.loading = false;
