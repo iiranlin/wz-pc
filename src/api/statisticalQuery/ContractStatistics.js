@@ -23,3 +23,14 @@ export const refundStatistics = (params) => {
     params
   })
 }
+/**
+ * 投资计划完成统计查询
+ * @param params
+ */
+export const investStatistics = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialProjectStatistics/investStatistics`,
+    method: 'get',
+    params
+  })
+}

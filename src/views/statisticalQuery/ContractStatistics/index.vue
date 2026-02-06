@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import { auditList } from "@/api/statisticalQuery/ContractStatistics.js";
 import indexMixin from "@/views/mixins";
 export default {
   name: "ContractStatistics",
@@ -135,11 +134,11 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      auditList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+      /*xxx(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list;
         this.total = data.total;
         this.loading = false;
-      });
+      });*/
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData);

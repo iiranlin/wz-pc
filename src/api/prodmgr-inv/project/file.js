@@ -43,6 +43,7 @@ export const downloadSettlementList = (params) => {
  * 113:标段项目统计下载
  * 114:合同统计执行下载
  * 115:退货统计下载
+ * 116:投资计划下达统计
  **/
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')

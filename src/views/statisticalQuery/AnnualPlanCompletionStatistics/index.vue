@@ -13,16 +13,17 @@
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
       @handleResetField="handleResetField"
+      label-width="120px"
     >
-      <!-- date 计划年度搜索,年选择器，并且保存后端为字符串 -->
-      <template #year="data">
+      <!-- 计划年度搜索 -->
+      <template #settlementYear="data">
         <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="选择年份" size="small" value-format="yyyy" style="width: 100%" />
       </template>
       <!-- 建设物资 -->
-      <template #projectName="data">
+      <template #projectId="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
           " clearable style="width: 100%" size="small">
-          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.value" />
         </el-select>
       </template>
     </form-data>
@@ -52,18 +53,8 @@
       @handleButton="handleButton"
       @emitAblFilter="emitAblFilter"
     >
-      <!-- <template #date="scope">
-         {{ scope.data.createDateStart | formatDate  }} 至 {{ scope.data.createDateEnd | formatDate }}
-       </template>-->
-      <!-- 标段投资计划明细 -->
-      <template #sectionDetail="scoped">
-        <el-button type="text" @click="
-              () => {
-                  $refs.sectionDialogRef.open(scoped.data.contractIdList);
-              }
-            ">
-          展开
-        </el-button>
+      <template #amountRatio="scoped">
+        {{scoped.data.amountRatio || 0}}%
       </template>
     </table-index>
 
@@ -74,9 +65,6 @@
       :limit.sync="listQuery.pageSize"
       @pagination="getList"
     />
-
-    <!--展开弹窗-->
-    <SectionDialog ref="sectionDialogRef" />
   </div>
 </template>
 <script>
@@ -84,51 +72,14 @@
   import dayjs from "dayjs";
   import * as LineApi from '@/api/prodmgr-inv/project/line.js'
   import * as FileApi from "@/api/prodmgr-inv/project/file.js";
-  import SectionDialog from './components/sectionDialog'
-  // Mock 数据
-  const mockListData = {
-    records: [
-      {
-        id: '1',
-        date: '2026',
-        projectName: '新建南京北站站房',
-        sectionTotal: 25392,
-        constructionUnit: 1706169600000,
-        createUserName: '超级管理员',
-        total: 25392,
-        contractIdList: ['contract1', 'contract2']
-      },
-      {
-        id: '2',
-        date: '2026',
-        projectName: '新建南京上元门过江通道铁路',
-        sectionTotal: 18500,
-        constructionUnit: 1706256000000,
-        createUserName: '超级管理员',
-        total: 18500,
-        contractIdList: ['contract3']
-      },
-      {
-        id: '3',
-        date: '2026',
-        projectName: '新建上海至南京至合肥高速铁路',
-        sectionTotal: 32100,
-        constructionUnit: 1706342400000,
-        createUserName: '超级管理员',
-        total: 32100,
-        contractIdList: []
-      }
-    ],
-    total: 3
-  };
+  import {investStatistics}  from "@/api/statisticalQuery/ContractStatistics.js";
   export default {
-    name: "ProjectSettlementStatistics",
+    name: "AnnualPlanCompletionStatistics",
     mixins: [indexMixin],
-    components: { SectionDialog },
     data() {
       return {
-        // 页面属性
         property: { fields: [{ isAdd: 1, isEdit: 1 }] },
+        // 页面属性
         metaId: this.$route.meta.id,
         total: 0,
         loading:false,
@@ -137,7 +88,7 @@
           pageSize: 30,
         },
         formData: {
-          year: '', // 日期
+          settlementYear: '', // 日期
         },
         formDataClick: {},
         lineOptions:[],
@@ -172,14 +123,14 @@
       initDefaultDate() {
         const currentDate = dayjs(); // 获取当前日期
         const lastYear = currentDate.subtract(1, 'year');
-        this.formData.year = lastYear.format('YYYY')
+        this.formData.settlementYear = lastYear.format('YYYY')
       },
 
       getLineOptions() {
-        LineApi.getSnAllProjectByUserId().then(({ data }) => {
+        LineApi.lineSelectOptions().then(({ data }) => {
           this.lineOptions = data.map(x => ({
             label: x.projectName,
-            value: x.projectName
+            value: x.id
           }))
         })
       },
@@ -188,7 +139,7 @@
       },
       // 重置表单时恢复默认日期
       handleResetField() {
-        this.formData.year = ''
+        this.formData.settlementYear = ''
         this.initDefaultDate();
         this.handleQuery();
       },
@@ -204,25 +155,14 @@
       },
       /** 查询菜单列表 */
       getList() {
-        /*this.loading = true;
-
-        // 处理日期范围，转换为 startDate 和 endDate
-        const params = { ...this.listQuery, ...this.formData };
-
+        this.loading = true;
+        const params = Object.assign({}, this.listQuery, this.formData);
         this.globalSearchParams = params;
-
-        getContractPlanStatistics(params).then(({ data }) => {
+        investStatistics(params).then(({ data }) => {
           this.list = data.list;
           this.total = data.total;
           this.loading = false;
-        });*/
-
-        // 使用mock数据
-        setTimeout(() => {
-          this.list = mockListData.records
-          this.total = mockListData.total
-          this.loading = false
-        }, 300)
+        });
       },
       handleCheckAllChange(columns) {
         this.$refs.tableIndex.init(columns);
@@ -262,7 +202,7 @@
       async handleDonwload(id) {
         try {
           this.loading = true;
-          await FileApi.customDownload({ businessType:109,businessData:  JSON.stringify(this.globalSearchParams) });
+          await FileApi.customDownload({ businessType:116,businessData:  JSON.stringify(this.globalSearchParams) });
         } catch (error) {
           this.$modal.msgError("下载失败，请重试");
         } finally {
