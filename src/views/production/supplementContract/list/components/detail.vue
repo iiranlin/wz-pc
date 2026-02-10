@@ -14,6 +14,17 @@
         :global-dsv="globalDsv"
         :class="{ formRender_view: type === 'view' }"
       >
+              <!-- 合同编号选择 -->
+        <template #contractNoSlot="{ formModel }">
+          <el-form-item
+            prop="contractNo"
+            label="补充合同编号"
+            class="label-right-align"
+            :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+          >
+            {{ formModel.contractNo }}
+          </el-form-item>
+        </template>
         <template #lineSlot="{ formModel }">
           <el-form-item
             prop="projectId"

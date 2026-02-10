@@ -199,7 +199,11 @@
         this.selected = selected;
       },
       onGoDetail (row) {
-        this.$router.push({ name: 'detailContract', query: { id: row.contractId, type: 'view' } })
+        if(row.parentId){
+          this.$router.push({ name: 'detailSupplementContract', query: { id: row.contractId, type: 'view' ,parentId:row.parentId} })
+        }else{
+          this.$router.push({ name: 'detailContract', query: { id: row.contractId, type: 'view' } })
+        }
       },
       handleButton(buttonCode, idArr, rowArr, { buttonData }) {
         this.proxyPrint(buttonCode, rowArr, buttonData);
