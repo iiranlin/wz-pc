@@ -268,7 +268,7 @@ export default {
       return baseData;
     },
 
-    // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题）
+    // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题,只计算正数）
     totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
         const amount = new Decimal(item.amount || 0);
