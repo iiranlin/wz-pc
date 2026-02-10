@@ -351,70 +351,114 @@ export default {
 
       return data;
     },
-     // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题）
+     // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题，只累加正数）
     totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
         const amount = new Decimal(item.amount || 0);
-        return sum.plus(amount);
+        // 只累加正数，忽略负数和零
+        if (amount.greaterThan(0)) {
+          return sum.plus(amount);
+        }
+        return sum;
       }, new Decimal(0)).toNumber();
     },
-    // 计算总金额
+    // 计算总金额（只累加正数）
     totalAmount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.totalAmount) || 0);
+        const amount = parseFloat(item.totalAmount) || 0;
+        // 只累加正数，忽略负数和零
+        if (amount > 0) {
+          return sum + amount;
+        }
+        return sum;
       }, 0);
     },
-    // 计算累计下达数量
+    // 计算累计下达数量（只累加正数）
     totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
-        const cumulativeAmount = new Decimal(item.cumulativeAmount || 0)
-        return sum.plus(cumulativeAmount);
+        const cumulativeAmount = new Decimal(item.cumulativeAmount || 0);
+        // 只累加正数，忽略负数和零
+        if (cumulativeAmount.greaterThan(0)) {
+          return sum.plus(cumulativeAmount);
+        }
+        return sum;
       }, new Decimal(0)).toNumber();
     },
-    // 计算累计收货数量
+    // 计算累计收货数量（只累加正数）
     totalPutTotal() {
       return this.filteredTableData.reduce((sum, item) => {
-        const putTotal = new Decimal(item.putTotal || 0)
-        return sum.plus(putTotal);
+        const putTotal = new Decimal(item.putTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (putTotal.greaterThan(0)) {
+          return sum.plus(putTotal);
+        }
+        return sum;
       }, new Decimal(0)).toNumber();
     },
-    // 计算累计发货数量
+    // 计算累计发货数量（只累加正数）
     totalSendCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        const sendTotal = new Decimal(item.sendTotal || 0)
-        return sum.plus(sendTotal);
+        const sendTotal = new Decimal(item.sendTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (sendTotal.greaterThan(0)) {
+          return sum.plus(sendTotal);
+        }
+        return sum;
       }, new Decimal(0)).toNumber();
     },
-    // 计算已收货金额
+    // 计算已收货金额（只累加正数）
     totalStoreRates() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotalRates) || 0);
+        const storeTotalRates = parseFloat(item.storeTotalRates) || 0;
+        // 只累加正数，忽略负数和零
+        if (storeTotalRates > 0) {
+          return sum + storeTotalRates;
+        }
+        return sum;
       }, 0);
     },
-    // 计算累计入库量
+    // 计算累计入库量（只累加正数）
     totalStoreCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        const storeTotal = new Decimal(item.storeTotal || 0)
-        return sum.plus(storeTotal);
+        const storeTotal = new Decimal(item.storeTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (storeTotal.greaterThan(0)) {
+          return sum.plus(storeTotal);
+        }
+        return sum;
       }, new Decimal(0)).toNumber();
     },
-    // 计算累计入库金额
+    // 计算累计入库金额（只累加正数）
     totalStoreTotalRates() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotalRates) || 0);
+        const storeTotalRates = parseFloat(item.storeTotalRates) || 0;
+        // 只累加正数，忽略负数和零
+        if (storeTotalRates > 0) {
+          return sum + storeTotalRates;
+        }
+        return sum;
       }, 0);
     },
-    // 计算累计出库量
+    // 计算累计出库量（只累加正数）
     totalOutCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        const outTotal = new Decimal(item.outTotal || 0)
-        return sum.plus(outTotal);
+        const outTotal = new Decimal(item.outTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (outTotal.greaterThan(0)) {
+          return sum.plus(outTotal);
+        }
+        return sum;
       }, new Decimal(0)).toNumber();
     },
-    // 计算已出库金额
+    // 计算已出库金额（只累加正数）
     totalOutRates() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.outTotalRates) || 0);
+        const outTotalRates = parseFloat(item.outTotalRates) || 0;
+        // 只累加正数，忽略负数和零
+        if (outTotalRates > 0) {
+          return sum + outTotalRates;
+        }
+        return sum;
       }, 0);
     },
     projectTabs() {
