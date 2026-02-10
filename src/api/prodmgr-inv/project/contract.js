@@ -147,3 +147,11 @@ export const getContractPlanStatistics = (data) => {
   })
 }
 
+// 查询合同下的编号有多个相同的合同编号
+export const countByContractNo = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/countByContractNo`,
+    method: 'get',
+    params
+  })
+}

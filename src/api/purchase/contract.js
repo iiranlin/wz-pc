@@ -73,3 +73,12 @@ export function batchImport(data) {
     minioSm4: true, //上传不需要加密
   });
 }
+
+// 检查合同编号重复
+export const countByContractNumber = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseContract/countByContractNumber`,
+    method: 'get',
+    params
+  })
+}

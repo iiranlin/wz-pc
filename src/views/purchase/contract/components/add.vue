@@ -19,6 +19,16 @@
           </el-form-item>
         </template>
 
+        <!-- 合同编号 -->
+        <template #contractNumberSlot="{ formModel }">
+          <el-form-item label-width="175px" prop="contractNumber" label="合同编号" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
+            <div style="position: relative;">
+              <el-input v-model="formModel.contractNumber" placeholder="请选择" @blur="handleContractNoBlur(formModel.contractNumber)"></el-input>
+            </div>
+            <div v-if="contractNoDuplicate" style="color: #f56c6c; font-size: 12px; line-height: 1; padding-top: 4px;">合同编号已存在，可重复提交</div>
+          </el-form-item>
+        </template>
+
         <template #unitNameSlot="{ formModel }">
           <el-form-item prop="unitName" label-width="130px" label="买方" class="label-right-align">
             <template v-if="type === 'create'">
@@ -258,6 +268,8 @@ export default {
       backData: null,
       detail: {},
       sellerName: "", // 添加sellerName数据属性
+      contractNoDuplicate: false // 合同编号重复状态
+
     };
   },
   computed: {
@@ -289,6 +301,22 @@ export default {
     }
   },
   methods: {
+     // 合同编号失焦检查重复
+    async handleContractNoBlur(contractNo) {
+      // 如果合同编号为空，不检查
+      if (!contractNo) {
+        this.contractNoDuplicate = false
+        return
+      }
+      try {
+        const res = await Api.countByContractNumber({ contractNumber:contractNo,id:this.id })
+        // 返回值 > 0 表示有重复
+        this.contractNoDuplicate = res.data > 0
+      } catch (error) {
+        console.error('检查合同编号重复失败:', error)
+        this.contractNoDuplicate = false
+      }
+    },
     formValueChange(e) {
       this.currentFormData = e;
     },

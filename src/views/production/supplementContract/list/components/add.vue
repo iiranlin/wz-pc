@@ -67,7 +67,7 @@
         <template #contractNoSlot="{ formModel }">
           <el-form-item
             prop="contractNo"
-            label="合同编号"
+            label="补充合同编号"
             class="label-right-align"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
           >
@@ -75,10 +75,13 @@
               <el-input
                 v-model="formModel.contractNo"
                 placeholder="请选择"
+                @blur="handleContractNoBlur(formModel.contractNo)"
               ></el-input>
               <!-- 点击选择透明遮板 -->
               <!-- <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: transparent; z-index: 1; cursor: pointer; " @click="handleContractNameSelect"></div> -->
             </div>
+            <div v-if="contractNoDuplicate" style="color: #f56c6c; font-size: 12px; line-height: 1; padding-top: 4px;">合同编号已存在，可重复提交</div>
+
           </el-form-item>
         </template>
 
@@ -279,6 +282,8 @@ export default {
       gysOptions: [],
       tableData: [],
       sellerName: "", // 添加sellerName数据属性
+      contractNoDuplicate: false // 合同编号重复状态
+
     };
   },
   computed: {
@@ -347,6 +352,24 @@ export default {
     onContractSelect(contract) {
       this.$refs.vFormRef.setFieldValue("contractName", contract.scontName);
       this.$refs.vFormRef.setFieldValue("contractNo", contract.scontCode);
+      // 选择合同后也检查重复
+      this.handleContractNoBlur(contract.scontCode)
+    },
+     // 合同编号失焦检查重复
+    async handleContractNoBlur(contractNo) {
+      // 如果合同编号为空，不检查
+      if (!contractNo) {
+        this.contractNoDuplicate = false
+        return
+      }
+      try {
+        const res = await Api.countByContractNo({ contractNo,id:this.id })
+        // 返回值 > 0 表示有重复
+        this.contractNoDuplicate = res.data > 0
+      } catch (error) {
+        console.error('检查合同编号重复失败:', error)
+        this.contractNoDuplicate = false
+      }
     },
     handleContractNameSelect() {
       this.$refs.contractNameSelect.open();
