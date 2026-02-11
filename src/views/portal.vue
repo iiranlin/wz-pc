@@ -540,7 +540,7 @@ export default {
       ul{
         padding: 13px 38px;
         height: 110px;
-        position: absolute;
+        position: relative;
         background:#ffffff;
         border-radius:7px;
         width: 1200px;
