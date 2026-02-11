@@ -36,6 +36,9 @@
                     <!-- <el-dropdown-item divided @click.native="clearCache">
                         <span>清除缓存</span>
                     </el-dropdown-item> -->
+                    <el-dropdown-item divided @click.native="goPortal">
+                        <span>返回门户</span>
+                    </el-dropdown-item>
                     <el-dropdown-item divided @click.native="logout">
                         <span>退出登录</span>
                     </el-dropdown-item>
@@ -44,6 +47,8 @@
         </div>
         <search-bar :root="'#appMainSearch'" :highlightClass="'myHighLight'" :selectedClass="'selected-highlight'" :hiden.sync="showSearchBar"/>
         <div class="top-right-nav">
+            <el-link :underline="false" @click="goPortal"><i class="el-icon-s-home"></i> 返回门户</el-link>
+            <el-divider direction="vertical"></el-divider>
             <el-link :underline="false" @click="searchClick()"><svg-icon icon-class="search-bar" /> 全局搜索</el-link>
             <el-divider direction="vertical"></el-divider>
             <el-link @click="toHelpDia"><svg-icon icon-class="question" /> 系统帮助</el-link>
@@ -216,6 +221,10 @@ export default {
         },
         searchClick () {
           this.showSearchBar = !this.showSearchBar
+        },
+        // 返回门户
+        goPortal () {
+          this.$router.push('/portal')
         }
     }
 }
