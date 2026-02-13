@@ -1,0 +1,620 @@
+// 甲供物资统计 Material Big Screen Controller
+import request from "@/utils/request";
+let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_SERVER;
+// startDate endDate projectId
+const res1 = {
+  code: 0,
+  data: {
+    outTotalAmount: 0,
+    ratio: 0,
+    storeTotalAmount: 0,
+  },
+  message: "string",
+  success: false,
+};
+// startDate endDate projectId
+const res2 = {
+  code: 0,
+  data: {
+    planAmount: 0,
+    planCount: 0,
+  },
+  message: "string",
+  success: false,
+};
+// startDate endDate projectId
+const res3 = {
+  code: 0,
+  data: {
+    refundAmount: 0,
+    sendAmount: 0,
+    shippingCount: 0,
+    shippingFailCount: 0,
+  },
+  message: "string",
+  success: false,
+};
+// startDate endDate projectId
+const res4 = {
+  code: 0,
+  data: {
+    refundZjTotalAmount: 0,
+    storeCount: 0,
+    storeFailCount: 0,
+    storeTotalAmount: 0,
+  },
+  message: "string",
+  success: false,
+};
+// startDate endDate projectId
+const res5 = {
+  code: 0,
+  data: {
+    putTotalAmount: 0,
+    refundTotalAmount: 0,
+    takeCount: 0,
+    takeFailCount: 0,
+  },
+  message: "string",
+  success: false,
+};
+// projectId
+const res6 = {
+  code: 0,
+  data: {
+    contractCount: 0,
+    contractsAmount: 0,
+    projectCount: 0,
+    sectionCount: 0,
+  },
+  message: "string",
+  success: false,
+};
+// deptCodePrefix=SN&status=
+const res7 = {
+  code: 0,
+  data: [{ id: "12333", deptName: "上海局物资部" }],
+  message: "string",
+  success: false,
+};
+const res8 = {
+  code: 0,
+  data: [
+    {
+      id: "2021768561114083330",
+      createUser: "1963505213013848064",
+      createUserName: "**",
+      createDate: 1770862162000,
+      updateUser: "1963505213013848064",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1770862162000,
+      projectName: "白城四方坨子项目",
+      projectId: "",
+      projectShortName: "白坨项目",
+      railwayBureau: "",
+      constructionUnit: "南京铁路枢纽工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202602004",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1983445129252274176",
+      commandPostLeaderName: "**东",
+    },
+    {
+      id: "1991780064010629122",
+      createUser: "1963505301329113088",
+      createUserName: "***",
+      createDate: 1763712347000,
+      updateUser: "1963505301329113088",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1763712347000,
+      projectName: "新建xxxx过江通道铁路",
+      projectId: "",
+      projectShortName: "xxxx铁路",
+      railwayBureau: "",
+      constructionUnit: "XXXX工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202511001",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1963505301329113088",
+      commandPostLeaderName: "***",
+    },
+    {
+      id: "1970697991971123202",
+      createUser: "1963505301329113088",
+      createUserName: "***",
+      createDate: 1758685989000,
+      updateUser: "1963505301329113088",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1758685989000,
+      projectName: "新建wf至xx铁路（wf）",
+      projectId: "",
+      projectShortName: "xxx铁路（江苏段）",
+      railwayBureau: "",
+      constructionUnit: "XXXX工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202509013",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1980435271905091584",
+      commandPostLeaderName: "***",
+    },
+    {
+      id: "1963905436298121218",
+      createUser: "1963505301329113088",
+      createUserName: "***",
+      createDate: 1757066518000,
+      updateUser: "1963505301329113088",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1757066518000,
+      projectName: "新建xx至xx城际铁路",
+      projectId: "",
+      projectShortName: "NH铁路",
+      railwayBureau: "",
+      constructionUnit: "XXXX工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202509011",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1963505301329113088",
+      commandPostLeaderName: "***",
+    },
+    {
+      id: "1977659879783116801",
+      createUser: "1963505301329113088",
+      createUserName: "***",
+      createDate: 1760345833000,
+      updateUser: "1963505301329113088",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1760345833000,
+      projectName: "新建xx至xx至xx高速铁路",
+      projectId: "",
+      projectShortName: "BYJ铁路",
+      railwayBureau: "",
+      constructionUnit: "XXXX工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202510001",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1980436160275456000",
+      commandPostLeaderName: "***",
+    },
+    {
+      id: "1980574406435385346",
+      createUser: "1963505301329113088",
+      createUserName: "***",
+      createDate: 1761040710000,
+      updateUser: "1963505301329113088",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1761040710000,
+      projectName: "xx经xxxxxx至xxxxxx铁路",
+      projectId: "",
+      projectShortName: "YY铁路",
+      railwayBureau: "",
+      constructionUnit: "XXXX工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202510002",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1980435837964165120",
+      commandPostLeaderName: "***",
+    },
+    {
+      id: "1996399888422637569",
+      createUser: "1963505301329113088",
+      createUserName: "***",
+      createDate: 1764813799000,
+      updateUser: "1963505301329113088",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1764813799000,
+      projectName: "新建xx北站站房",
+      projectId: "",
+      projectShortName: "NJBJ站房",
+      railwayBureau: "",
+      constructionUnit: "XXXX工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202512001",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1963505416290791424",
+      commandPostLeaderName: "***",
+    },
+    {
+      id: "2021764215437651969",
+      createUser: "2021760129728741376",
+      createUserName: "指挥部管理员",
+      createDate: 1770861126000,
+      updateUser: "2021760129728741376",
+      tenantId: "2021755638530932736",
+      orgId: "2021755895583047680",
+      updateDate: 1770861126000,
+      projectName: "新建xxx至xxx至xxx高速铁路",
+      projectId: "",
+      projectShortName: "xxx铁路",
+      railwayBureau: "",
+      constructionUnit: "广州铁路枢纽工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "xx设计单位",
+      plannedDuration: "60",
+      designSpeed: "300",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202602001",
+      constructionUnitId: "2021755316358053888",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "2021760129728741376",
+      commandPostLeaderName: "指挥部管理员",
+    },
+    {
+      id: "2021764930058973186",
+      createUser: "1963505213013848064",
+      createUserName: "**",
+      createDate: 1770861296000,
+      updateUser: "1963505213013848064",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1770861296000,
+      projectName: "北清项目",
+      projectId: "",
+      projectShortName: "北清项目",
+      railwayBureau: "",
+      constructionUnit: "南京铁路枢纽工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202602002",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1983445129252274176",
+      commandPostLeaderName: "**东",
+    },
+    {
+      id: "2021764934748205057",
+      createUser: "1963505213013848064",
+      createUserName: "**",
+      createDate: 1770861297000,
+      updateUser: "1963505213013848064",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1770861297000,
+      projectName: "新建xxxx至xxxx高速铁路",
+      projectId: "",
+      projectShortName: "xxxxx铁路",
+      railwayBureau: "",
+      constructionUnit: "南京铁路枢纽工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202602003",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1963505416290791424",
+      commandPostLeaderName: "**入",
+    },
+    {
+      id: "2021772519371042817",
+      createUser: "1963505213013848064",
+      createUserName: "**",
+      createDate: 1770863105000,
+      updateUser: "1963505213013848064",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1770863105000,
+      projectName: "五棵树项目",
+      projectId: "",
+      projectShortName: "五棵树项目",
+      railwayBureau: "",
+      constructionUnit: "南京铁路枢纽工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "五棵树项目",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202602005",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1983445129252274176",
+      commandPostLeaderName: "**东",
+    },
+    {
+      id: "2021772737286107138",
+      createUser: "1963505213013848064",
+      createUserName: "**",
+      createDate: 1770863157000,
+      updateUser: "1963505213013848064",
+      tenantId: "1963404608417132544",
+      orgId: "1962399203729698816",
+      updateDate: 1770863157000,
+      projectName: "襄阳汉口项目",
+      projectId: "",
+      projectShortName: "襄阳汉口项目",
+      railwayBureau: "",
+      constructionUnit: "南京铁路枢纽工程建设指挥部",
+      constructionLeader: "",
+      materialAgentCompany: "",
+      materialAgentLeader: "",
+      projectOverview: "",
+      designUnit: "",
+      plannedDuration: "",
+      designSpeed: "",
+      projectLocation: "",
+      constructionCompany: "",
+      constructionCompanyLeader: "",
+      projectNumber: "XM202602006",
+      constructionUnitId: "1962350217710891008",
+      contractList: [],
+      sectionList: [],
+      materialUsedRatio: 0,
+      materialList: [],
+      originalContractAmount: 0,
+      originalContractNumber: "",
+      contractNumber: "",
+      commandPostLeader: "1983445129252274176",
+      commandPostLeaderName: "**东",
+    },
+  ],
+  message: "string",
+  success: false,
+};
+
+/**
+ * 物资出库
+ * @param {*} params
+ * @returns
+ */
+export const materialOut = (params) => {
+  return Promise.resolve(res1);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialOut`,
+    method: "get",
+    params,
+  });
+};
+/**
+ * 物资计划
+ * @param {*} params
+ * @returns
+ */
+export const materialPlan = (params) => {
+  return Promise.resolve(res2);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialPlan`,
+    method: "get",
+    params,
+  });
+};
+/**
+ * 物资供应
+ * @param {*} params
+ * @returns
+ */
+export const materialShipping = (params) => {
+  return Promise.resolve(res3);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialShipping`,
+    method: "get",
+    params,
+  });
+};
+/**
+ * 质检入库
+ * @param {*} params
+ * @returns
+ */
+export const materialStore = (params) => {
+  return Promise.resolve(res4);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialStore`,
+    method: "get",
+    params,
+  });
+};
+/**
+ * 物资初验
+ * @param {*} params
+ * @returns
+ */
+export const materialTake = (params) => {
+  return Promise.resolve(res5);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialTake`,
+    method: "get",
+    params,
+  });
+};
+/**
+ * 投资总览
+ * @param {*} params
+ * @returns
+ */
+export const projectStatistics = (params) => {
+  return Promise.resolve(res6);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/projectStatistics`,
+    method: "get",
+    params,
+  });
+};
+
+// New  根据deptCode查询指定部门列表,仅枢纽指挥部使用
+export function newListByDeptCode(params) {
+  return Promise.resolve(res7);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/dept/getListByDeptCodePrefix`,
+    method: "get",
+    params,
+  });
+}
+/**
+ * 根据用户获取建设项目
+ * @param {*} params
+ * @returns
+ */
+export const getProjectByUser = (params) => {
+  return Promise.resolve(res8);
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/materialProject/getProjectByUser`,
+    method: "get",
+    params,
+  });
+};
