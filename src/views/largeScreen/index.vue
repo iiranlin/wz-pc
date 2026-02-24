@@ -202,7 +202,9 @@
             </div>
           </div>
         </div>
-        <dv-border-box-8 class="item item-2"></dv-border-box-8>
+        <dv-border-box-8 class="item item-2">
+          <baseMap />
+        </dv-border-box-8>
         <div class="item item-3">
           <header>物资初验</header>
           <div class="item-body">
@@ -898,10 +900,12 @@
 import "./dataV.js";
 import CountTo from "vue-count-to";
 import * as Api from "@/api/largeScreen/aSupplyMaterials";
+import baseMap from './baseMap.vue'
 export default {
   name: "largeScreen",
   components: {
     CountTo,
+    baseMap,
   },
   data() {
     return {
