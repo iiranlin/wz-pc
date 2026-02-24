@@ -74,7 +74,7 @@ export const constantRoutes = [
     },
     {
         path: '/largeScreen',
-        component: () => import('@/views/largeScreen'),
+        component: () => import('@/views/largeScreen/index'),
         hidden: true
     },
     {
