@@ -1,9 +1,7 @@
 // 甲供物资统计 Material Big Screen Controller
 import request from "@/utils/request";
-let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_PREFIX;
+let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_SERVER;
 let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
-
-
 
 // deptCodePrefix=SN&status=
 const res7 = {
@@ -540,9 +538,22 @@ export function newListByDeptCode(params) {
  * @returns
  */
 export const getProjectByUser = (params) => {
-  return Promise.resolve(res8);
+  // return Promise.resolve(res8);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialProject/getProjectByUser`,
+    url: `${VUE_APP_PRODMGR_INV}/materialProject/getProjectByUser`,
+    method: "get",
+    params,
+  });
+};
+
+/**
+ * 建设项目站点
+ * @param {*} params
+ * @returns
+ */
+export const getProjectSite = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/projectSite`,
     method: "get",
     params,
   });

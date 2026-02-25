@@ -6,13 +6,25 @@
       class="large-view"
     >
       <header>
-        <div class="nav-left" @click="screenChange('0')">
+        <div
+          class="nav-left"
+          @click="screenChange('0')"
+        >
           <p class="time-running">{{ time }}</p>
           <div class="nav-menu">{{ menuNm1 }}</div>
         </div>
         <div class="nav-mid">{{ title }}</div>
-        <div class="nav-right" @click="screenChange('1')">
+        <div
+          class="nav-right"
+          @click="screenChange('1')"
+        >
           <div class="nav-menu">{{ menuNm2 }}</div>
+          <p
+            class="back"
+            @click="backHome"
+          >
+          <i class="el-icon-s-home"></i>
+          返回门户</p>
           <p class="user-tools"></p>
         </div>
       </header>
@@ -48,7 +60,9 @@
           v-model="projectId"
           placeholder="请选择"
           size="mini"
+          clearable
           @change="changedParams"
+          @clear="changedParams"
         >
           <el-option
             v-for="item in projectOps"
@@ -59,22 +73,26 @@
           </el-option>
         </el-select>
         <el-select
-        v-if = "screenType == '1'" 
-        v-model="projectId"
-          placeholder="请选择物资大类" 
-          size="mini" 
+          v-if="screenType == '1'"
+          v-model="projectId"
+          placeholder="请选择物资大类"
+          size="mini"
           @change="changedParams"
         >
-          <el-option 
-          v-for="item in projectOps" 
-          :key="item.id" 
-          :label="item.projectName" 
-          :value="item.id">
+          <el-option
+            v-for="item in projectOps"
+            :key="item.id"
+            :label="item.projectName"
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </div>
 
-      <div class="large-flex" v-if="screenType == '0'">
+      <div
+        class="large-flex"
+        v-if="screenType == '0'"
+      >
         <div class="left">
           <!-- 投资总览 -->
           <div class="item item-1">
@@ -113,7 +131,7 @@
               </div>
               <div class="body-item">
                 <div class="icon-com">
-                  <svg 
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="icon"
                     viewBox="0 0 1024 1024"
@@ -146,7 +164,7 @@
               </div>
               <div class="body-item">
                 <div class="icon-com">
-                  <svg 
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
@@ -250,7 +268,7 @@
                   </p>
                 </div>
                 <div class="body-num">
-                    计划下达数
+                  计划下达数
                 </div>
               </div>
               <div class="body-item">
@@ -267,7 +285,7 @@
                   </p>
                 </div>
                 <div class="body-num">
-                    下达物资金额
+                  下达物资金额
                 </div>
               </div>
             </div>
@@ -449,7 +467,10 @@
         <div class="middle">
           <!-- 地图 -->
           <dv-border-box-8 class="item item-2">
-            <baseMap />
+            <baseMap
+              :projectId="projectId"
+              ref="map"
+            />
           </dv-border-box-8>
           <!-- 供应商考核 -->
           <div class="item item-7">
@@ -910,8 +931,11 @@
           </div>
         </div>
       </div>
-      <div class="large-flex" v-if="screenType == '1'">
-        <p class="self-purchased">自购物资正在建设中……</p> 
+      <div
+        class="large-flex"
+        v-if="screenType == '1'"
+      >
+        <p class="self-purchased">自购物资正在建设中……</p>
       </div>
     </article>
   </dv-full-screen-container>
@@ -935,7 +959,7 @@ export default {
       title: "铁路建设物资管理系统",
       menuNm1: "甲供物资",
       menuNm2: "自购物资",
-      screenType:'0',
+      screenType: '0',
       time: "",
       queryDate: [],
       deptId: "",
@@ -1036,10 +1060,9 @@ export default {
       }
     }
   },
-  created () {
-    this.init();
-  },
+
   mounted () {
+    this.init();
     this.headerInterval(this.updateClock, 1000);
   },
   beforeDestroy () {
@@ -1055,7 +1078,7 @@ export default {
 
       this.changedParams()
     },
-    screenChange(type) {
+    screenChange (type) {
       this.screenType = type
     },
     changedParams () {
@@ -1065,6 +1088,7 @@ export default {
       this.getMaterialTake()
       this.getMaterialStore()
       this.getMaterialOut()
+      this.$refs.map.getProjectSite(this.projectId)
     },
     updateClock () {
       const now = dayjs(); // 获取当前时间
@@ -1168,6 +1192,12 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    backHome () {
+      let route = { path: '/portal' }
+      this.$router
+        .push(route)
+        .catch(() => { });
     },
   },
 };
@@ -1363,21 +1393,20 @@ p {
 .item-7 {
   height: vh(280) !important;
   padding-top: vh(8);
-  .value{
+  .value {
     font-size: vw(20);
     color: #fff;
     font-weight: 500;
   }
-  .label{
+  .label {
     font-size: vw(12);
     color: rgb(255, 191, 43);
   }
-  .body-item-name{
+  .body-item-name {
     color: #75f9fd;
     font-size: vw(14);
   }
 }
-
 
 // 卡片内容
 .item-body {
@@ -1408,10 +1437,10 @@ p {
 }
 
 .body-num {
-  width:  calc(100% - #{vw(80)});
+  width: calc(100% - #{vw(80)});
   font-size: vw(14);
   color: #75f9fd;
-  .card-panel-num{
+  .card-panel-num {
     color: #fff;
     font-size: vw(16);
     font-weight: 500;
@@ -1427,23 +1456,23 @@ p {
     padding: vh(10) 0 vh(30);
 
     .icon-com {
-        width: 50%;
-        height: 50%;
-        background-size: 190%;
-    
-        &.amount-bg {
-          background-size: 220%;
-          padding-bottom: vh(50);
-        }
+      width: 50%;
+      height: 50%;
+      background-size: 190%;
+
+      &.amount-bg {
+        background-size: 220%;
+        padding-bottom: vh(50);
       }
-    .desc{
+    }
+    .desc {
       font-size: vw(12);
       color: rgb(255, 191, 43);
     }
-    .body-num{
+    .body-num {
       text-align: center;
       font-size: vw(14);
-      }
+    }
   }
 }
 
@@ -1481,7 +1510,7 @@ p {
   gap: vh(8);
 }
 
-.icon{
+.icon {
   width: vw(34);
   height: vh(34);
 }
@@ -1519,9 +1548,12 @@ p {
   }
 }
 
-.self-purchased{
+.self-purchased {
   margin: vh(100) auto;
   font-size: vw(24);
   color: #75f9fd;
+}
+.back {
+  cursor: pointer;
 }
 </style>
