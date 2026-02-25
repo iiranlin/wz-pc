@@ -10961,7 +10961,7 @@
                         }
                         ,
                         n.prototype.wA = function (t) {
-                            (t &= 7) !== n.LA && (t === n.DA ? this.pos = this.ow() + this.pos : t === n.RA ? this.pos += 4 : t === n.PA ? this.pos += 8 : console.log("Unimplemented type: " + t))
+                            (t &= 7) !== n.LA && (t === n.DA ? this.pos = this.ow() + this.pos : t === n.RA ? this.pos += 4 : t === n.PA ? this.pos += 8 : "")
                         }
                         ,
                         n.prototype.UA = function (t, e) {

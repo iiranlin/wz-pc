@@ -4,7 +4,8 @@ export default {
       return `${val} 元`
     }
     return val?fmoney(val)+ ' 元' : ''
-  }
+  },
+  fmoney,
 }
 //千分位格式化：10000转为10,000.00
 function fmoney (s, n) {

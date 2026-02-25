@@ -1,75 +1,10 @@
 // 甲供物资统计 Material Big Screen Controller
 import request from "@/utils/request";
-let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_SERVER;
-// startDate endDate projectId
-const res1 = {
-  code: 0,
-  data: {
-    outTotalAmount: 0,
-    ratio: 0,
-    storeTotalAmount: 0,
-  },
-  message: "string",
-  success: false,
-};
-// startDate endDate projectId
-const res2 = {
-  code: 0,
-  data: {
-    planAmount: 0,
-    planCount: 0,
-  },
-  message: "string",
-  success: false,
-};
-// startDate endDate projectId
-const res3 = {
-  code: 0,
-  data: {
-    refundAmount: 0,
-    sendAmount: 0,
-    shippingCount: 0,
-    shippingFailCount: 0,
-  },
-  message: "string",
-  success: false,
-};
-// startDate endDate projectId
-const res4 = {
-  code: 0,
-  data: {
-    refundZjTotalAmount: 0,
-    storeCount: 0,
-    storeFailCount: 0,
-    storeTotalAmount: 0,
-  },
-  message: "string",
-  success: false,
-};
-// startDate endDate projectId
-const res5 = {
-  code: 0,
-  data: {
-    putTotalAmount: 0,
-    refundTotalAmount: 0,
-    takeCount: 0,
-    takeFailCount: 0,
-  },
-  message: "string",
-  success: false,
-};
-// projectId
-const res6 = {
-  code: 0,
-  data: {
-    contractCount: 0,
-    contractsAmount: 0,
-    projectCount: 0,
-    sectionCount: 0,
-  },
-  message: "string",
-  success: false,
-};
+let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_PREFIX;
+let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
+
+
+
 // deptCodePrefix=SN&status=
 const res7 = {
   code: 0,
@@ -523,9 +458,8 @@ const res8 = {
  * @returns
  */
 export const materialOut = (params) => {
-  return Promise.resolve(res1);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialOut`,
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/materialOut`,
     method: "get",
     params,
   });
@@ -536,9 +470,8 @@ export const materialOut = (params) => {
  * @returns
  */
 export const materialPlan = (params) => {
-  return Promise.resolve(res2);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialPlan`,
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/materialPlan`,
     method: "get",
     params,
   });
@@ -549,9 +482,8 @@ export const materialPlan = (params) => {
  * @returns
  */
 export const materialShipping = (params) => {
-  return Promise.resolve(res3);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialShipping`,
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/materialShipping`,
     method: "get",
     params,
   });
@@ -562,9 +494,8 @@ export const materialShipping = (params) => {
  * @returns
  */
 export const materialStore = (params) => {
-  return Promise.resolve(res4);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialStore`,
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/materialStore`,
     method: "get",
     params,
   });
@@ -575,9 +506,8 @@ export const materialStore = (params) => {
  * @returns
  */
 export const materialTake = (params) => {
-  return Promise.resolve(res5);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/materialTake`,
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/materialTake`,
     method: "get",
     params,
   });
@@ -588,9 +518,8 @@ export const materialTake = (params) => {
  * @returns
  */
 export const projectStatistics = (params) => {
-  return Promise.resolve(res6);
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/materialBigScreen/projectStatistics`,
+    url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/projectStatistics`,
     method: "get",
     params,
   });

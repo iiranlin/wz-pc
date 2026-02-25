@@ -25,6 +25,7 @@ export default {
       this.mapObj = new AMap.Map('mapDiv', {
         resizeEnable: true,
         zoom: 12,
+        zooms: [10, 14], //可见级别
         rotateEnable: true,
         pitchEnable: true,
         center: [121.474,31.230],
