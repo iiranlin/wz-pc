@@ -6,12 +6,12 @@
       class="large-view"
     >
       <header>
-        <div class="nav-left">
+        <div class="nav-left" @click="screenChange('0')">
           <p class="time-running">{{ time }}</p>
           <div class="nav-menu">{{ menuNm1 }}</div>
         </div>
         <div class="nav-mid">{{ title }}</div>
-        <div class="nav-right">
+        <div class="nav-right" @click="screenChange('1')">
           <div class="nav-menu">{{ menuNm2 }}</div>
           <p class="user-tools"></p>
         </div>
@@ -58,9 +58,23 @@
           >
           </el-option>
         </el-select>
+        <el-select
+        v-if = "screenType == '1'" 
+        v-model="projectId"
+          placeholder="请选择物资大类" 
+          size="mini" 
+          @change="changedParams"
+        >
+          <el-option 
+          v-for="item in projectOps" 
+          :key="item.id" 
+          :label="item.projectName" 
+          :value="item.id">
+          </el-option>
+        </el-select>
       </div>
 
-      <div class="large-flex">
+      <div class="large-flex" v-if="screenType == '0'">
         <div class="left">
           <!-- 投资总览 -->
           <div class="item item-1">
@@ -99,10 +113,8 @@
               </div>
               <div class="body-item">
                 <div class="icon-com">
-                  <svg
+                  <svg 
                     xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
                     class="icon"
                     viewBox="0 0 1024 1024"
                   >
@@ -134,12 +146,10 @@
               </div>
               <div class="body-item">
                 <div class="icon-com">
-                  <svg
+                  <svg 
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -195,10 +205,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -238,11 +246,11 @@
                       class="card-panel-num"
                       :decimals="0"
                     />
-                    <span>次</span>
+                    <span class="desc">次</span>
                   </p>
                 </div>
                 <div class="body-num">
-                  <p>计划下达数</p>
+                    计划下达数
                 </div>
               </div>
               <div class="body-item">
@@ -255,11 +263,11 @@
                       class="card-panel-num"
                       :decimals="2"
                     />
-                    <span>元</span>
+                    <span class="desc">元</span>
                   </p>
                 </div>
                 <div class="body-num">
-                  <p>下达物资金额</p>
+                    下达物资金额
                 </div>
               </div>
             </div>
@@ -273,10 +281,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 24 24"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -304,10 +310,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
-                    width="40"
-                    height="40"
                     fill="none"
                   >
                     <defs></defs>
@@ -368,10 +372,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="41"
-                    height="41"
                   >
                     <defs></defs>
                     <g>
@@ -399,10 +401,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
-                    width="41"
-                    height="41"
                     fill="none"
                   >
                     <defs></defs>
@@ -458,7 +458,7 @@
               <div class="item7-chart">
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">12</span> <span class="lable">批</span>
+                    <span class="value">12</span> <span class="label">批</span>
                   </p>
                   <i class="body-pic"></i>
                   <p class="body-item-name">累计退货次数</p>
@@ -466,7 +466,7 @@
                 <div class="item7-chart-item">
                   <p>
                     <span class="value">1.23 </span>
-                    <span class="lable">万元</span>
+                    <span class="label">万元</span>
                   </p>
                   <i class="body-pic body-pic-2"></i>
                   <p class="body-item-name">累计退货金额</p>
@@ -489,10 +489,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="64 64 896 896"
-                    width="38"
-                    height="38"
                   >
                     <defs></defs>
                     <g>
@@ -520,8 +518,6 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
                     class="icon"
                     viewBox="0 0 1024 1024"
                   >
@@ -555,10 +551,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
-                    width="40"
-                    height="40"
                     fill="none"
                   >
                     <defs></defs>
@@ -609,10 +603,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -646,8 +638,6 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
                     class="icon"
                     viewBox="0 0 1024 1024"
                   >
@@ -677,8 +667,6 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
                     class="icon"
                     viewBox="0 0 1024 1024"
                   >
@@ -712,10 +700,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -770,10 +756,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -807,8 +791,6 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
                     class="icon"
                     viewBox="0 0 1024 1024"
                   >
@@ -838,8 +820,6 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
                     class="icon"
                     viewBox="0 0 1024 1024"
                   >
@@ -873,10 +853,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 48 48"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -932,6 +910,9 @@
           </div>
         </div>
       </div>
+      <div class="large-flex" v-if="screenType == '1'">
+        <p class="self-purchased">自购物资正在建设中……</p> 
+      </div>
     </article>
   </dv-full-screen-container>
 </template>
@@ -954,6 +935,7 @@ export default {
       title: "铁路建设物资管理系统",
       menuNm1: "甲供物资",
       menuNm2: "自购物资",
+      screenType:'0',
       time: "",
       queryDate: [],
       deptId: "",
@@ -1072,6 +1054,9 @@ export default {
       this.projectOps = projectOps;
 
       this.changedParams()
+    },
+    screenChange(type) {
+      this.screenType = type
     },
     changedParams () {
       this.getProjectStatistics()
@@ -1193,7 +1178,6 @@ p {
 }
 </style>
 <style lang="scss" scoped>
-// ✅ 修正导入路径：你的文件是 index.scss，不是 screen.scss
 @import "@/assets/styles/index.scss";
 
 .large-screen {
@@ -1270,7 +1254,7 @@ p {
   }
 
   .time-running {
-    font-size: vw(18);
+    font-size: vw(16);
   }
 
   .large-form {
@@ -1355,6 +1339,7 @@ p {
 
 // 卡片通用样式
 .item {
+  height: vh(270);
   background-size: 100% 100% !important;
   background-repeat: no-repeat !important;
   border-radius: vw(8);
@@ -1378,7 +1363,21 @@ p {
 .item-7 {
   height: vh(280) !important;
   padding-top: vh(8);
+  .value{
+    font-size: vw(20);
+    color: #fff;
+    font-weight: 500;
+  }
+  .label{
+    font-size: vw(12);
+    color: rgb(255, 191, 43);
+  }
+  .body-item-name{
+    color: #75f9fd;
+    font-size: vw(14);
+  }
 }
+
 
 // 卡片内容
 .item-body {
@@ -1409,27 +1408,42 @@ p {
 }
 
 .body-num {
-  font-size: vw(16);
+  width:  calc(100% - #{vw(80)});
+  font-size: vw(14);
   color: #75f9fd;
+  .card-panel-num{
+    color: #fff;
+    font-size: vw(16);
+    font-weight: 500;
+  }
 }
 
 // 物资计划特殊样式
 .item-4 {
-  .icon-com {
-    width: vw(150);
-    height: vh(150);
-    background-size: 190%;
-
-    &.amount-bg {
-      background-size: 220%;
-    }
-  }
-
   .body-item {
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
-    padding: vh(20) 0;
+    align-items: space-between;
+    padding: vh(10) 0 vh(30);
+
+    .icon-com {
+        width: 50%;
+        height: 50%;
+        background-size: 190%;
+    
+        &.amount-bg {
+          background-size: 220%;
+          padding-bottom: vh(50);
+        }
+      }
+    .desc{
+      font-size: vw(12);
+      color: rgb(255, 191, 43);
+    }
+    .body-num{
+      text-align: center;
+      font-size: vw(14);
+      }
   }
 }
 
@@ -1467,6 +1481,11 @@ p {
   gap: vh(8);
 }
 
+.icon{
+  width: vw(34);
+  height: vh(34);
+}
+
 .body-pic {
   width: vw(127);
   height: vh(99);
@@ -1492,10 +1511,17 @@ p {
 
   ::v-deep .header {
     font-size: vw(15) !important;
+    color: #75f9fd;
   }
 
   ::v-deep .row-item {
     font-size: vw(14) !important;
   }
+}
+
+.self-purchased{
+  margin: vh(100) auto;
+  font-size: vw(24);
+  color: #75f9fd;
 }
 </style>
