@@ -46,7 +46,8 @@
         <el-select
           v-model="deptId"
           placeholder="请选择"
-          size="mini"
+          size="mini" 
+          clearable
         >
           <el-option
             v-for="item in deptOps"
@@ -808,7 +809,7 @@
           <div class="item item-8">
             <header>物资出库</header>
             <div class="item-body">
-              <div class="body-item">
+              <div class="body-item item-first">
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -825,8 +826,8 @@
                     />
                   </svg>
                 </div>
+                <p class="label">出库金额</p>
                 <div class="body-num">
-                  <p>出库金额</p>
                   <count-to
                     :start-val="0"
                     :end-val="outTotalAmount"
@@ -1301,7 +1302,7 @@ p {
   background: #0310234b;
 }
 .el-date-editor--daterange.el-date-editor {
-  width: vw(234) !important;
+  width: vw(252) !important;
 }
 
 .el-select {
@@ -1509,6 +1510,20 @@ p {
   align-items: center;
   gap: vh(8);
 }
+
+.item-8{
+  .item-first{
+    width: 100% !important;
+    .icon-com{
+      width: vw(92);
+    }
+    .label{
+      width: vw(100);
+      color: #75f9fd;
+    }
+  }
+}
+
 
 .icon {
   width: vw(34);
