@@ -50,7 +50,8 @@ export default {
               map: _this.mapObj,
               content: markerContent(item.name, item.icon), //将 html 传给 content
               position: [item.position[0], item.position[1]],
-              offset: new AMap.Pixel(-13, -30)
+              offset: new AMap.Pixel(0, -25),
+              anchor: 'center',
             })
             _this.markers.push(marker);
           });
