@@ -643,10 +643,8 @@
                   </svg> -->
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -843,10 +841,8 @@
                  
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="40"
-                    height="40"
                   >
                     <defs></defs>
                     <g>
@@ -879,10 +875,8 @@
                 <div class="icon-com">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill"
+                    class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                     viewBox="0 0 32 32"
-                    width="41"
-                    height="41"
                   >
                     <defs></defs>
                     <g>
@@ -1045,8 +1039,8 @@ export default {
           ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.20"],
         ],
         index: true,
-        columnWidth: [50, 200, 90],
-        align: ['center', 'left', 'center', 'right'],
+        columnWidth: [40, 180, 80],
+        align: ['center', 'left', 'center', 'center'],
         headerBGC: '#03001742',
         oddRowBGC: 'transparent',
         evenRowBGC: 'transparent',
@@ -1549,12 +1543,19 @@ p {
 .item-8 {
   .item-first {
     width: 100% !important;
+    justify-content: space-around;
+    padding: 0 vw(60);
+    margin
     .icon-com {
       width: vw(92);
     }
     .label {
       width: vw(100);
+      font-size: vw(20);
       color: #75f9fd;
+    }
+    .body-num{
+      width: vw(120);
     }
   }
 }
