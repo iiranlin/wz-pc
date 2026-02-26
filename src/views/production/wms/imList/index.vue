@@ -233,6 +233,15 @@ export default {
         case "download":
           this.handleDonwload(idArr[0])
           break;
+        case "spokCheck": // 抽检
+           this.$router.push({
+            name: "addSpok",
+            query: {
+              id: idArr[0],
+              type:"update"
+            },
+          });
+          break;
       }
     },
     async handleDonwload(id) {
@@ -313,6 +322,12 @@ export default {
       if (button.buttonCode == "download") {
         return (
           !['3', '2', '4'].includes(this.selection[0].storeStatus)
+        );
+      }
+      // 抽检按钮控制（检测通过和部分退货）
+      if (button.buttonCode == "spokCheck") {
+        return (
+          !['3', '2'].includes(this.selection[0].storeStatus)
         );
       }
     },
