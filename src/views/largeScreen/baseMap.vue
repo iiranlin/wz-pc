@@ -25,10 +25,10 @@ export default {
     this.initMap()
   },
   methods: {
-    async getProjectSite (projectId) {
+    async getProjectSite (params) {
       try {
         this.removeMarkers()
-        const { success, data } = await Api.getProjectSite({ projectId })
+        const { success, data } = await Api.getProjectSite(params)
         if (success && Array.isArray(data) && data.length) {
           this.siteList = data.map(item => {
             return {
