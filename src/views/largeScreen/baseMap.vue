@@ -13,6 +13,9 @@ export default {
   },
   data () {
     return {
+      zoom: 10,
+      zooms: [9, 12], //可见级别
+      center: [121.474, 31.230],
       markers: [],
       siteList: [],
       mapObj: null,
@@ -73,11 +76,11 @@ export default {
       ]
       this.mapObj = new AMap.Map('mapDiv', {
         resizeEnable: true,
-        zoom: 10,
-        zooms: [10, 14], //可见级别
+        zoom: this.zoom,
+        zooms: this.zooms, //可见级别
         rotateEnable: true,
         pitchEnable: true,
-        center: [121.474, 31.230],
+        center: this.center,
         defaultCursor: 'pointer',
         mapStyle: 'amap://styles/whitesmoke',
         showLabel: true,
