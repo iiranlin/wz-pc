@@ -5,11 +5,11 @@
       <header>
         <div class="nav-left" @click="screenChange('0')">
           <p class="time-running">{{ time }}</p>
-          <div class="nav-menu">{{ menuNm1 }}</div>
+          <div :class="['nav-menu', { active: screenType == '0'}]">{{ menuNm1 }}</div>
         </div>
         <div class="nav-mid">{{ title }}</div>
         <div class="nav-right" @click="screenChange('1')">
-          <div class="nav-menu">{{ menuNm2 }}</div>
+          <div :class="['nav-menu', { active: screenType == '1'}]">{{ menuNm2 }}</div>
           <p class="back" @click="backHome">
             <i class="el-icon-s-home"></i>
             返回门户
@@ -620,7 +620,7 @@ export default {
       title: "铁路建设物资管理系统",
       menuNm1: "甲供物资",
       menuNm2: "自购物资",
-      screenType: '1',
+      screenType: '0',
       time: "",
       queryDate: [],
       deptId: "",
@@ -1523,5 +1523,11 @@ p {
       height: vh(840);
     }
   }
+}
+.nav-menu {
+  color: #bbb;
+}
+.nav-menu.active {
+  color: #75f9fd;
 }
 </style>
