@@ -201,7 +201,7 @@ export default {
     handleTableButtonDisable (item, row) {
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       if (item.buttonCode === 'flowSee') {
-        return !['0', '3', '2', '4'].includes(row.planStatus)
+        return !['0', '3', '2', '4','6','7','8','9','10'].includes(row.planStatus)
       }
       // 供应中、收货完成、已入库、已完成允许物流查看
       if (item.buttonCode === 'logisticsView') {
