@@ -110,3 +110,76 @@ export const getProjectSite = (params) => {
     params,
   });
 };
+
+// 自购物资统计
+// Material Purchase Big Screen Controller------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * 自购物资分页查询
+ * @param {*} params
+ * @returns
+ */
+export const purchaseList = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/purchase/item/list`,
+    method: "get",
+    params,
+  });
+};
+
+
+/**
+ * 自购物资合同核备数
+ * @param {*} params
+ * @returns
+ */
+export const groupByMonth = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseBigScreen/groupByMonth`,
+    method: "get",
+    params,
+  });
+};
+
+
+/**
+ * 物资种类合同核备数
+ * @param {*} params
+ * @returns
+ */
+export const groupByPurchaseType = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseBigScreen/groupByPurchaseType`,
+    method: "get",
+    params,
+  });
+};
+
+
+/**
+ * 物资种类合同核备金额
+ * @param {*} params
+ * @returns
+ */
+export const groupByPurchaseTypeAmount = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseBigScreen/groupByPurchaseTypeAmount`,
+    method: "get",
+    params,
+  });
+};
+
+
+/**
+ * 标段项目合同核备数
+ * @param {*} params
+ * @returns
+ */
+export const groupBySectionName = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseBigScreen/groupBySectionName`,
+    method: "get",
+    params,
+  });
+};
