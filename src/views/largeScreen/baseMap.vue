@@ -13,8 +13,8 @@ export default {
   },
   data () {
     return {
-      zoom: 10,
-      zooms: [9, 12], //可见级别
+      zoom: 8,
+      zooms: [5, 12], //可见级别
       center: [121.474, 31.230],
       markers: [],
       siteList: [],
@@ -58,6 +58,8 @@ export default {
             })
             _this.markers.push(marker);
           });
+          const {longitude, latitude} = data[0]
+          this.mapObj.setZoomAndCenter(8, [longitude, latitude], false, 2000); //设置地图中心点
         }
       } catch (err) {
         console.log(err)

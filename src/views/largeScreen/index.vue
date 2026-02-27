@@ -47,7 +47,7 @@
         </el-date-picker>
         <el-select
           v-model="deptId"
-          placeholder="请选择部门"
+          placeholder="请选择单位"
           size="mini"
           clearable
           @change="changedDept"
