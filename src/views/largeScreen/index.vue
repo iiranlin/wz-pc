@@ -962,40 +962,75 @@ export default {
   },
   methods: {
     async init() {
+      this.initDefault()
       const { data: deptOps } = await Api.newListByDeptCode();
       this.deptOps = deptOps;
       const { data: projectOps } = await Api.getProjectByUser();
       this.projectOps = projectOps;
 
-      this.screenType === '0' && this.changedDept()
+      this.screenChange('0')
+    },
+    initDefault() {
+      const now = dayjs(); // 获取当前时间
+      const curYear = now.format('YYYY')
+      const startDate = `${curYear}-01-01`
+      const endDate = now.format('YYYY-MM-DD')
+      this.queryDate = [startDate, endDate]
     },
     screenChange(type) {
       this.screenType = type
+      switch(type){
+        case "0":
+          this.changedDept()
+          break;
+        case "1":
+          break;
+      }
     },
     changedDate() {
-      this.getMaterialPlan()
-      this.getMaterialShipping()
-      this.getMaterialTake()
-      this.getMaterialStore()
-      this.getMaterialOut()
+      switch(this.screenType){
+        case "0":
+          this.getMaterialPlan()
+          this.getMaterialShipping()
+          this.getMaterialTake()
+          this.getMaterialStore()
+          this.getMaterialOut()
+          break;
+        case "1":
+          break;
+      }
+      
     },
     changedDept() {
-      this.changedDate()
-      const params = {
-        deptId: this.deptId,
-        projectId: this.projectId,
+      switch(this.screenType){
+        case "0":
+          this.changedDate()
+          const params = {
+            deptId: this.deptId,
+            projectId: this.projectId,
+          }
+          this.getProjectStatistics(params)
+          this.$refs.map.getProjectSite(params)
+          break;
+        case "1":
+          break;
       }
-      this.getProjectStatistics(params)
-      this.$refs.map.getProjectSite(params)
+      
     },
     changedProject() {
-      this.changedDate()
-      const params = {
-        deptId: this.deptId,
-        projectId: this.projectId,
+      switch(this.screenType){
+        case "0":
+          this.changedDate()
+          const params = {
+            deptId: this.deptId,
+            projectId: this.projectId,
+          }
+          this.getProjectStatistics(params)
+          this.$refs.map.getProjectSite(params)
+          break;
+        case "1":
+          break;
       }
-      this.getProjectStatistics(params)
-      this.$refs.map.getProjectSite(params)
     },
     updateClock() {
       const now = dayjs(); // 获取当前时间
