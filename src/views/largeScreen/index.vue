@@ -22,9 +22,20 @@
           start-placeholder="开始时间" end-placeholder="结束时间" :picker-options="pickerOptions" value-format="yyyy-MM-dd"
           size="mini" @change="changedDate" @clear="changedDate">
         </el-date-picker>
-        <el-select v-model="deptId" placeholder="请选择部门" size="mini" clearable @change="changedDept"
-          @clear="changedDept">
-          <el-option v-for="item in deptOps" :key="item.id" :label="item.deptName" :value="item.id">
+        <el-select
+          v-model="deptId"
+          placeholder="请选择单位"
+          size="mini"
+          clearable
+          @change="changedDept"
+          @clear="changedDept"
+        >
+          <el-option
+            v-for="item in deptOps"
+            :key="item.id"
+            :label="item.deptName"
+            :value="item.id"
+          >
           </el-option>
         </el-select>
         <el-select v-model="projectId" placeholder="请选择项目" size="mini" clearable @change="changedProject"
@@ -970,13 +981,21 @@ export default {
     },
     changedDept() {
       this.changedDate()
-      this.getProjectStatistics()
-      this.$refs.map.getProjectSite(this.projectId)
+      const params = {
+        deptId: this.deptId,
+        projectId: this.projectId,
+      }
+      this.getProjectStatistics(params)
+      this.$refs.map.getProjectSite(params)
     },
     changedProject() {
       this.changedDate()
-      this.getProjectStatistics()
-      this.$refs.map.getProjectSite(this.projectId)
+      const params = {
+        deptId: this.deptId,
+        projectId: this.projectId,
+      }
+      this.getProjectStatistics(params)
+      this.$refs.map.getProjectSite(params)
     },
     updateClock() {
       const now = dayjs(); // 获取当前时间
@@ -987,9 +1006,9 @@ export default {
       this.timer = setInterval(cb, t)
     },
     // 投资总览
-    async getProjectStatistics() {
+    async getProjectStatistics (params) {
       try {
-        const { success, data } = await Api.projectStatistics(this.comParams)
+        const { success, data } = await Api.projectStatistics(params)
         if (success && data) {
           this.contractCount = +data.contractCount || 0
           this.contractsAmount = (+data.contractsAmount / 1e4) || 0
