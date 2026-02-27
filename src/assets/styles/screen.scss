@@ -1,5 +1,5 @@
 $ui-width: 1920;
-$ui-height: 1100;
+$ui-height: 1154;
 
 @function vw($px) {
     @return $px / $ui-width * 100vw;
