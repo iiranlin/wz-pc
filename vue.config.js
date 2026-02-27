@@ -125,6 +125,7 @@ module.exports = {
             'blcd-icons': resolve("src/plugins/blcd/blcd-icons"),
             'blcd-ui': resolve("src/plugins/blcd/blcd-ui"),
             'blcd-hiprint': resolve("src/plugins/blcd/blcd-hiprint"),
+            'pdfjs-dist': resolve("src/plugins/blcd/pdfjs-dist")
             }
         },
         plugins: [
