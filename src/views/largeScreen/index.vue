@@ -31,6 +31,7 @@
       </header>
       <div class="large-form">
         <el-date-picker
+          :class="{pickered: (Array.isArray(queryDate) && queryDate.length) > 0 }"
           v-model="queryDate"
           type="daterange"
           align="right"
@@ -484,14 +485,14 @@
               <div class="item7-chart">
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">0</span> <span class="label">批</span>
+                    <span class="value">1</span> <span class="label">批</span>
                   </p>
                   <i class="body-pic"></i>
                   <p class="body-item-name">累计退货次数</p>
                 </div>
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">0</span>
+                    <span class="value">0.72</span>
                     <span class="label">万元</span>
                   </p>
                   <i class="body-pic body-pic-2"></i>
@@ -1095,17 +1096,10 @@ export default {
         ],
       },
       boardConfig: {
-        header: ["供应商名称", "退货次数", "退货金额（万元）"],
-        data: [["", "暂无数据", ""]],
-        //  ["上海合合信息科技股份有限公司", "1", "0.11"],
-        // ["上海达机皮带有限公司", "1", "0.12"],
-        // ["富裕注塑制模（上海）有限公司", "1", "0.01"],
-        // ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.21"],
-        // ["上海寰鹰航空技术有限公司", "1", "0.02"],
-        // ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.20"],
-
+        header: ["供应商名称", "退货次数", "退货金额(万元)"],
+        data: [["山东龙祥新材料科技有限公司", "1", "0.72"]],
         index: true,
-        columnWidth: [50, 120, 80],
+        columnWidth: [50, 210, 100],
         align: ['center', 'left', 'center', 'center'],
         headerBGC: '#03001742',
         oddRowBGC: 'transparent',
@@ -1503,6 +1497,7 @@ export default {
       this.queryDate = [startDate, endDate]
     },
     screenChange (type) {
+      this.loading = true
       this.screenType = type
       switch (type) {
         case "0":
@@ -1512,6 +1507,7 @@ export default {
           this.getSelfPurchased()
           break;
       }
+      this.loading = false
     },
     changedDate () {
       switch (this.screenType) {
@@ -2237,10 +2233,12 @@ p {
   }
 }
 
-.nav-menu {
+.nav-menu, 
+::v-deep .el-range-separator {
   color: #bbb;
 }
-.nav-menu.active {
+.nav-menu.active,
+::v-deep .pickered .el-range-separator {
   color: #75f9fd;
 }
 </style>
