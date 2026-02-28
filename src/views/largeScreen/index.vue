@@ -1053,7 +1053,7 @@ export default {
     };
     return {
       loading: false,
-      title: "铁路建设物资管理大屏",
+      title: "铁路建设物资管理驾驶舱",
       menuNm1: "甲供物资",
       menuNm2: "自购物资",
       screenType: '0',
