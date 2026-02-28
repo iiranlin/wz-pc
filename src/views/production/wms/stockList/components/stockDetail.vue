@@ -59,7 +59,7 @@
               align="center"
             ></el-table-column>
               <el-table-column
-              prop="outTotal"
+              prop="outCkTotal"
               label="累计出库数量"
               width="120"
               align="center"
