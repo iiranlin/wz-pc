@@ -58,6 +58,12 @@
               width="120"
               align="center"
             ></el-table-column>
+              <el-table-column
+              prop="outTotal"
+              label="累计出库数量"
+              width="120"
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="stockStatus"
               label="当前库存"

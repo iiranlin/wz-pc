@@ -228,7 +228,7 @@
       </div>
        <!-- 总数量 -->
       <div class="summary-item">
-        <span class="summary-label">总数量111：</span>
+        <span class="summary-label">总数量：</span>
         <span class="summary-value amount-text">{{  totalNum }}</span>
       </div>
       <div class="summary-item">

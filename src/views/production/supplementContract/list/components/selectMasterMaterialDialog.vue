@@ -51,7 +51,7 @@
       <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center"></el-table-column>
       <el-table-column prop="vatRate" label="物资增值税率(%)" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.vatRate }}%
+          {{ scope.row.vatRate }}
         </template>
       </el-table-column>
       <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">

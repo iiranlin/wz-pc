@@ -83,7 +83,7 @@
             <template slot-scope="scope">
               <el-input-number v-if="type !== 'view'" v-model="scope.row.vatRate" :min="0" :precision="2" size="mini"
                 @change="handleFieldChange('vatRate', scope.row)" style="width: 100%"></el-input-number>
-              <span v-else>{{ scope.row.vatRate }}%</span>
+              <span v-else>{{ scope.row.vatRate }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
