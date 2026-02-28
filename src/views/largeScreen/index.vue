@@ -11,14 +11,14 @@
           @click="screenChange('0')"
         >
           <p class="time-running">{{ time }}</p>
-          <div :class="['nav-menu', { active: screenType == '0'}]">{{ menuNm1 }}</div>
+          <div :class="['nav-menu', { active: screenType == '0' }]">{{ menuNm1 }}</div>
         </div>
         <div class="nav-mid">{{ title }}</div>
         <div
           class="nav-right"
           @click="screenChange('1')"
         >
-          <div v-show="false" :class="['nav-menu', { active: screenType == '1'}]">{{ menuNm2 }}</div>
+          <div :class="['nav-menu', { active: screenType == '1' }]">{{ menuNm2 }}</div>
           <p
             class="back"
             @click="backHome"
@@ -988,20 +988,67 @@
         <div class="middle">
           <ChartCard title="自购物资合同核备审批">
             <div class="custom-table-container">
-              <el-table :data="tableData" style="width: 100%" class="large-screen-table">
-                <el-table-column prop="date" label="合同名称">
+              <el-table
+                :data="tableData"
+                style="width: 100%"
+                class="large-screen-table"
+                size="small"
+              >
+                <el-table-column
+                  type="index"
+                  label="序号"
+                  width="50"
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  prop="date"
+                  show-overflow-tooltip
+                  label="合同名称"
+                >
                 </el-table-column>
-                <el-table-column prop="name" label="合同编号">
+                <el-table-column
+                  prop="name"
+                  show-overflow-tooltip
+                  label="合同编号"
+                >
                 </el-table-column>
-                <el-table-column prop="address" label="规格型号">
+                <el-table-column
+                  prop="address"
+                  show-overflow-tooltip
+                  label="规格型号"
+                >
                 </el-table-column>
-                <el-table-column prop="address" label="供应商">
+                <el-table-column
+                  prop="address"
+                  show-overflow-tooltip
+                  label="供应商"
+                >
                 </el-table-column>
-                <el-table-column prop="address" label="标段项目">
+                <el-table-column
+                  prop="address"
+                  show-overflow-tooltip
+                  label="标段项目"
+                >
                 </el-table-column>
-                <el-table-column prop="address" label="提交时间">
+                <el-table-column
+                  prop="address"
+                  show-overflow-tooltip
+                  label="提交时间"
+                >
                 </el-table-column>
-                <el-table-column prop="address" label="审批状态">
+                <el-table-column
+                  prop="status"
+                  label="审批状态"
+                >
+                  <template slot-scope="scope">
+                    <el-tag
+                      :type="getStatusType(scope.row.status)"
+                      size="mini"
+                      effect="dark"
+                    >
+                      {{ scope.row.status }}
+                    </el-tag>
+                  </template>
                 </el-table-column>
               </el-table>
             </div>
@@ -1179,83 +1226,102 @@ export default {
           }
         ],
       },
-      tableData:[{
+      tableData: [{
         date: '粉煤灰采购',
         name: 'FMHCG-250621-001',
-        address: '粉煤灰'
+        address: '粉煤灰',
+        status: '审核中',
       }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        },{
         date: '粉煤灰采购',
         name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
-      },{
-        date: '粉煤灰采购',
-        name: 'FMHCG-250621-001',
-        address: '粉煤灰'
+        address: '粉煤灰',
+        status: '已审核',
       }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }, {
-          date: '粉煤灰采购',
-          name: 'FMHCG-250621-001',
-          address: '粉煤灰'
-        }],
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '已审核',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '未提交',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '未提交',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '已审核',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '已审核',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }, {
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰',
+        status: '审核中',
+      }],
       // 表格配置
       // tableConfig: {
       //   header: ["合同名称", "合同编号", "规格型号", "供应商", "标段项目", "提交时间", "审批状态"],
@@ -1452,7 +1518,7 @@ export default {
       matBigCateName: '',
       purchaseOps: [],
 
-   
+
     }
   },
   computed: {
@@ -1467,7 +1533,18 @@ export default {
         // 物资大类名称
         ...(this.screenType === '1' && { name: this.matBigCateName })
       }
-    }
+    },
+    getStatusType () {
+      return (status) => {
+        const statusMap = {
+          '审核中': 'primary',
+          '已审核': 'success',
+          '未提交': 'info'
+        };
+        return statusMap[status] || 'info';
+      }
+    },
+
   },
 
   mounted () {
@@ -1497,7 +1574,6 @@ export default {
       this.queryDate = [startDate, endDate]
     },
     screenChange (type) {
-      this.loading = true
       this.screenType = type
       switch (type) {
         case "0":
@@ -1507,7 +1583,6 @@ export default {
           this.getSelfPurchased()
           break;
       }
-      this.loading = false
     },
     changedDate () {
       switch (this.screenType) {
@@ -1734,7 +1809,7 @@ export default {
 
           const maxValue = Math.max(...data.map(item => item.ordinate))
 
-          this.barOptions2.xAxis.max = maxValue * 1.5 
+          this.barOptions2.xAxis.max = maxValue * 1.5
           this.barOptions2.series[0].data = data.map(() => maxValue * 1.5)
         } else {
           this.barOptions2.xAxis.max = 100
@@ -1850,6 +1925,7 @@ p {
     display: flex;
     align-items: center;
     gap: vw(16); // 统一间距
+    margin-top: vh(16);
   }
 }
 
@@ -1928,7 +2004,7 @@ p {
 
 // 卡片通用样式
 .item {
-  height: vh(270);
+  height: vh(265);
   background-size: 100% 100% !important;
   background-repeat: no-repeat !important;
   border-radius: vw(8);
@@ -1950,7 +2026,7 @@ p {
 }
 
 .item-7 {
-  height: vh(280) !important;
+  height: vh(265) !important;
   padding-top: vh(8);
 
   .value {
@@ -2141,6 +2217,7 @@ p {
 .self-flex {
   .dv-scroll-board {
     height: vh(780) !important;
+
     ::v-deep .row-item {
       color: #869ab9;
     }
@@ -2164,13 +2241,13 @@ p {
   .left,
   .right {
     .chart-card {
-      height: vh(410);
+      height: vh(402);
     }
   }
 
   .middle {
     .chart-card {
-      height: vh(840);
+      height: vh(824);
     }
 
     // 自定义表格容器
@@ -2178,13 +2255,35 @@ p {
       height: 100%;
       padding: vh(10) vw(10);
 
+      .el-table {
+        margin: unset;
+        height: vh(760);
+
+        &::before {
+          background-color: unset;
+        }
+
+        ::v-deep .el-table__body-wrapper {
+          height: vh(720) !important;
+          overflow: auto;
+        }
+      }
+
+      .el-table th {
+        height: vh(40);
+      }
+
+      .el-table__row {
+        height: vh(40);
+      }
+
       // 表格样式
       .large-screen-table {
         background: transparent;
 
         // 表头样式
         ::v-deep .el-table__header-wrapper th {
-          background: #03001742 !important;
+          background: #0e142b !important;
           color: #75f9fd !important;
           font-size: vw(15) !important;
           border: none !important;
@@ -2225,7 +2324,7 @@ p {
         }
 
         // 表格边框
-        ::v-deep .el-table--enable-row-hover .el-table__body tr:hover>td {
+        ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
           background-color: rgba(117, 249, 253, 0.1) !important;
         }
       }
@@ -2233,7 +2332,7 @@ p {
   }
 }
 
-.nav-menu, 
+.nav-menu,
 ::v-deep .el-range-separator {
   color: #bbb;
 }
