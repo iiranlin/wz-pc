@@ -141,7 +141,7 @@
                 @change="handleFieldChange('vatRate', scope.row)"
                 style="width: 100%"
               ></el-input-number> -->
-              <span>{{ scope.row.vatRate }}% </span>
+              <span>{{ scope.row.vatRate }} </span>
             </template>
           </el-table-column>
           <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
@@ -228,21 +228,21 @@
       </div>
        <!-- 总数量 -->
       <div class="summary-item">
-        <span class="summary-label">总数量：</span>
-        <span class="summary-value amount-text">{{  formatPreciseNumber(totalNum) }}</span>
+        <span class="summary-label">总数量111：</span>
+        <span class="summary-value amount-text">{{  totalNum }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">下达数量：</span>
-        <span class="summary-value amount-text">{{ totalQuantity.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalQuantity }}</span>
       </div>
 
       <div class="summary-item">
         <span class="summary-label">发货数量：</span>
-        <span class="summary-value amount-text">{{ totalSendCount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalSendCount}}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">收货数量：</span>
-        <span class="summary-value amount-text">{{ totalPutTotal.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalPutTotal }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">收货金额：</span>
@@ -250,7 +250,7 @@
       </div>
       <div class="summary-item">
         <span class="summary-label">入库量：</span>
-        <span class="summary-value amount-text">{{ totalStoreCount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalStoreCount }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">入库金额：</span>
@@ -258,7 +258,7 @@
       </div>
       <div class="summary-item">
         <span class="summary-label">出库量：</span>
-        <span class="summary-value amount-text">{{ totalOutCount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ totalOutCount}}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">出库金额：</span>
@@ -278,6 +278,7 @@ import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
 import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
 import * as ContractItemApi from '@/api/prodmgr-inv/project/contractItem.js';
+import Decimal from 'decimal.js';
 export default {
   name: 'tabTable',
   dicts: ['MeasureUnit'],
@@ -349,68 +350,121 @@ export default {
 
       return data;
     },
-    // 计算总amount
+    // 计算累计下达数量（只累加正数）
     totalQuantity() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.cumulativeAmount) || 0);
-      }, 0);
+        const cumulativeAmount = new Decimal(item.cumulativeAmount || 0);
+        // 只累加正数，忽略负数和零
+        if (cumulativeAmount.greaterThan(0)) {
+          return sum.plus(cumulativeAmount);
+        }
+        return sum;
+      }, new Decimal(0)).toNumber();
     },
-    // 计算总金额
+    // 计算总金额（只累加正数）
     totalAmount() {
       return this.filteredTableData.reduce((sum, item) => {
-
-        return sum + (parseFloat(item.totalAmount) || 0);
+        const amount = parseFloat(item.totalAmount) || 0;
+        // 只累加正数，忽略负数和零
+        if (amount > 0) {
+          return sum + amount;
+        }
+        return sum;
       }, 0);
     },
-     // 计算总数量（使用精确加法避免浮点数精度问题）
+    // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题，只累加正数）
     totalNum() {
       return this.filteredTableData.reduce((sum, item) => {
-        const amount = parseFloat(item.amount) || 0;
-        return this.preciseAdd(sum, amount);
-      }, 0);
+        const amount = new Decimal(item.amount || 0);
+        // 只累加正数，忽略负数和零
+        if (amount.greaterThan(0)) {
+          return sum.plus(amount);
+        }
+        return sum;
+      }, new Decimal(0)).toNumber();
     },
-    // 计算累计收货数量
+
+     // 计算累计收货数量（只累加正数）
     totalPutTotal() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.putTotal) || 0);
-      }, 0);
+        const putTotal = new Decimal(item.putTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (putTotal.greaterThan(0)) {
+          return sum.plus(putTotal);
+        }
+        return sum;
+      }, new Decimal(0)).toNumber();
     },
-    // 计算累计发货数量
+    // 计算累计发货数量（只累加正数）
     totalSendCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.sendTotal) || 0);
-      }, 0);
+        const sendTotal = new Decimal(item.sendTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (sendTotal.greaterThan(0)) {
+          return sum.plus(sendTotal);
+        }
+        return sum;
+      }, new Decimal(0)).toNumber();
     },
-    // 计算已收货金额
+
+    // 计算已收货金额（只累加正数）
     totalStoreRates() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotalRates) || 0);
+        const storeTotalRates = parseFloat(item.storeTotalRates) || 0;
+        // 只累加正数，忽略负数和零
+        if (storeTotalRates > 0) {
+          return sum + storeTotalRates;
+        }
+        return sum;
       }, 0);
     },
-    // 计算累计入库量
+    
+    // 计算累计入库量（只累加正数）
     totalStoreCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotal) || 0);
-      }, 0);
+        const storeTotal = new Decimal(item.storeTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (storeTotal.greaterThan(0)) {
+          return sum.plus(storeTotal);
+        }
+        return sum;
+      }, new Decimal(0)).toNumber();
     },
-    // 计算累计入库金额
+    // 计算累计入库金额（只累加正数）
     totalStoreTotalRates() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.storeTotalRates) || 0);
+        const storeTotalRates = parseFloat(item.storeTotalRates) || 0;
+        // 只累加正数，忽略负数和零
+        if (storeTotalRates > 0) {
+          return sum + storeTotalRates;
+        }
+        return sum;
       }, 0);
     },
-    // 计算累计出库量
+
+     // 计算累计出库量（只累加正数）
     totalOutCount() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.outTotal) || 0);
-      }, 0);
+        const outTotal = new Decimal(item.outTotal || 0);
+        // 只累加正数，忽略负数和零
+        if (outTotal.greaterThan(0)) {
+          return sum.plus(outTotal);
+        }
+        return sum;
+      }, new Decimal(0)).toNumber();
     },
-    // 计算已出库金额
+    // 计算已出库金额（只累加正数）
     totalOutRates() {
       return this.filteredTableData.reduce((sum, item) => {
-        return sum + (parseFloat(item.outTotalRates) || 0);
+        const outTotalRates = parseFloat(item.outTotalRates) || 0;
+        // 只累加正数，忽略负数和零
+        if (outTotalRates > 0) {
+          return sum + outTotalRates;
+        }
+        return sum;
       }, 0);
     },
+
     projectTabs() {
       const projectNames = [...new Set(this.tableData.map(item => item.sectionName).filter(Boolean))];
       return projectNames.map((name, index) => ({

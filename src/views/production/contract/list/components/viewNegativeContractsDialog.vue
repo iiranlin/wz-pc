@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="负计划补充合同列表"
+    title="补充合同负数物资"
     :visible.sync="dialogVisible"
     width="70%"
     :close-on-click-modal="false"
