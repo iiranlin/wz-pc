@@ -111,6 +111,27 @@ export const getProjectSite = (params) => {
   });
 };
 
+// 供应商考核
+export const supplierEvaluation = (params) => {
+  const { deptName } = params
+  const data = (!deptName || deptName.includes('南京') ) 
+  ? [{
+      supperName: '山东龙祥新材料科技有限公司',
+      num: 1,
+      amount: 0.72
+    }]
+  : []
+  return Promise.resolve({
+    success: true,
+    data: data
+  })
+  // return request({
+  //   url: `${VUE_APP_PRODMGR_INV}/materialBigScreen/projectSite`,
+  //   method: "get",
+  //   params,
+  // });
+};
+
 // 自购物资统计
 // Material Purchase Big Screen Controller------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
