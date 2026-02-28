@@ -18,7 +18,10 @@
           class="nav-right"
           @click="screenChange('1')"
         >
-          <div :class="['nav-menu', { active: screenType == '1' }]">{{ menuNm2 }}</div>
+          <div
+            :class="['nav-menu', { active: screenType == '1' }]"
+            v-if="false"
+          >{{ menuNm2 }}</div>
           <p
             class="back"
             @click="backHome"
@@ -485,14 +488,14 @@
               <div class="item7-chart">
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">1</span> <span class="label">批</span>
+                    <span class="value">{{ accReturnNum }}</span> <span class="label">批</span>
                   </p>
                   <i class="body-pic"></i>
                   <p class="body-item-name">累计退货次数</p>
                 </div>
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">0.72</span>
+                    <span class="value">{{ accReturnAmount }}</span>
                     <span class="label">万元</span>
                   </p>
                   <i class="body-pic body-pic-2"></i>
@@ -1142,11 +1145,13 @@ export default {
           },
         ],
       },
+      accReturnNum: 0,
+      accReturnAmount: 0,
       boardConfig: {
         header: ["供应商名称", "退货次数", "退货金额(万元)"],
-        data: [["山东龙祥新材料科技有限公司", "1", "0.72"]],
-        index: true,
-        columnWidth: [50, 210, 100],
+        data: [["", "暂无数据", ""]],
+        index: false,
+        columnWidth: [],
         align: ['center', 'left', 'center', 'center'],
         headerBGC: '#03001742',
         oddRowBGC: 'transparent',
@@ -1607,6 +1612,7 @@ export default {
             deptId: this.deptId,
             projectId: this.projectId,
           }
+          this.getSupplierEvaluation()
           this.getProjectStatistics(params)
           this.getProjectSite(params)
           break;
@@ -1686,16 +1692,61 @@ export default {
       }
     },
     // 供应商考核
-    // async getProjectStatistics(){
-    //   try {
-    //     const { success, data } = await Api.materialOut(this.comParams)
-    //     if (success && data) {
-    // 
-    //     }
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // },
+    async getSupplierEvaluation () {
+      try {
+        const deptName = this.deptOps.find(item => item.id === this.deptId)?.deptName
+        const params = {
+          deptName: deptName,
+          ...this.comParams,
+        }
+        const { success, data } = await Api.supplierEvaluation(params)
+
+        if (success && Array.isArray(data) && data.length) {
+          this.accReturnNum = data.reduce((pre, cur) => {
+            pre += (+cur.num || 0) * 1e3
+            return pre
+          }, 0) / 1e3
+          this.accReturnAmount = (data.reduce((pre, cur) => {
+            pre += (+cur.amount || 0) * 1e3
+            return pre
+          }, 0) / 1e3).toFixed(2)
+          const resData = data.map(item => {
+            return [
+              item.supperName,
+              item.num,
+              item.amount
+            ]
+          })
+          this.boardConfig = {
+            header: ["供应商名称", "退货次数", "退货金额(万元)"],
+            data: resData,
+            index: true,
+            columnWidth: [50, 210, 100],
+            align: ['center', 'left', 'center', 'center'],
+            headerBGC: '#03001742',
+            oddRowBGC: 'transparent',
+            evenRowBGC: 'transparent',
+            rowNum: 4,
+          }
+        } else {
+          this.accReturnNum = 0
+          this.accReturnAmount = 0..toFixed(2)
+          this.boardConfig = {
+            header: ["供应商名称", "退货次数", "退货金额(万元)"],
+            data: [["", "暂无数据", ""]],
+            index: false,
+            columnWidth: [],
+            align: ['center', 'left', 'center', 'center'],
+            headerBGC: '#03001742',
+            oddRowBGC: 'transparent',
+            evenRowBGC: 'transparent',
+            rowNum: 4,
+          }
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
     // 物资初验
     async getMaterialTake () {
       try {
