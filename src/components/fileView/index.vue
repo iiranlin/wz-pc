@@ -14,8 +14,11 @@
                 </div>
             </template>
             <div v-loading="loading" :key="key" class="filePreview">
-                <vue-office-docx v-if="isSuccess && ['docx'].includes(fileType)" :src="url" @rendered="handleRendered"
+                <vue-office-docx v-if="isSuccess && fileType === 'docx'" :src="url" @rendered="handleRendered"
                     @error="handleError" />
+                <div v-else-if="isSuccess && fileType === 'doc'" class="docx-container">
+                    <div ref="docFile"></div>
+                </div>
                 <vue-office-pptx v-else-if="isSuccess && ['pptx'].includes(fileType)" :src="url"
                     @loaded="handleRendered" @error="handleError" />
                 <vue-office-excel v-else-if="isSuccess && ['xlsx', 'xls'].includes(fileType)" :src="url"
@@ -51,6 +54,7 @@ import { minioDownload } from '@/api/minio'
 
 import '@vue-office/docx/lib/index.css'
 import '@vue-office/excel/lib/index.css'
+import { renderAsync } from 'docx-preview'
 import audioIcon from '@/assets/file/audio.png'
 import docIcon from '@/assets/file/doc.png'
 import excelIcon from '@/assets/file/excel.png'
@@ -115,7 +119,7 @@ export default {
             fileObject: {},
             key: `${Date.now()}`,
             isSuccess: true,
-            fileTypes: ['png', 'jpg', 'docx', 'xlsx', 'xls', 'pdf', 'gif', 'jpeg', 'pptx'],
+            fileTypes: ['png', 'jpg', 'docx', 'doc', 'xlsx', 'xls', 'pdf', 'gif', 'jpeg', 'pptx'],
             pngTypes: ['png', 'gif', 'jpg', 'jpeg'],
             fileType: '',
             visible: false,
@@ -187,6 +191,18 @@ export default {
                 this.handleError()
             }
         },
+        async renderDocFile(blob) {
+            try {
+                await this.$nextTick();
+                await renderAsync(blob, this.$refs.docFile);
+                this.handleRendered();
+            } catch (err) {
+                console.error('.doc文件渲染失败:', err);
+                this.loading = false;
+                this.isSuccess = false;
+                this.errorMsg = '该 .doc 文件暂不支持预览，建议转为 .docx 格式';
+            }
+        },
         async handleDownload() {
             const { filePath, fileName, uploadType } = this.fileObject
 
@@ -233,8 +249,12 @@ export default {
                         }
                         const blob = await response.blob();
                         this._blob = blob;
-                        this.url = window.URL.createObjectURL(blob);
-                        this.handleRendered();
+                        if (this.fileType === 'doc') {
+                            await this.renderDocFile(blob);
+                        } else {
+                            this.url = window.URL.createObjectURL(blob);
+                            this.handleRendered();
+                        }
                     }
                 } else {
                     // MinIO文件：使用原有的MinIO下载接口
@@ -242,9 +262,13 @@ export default {
                     const res = await this.$download.fileSource(downloadUrl);
                     const blob = new Blob([res.data])
                     this._blob = blob
-                    this.url = window.URL.createObjectURL(blob);
-                    if (this.pngTypes.includes(this.fileType)) {
-                        this.renderImg()
+                    if (this.fileType === 'doc') {
+                        await this.renderDocFile(blob);
+                    } else {
+                        this.url = window.URL.createObjectURL(blob);
+                        if (this.pngTypes.includes(this.fileType)) {
+                            this.renderImg()
+                        }
                     }
                 }
             } catch (err) {
@@ -370,6 +394,14 @@ export default {
                 height: 100%;
                 object-fit: contain;
             }
+        }
+
+        .docx-container {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .filePreviewError {
