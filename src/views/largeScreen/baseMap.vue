@@ -58,7 +58,7 @@ export default {
             })
             _this.markers.push(marker);
           });
-          const {longitude, latitude} = data[0]
+          const { longitude, latitude } = data[0]
           this.mapObj.setZoomAndCenter(8, [longitude, latitude], false, 2000); //设置地图中心点
         }
       } catch (err) {
@@ -88,6 +88,23 @@ export default {
         showLabel: true,
         layers: layers,
       })
+      //2、创建省市简易行政区图层
+      const distProvince = new AMap.DistrictLayer.Province({
+        zIndex: 100, //设置图层层级
+        zooms: [5, 12], //设置图层显示范围
+        depth: 2, //设置数据显示层级，0：显示国家面，1：显示省级，当国家为中国时设置depth为2的可以显示市一级
+      });
+
+      // 3、设置行政区图层样式
+      distProvince.setStyles({
+        "stroke-width": 1, //描边线宽
+        fill: function (data) { 
+          return [0, 1, 1, 0.1];//
+        },
+      });
+      distProvince.setDistricts(["310000", "320000", "330000", "340000"]);
+      //4、将简易行政区图层添加到地图
+      this.mapObj.add(distProvince);
     },
     removeMarkers () {
       this.markers.length && this.mapObj.remove(this.markers);
