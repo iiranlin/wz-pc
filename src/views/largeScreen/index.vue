@@ -1465,6 +1465,7 @@ p {
     display: flex;
     align-items: center;
     gap: vw(16); // 统一间距
+    margin-top: vh(16);
   }
 }
 
@@ -1543,7 +1544,7 @@ p {
 
 // 卡片通用样式
 .item {
-  height: vh(270);
+  height: vh(265);
   background-size: 100% 100% !important;
   background-repeat: no-repeat !important;
   border-radius: vw(8);
@@ -1565,7 +1566,7 @@ p {
 }
 
 .item-7 {
-  height: vh(280) !important;
+  height: vh(265) !important;
   padding-top: vh(8);
 
   .value {
@@ -1780,13 +1781,13 @@ p {
   .left,
   .right {
     .chart-card {
-      height: vh(410);
+      height: vh(402);
     }
   }
 
   .middle {
     .chart-card {
-      height: vh(840);
+      height: vh(824);
     }
 
     // 自定义表格容器
