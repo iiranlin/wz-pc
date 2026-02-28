@@ -18,7 +18,7 @@
           class="nav-right"
           @click="screenChange('1')"
         >
-          <div :class="['nav-menu', { active: screenType == '1'}]">{{ menuNm2 }}</div>
+          <div v-show="false" :class="['nav-menu', { active: screenType == '1'}]">{{ menuNm2 }}</div>
           <p
             class="back"
             @click="backHome"
@@ -484,14 +484,14 @@
               <div class="item7-chart">
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">6</span> <span class="label">批</span>
+                    <span class="value">0</span> <span class="label">批</span>
                   </p>
                   <i class="body-pic"></i>
                   <p class="body-item-name">累计退货次数</p>
                 </div>
                 <div class="item7-chart-item">
                   <p>
-                    <span class="value">0.67</span>
+                    <span class="value">0</span>
                     <span class="label">万元</span>
                   </p>
                   <i class="body-pic body-pic-2"></i>
@@ -986,10 +986,28 @@
         </div>
         <div class="middle">
           <ChartCard title="自购物资合同核备审批">
-            <dv-scroll-board
+            <div class="custom-table-container">
+              <el-table :data="tableData" style="width: 100%" class="large-screen-table">
+                <el-table-column prop="date" label="合同名称">
+                </el-table-column>
+                <el-table-column prop="name" label="合同编号">
+                </el-table-column>
+                <el-table-column prop="address" label="规格型号">
+                </el-table-column>
+                <el-table-column prop="address" label="供应商">
+                </el-table-column>
+                <el-table-column prop="address" label="标段项目">
+                </el-table-column>
+                <el-table-column prop="address" label="提交时间">
+                </el-table-column>
+                <el-table-column prop="address" label="审批状态">
+                </el-table-column>
+              </el-table>
+            </div>
+            <!-- <dv-scroll-board
               :config="tableConfig"
               style="width: 100%"
-            />
+            /> -->
           </ChartCard>
         </div>
         <div class="right">
@@ -999,7 +1017,7 @@
               style="height: 100%;"
             />
           </ChartCard>
-          <ChartCard title="物资种类合同核备金额">
+          <ChartCard title="物资种类合同核备金额(万元)">
             <EChartsWrapper
               :options="barOptions2"
               style="height: 100%;"
@@ -1035,7 +1053,7 @@ export default {
     };
     return {
       loading: false,
-      title: "铁路建设物资管理系统",
+      title: "铁路建设物资管理大屏",
       menuNm1: "甲供物资",
       menuNm2: "自购物资",
       screenType: '0',
@@ -1078,16 +1096,16 @@ export default {
       },
       boardConfig: {
         header: ["供应商名称", "退货次数", "退货金额（万元）"],
-        data: [
-          ["上海合合信息科技股份有限公司", "1", "0.11"],
-          ["上海达机皮带有限公司", "1", "0.12"],
-          ["富裕注塑制模（上海）有限公司", "1", "0.01"],
-          ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.21"],
-          ["上海寰鹰航空技术有限公司", "1", "0.02"],
-          ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.20"],
-        ],
+        data: [["", "暂无数据", ""]],
+        //  ["上海合合信息科技股份有限公司", "1", "0.11"],
+        // ["上海达机皮带有限公司", "1", "0.12"],
+        // ["富裕注塑制模（上海）有限公司", "1", "0.01"],
+        // ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.21"],
+        // ["上海寰鹰航空技术有限公司", "1", "0.02"],
+        // ["易格斯拖链轴承仓储贸易（上海）有限公司", "1", "0.20"],
+
         index: true,
-        columnWidth: [40, 180, 80],
+        columnWidth: [50, 120, 80],
         align: ['center', 'left', 'center', 'center'],
         headerBGC: '#03001742',
         oddRowBGC: 'transparent',
@@ -1167,41 +1185,119 @@ export default {
           }
         ],
       },
+      tableData:[{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      },{
+        date: '粉煤灰采购',
+        name: 'FMHCG-250621-001',
+        address: '粉煤灰'
+      }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }, {
+          date: '粉煤灰采购',
+          name: 'FMHCG-250621-001',
+          address: '粉煤灰'
+        }],
       // 表格配置
-      tableConfig: {
-        header: ["合同名称", "合同编号", "规格型号", "供应商", "标段项目", "提交时间", "审批状态"],
-        data: [
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-          ["22", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
-        ],
-        index: true,
-        columnWidth: [50, 140, 120],
-        align: ['center', 'left', 'center', 'center'],
-        headerBGC: '#03001742',
-        oddRowBGC: 'transparent',
-        evenRowBGC: 'transparent',
-        rowNum: 16,
-      },
+      // tableConfig: {
+      //   header: ["合同名称", "合同编号", "规格型号", "供应商", "标段项目", "提交时间", "审批状态"],
+      //   data: [
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["粉煤灰采购", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //     ["22", "FMHCG-250621-001", "粉煤灰", "上海市xx商贸公司", "宁淮1标", "2024/12/2", "审核中"],
+      //   ],
+      //   index: true,
+      //   columnWidth: [50, 140, 120],
+      //   align: ['center', 'left', 'center', 'center'],
+      //   headerBGC: '#03001742',
+      //   oddRowBGC: 'transparent',
+      //   evenRowBGC: 'transparent',
+      //   rowNum: 16,
+      //   carousel: 'off',
+      // },
       // 柱状图配置
       barOptions1: {
         legend: {
@@ -1247,7 +1343,7 @@ export default {
         ]
       },
       barOptions2: {
-        legend: { show: false },  // 隐藏图例
+        legend: { show: false },
         backgroundColor: 'transparent',
         tooltip: {
           trigger: 'axis',
@@ -1258,7 +1354,7 @@ export default {
         grid: { left: '2%', right: '4%', top: '15%', containLabel: true },
         xAxis: {
           type: 'value',
-          max: 820,
+          max: 8000, // 增加最大值，为标签留出空间
           axisLine: { show: false },
           axisTick: { show: false },
           axisLabel: { show: false },
@@ -1269,7 +1365,7 @@ export default {
           data: ['宁淮5标', '南京上元门站前4站', '南京北站站房1标', '盐宜站前4标', '宁淮2标', '宁淮4标'],
           axisLine: { show: false },
           axisTick: { show: false },
-          axisLabel: {  // 保留项目名称
+          axisLabel: {
             color: '#ccc',
             fontSize: vw(14)
           },
@@ -1277,15 +1373,15 @@ export default {
         },
         series: [
           {
-            name: '',  // 背景系列，名称可留空
+            name: '',
             type: 'bar',
-            data: [850, 850, 850, 850, 850, 850],
+            data: [8000, 8000, 8000, 8000, 8000, 8000],
             itemStyle: {
-              color: 'rgba(255,255,255,0.15)',  // 浅色背景
+              color: 'rgba(255,255,255,0.15)',
               borderRadius: [6, 6, 0, 0]
             },
             barWidth: 15,
-            barCategoryGap: '50%',
+            barCategoryGap: '80%',
             barGap: '-100%',
             label: { show: false },
             tooltip: { show: false },
@@ -1302,7 +1398,7 @@ export default {
               },
               borderRadius: [6, 6, 0, 0]
             },
-            barWidth: 14,
+            barWidth: vw(16),
             barCategoryGap: '50%',
             label: {
               show: true,
@@ -1311,7 +1407,7 @@ export default {
               fontSize: vw(14),
               fontWeight: 'bold',
               formatter: '{c}',
-              offset: [-50, 0]
+              distance: 8
             }
           }
         ]
@@ -1323,16 +1419,18 @@ export default {
         tooltip: { trigger: 'item' },
         legend: {
           orient: 'vertical',
-          right: 0,
+          left: '60%',
           top: 'center',
-          textStyle: { color: '#ccc', fontSize: vw(14) }
+          textStyle: { color: '#ccc', fontSize: vw(14) },
+          itemWidth: vw(20),
+          itemHeight: vw(14),
         },
         series: [
           {
             name: '物资种类合同核备数',
             type: 'pie',
-            radius: [0, '70%'],
-            center: ['35%', '50%'],
+            radius: [0, '60%'],
+            center: ['30%', '50%'],
             avoidLabelOverlap: false,
             color: ['#487BE6', '#5EB2BB', '#4F9A54', '#EFB645', '#EA6D33', '#D34A3D'],
             itemStyle: {
@@ -1365,7 +1463,8 @@ export default {
   },
   computed: {
     comParams () {
-      const [startDate = '', endDate = ''] = this.queryDate
+      const dateArray = Array.isArray(this.queryDate) ? this.queryDate : [];
+      const [startDate = '', endDate = ''] = dateArray
       return {
         startDate,
         endDate,
@@ -1636,7 +1735,14 @@ export default {
         if (success && Array.isArray(data) && data.length) {
           this.barOptions2.yAxis.data = data.map(item => item.abscissa)
           this.barOptions2.series[1].data = data.map(item => item.ordinate)
+
+          const maxValue = Math.max(...data.map(item => item.ordinate))
+
+          this.barOptions2.xAxis.max = maxValue * 1.5 
+          this.barOptions2.series[0].data = data.map(() => maxValue * 1.5)
         } else {
+          this.barOptions2.xAxis.max = 100
+          this.barOptions2.series[0].data = [100, 100, 100, 100, 100, 100]
         }
       } catch (err) {
         console.log(err)
@@ -1985,7 +2091,6 @@ p {
 
     .label {
       width: vw(100);
-      font-size: vw(20);
       color: #75f9fd;
     }
 
@@ -2071,8 +2176,67 @@ p {
     .chart-card {
       height: vh(840);
     }
+
+    // 自定义表格容器
+    .custom-table-container {
+      height: 100%;
+      padding: vh(10) vw(10);
+
+      // 表格样式
+      .large-screen-table {
+        background: transparent;
+
+        // 表头样式
+        ::v-deep .el-table__header-wrapper th {
+          background: #03001742 !important;
+          color: #75f9fd !important;
+          font-size: vw(15) !important;
+          border: none !important;
+        }
+
+        // 表格行样式
+        ::v-deep .el-table__body-wrapper tbody td {
+          color: #869ab9 !important;
+          font-size: vw(14) !important;
+          border: none !important;
+          background: transparent !important;
+        }
+
+        // 奇偶行背景（保持透明）
+        ::v-deep .el-table__body-wrapper tbody tr:nth-child(odd) {
+          background: transparent !important;
+        }
+
+        ::v-deep .el-table__body-wrapper tbody tr:nth-child(even) {
+          background: transparent !important;
+        }
+
+        // 滚动条样式
+        ::v-deep .el-table__body-wrapper {
+          &::-webkit-scrollbar {
+            width: vw(6) !important;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-radius: vw(3) !important;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: #75f9fd !important;
+            border-radius: vw(3) !important;
+          }
+        }
+
+        // 表格边框
+        ::v-deep .el-table--enable-row-hover .el-table__body tr:hover>td {
+          background-color: rgba(117, 249, 253, 0.1) !important;
+        }
+      }
+    }
   }
 }
+
 .nav-menu {
   color: #bbb;
 }
