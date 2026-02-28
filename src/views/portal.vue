@@ -45,7 +45,7 @@
             </li>
             <li  class="li-there" @click="loginSHIndex(2)">
             </li>
-            <li  class="li-four">
+            <li  class="li-four" @click="loginLarge">
             </li>
           </ul>
         </div>
@@ -233,6 +233,12 @@ export default {
       },
       loginIndex(){
         let route = { path: 'index' }
+        this.$router
+            .push(route)
+            .catch(() => { });
+      },
+      loginLarge(){
+        let route = { path: 'largeScreen' }
         this.$router
             .push(route)
             .catch(() => { });
