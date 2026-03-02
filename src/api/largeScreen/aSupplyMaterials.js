@@ -78,9 +78,9 @@ export const projectStatistics = (params) => {
 };
 
 // New  根据deptCode查询指定部门列表,仅枢纽指挥部使用
-export function newListByDeptCode(params) {
+export function newListByDeptCode(params = { deptCodePrefix: 'SN', status: '' }) {
   return request({
-    url: `${VUE_APP_BASE_PREFIX}/dept/getListByDeptCodePrefix?deptCodePrefix=SN&status=  `,
+    url: `${VUE_APP_BASE_PREFIX}/dept/getListByDeptCodePrefix`,
     method: "get",
     params,
   });
