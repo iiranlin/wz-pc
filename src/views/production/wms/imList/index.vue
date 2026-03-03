@@ -238,7 +238,7 @@ export default {
             name: "addSpok",
             query: {
               id: idArr[0],
-              type:"update"
+              type:"create"
             },
           });
           break;

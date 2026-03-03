@@ -4,26 +4,21 @@
       :buttonDisable="buttonDisabledTop"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData">
-      <template #cjResult="data">
+      <template #samplingStatus="data">
+        <!-- 下拉允许搜索 -->
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
           i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          " clearable style="width: 100%" size="small">
+          " clearable style="width: 100%" size="small" filterable>
           <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
 
       <!-- 退货日期范围 -->
       <template #date>
-        <el-date-picker
-          v-model="formData.date"
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-        </template>
-  
+        <el-date-picker v-model="formData.date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
+          start-placeholder="开始日期" end-placeholder="结束日期" />
+      </template>
+
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -36,11 +31,11 @@
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
           :button-disable="buttonDisabled" :customnDisabled="true">
-          <template #storeStatus="scope">
-         {{scope.value == '1'?'未提交':scope.value == '2'?'审核中':scope.value == '3'?'已驳回':scope.value == '4'?'已通过':''}}
+          <template #status="scope">
+            {{ scope.value == '1' ? '未提交' : scope.value == '2' ? '审核中' : scope.value == '3' ? '审核通过' : scope.value == '0' ? '已驳回' : '' }}
           </template>
           <!-- 抽检单号 -->
-           <template #spokNo="scope">
+          <template #samplingNumber="scope">
             <el-button type="text" @click="toCJ(scope.data)">
               {{ scope.value }}
             </el-button>
@@ -52,7 +47,7 @@
             </el-button>
           </template>
           <!-- 发货单号 -->
-          <template #sendNumber="scope">
+          <template #shipmentBatchNumber="scope">
             <el-button type="text" @click="toSend(scope.data)">
               {{ scope.value }}
             </el-button>
@@ -71,78 +66,15 @@
 </template>
 
 <script>
-import * as Api from "@/api/prodmgr-inv/project/wms.js";
+import * as Api from "@/api/prodmgr-inv/project/spok.js";
 import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
 import fileUpload from '@/components/upload';
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
-import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
-// Mock 数据
- const mockListData = {
-    records: [
-      {
-        djID: '1111',
-        date: '2026',
-        projectName: '新建南京北站站房',
-        sectionTotal: 25392,
-        constructionUnit: 1706169600000,
-        createUserName: '超级管理员',
-        total: 25392,
-        storeStatus: '1',
-        spokNo:'我是抽检单号1111',
-        storeNumber:'我是入库单号111',
-        sendNumber:'我是发货单号111',
-        fileList:'我是文件列表111',
-      },
-      {
-        djID: '2222',
-        date: '2026',
-        projectName: '新建南京上元门过江通道铁路',
-        sectionTotal: 18500,
-        constructionUnit: 1706256000000,
-        createUserName: '超级管理员',
-        total: 18500,
-         storeStatus: '2',
-        spokNo:'我是抽检单号2222',
-        storeNumber:'我是入库单号222',
-        sendNumber:'我是发货单号222',
-        fileList:'我是文件列表222',
-      },
-      {
-        djID: '4444',
-        date: '2026',
-        projectName: '新建上海至南京至合肥高速铁路',
-        sectionTotal: 32100,
-        constructionUnit: 1706342400000,
-        createUserName: '超级管理员',
-        total: 32100,
-        storeStatus: '3',
-        spokNo:'我是抽检单号3333',
-        storeNumber:'我是入库单号333',
-        sendNumber:'我是发货单号333',
-        fileList:'我是文件列表333',
-      },
-      {
-        djID: '88888',
-        date: '2026',
-        projectName: '新建上哈哈哈铁路',
-        sectionTotal: 32100,
-        constructionUnit: 1706342400000,
-        createUserName: '超级管理员',
-        total: 32100,
-        storeStatus: '4',
-        spokNo:'我是抽检单号4444',
-        storeNumber:'我是入库单号444',
-        sendNumber:'我是发货单号444',
-        fileList:'我是文件列表444',
-      }
-    ],
-    total: 4
- }
 export default {
   // 建设项目
   name: "imList",
-  components: { workFlowView , fileUpload},
+  components: { workFlowView, fileUpload },
   mixins: [indexMixin],
 
   data() {
@@ -152,17 +84,17 @@ export default {
           code: "1",
           name: "合格",
         },
-      
+
         {
           code: "2",
-          name: "不合格",
+          name: "部分合格",
         },
         {
           code: "3",
-          name: "部分合格",
+          name: "不合格",
         }
       ],
-      lineOptions:[],
+      lineOptions: [],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -238,25 +170,15 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
-      // 使用mock数据
-        setTimeout(() => {
-          this.list = mockListData.records
-          this.total = mockListData.total
-          this.loading = false
-        }, 300)
-      // Api.listStore(Object.assign({}, this.listQuery, this.formData))
-      //   .then(({ data }) => {
-      //      data.list.map((item, i) => {
-      //       item.spokNo = '抽检单号' + i
-      //     })
-      //     this.list = data.list;
-      //     this.total = data.total;
-      //     console.log('我是数组哈哈哈哈')
-      //    console.log(this.list)
-      //   })
-      //   .finally(() => {
-      //     this.loading = false;
-      //   });
+      Api.list(Object.assign({}, this.listQuery, this.formData))
+        .then(({ data }) => {
+
+          this.list = data.list;
+          this.total = data.total;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     handleSelectionChange(ids, single, multiple, selection) {
       this.ids = ids;
@@ -276,7 +198,7 @@ export default {
           break;
         case "flowSee":
           this.workFlowViewVisible = true;
-          this.selectedRow = { businessId: rowArr[0].storeMiddleId ? rowArr[0].storeMiddleId : idArr[0] };
+          this.selectedRow = { businessId: idArr[0] };
           break;
       }
     },
@@ -305,12 +227,6 @@ export default {
         });
     },
     handleDelete(ids, rowArr) {
-      // for (var i in rowArr) {
-      //   if (rowArr[i].status != "1") {
-      //     this.$modal.msgError("已发货，无法删除！");
-      //     return;
-      //   }
-      // }
       this.$modal.confirm("是否确认删除?")
         .then(function () {
           return Api.batchRemove({ ids });
@@ -333,8 +249,11 @@ export default {
       this.handleQuery();
     },
     // 抽检单号
-    toCJ(){
-      // 等待跳转
+    toCJ(row) {
+      this.$router.push({
+        name: 'addSpok',
+        query:{id: row.id,type:'view'}
+      })
     },
     //入库单号
     toIm(row) {
@@ -345,10 +264,10 @@ export default {
     },
     //发货单
     toSend(row) {
-      // this.$router.push({
-      //   name: "跳转到收获单详情页",
-      //   query: { id: row.id, type: "view", takeStatus: row.takeStatus },
-      // });
+      this.$router.push({
+        name: "addSend",
+        query: { id: row.id, type: "view" },
+      });
     },
     //顶部按钮控制
     /**
@@ -359,27 +278,27 @@ export default {
      * 
      */
     buttonDisabledTop(button) {
-    // 如果没有选中行，禁用所有按钮
-    if (!this.selection || this.selection.length === 0) {
-      return true;
-    }
-    const status = this.selection[0].storeStatus;
-    
-    switch (button.buttonCode) {
-      case 'delete':
-        // 未提交和已驳回可以删除
-        return !['1', '3'].includes(status);
-      case 'revoke':
-        // 审核中和已驳回可以撤回
-        return !['2', '3'].includes(status);
-      default:
+      // 如果没有选中行，禁用所有按钮
+      if (!this.selection || this.selection.length === 0) {
         return true;
-    }
+      }
+      const status = this.selection[0].storeStatus;
+
+      switch (button.buttonCode) {
+        case 'delete':
+          // 未提交和已驳回可以删除
+          return !['1', '3'].includes(status);
+        case 'revoke':
+          // 审核中和已驳回可以撤回
+          return !['2', '3'].includes(status);
+        default:
+          return true;
+      }
     },
     //查看流程按钮控制
     buttonDisabled(button, row) {
       const status = row.storeStatus;
-      
+
       switch (button.buttonCode) {
         case 'flowSee':
           // 审核中、已驳回、已通过可以查看流程

@@ -1,96 +1,29 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="buttonTop"
-      :buttonShow="buttonShow"
-      @newButton="handleButtonClick"
-    ></button-top>
+    <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="handleButtonClick"></button-top>
     <div :class="{ container_flex_form: true }">
-      <VFormRender
-        :form-json="formJson"
-        :form-data="formData"
-        :option-data="optionData"
-        ref="vFormRef"
-        :global-dsv="globalDsv"
-        :class="{ formRender_view: true }"
-      >
-       <template #itemTable>
-        <div style="max-height: 450px">
-          <el-table :data="itemList" border style="width: 100%" max-height="450" v-loading="loading"
-         ref="itemTable" row-key="id">
-
-          <el-table-column label="序号" width="88" align="center" type="index"></el-table-column>
-          <el-table-column label="物资名称" prop="itemName" align="center"></el-table-column>
-          <el-table-column label="规格型号" prop="guige" align="center"></el-table-column>
-          <el-table-column label="计量单位" prop="jlUnit" align="center"></el-table-column>
-          <el-table-column label="发货数量" prop="sendQulity" align="center"></el-table-column>
-          <el-table-column label="可抽检数量" prop="spokNum" align="center"></el-table-column>
-          <el-table-column label="包装形式" prop="spokNum" align="center"></el-table-column>
-          <el-table-column label="生产日期" prop="spokNum" align="center"></el-table-column>
-          <el-table-column label="有效期截期日期" prop="spokNum" align="center"></el-table-column>
-          <el-table-column label="合格证附件" prop="hgFIle" align="center">
-            <template slot-scope="scope">
-              <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500" :fileType="['pdf']"
-              :preview="type === 'update'"
-              />
-            </template>
-           </el-table-column>
-          <el-table-column label="厂检报告附件" prop="cjFile" align="center">
-             <template slot-scope="scope">
-              <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500" :fileType="['pdf']"
-              :preview="type === 'update'"
-              />
-             </template>
-           </el-table-column>
-          <el-table-column label="当前库存数量" prop="spokNum" align="center"></el-table-column>
-
-          <el-table-column label="抽检结果" align="center">
-            <template slot-scope="scope">
-              <el-select  v-model="scope.row.cjResult"
-                 size="mini" @change="handleChange(scope.row)"
-                style="width: 100%" filterable>
-                <el-option v-for="item of samplingResult" :key="item.value" :label="item.label"
-                  :value="item.value"></el-option>
-              </el-select>
-            </template>
-            </el-table-column>
-
-          <el-table-column label="结果处理" align="center">
-            <template slot-scope="scope">
-              <el-select v-if="scope.row.cjResult === '0'"  v-model="scope.row.materialId"
-                 size="mini"
-                style="width: 100%" filterable>
-                <el-option v-for="res of dealResult" :key="res.value" :label="res.label"
-                  :value="res.value"></el-option>
-              </el-select>
-              <span v-else>{{ scope.row.dealResult }}</span>
-            </template>
-          </el-table-column>
-           <el-table-column label="退换货数量" prop="thNum" align="center"></el-table-column>
-            <el-table-column label="抽检材料附件" prop="cjFile" align="center">
-             <template slot-scope="scope">
-              <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500" :fileType="['pdf']"
-              :preview="type === 'update'"
-              />
-             </template>
-           </el-table-column>
-           <el-table-column label="备注" prop="remark" align="center"></el-table-column>
-          </el-table>
-        </div>
-       </template>
+      <VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
+        :global-dsv="globalDsv" :class="{ formRender_view: true }">
+        <template #itemTable="scope">
+          <spok-table ref="spokTable" :item-list="scope.formModel.materialCirculationDetailsTableDTOS"
+            :loading="loading" />
+        </template>
         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item label="抽检结果材料上传:">
-            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500" :fileType="['pdf']"/>
+          <el-form-item label="抽检结果材料上传">
+            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500"
+              :fileType="['jpg', 'jpeg', 'png', 'pdf']" />
           </el-form-item>
         </template>
         <!-- 附件 -->
         <template #remark="scope">
-          <el-form-item label="说明:">
-           <el-input v-model="scope.formModel.remark" placeholder="请输入" />
+          <el-form-item label="说明">
+            <el-input v-model="scope.formModel.remark" placeholder="请输入" />
           </el-form-item>
         </template>
       </VFormRender>
+      <toBeReviewed ref="toBereview" />
+      <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     </div>
   </div>
 </template>
@@ -100,14 +33,22 @@ import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import Decimal from 'decimal.js';
+import SpokTable from './spokTable.vue'
 import fileUpload from '@/components/upload'
+import * as Wms from "@/api/prodmgr-inv/project/wms.js";
+import * as SpokDetail from '@/api/prodmgr-inv/project/spokDetail.js'
+import toBeReviewed from "@/views/audit/components/toBeReviewed";
+import workFlowView from '@/components/workFlowView'
+import * as Api from '@/api/prodmgr-inv/project/spok.js'
 export default {
   name: "addSpok",
 
-  components: { VFormRender,fileUpload },
+  components: { VFormRender, SpokTable, fileUpload, toBeReviewed, workFlowView },
 
   data() {
     return {
+      selectedRow: null,
+      workFlowViewVisible: false,
       loading: false,
       title: "新增抽检",
       // 表单相关
@@ -123,18 +64,18 @@ export default {
       // 顶部按钮配置
       buttonTop: [
         { buttonName: "返回", buttonCode: "cancel", buttonIcon: "Blue-Cancel", type: "create, update" },
+        { buttonName: "通过", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
+        {
+          buttonName: "驳回",
+          buttonCode: "reject",
+          buttonIcon: "Blue-EditCard",
+          type: "",
+        },
         { buttonName: "保存", buttonCode: "save", buttonIcon: "Blue-Save", type: "create, update" },
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
+
       ],
-      itemList:[],
-      samplingResult:[
-        {value:'0',label:'合格'},
-        {value:'1',label:'不合格'}
-      ],
-      dealResult:[
-        {value:'0',label:'无'},
-        {value:'1',label:'只退换库存数量'},
-        {value:'2',label:'退换入库质检通过数量'}
-      ]
+
     };
   },
 
@@ -155,20 +96,69 @@ export default {
     // ==================== 页面初始化 ====================
     /** 根据页面类型初始化 */
     initPage() {
+      if (this.type === 'create') {
         this.initCreateMode();
+        return
+      }
+
+      if (["view", "update"].includes(this.type)) {
+        this.updateInit(this.id);
+        return;
+      }
+
     },
 
     /** 新建模式初始化 */
     async initCreateMode() {
       this.title = "新建";
       await this.loadFormConfig();
-      // 调用接口,获取详情
-      //  await Api.xxxx(id).then(({ data }) => {
-      //   this.$nextTick(async () => {
-      //     this.title = "新建";
-      //     await this.loadFormConfig();
-      //   })
-      // })
+
+
+    },
+    // 编辑初始化
+    async updateInit(id) {
+      this.loading = true;
+      const api = this.type == 'view' ? 'detail' : 'detail'
+      await Api[api](id).then(({ data }) => {
+        this.$nextTick(async () => {
+          this.loading = false;
+          this.title = "编辑";
+          await this.formFillInPage();
+          // fileList回显
+          const newData = {
+            ...data,
+            fileList: data.fileList ? JSON.parse(data.fileList) : [],
+          };
+          this.$refs.vFormRef.setFormData(newData);
+
+          //   form action
+          this.$refs.vFormRef.setReadMode(this.type === "view");
+
+        });
+      });
+    },
+    async getDetail() {
+      const { data } = await Wms.detailStore(this.id);
+      // 将附件字段映射到 fileUpload 组件需要的格式
+      if (data.materialCirculationDetailsTableDTOS) {
+        data.materialCirculationDetailsTableDTOS.forEach(item => {
+          // 合格证附件：hgz -> hgzfj
+          item.hgzfj = item.fileByList ? JSON.parse(item.fileByList).hgz : [];
+          // 厂检报告附件：cjbg -> cjbgfj
+          item.cjbgfj = item.fileByList ? JSON.parse(item.fileByList).cjbg : [];
+
+          // 如果新增则清空remark
+          if (this.type === 'create') {
+            item.remark = '';
+          }
+        });
+      }
+      this.$refs["vFormRef"].setFormData({
+        ...data,
+      });
+    },
+    init() {
+      this.getDetail();
     },
 
     /** 加载表单配置 */
@@ -176,6 +166,8 @@ export default {
       const { data } = await formFillInPage("addSpok");
       this.$refs.vFormRef.setFormJson(data);
       this.$refs.vFormRef.setReadMode(true);
+
+      this.init();
     },
 
     /** 顶部按钮点击 */
@@ -183,6 +175,16 @@ export default {
       const actions = {
         cancel: () => this.$router.go(-1),
         save: () => this.handleSubmit(),
+        pass: () => {
+          this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
+        },
+        reject: () => {
+          this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
+        },
+        flowSee: () => {
+          this.workFlowViewVisible = true
+          this.selectedRow = { businessId: this.id }
+        },
       };
       actions[buttonCode]?.();
     },
@@ -192,28 +194,49 @@ export default {
       if (item.buttonCode === "save") {
         return this.type !== "view";
       }
+      // 审核中才能显示同意和不同意按钮
+      if (item.buttonCode === "pass" || item.buttonCode === "reject") {
+        return this.name == 'audit'
+      }
+
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        // return !['1'].includes(this.detail.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
+      }
+
       return true;
-    },
-    handleChange(row){
-     
     },
 
     /** 表单提交 */
     handleSubmit() {
+      // 先验证子组件（不合格时抽检材料附件必填）
+      if (!this.$refs.spokTable.validate()) return;
+
       this.$refs.vFormRef.validateForm(async (valid) => {
         if (!valid) return;
 
         this.loading = true;
         try {
           const formData = await this.$refs.vFormRef.getFormData();
+          const newMaterialCirculationDetailsTableDTOS = formData.materialCirculationDetailsTableDTOS.filter(x => x.detailStatus).map(x => ({
+            ...x,
+            fileList: JSON.stringify(x.fileList),
+            id: this.type === 'create' ? null : x.id,
+            cirDetailId: this.type === 'create' ? x.id : x.cirDetailId,
+          }))
           const apiMethod = this.type === "update" ? "edit" : "save";
-          const payload = this.type === "update"
-            ? { id: this.id, ...formData }
-            : formData;
+          const payload = {
+            cirId: this.id,
+            ...formData,
+            fileList: JSON.stringify(formData.fileList),
+            materialCirSamplingDetailList: newMaterialCirculationDetailsTableDTOS
+          }
+
 
           const { message } = await Api[apiMethod](payload);
           this.$modal.msgSuccess(message);
-          this.$router.go(-1);
+          this.$router.push({name:'spokRecords'})
         } finally {
           this.loading = false;
         }
