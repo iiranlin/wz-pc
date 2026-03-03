@@ -1,5 +1,6 @@
 <template>
-  <dv-full-screen-container class="large-screen">
+  <div class="bg">
+    <dv-full-screen-container class="large-screen">
 
     <article class="large-view">
       <header>
@@ -122,7 +123,7 @@
                       />
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('line')">
                     <p>项目数量</p>
                     <count-to
                       :start-val="0"
@@ -155,7 +156,7 @@
                       />
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('section')">
                     <p>标段数量</p>
                     <count-to
                       :start-val="0"
@@ -212,7 +213,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('contractList')">
                     <p>启用合同数量</p>
                     <count-to
                       :start-val="0"
@@ -241,7 +242,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('contractList')">
                     <p>合同物资总金额</p>
                     <count-to
                       :start-val="0"
@@ -260,7 +261,7 @@
               <header>物资计划</header>
               <div class="item-body">
                 <div class="body-item">
-                  <div class="icon-com num-bg">
+                  <div class="icon-com num-bg" @click="toRouterPage('gyxqList')">
                     <p>
                       <count-to
                         :start-val="0"
@@ -277,7 +278,7 @@
                   </div>
                 </div>
                 <div class="body-item">
-                  <div class="icon-com amount-bg">
+                  <div class="icon-com amount-bg" @click="toRouterPage('gyxqList')">
                     <p>
                       <count-to
                         :start-val="0"
@@ -317,7 +318,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('sendList')">
                     <p>供应批次</p>
                     <count-to
                       :start-val="0"
@@ -379,7 +380,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('sendList')">
                     <p>供应总金额</p>
                     <count-to
                       :start-val="0"
@@ -408,7 +409,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('returnList_gys')">
                     <p>退货次数</p>
                     <count-to
                       :start-val="0"
@@ -453,7 +454,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('returnList_gys')">
                     <p>退货总金额</p>
                     <count-to
                       :start-val="0"
@@ -528,7 +529,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('receiveList')">
                     <p>初验次数</p>
                     <count-to
                       :start-val="0"
@@ -561,7 +562,7 @@
                       />
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('receiveList')">
                     <p>收货金额</p>
                     <count-to
                       :start-val="0"
@@ -613,7 +614,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('returnList_sh')">
                     <p>初验不合格数</p>
                     <count-to
                       :start-val="0"
@@ -656,7 +657,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('returnList_sh')">
                     <p>退货物资金额</p>
                     <count-to
                       :start-val="0"
@@ -740,7 +741,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('imList')">
                     <p>质检次数</p>
                     <count-to
                       :start-val="0"
@@ -773,7 +774,7 @@
                     </svg>
 
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('imList')">
                     <p>入库金额</p>
                     <count-to
                       :start-val="0"
@@ -826,7 +827,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('returnList_im')">
                     <p>质检不合格数</p>
                     <count-to
                       :start-val="0"
@@ -856,7 +857,7 @@
                       </g>
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('returnList_im')">
                     <p>退货物资金额</p>
                     <count-to
                       :start-val="0"
@@ -892,7 +893,7 @@
                     </svg>
                   </div>
                   <p class="label">出库金额</p>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('omList')">
                     <count-to
                       :start-val="0"
                       :end-val="outTotalAmount"
@@ -922,7 +923,7 @@
                       />
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('stock')">
                     <p>需求库存金额</p>
                     <count-to
                       :start-val="0"
@@ -949,7 +950,7 @@
                       />
                     </svg>
                   </div>
-                  <div class="body-num">
+                  <div class="body-num" @click="toRouterPage('stock')">
                     <p>库存金额比例</p>
                     <count-to
                       :start-val="0"
@@ -1075,7 +1076,8 @@
       </div>
 
     </article>
-  </dv-full-screen-container>
+    </dv-full-screen-container>
+  </div>
 </template>
 
 <script>
@@ -1889,6 +1891,21 @@ export default {
         console.log(err)
       }
     },
+
+    // 跳转路由
+    toRouterPage(name) {
+      // 获取当前选中的部门名称和项目名称
+      const deptName = this.deptOps.find(item => item.id === this.deptId)?.deptName || '';
+      const projectName = this.projectOps.find(item => item.id === this.projectId)?.projectName || '';
+
+      const queryParams = {
+        ...this.comParams,
+        deptName,
+        projectName,
+        formUrl: 'largeScreen'
+      };
+      this.$router.push({ name , query: queryParams })
+    },
   },
 };
 </script>
@@ -1899,6 +1916,18 @@ p {
 </style>
 <style lang="scss" scoped>
 @import "@/assets/styles/index.scss";
+
+.bg{
+  width: 100vw;
+  height: 100vh;
+  background: #030D28;
+}
+
+#dv-full-screen-container{
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%) !important;
+}
 
 .large-screen {
   width: vw(1920) !important;
@@ -1926,16 +1955,7 @@ p {
     background-repeat: no-repeat;
     z-index: -1;
   }
-  &::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #030D28;
-    z-index: -2;
-  }
+  
 
   .large-view {
     width: 100%;
@@ -2151,6 +2171,12 @@ p {
     color: #fff;
     font-size: vw(16);
     font-weight: 500;
+    opacity: .8;
+    cursor: pointer;
+    &:hover{
+      color: #75f9fd;
+      opacity: 1;
+    }
   }
 }
 
@@ -2161,6 +2187,18 @@ p {
     justify-content: center;
     align-items: space-between;
     padding: vh(10) 0 vh(30);
+
+    .card-panel-num {
+        color: #fff;
+        font-weight: 500;
+        opacity: .8;
+        cursor: pointer;
+    
+        &:hover {
+          color: #75f9fd;
+          opacity: 1;
+        }
+    }
 
     .icon-com {
       width: 50%;

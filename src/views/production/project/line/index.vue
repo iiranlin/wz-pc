@@ -155,6 +155,8 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
+    // 处理路由参数
+    this.handleRouteParams();
   },
   watch: {
     filterText (val) {
@@ -162,6 +164,13 @@ export default {
     },
   },
   methods: {
+    handleRouteParams() {
+      const routeQuery = this.$route.query;
+      if (routeQuery && Object.keys(routeQuery).length > 0) {
+        this.formData = { ...this.formData, ...routeQuery };
+        this.formDataClick = { ...this.formDataClick, ...routeQuery };
+      }
+    },
      buttonDisable (btn) {
       // 没有合同物资才允许删除
       if (btn.buttonCode === 'delete') {
