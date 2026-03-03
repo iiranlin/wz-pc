@@ -35,14 +35,14 @@ export default {
               name: item.siteName,
               icon: markerIcon,
               position: [+item.longitude, +item.latitude],
-              info: item,
+              ...item,
             }
           })
 
           const _this = this
           //点标记显示内容
-          const markerContent = (name, icon) => {
-            return `<div class="custom-content-marker">
+          const markerContent = (name, icon, item) => {
+            return `<div class="custom-content-marker" >
                 <img src="${icon}">
                 <div class="label" >${name}</div>
                 </div>`
@@ -51,11 +51,15 @@ export default {
           this.siteList.forEach(function (item) {
             const marker = new AMap.Marker({
               map: _this.mapObj,
-              content: markerContent(item.name, item.icon), //将 html 传给 content
+              content: markerContent(item.name, item.icon, item), //将 html 传给 content
               position: [item.position[0], item.position[1]],
               offset: new AMap.Pixel(0, -25),
               anchor: 'center',
+              extData: item,
             })
+           marker.on('click', function(e){
+              
+          });
             _this.markers.push(marker);
           });
           const { longitude, latitude } = data[0]
@@ -64,6 +68,10 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    markerClick(item){
+      console.log("markerClick ==> ", item);
+
     },
     async initMap () {
       const base_url = '/'
