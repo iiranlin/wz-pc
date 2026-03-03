@@ -3,7 +3,7 @@
     <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
       :buttonDisable="buttonDisable"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-      :formData="formData">
+      :formData="formData" @handleResetField="handleResetField">
       <template #projectName="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
           " clearable style="width: 100%" size="small">
@@ -101,6 +101,16 @@ export default {
   activated() {
     this.getList();
   },
+  beforeRouteEnter (to, from, next) {
+    let fn = null
+    if(from.path === "/largeScreen"){
+      fn = (vm) => {
+        const { projectName } = vm.$route.params
+        vm.$set(vm.formData, 'projectName', projectName)
+      }
+    }
+    fn ? next(fn) : next()
+  },
   created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
@@ -176,8 +186,10 @@ export default {
       this.listQuery = Object.assign({}, this.listQuery, listQuery);
       this.handleQuery();
     },
+    handleResetField() {
+      this.formData.projectName = ""
+    },
     handleQuery(row = {}, type = '') {
-
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);

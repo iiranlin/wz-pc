@@ -15,7 +15,7 @@ export default {
     return {
       zoom: 8,
       zooms: [5, 12], //可见级别
-      center: [121.474, 31.230],
+      center: [118.661129, 32.164619],
       markers: [],
       siteList: [],
       mapObj: null,
@@ -57,9 +57,22 @@ export default {
               anchor: 'center',
               extData: item,
             })
-           marker.on('click', function(e){
-              
-          });
+            marker.on('click', function (e) {
+              console.log("e ==> ", e);
+              if (e && e.target && e.target) {
+                const opts = e.target['w'] || e.target['_opts']
+                const extData = opts['extData'] || {}
+                const params = {
+                  // sectionName: extData.siteName,
+                  // projectId: extData.projectId,
+                  projectName: extData.projectName,
+                }
+                let route = { name: 'section', params }
+                _this.$router
+                  .push(route)
+                  .catch(() => { });
+              }
+            });
             _this.markers.push(marker);
           });
           const { longitude, latitude } = data[0]
@@ -69,7 +82,7 @@ export default {
         console.log(err)
       }
     },
-    markerClick(item){
+    markerClick (item) {
       console.log("markerClick ==> ", item);
 
     },
@@ -106,7 +119,7 @@ export default {
       // 3、设置行政区图层样式
       distProvince.setStyles({
         "stroke-width": 1, //描边线宽
-        fill: function (data) { 
+        fill: function (data) {
           return [0, 1, 1, 0.1];//
         },
       });
