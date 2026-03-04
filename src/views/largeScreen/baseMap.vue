@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/largeScreen/aSupplyMaterials";
+import * as Api from "@/api/largeScreen";
 import markerIcon from '@/assets/large/v2_syelji.png'
 export default {
   name: 'baseMap',
@@ -15,34 +15,38 @@ export default {
     return {
       zoom: 8,
       zooms: [5, 12], //可见级别
-      center: [121.474, 31.230],
+      center: [118.661129, 32.164619],
       markers: [],
       siteList: [],
       mapObj: null,
+      routerQuery: {},
     }
   },
   mounted () {
     this.initMap()
   },
   methods: {
-    async getProjectSite (params) {
+    async getProjectSite (params = {}) {
+      const { deptId, projectId } = params
+      const _params = { deptId, projectId }
+      this.routerQuery = { ...params }
       try {
         this.removeMarkers()
-        const { success, data } = await Api.getProjectSite(params)
+        const { success, data } = await Api.getProjectSite(_params)
         if (success && Array.isArray(data) && data.length) {
           this.siteList = data.map(item => {
             return {
               name: item.siteName,
               icon: markerIcon,
               position: [+item.longitude, +item.latitude],
-              info: item,
+              ...item,
             }
           })
 
           const _this = this
           //点标记显示内容
-          const markerContent = (name, icon) => {
-            return `<div class="custom-content-marker">
+          const markerContent = (name, icon, item) => {
+            return `<div class="custom-content-marker" >
                 <img src="${icon}">
                 <div class="label" >${name}</div>
                 </div>`
@@ -51,11 +55,24 @@ export default {
           this.siteList.forEach(function (item) {
             const marker = new AMap.Marker({
               map: _this.mapObj,
-              content: markerContent(item.name, item.icon), //将 html 传给 content
+              content: markerContent(item.name, item.icon, item), //将 html 传给 content
               position: [item.position[0], item.position[1]],
               offset: new AMap.Pixel(0, -25),
               anchor: 'center',
+              extData: item,
             })
+            marker.on('click', function (e) {
+              if (e && e.target && e.target) {
+                const opts = e.target['w'] || e.target['_opts']
+                const extData = opts['extData'] || {}
+                const query = {
+                  ..._this.routerQuery,
+                  projectName: extData.projectName,
+                }
+                const route = _this.$router.resolve({ name: 'section', query })
+                window.open(route.href, '_blank');
+              }
+            });
             _this.markers.push(marker);
           });
           const { longitude, latitude } = data[0]
@@ -64,6 +81,10 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    markerClick (item) {
+      console.log("markerClick ==> ", item);
+
     },
     async initMap () {
       const base_url = '/'
@@ -98,7 +119,7 @@ export default {
       // 3、设置行政区图层样式
       distProvince.setStyles({
         "stroke-width": 1, //描边线宽
-        fill: function (data) { 
+        fill: function (data) {
           return [0, 1, 1, 0.1];//
         },
       });
