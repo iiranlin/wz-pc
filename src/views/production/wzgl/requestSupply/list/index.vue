@@ -126,18 +126,10 @@ export default {
     });
 
     this.getLineOptions()
-    // 处理路由参数
-    this.handleRouteParams();
+
   },
 
   methods: {
-    handleRouteParams() {
-      const routeQuery = this.$route.query;
-      if (routeQuery && Object.keys(routeQuery).length > 0) {
-        this.formData = { ...this.formData, ...routeQuery };
-        this.formDataClick = { ...this.formDataClick, ...routeQuery };
-      }
-    },
     getLineOptions() {
       WzglApi.lineSelectOptions({ pageStatus: '1' }).then(({ data }) => {
         this.lineOptions = data.map(x => ({

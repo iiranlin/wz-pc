@@ -22,7 +22,7 @@
       <!-- 建设物资 -->
       <template #projectId="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
-          " clearable style="width: 100%" size="small">
+          " clearable filterable style="width: 100%" size="small">
           <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.value" />
         </el-select>
       </template>

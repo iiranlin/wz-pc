@@ -12,6 +12,7 @@
       :showSearch="showSearch"
       :searchArr="property.search || []"
       @handleQuery="handleQuery"
+      @handleResetField="onResetField"
       :formData="formData"
     />
     <el-row type="flex" class="container_h">
@@ -107,6 +108,27 @@ export default {
   name: "line",
   components: { Add, SectionDialog, ConstrctDialog },
   mixins: [indexMixin],
+  computed:{
+    deptName(){
+      return this.$route.query?.deptName || ''
+    },
+    deptId(){
+      return this.$route.query?.deptId || ''
+    },
+    startDate(){
+      return this.$route.query?.startDate || ''
+    },
+    endDate(){
+      return this.$route.query?.endDate || ''
+    },
+    projectId(){
+      return this.$route.query?.projectId || ''
+    },
+    projectName(){
+      return this.$route.query?.projectName || ''
+    }
+
+  },
   activated() {
     this.getList();
   },
@@ -155,8 +177,7 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
-    // 处理路由参数
-    this.handleRouteParams();
+    this.setQuery();
   },
   watch: {
     filterText (val) {
@@ -164,13 +185,28 @@ export default {
     },
   },
   methods: {
-    handleRouteParams() {
-      const routeQuery = this.$route.query;
-      if (routeQuery && Object.keys(routeQuery).length > 0) {
-        this.formData = { ...this.formData, ...routeQuery };
-        this.formDataClick = { ...this.formDataClick, ...routeQuery };
+      // 将Url参数赋值到搜索内（使用 $set 保证响应式）
+     setQuery(){
+      if(this.deptId){
+        this.$set(this.formData, 'constructionUnitId', this.deptId)
       }
-    },
+      if(this.deptName){
+        this.$set(this.formData, 'constructionUnit', this.deptName)
+        this.$set(this.formData, 'constructionUnitName', this.deptName)
+      }
+      if(this.startDate){
+        this.$set(this.formData, 'startDate', this.startDate)
+      }
+      if(this.endDate){
+        this.$set(this.formData, 'endDate', this.endDate)
+      }
+      if(this.projectId){
+        this.$set(this.formData, 'projectId', this.projectId)
+      }
+      if(this.projectName){
+        this.$set(this.formData, 'projectName', this.projectName)
+      }
+     },
      buttonDisable (btn) {
       // 没有合同物资才允许删除
       if (btn.buttonCode === 'delete') {
@@ -284,8 +320,23 @@ export default {
       this.handleQuery();
       this.deptTree();
     },
+    /** 清空 URL 参数设置的搜索字段 */
+    clearUrlQueryFields () {
+      this.$set(this.formData, 'constructionUnitId', null);
+      this.$set(this.formData, 'constructionUnitName', null);
+      this.$set(this.formData, 'startDate', null);
+      this.$set(this.formData, 'endDate', null);
+      this.$set(this.formData, 'projectId', null);
+      this.$set(this.formData, 'projectName', null);
+      this.$set(this.formData, 'constructionUnit', null);
+    },
+    /** right-toolbar 触发的重置 */
     clickReset () {
       this.handleQuery();
+    },
+    /** 搜索栏“重置”按钮触发的事件 */
+    onResetField () {
+      this.clearUrlQueryFields();
     },
     cleanClick (data) {
       for (const key of data) {

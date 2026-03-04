@@ -3,7 +3,7 @@
     <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
       :buttonDisable="buttonDisable"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-      :formData="formData" @handleResetField="handleResetField">
+      :formData="formData" @handleResetField="onResetField">
       <template #projectName="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
           " clearable style="width: 100%" size="small">
@@ -56,7 +56,27 @@ export default {
   name: "section",
   components: { Add, SellerDialog },
   mixins: [indexMixin],
+  computed:{
+    deptName(){
+      return this.$route.query?.deptName || ''
+    },
+    deptId(){
+      return this.$route.query?.deptId || ''
+    },
+    startDate(){
+      return this.$route.query?.startDate || ''
+    },
+    endDate(){
+      return this.$route.query?.endDate || ''
+    },
+    projectId(){
+      return this.$route.query?.projectId || ''
+    },
+    projectName(){
+      return this.$route.query?.projectName || ''
+    }
 
+  },
   data() {
     return {
       lineOptions: [],
@@ -107,9 +127,8 @@ export default {
       this.property = data;
     });
     this.getLineOptions()
+    this.setQuery();
 
-    // 处理路由参数
-    this.handleRouteParams();
   },
   watch: {
     filterText(val) {
@@ -117,12 +136,40 @@ export default {
     },
   },
   methods: {
-    handleRouteParams() {
-      const routeQuery = this.$route.query;
-      if (routeQuery && Object.keys(routeQuery).length > 0) {
-        this.formData = { ...this.formData, ...routeQuery };
-        this.formDataClick = { ...this.formDataClick, ...routeQuery };
+     // 将Url参数赋值到搜索内（使用 $set 保证响应式）
+     setQuery(){
+      if(this.deptId){
+        this.$set(this.formData, 'constructionUnitId', this.deptId)
       }
+      if(this.deptName){
+        this.$set(this.formData, 'constructionUnitName', this.deptName)
+      }
+      if(this.startDate){
+        this.$set(this.formData, 'startDate', this.startDate)
+      }
+      if(this.endDate){
+        this.$set(this.formData, 'endDate', this.endDate)
+      }
+      if(this.projectId){
+        this.$set(this.formData, 'projectId', this.projectId)
+      }
+      if(this.projectName){
+        this.$set(this.formData, 'projectName', this.projectName)
+      }
+     },
+      /** 清空 URL 参数设置的搜索字段 */
+    clearUrlQueryFields () {
+      this.$set(this.formData, 'constructionUnitId', null);
+      this.$set(this.formData, 'constructionUnitName', null);
+      this.$set(this.formData, 'startDate', null);
+      this.$set(this.formData, 'endDate', null);
+      this.$set(this.formData, 'projectId', null);
+      this.$set(this.formData, 'projectName', null);
+      this.$set(this.formData, 'constructionUnit', null);
+    },
+    /** 搜索栏“重置”按钮触发的事件 */
+    onResetField () {
+      this.clearUrlQueryFields();
     },
     getLineOptions() {
       WzglApi.lineSelectOptions().then(({ data }) => {
@@ -186,10 +233,8 @@ export default {
       this.listQuery = Object.assign({}, this.listQuery, listQuery);
       this.handleQuery();
     },
-    handleResetField() {
-      this.formData.projectName = ""
-    },
     handleQuery(row = {}, type = '') {
+
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
