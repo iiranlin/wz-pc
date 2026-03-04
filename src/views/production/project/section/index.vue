@@ -101,16 +101,6 @@ export default {
   activated() {
     this.getList();
   },
-  beforeRouteEnter (to, from, next) {
-    let fn = null
-    if(from.path === "/largeScreen"){
-      fn = (vm) => {
-        const { projectName } = vm.$route.params
-        vm.$set(vm.formData, 'projectName', projectName)
-      }
-    }
-    fn ? next(fn) : next()
-  },
   created() {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {

@@ -204,3 +204,20 @@ export const groupBySectionName = (params) => {
     params,
   });
 };
+
+
+/**
+ * 自购物资合同核备审批
+ * @param {*} params
+ * @returns
+ */
+export const purchaseContractList = () => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialPurchaseContract/list`,
+    method: "get",
+    params: {
+      pageNum: 1,
+      pageSize: 9999,
+    },
+  });
+};

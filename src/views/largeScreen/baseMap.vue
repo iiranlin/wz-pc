@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import * as Api from "@/api/largeScreen/aSupplyMaterials";
+import * as Api from "@/api/largeScreen";
 import markerIcon from '@/assets/large/v2_syelji.png'
 export default {
   name: 'baseMap',
@@ -19,16 +19,20 @@ export default {
       markers: [],
       siteList: [],
       mapObj: null,
+      routerQuery: {},
     }
   },
   mounted () {
     this.initMap()
   },
   methods: {
-    async getProjectSite (params) {
+    async getProjectSite (params = {}) {
+      const { deptId, projectId } = params
+      const _params = { deptId, projectId }
+      this.routerQuery = { ...params }
       try {
         this.removeMarkers()
-        const { success, data } = await Api.getProjectSite(params)
+        const { success, data } = await Api.getProjectSite(_params)
         if (success && Array.isArray(data) && data.length) {
           this.siteList = data.map(item => {
             return {
@@ -58,16 +62,14 @@ export default {
               extData: item,
             })
             marker.on('click', function (e) {
-              console.log("e ==> ", e);
               if (e && e.target && e.target) {
                 const opts = e.target['w'] || e.target['_opts']
                 const extData = opts['extData'] || {}
-                const params = {
-                  // sectionName: extData.siteName,
-                  // projectId: extData.projectId,
+                const query = {
+                  ..._this.routerQuery,
                   projectName: extData.projectName,
                 }
-                let route = { name: 'section', params }
+                let route = { name: 'section', query }
                 _this.$router
                   .push(route)
                   .catch(() => { });
