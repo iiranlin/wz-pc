@@ -309,7 +309,7 @@ export default {
             // 日期范围
             dateRange: {},
             // formData: {},
-            showDefaultSearch: true,
+            showDefaultSearch: false,
             deptIdStr: '',
             menuIdStr: '',
             isShowTooltip: true,
