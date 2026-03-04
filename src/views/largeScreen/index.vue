@@ -484,15 +484,28 @@
               <div class="item7-body">
                 <div class="item7-chart">
                   <div class="item7-chart-item">
-                    <p>
-                      <span class="value">{{ accReturnNum }}</span> <span class="label">批</span>
+                    <p @click="toRouterPage('returnList_gys')">
+                      <count-to
+                        :start-val="0"
+                        :end-val="accReturnNum"
+                        :duration="3600"
+                        class="card-panel-num"
+                        :decimals="0"
+                      />
+                      <span class="label">批</span>
                     </p>
                     <i class="body-pic"></i>
                     <p class="body-item-name">累计退货次数</p>
                   </div>
                   <div class="item7-chart-item">
-                    <p>
-                      <span class="value">{{ accReturnAmount }}</span>
+                    <p @click="toRouterPage('returnList_gys')">
+                      <count-to
+                        :start-val="0"
+                        :end-val="accReturnAmount"
+                        :duration="3600"
+                        class="card-panel-num"
+                        :decimals="2"
+                      />
                       <span class="label">万元</span>
                     </p>
                     <i class="body-pic body-pic-2"></i>
@@ -502,6 +515,7 @@
                 <dv-scroll-board
                   :config="boardConfig"
                   style="width: 60%"
+                  @click="supplierCellClick"
                 />
               </div>
             </div>
@@ -1584,31 +1598,34 @@ export default {
         console.log(err)
       }
     },
+    // 供应商考核表格点击
+    supplierCellClick({ columnIndex }){
+      if([2, 3].includes(columnIndex)){
+        this.toRouterPage('returnList_gys')
+      }
+    },
     // 供应商考核
     async getSupplierEvaluation () {
       try {
-        const deptName = this.deptOps.find(item => item.id === this.deptId)?.deptName
-        const params = {
-          deptName: deptName,
-          ...this.comParams,
-        }
-        const { success, data } = await Api.supplierEvaluation(params)
+        const { success, data } = await Api.supplierEvaluation(this.comParams)
 
         if (success && Array.isArray(data) && data.length) {
           this.accReturnNum = data.reduce((pre, cur) => {
-            pre += (+cur.num || 0) * 1e3
+            pre += (+cur.refundCount || 0) * 1e3
             return pre
           }, 0) / 1e3
-          this.accReturnAmount = (data.reduce((pre, cur) => {
-            pre += (+cur.amount || 0) * 1e3
+          const amount = (data.reduce((pre, cur) => {
+            pre += (+cur.refundAmount || 0) * 1e3
             return pre
-          }, 0) / 1e3).toFixed(2)
+          }, 0) / 1e3)
+
+          this.accReturnAmount = amount / 1e4
           const resData = data.map(item => {
-            return [
-              item.supperName,
-              item.num,
-              item.amount
-            ]
+            let { sellerName, refundCount, refundAmount } = item
+            refundAmount = this.$fmoney(refundAmount / 1e4, 2)
+            const refundCountHtml = `<span class="supper-num">${refundCount}</span>`
+            const refundAmountHtml = `<span class="supper-num">${refundAmount}</span>`
+            return [sellerName, refundCountHtml, refundAmountHtml]
           })
           this.boardConfig = {
             header: ["供应商名称", "退货次数", "退货金额(万元)"],
@@ -1623,7 +1640,7 @@ export default {
           }
         } else {
           this.accReturnNum = 0
-          this.accReturnAmount = 0..toFixed(2)
+          this.accReturnAmount = 0
           this.boardConfig = {
             header: ["供应商名称", "退货次数", "退货金额(万元)"],
             data: [["", "暂无数据", ""]],
@@ -2356,5 +2373,10 @@ p {
 ::v-deep .pickered .el-range-separator {
   color: #75f9fd;
 }
-
+::v-deep .supper-num:hover,
+.card-panel-num:hover {
+  color: #75f9fd;
+  opacity: 1;
+  cursor: pointer;
+}
 </style>
