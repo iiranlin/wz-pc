@@ -3,7 +3,7 @@
     <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
       :button-disable="buttonDisabledTop"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-      :formData="formData">
+      :formData="formData" @handleResetField="onResetField">
       <template #status="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
           i18nData(data.data, 'field', 'fieldCode', 'fieldName')
@@ -17,6 +17,17 @@
           " clearable style="width: 100%" size="small">
           <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
         </el-select>
+      </template>
+            <!-- 日期范围搜索 -->
+      <template #date>
+        <el-date-picker
+          v-model="formData.dateRange"
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
@@ -77,7 +88,27 @@ export default {
   name: "sendList",
   components: { AddAdress, fileUpload, workFlowView },
   mixins: [indexMixin],
+  computed:{
+    deptName(){
+      return this.$route.query?.deptName || ''
+    },
+    deptId(){
+      return this.$route.query?.deptId || ''
+    },
+    startDate(){
+      return this.$route.query?.startDate || ''
+    },
+    endDate(){
+      return this.$route.query?.endDate || ''
+    },
+    projectId(){
+      return this.$route.query?.projectId || ''
+    },
+    projectName(){
+      return this.$route.query?.projectName || ''
+    }
 
+  },
   data() {
     return {
       status: {
@@ -156,9 +187,47 @@ export default {
       this.property = data;
     });
     this.getLineOptions()
+    this.setQuery();
   },
 
   methods: {
+     // 将Url参数赋值到搜索内（使用 $set 保证响应式）
+     setQuery(){
+      if(this.deptId){
+        this.$set(this.formData, 'constructionUnitId', this.deptId)
+      }
+      if(this.deptName){
+        this.$set(this.formData, 'constructionUnitName', this.deptName)
+      }
+      if(this.startDate){
+        this.$set(this.formData, 'startDate', this.startDate)
+        this.$set(this.formData, 'dateRange', [this.startDate, this.endDate])
+      }
+      if(this.endDate){
+        this.$set(this.formData, 'endDate', this.endDate)
+      }
+      if(this.projectId){
+        this.$set(this.formData, 'projectId', this.projectId)
+      }
+      if(this.projectName){
+        this.$set(this.formData, 'projectName', this.projectName)
+      }
+     },
+      /** 清空 URL 参数设置的搜索字段 */
+    clearUrlQueryFields () {
+      this.$set(this.formData, 'constructionUnitId', null);
+      this.$set(this.formData, 'constructionUnitName', null);
+      this.$set(this.formData, 'startDate', null);
+      this.$set(this.formData, 'endDate', null);
+      this.$set(this.formData, 'projectId', null);
+      this.$set(this.formData, 'projectName', null);
+      this.$set(this.formData, 'constructionUnit', null);
+      this.$set(this.formData, 'dateRange', null);
+    },
+    /** 搜索栏“重置”按钮触发的事件 */
+    onResetField () {
+      this.clearUrlQueryFields();
+    },
      getLineOptions() {
       WzglApi.afterLineSelectOptions().then(({ data }) => {
         this.lineOptions = data.map(x => ({
@@ -191,6 +260,22 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
+      // 如果projectName为空，则projectId也为空
+      if(!this.formData.projectName){
+        this.$set(this.formData, 'projectId', null)
+      }
+      // 如果constructionUnitName为空，则constructionUnitId也为空
+      if(!this.formData.constructionUnitName){
+        this.$set(this.formData, 'constructionUnitId', null)
+      }
+
+      if(this.formData.dateRange && this.formData.dateRange.length > 0){
+        this.formData.startDate = this.formData.dateRange[0]
+        this.formData.endDate = this.formData.dateRange[1]
+      }else{
+        this.$set(this.formData, 'startDate', null)
+        this.$set(this.formData, 'endDate', null)
+      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
