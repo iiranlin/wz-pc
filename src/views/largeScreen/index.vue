@@ -261,7 +261,7 @@
               <header>物资计划</header>
               <div class="item-body">
                 <div class="body-item">
-                  <div class="icon-com num-bg" @click="toRouterPage('gyxqList')">
+                  <div class="icon-com num-bg" @click="toRouterPage('demand')">
                     <p>
                       <count-to
                         :start-val="0"
@@ -278,7 +278,7 @@
                   </div>
                 </div>
                 <div class="body-item">
-                  <div class="icon-com amount-bg" @click="toRouterPage('gyxqList')">
+                  <div class="icon-com amount-bg" @click="toRouterPage('demand')">
                     <p>
                       <count-to
                         :start-val="0"
@@ -1815,7 +1815,7 @@ export default {
         ...this.comParams,
         deptName,
         projectName,
-        formUrl: 'largeScreen'
+        fromUrl: 'largeScreen'
       };
     },
     // 跳转路由
@@ -1828,7 +1828,7 @@ export default {
         ...this.comParams,
         deptName,
         projectName,
-        formUrl: 'largeScreen'
+        fromUrl: 'largeScreen'
       };
       const route = this.$router.resolve({ name , query: queryParams })
       window.open(route.href, '_blank');
