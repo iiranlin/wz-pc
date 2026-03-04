@@ -69,10 +69,8 @@ export default {
                   ..._this.routerQuery,
                   projectName: extData.projectName,
                 }
-                let route = { name: 'section', query }
-                _this.$router
-                  .push(route)
-                  .catch(() => { });
+                const route = _this.$router.resolve({ name: 'section', query })
+                window.open(route.href, '_blank');
               }
             });
             _this.markers.push(marker);

@@ -1813,7 +1813,8 @@ export default {
         projectName,
         formUrl: 'largeScreen'
       };
-      this.$router.push({ name , query: queryParams })
+      const route = this.$router.resolve({ name , query: queryParams })
+      window.open(route.href, '_blank');
     },
   },
 };
