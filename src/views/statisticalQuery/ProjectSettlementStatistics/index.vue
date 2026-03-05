@@ -24,6 +24,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :default-value="dateRange"
+          @change="handleSettlementDateChange"
         />
       </template>
       <!-- 建设物资 -->
@@ -61,7 +62,12 @@
       @emitAblFilter="emitAblFilter"
     >
       <template #date="scope">
-        {{ scope.data.settlementDateStart | formatDate  }} 至 {{ scope.data.settlementDateEnd | formatDate }}
+        <span v-if="scope.data.settlementDateStart && scope.data.settlementDateEnd">
+          {{ scope.data.settlementDateStart | formatDate  }} 至 {{ scope.data.settlementDateEnd | formatDate }}
+        </span>
+        <span v-else>
+          全部
+        </span>
       </template>
     </table-index>
 
@@ -131,11 +137,17 @@
       initDefaultDate() {
         const end = dayjs();
         const start = dayjs().subtract(1, 'month');
+        this.dateRange = [start.toDate(), end.toDate()];
 
         this.formData.settlementDate = [
           start.format('YYYY-MM-DD'),
           end.format('YYYY-MM-DD')
         ];
+      },
+      handleSettlementDateChange(val) {
+        if (!Array.isArray(val) || val.length !== 2) {
+          this.formData.settlementDate = [];
+        }
       },
 
       getLineOptions() {
@@ -173,9 +185,10 @@
         this.loading = true;
         // 处理日期范围，转换为 startDate 和 endDate
         const params = { ...this.listQuery, ...this.formData };
-        if (this.formData.settlementDate && this.formData.settlementDate.length === 2) {
-          params.settlementDateStart = this.formData.settlementDate[0];
-          params.settlementDateEnd = this.formData.settlementDate[1];
+        const settlementDate = this.formData.settlementDate;
+        if (Array.isArray(settlementDate) && settlementDate.length === 2) {
+          params.settlementDateStart = settlementDate[0];
+          params.settlementDateEnd = settlementDate[1];
           delete params.settlementDate; // 移除原始日期范围字段
         }
         this.globalSearchParams = params;
