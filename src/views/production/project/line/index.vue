@@ -126,6 +126,9 @@ export default {
     },
     projectName(){
       return this.$route.query?.projectName || ''
+    },
+    fromUrl(){
+      return this.$route.query?.fromUrl  || ''
     }
 
   },
@@ -205,6 +208,9 @@ export default {
       }
       if(this.projectName){
         this.$set(this.formData, 'projectName', this.projectName)
+      }
+      if(this.fromUrl){ // 如果fromUrl=largeScreen 则表示是大屏-传1给后端，否则传0
+        this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
       }
      },
      buttonDisable (btn) {
@@ -329,6 +335,7 @@ export default {
       this.$set(this.formData, 'projectId', null);
       this.$set(this.formData, 'projectName', null);
       this.$set(this.formData, 'constructionUnit', null);
+      this.$set(this.formData, 'bigScreenFlag', null);
     },
     /** right-toolbar 触发的重置 */
     clickReset () {

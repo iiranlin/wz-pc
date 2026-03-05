@@ -47,7 +47,7 @@
                 :key="item.value"
                 :label="`${item.label}投资计划(元)`"
                 :prop="`sectionValue_${item.value}`"
-                :rules="[{ required: true, message: '请输入投资计划金额', trigger: ['blur', 'change'] }]"
+                :rules="[{ required: true, message: '请输入投资计划金额', trigger: ['blur'] }]"
                 class="label-top-layout"
               >
                 <el-input 
