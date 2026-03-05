@@ -19,19 +19,36 @@
       <el-table-column prop="specModel" align="center" label="规格型号" width="250" fixed></el-table-column>
 
       <el-table-column prop="unit" label="计量单位" align="center" width="120"></el-table-column>
-      <el-table-column prop="amount" label="合同数量" align="center" width="120"></el-table-column>
+      <el-table-column prop="amount" label="合同数量" align="center" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.amount }}
+         <el-tooltip
+                v-if="scope.row.negative && scope.row.negative < 0"
+                class="el-icon-warning-outline negative-tip-icon clickable"
+                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`"
+                title="点击查看补充合同列表"
+              >
+             <i  @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i></el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column prop="cumulativeAmount" label="已累计计划数量" align="center" width="150"></el-table-column>
       <el-table-column prop="deliveryDate" label="供应时间" align="center" width="200"></el-table-column>
       <el-table-column prop="deliveryLocation" label="交货地点" align="center" width="200"></el-table-column>
       <el-table-column prop="receiver" label="收货人及联系方式" align="center" min-width="200"></el-table-column>
     </el-table>
+    <ViewNegativeContractsDialog ref="viewNegativeContractsDialogRef" />
+
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import ViewNegativeContractsDialog from '@/views/production/contract/list/components/viewNegativeContractsDialog.vue';
 export default {
   // 物资选择预览
+  components: {
+    ViewNegativeContractsDialog,
+  },
   props: {
     allData: {
       type: Array,
@@ -70,6 +87,19 @@ export default {
     },
   },
   methods: {
+        /**
+     * 处理负数图标点击事件
+     * 打开查看补充合同列表弹窗
+     */
+    handleNegativeIconClick(row) {
+      if (!row.id) {
+        this.$message.warning('数据无效');
+        return;
+      }
+
+      // 打开查看补充合同弹窗
+      this.$refs.viewNegativeContractsDialogRef.open(row.id);
+    },
     selectable(row) {
       // 合同数量不能为负数,且合同数量不等于已累计计划数量
       return +row.amount > 0 && +row.amount !== +row.cumulativeAmount
@@ -185,5 +215,22 @@ export default {
   .el-table__body-wrapper {
     pointer-events: auto;
   }
+}
+
+/* 负数提示图标样式 */
+.negative-tip-icon {
+  margin-left: 5px;
+  color: #E6A23C;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.negative-tip-icon.clickable {
+  cursor: pointer;
+}
+
+.negative-tip-icon.clickable:hover {
+  color: #D39C2F;
+  transform: scale(1.1);
 }
 </style>
