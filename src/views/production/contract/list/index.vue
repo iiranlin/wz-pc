@@ -183,6 +183,7 @@ export default {
       }
       if(this.fromUrl){
         this.$set(this.formData, 'contractStatus', '2')
+        this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
       }
      },
       /** 清空 URL 参数设置的搜索字段 */
@@ -196,6 +197,7 @@ export default {
       this.$set(this.formData, 'constructionUnit', null);
       this.$set(this.formData, 'buyer', null);
       this.$set(this.formData, 'contractStatus', null);
+      this.$set(this.formData, 'bigScreenFlag', null);
     },
     /** 搜索栏“重置”按钮触发的事件 */
     onResetField () {
