@@ -94,6 +94,9 @@ export default {
     },
     projectName(){
       return this.$route.query?.projectName || ''
+    },
+    fromUrl(){
+      return this.$route.query?.fromUrl  || ''
     }
 
   },
@@ -194,6 +197,9 @@ export default {
       if(this.projectName){
         this.$set(this.formData, 'projectName', this.projectName)
       }
+      if(this.fromUrl){ // 如果fromUrl=largeScreen 则表示是大屏-传1给后端，否则传0
+        this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
+      }
      },
       /** 清空 URL 参数设置的搜索字段 */
     clearUrlQueryFields () {
@@ -204,6 +210,7 @@ export default {
       this.$set(this.formData, 'projectId', null);
       this.$set(this.formData, 'projectName', null);
       this.$set(this.formData, 'constructionUnit', null);
+      this.$set(this.formData, 'bigScreenFlag', null);
     },
     /** 搜索栏“重置”按钮触发的事件 */
     onResetField () {

@@ -19,7 +19,18 @@
       <el-table-column prop="materialName" label="物资名称" align="center" width="120" fixed></el-table-column>
       <el-table-column prop="specModel" label="规格型号" align="center" width="150" fixed></el-table-column>
       <el-table-column prop="unit" label="计量单位" align="center" width="120"></el-table-column>
-      <el-table-column prop="amount" label="合同数量" align="center" width="120"></el-table-column>
+      <el-table-column prop="amount" label="合同数量" align="center" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.amount }}
+         <el-tooltip
+                v-if="scope.row.negative && scope.row.negative < 0"
+                class="el-icon-warning-outline negative-tip-icon clickable"
+                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`"
+                title="点击查看补充合同列表"
+              >
+             <i  @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i></el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column prop="cumulativeAmount" label="累计计划量（含本次）" align="center" width="200">
         <template slot-scope="scope">
           {{ +scope.row.cumulativeAmount + +(scope.row.planAmount || 0) }}
@@ -127,6 +138,7 @@
       </el-row>
     </div>
     <BatchDialog ref="batchDialogRef" />
+    <ViewNegativeContractsDialog ref="viewNegativeContractsDialogRef" />
   </div>
 </template>
 
@@ -134,6 +146,7 @@
 import { mapState } from 'vuex';
 import BatchDialog from './batchDialog.vue';
 import dayjs from 'dayjs';
+import ViewNegativeContractsDialog from '@/views/production/contract/list/components/viewNegativeContractsDialog.vue';
 export default {
   // 新增物资填报表格
   data() {
@@ -143,6 +156,7 @@ export default {
   },
   components: {
     BatchDialog,
+    ViewNegativeContractsDialog,
   },
   computed: {
     ...mapState(['request']),
@@ -165,6 +179,19 @@ export default {
     }))
   },
   methods: {
+            /**
+     * 处理负数图标点击事件
+     * 打开查看补充合同列表弹窗
+     */
+    handleNegativeIconClick(row) {
+      if (!row.id) {
+        this.$message.warning('数据无效');
+        return;
+      }
+
+      // 打开查看补充合同弹窗
+      this.$refs.viewNegativeContractsDialogRef.open(row.id);
+    },
     onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
       this.tableData = data.map(x => ({
@@ -262,5 +289,22 @@ export default {
   color: #333;
   font-size: 16px;
   font-weight: 600;
+}
+
+/* 负数提示图标样式 */
+.negative-tip-icon {
+  margin-left: 5px;
+  color: #E6A23C;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.negative-tip-icon.clickable {
+  cursor: pointer;
+}
+
+.negative-tip-icon.clickable:hover {
+  color: #D39C2F;
+  transform: scale(1.1);
 }
 </style>
