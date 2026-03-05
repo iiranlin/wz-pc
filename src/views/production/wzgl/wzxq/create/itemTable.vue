@@ -184,13 +184,13 @@ export default {
      * 打开查看补充合同列表弹窗
      */
     handleNegativeIconClick(row) {
-      if (!row.id) {
+      if (!row.uniqueNumber && !row.allocationUniqueNumber) {
         this.$message.warning('数据无效');
         return;
       }
 
       // 打开查看补充合同弹窗
-      this.$refs.viewNegativeContractsDialogRef.open(row.id);
+      this.$refs.viewNegativeContractsDialogRef.open(row.uniqueNumber || row.allocationUniqueNumber);
     },
     onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中

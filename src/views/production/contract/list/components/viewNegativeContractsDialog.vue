@@ -74,7 +74,7 @@ export default {
       this.loading = true;
       try {
         const res = await ContractItemApi.mainItemList({
-          masterDetailId: this.masterDetailId
+          uniqueNumber: this.masterDetailId
         });
         
         if (res.code === 0) {
