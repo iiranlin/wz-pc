@@ -171,6 +171,7 @@
                 <div class="body-item">
                   <div class="icon-com">
                     <svg
+                      fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       class="styles__StyledSVGIconPathComponent-sc-i3aj97-0 UNGQS svg-icon-path-icon fill icon"
                       viewBox="0 0 48 48"
@@ -514,7 +515,7 @@
                 </div>
                 <dv-scroll-board
                   :config="boardConfig"
-                  style="width: 60%"
+                  style="width: 63%"
                   @click="supplierCellClick"
                 />
               </div>
@@ -1501,6 +1502,7 @@ export default {
           this.getMaterialTake()
           this.getMaterialStore()
           this.getMaterialOut()
+          this.getSupplierEvaluation()
           break;
         case "1":
           this.getSelfPurchased()
@@ -1523,7 +1525,6 @@ export default {
             deptId: this.deptId,
             projectId: this.projectId,
           }
-          this.getSupplierEvaluation()
           this.getProjectStatistics(params)
           this.getProjectSite(this.getRouterQuery())
           break;
@@ -1627,15 +1628,16 @@ export default {
           const resData = data.map(item => {
             let { sellerName, refundCount, refundAmount } = item
             refundAmount = this.$fmoney(refundAmount / 1e4, 2)
+            const sellerNameHtml = `<span title="${sellerName}">${sellerName}</span>`
             const refundCountHtml = `<span class="supper-num">${refundCount}</span>`
             const refundAmountHtml = `<span class="supper-num">${refundAmount}</span>`
-            return [sellerName, refundCountHtml, refundAmountHtml]
+            return [sellerNameHtml, refundCountHtml, refundAmountHtml]
           })
           this.boardConfig = {
             header: ["供应商名称", "退货次数", "退货金额(万元)"],
             data: resData,
             index: true,
-            columnWidth: [50, 210, 100],
+            columnWidth: [50, 167, 89, 110],
             align: ['center', 'left', 'center', 'center'],
             headerBGC: '#03001742',
             oddRowBGC: 'transparent',
@@ -1841,7 +1843,6 @@ export default {
     openSystemList(url) {
       // 如果窗口存在且未关闭，直接跳转并聚焦
       if (systemWindow && !systemWindow.closed) {
-          console.log("systemWindow ==> ", systemWindow);
           systemWindow.location.href = url;
           systemWindow.focus();
       } else {
@@ -1891,7 +1892,6 @@ p {
     content: "";
     width: 100%;
     height: 100%;
-    background-color: #030D28;
     background-image: url("../../assets/large/v2_spjxax.png");
     background-size: 100% 100%;
     background-position: center;
@@ -2005,7 +2005,7 @@ p {
 
   > .left,
   > .right {
-    width: vw(475); // 1920 * 0.25
+    width: vw(465); // 1920 * 0.25
     display: flex;
     flex-direction: column;
     gap: vh(20); // 卡片间距
