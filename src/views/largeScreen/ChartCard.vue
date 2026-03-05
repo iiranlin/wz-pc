@@ -34,7 +34,7 @@ export default {
     position: relative;
     background-color: rgba(12, 27, 51, 0.6);
     border: vw(1) solid #231AA9;
-    border-radius: vw(8);
+    // border-radius: vw(8);
     padding: vh(16) vw(20);
     color: #fff;
     overflow: hidden;
@@ -80,7 +80,7 @@ export default {
 
     .chart-title {
         margin: 0;
-        font-size: vw(20);
+        font-size: vw(18);
         font-family: HarmonyOS_Sans_SC-bold;
         color: #75f9fd;
     }

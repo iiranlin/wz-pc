@@ -14,6 +14,7 @@
         <div class="nav-mid">{{ title }}</div>
         <div class="nav-right">
           <div
+            v-if="false"
             :class="['nav-menu', { active: screenType == '1' }]"
             @click="screenChange('1')"
           >{{ menuNm2 }}</div>
@@ -83,7 +84,9 @@
             v-model="matBigCateName"
             placeholder="请选择物资大类"
             size="mini"
+            clearable
             @change="getSelfPurchased"
+            @clear="getSelfPurchased"
           >
             <el-option
               v-for="item in purchaseOps"
@@ -987,7 +990,7 @@
           v-if="screenType == '1'"
         >
           <div class="left">
-            <ChartCard title="自购物资合同设备数">
+            <ChartCard title="自购物资合同核备数">
               <EChartsWrapper
                 :options="lineOptions"
                 style="height: 90%;"
@@ -1212,7 +1215,10 @@ export default {
         legend: {
           show: true,
           textStyle: {
-            color: '#ccc'
+            color: '#fff'
+          },
+          lineStyle: {
+            color:'#2584FB',
           },
           top: 10,
           left: 'center',
@@ -1224,7 +1230,7 @@ export default {
           trigger: 'axis',
           textStyle: { fontSize: vw(16), color: '#fff' },
           backgroundColor: 'rgba(0,0,0,0.7)',
-          borderColor: '#2584FB'
+          // borderColor: '#2584FB'
         },
         grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
         xAxis: {
@@ -1253,6 +1259,10 @@ export default {
               borderWidth: 3
             },
             lineStyle: { width: 2, color: '#2584FB' },
+            label: {
+              show: true,
+              position: 'top'
+            },
           }
         ],
       },
@@ -1378,7 +1388,7 @@ export default {
         tooltip: { trigger: 'item' },
         legend: {
           orient: 'vertical',
-          left: '60%',
+          right: 0,
           top: 'center',
           textStyle: { color: '#ccc', fontSize: vw(14) },
           itemWidth: vw(20),
@@ -1771,13 +1781,14 @@ export default {
       try {
         const { success, data } = await Api.groupByPurchaseTypeAmount(this.comParams)
         if (success && Array.isArray(data) && data.length) {
-          this.barOptions2.yAxis.data = data.map(item => item.abscissa)
-          this.barOptions2.series[1].data = data.map(item => item.ordinate)
+          const sortData = data.sort((a, b) => a.ordinate - b.ordinate)
+          this.barOptions2.yAxis.data = sortData.map(item => item.abscissa)
+          this.barOptions2.series[1].data = sortData.map(item => item.ordinate)
 
-          const maxValue = Math.max(...data.map(item => item.ordinate))
+          const maxValue = Math.max(...sortData.map(item => item.ordinate))
 
           this.barOptions2.xAxis.max = maxValue * 1.5
-          this.barOptions2.series[0].data = data.map(() => maxValue * 1.5)
+          this.barOptions2.series[0].data = sortData.map(() => maxValue * 1.5)
         } else {
           this.barOptions2.xAxis.max = 100
           this.barOptions2.series[0].data = [100, 100, 100, 100, 100, 100]
@@ -2301,8 +2312,9 @@ p {
 
     // 自定义表格容器
     .custom-table-container {
+      width: calc(100% - 20px);
       height: 100%;
-      padding: vh(10) vw(10);
+      padding: vh(10) 0;
 
       .el-table {
         margin: unset;
@@ -2314,7 +2326,9 @@ p {
 
         ::v-deep .el-table__body-wrapper {
           height: vh(720) !important;
-          overflow: auto;
+          overflow-x: hidden;
+          overflow-y: auto;
+          scrollbar-color: #0e142b transparent;
         }
       }
 
@@ -2332,9 +2346,9 @@ p {
 
         // 表头样式
         ::v-deep .el-table__header-wrapper th {
-          background: #0e142b !important;
-          color: #75f9fd !important;
-          font-size: vw(15) !important;
+          background: #001742 !important;
+          color: #5EA4D7 !important;
+          font-size: vw(14) !important;
           border: none !important;
         }
 
