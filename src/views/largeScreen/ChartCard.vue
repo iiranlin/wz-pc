@@ -32,7 +32,7 @@ export default {
 
 .chart-card {
     position: relative;
-    background-color: rgba(12, 27, 51, 0.8);
+    background-color: rgba(12, 27, 51, 0.6);
     border: vw(1) solid #231AA9;
     border-radius: vw(8);
     padding: vh(16) vw(20);
