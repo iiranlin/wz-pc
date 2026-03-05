@@ -21,7 +21,7 @@ export const itemList = (params) => {
  */
 export const mainItemList = (params) => {
     return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getLatestVersionList`,
+        url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getNegativeByUniqueNumber`,
         method: 'get',
         params
     })
