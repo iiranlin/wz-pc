@@ -261,7 +261,7 @@
               <header>物资计划</header>
               <div class="item-body">
                 <div class="body-item">
-                  <div class="icon-com num-bg" @click="toRouterPage('gyxqList')">
+                  <div class="icon-com num-bg" @click="toRouterPage('demand')">
                     <p>
                       <count-to
                         :start-val="0"
@@ -278,7 +278,7 @@
                   </div>
                 </div>
                 <div class="body-item">
-                  <div class="icon-com amount-bg" @click="toRouterPage('gyxqList')">
+                  <div class="icon-com amount-bg" @click="toRouterPage('demand')">
                     <p>
                       <count-to
                         :start-val="0"
@@ -1113,7 +1113,7 @@ import dayjs from 'dayjs'
 import ChartCard from './ChartCard.vue'
 import EChartsWrapper from './EChartsWrapper.vue'
 
-
+let  systemWindow = null;
 export default {
   name: "largeScreen",
   components: {
@@ -1449,7 +1449,11 @@ export default {
     },
 
   },
-
+  provide() {
+    return {
+      openSystemList: this.openSystemList,
+    };
+  },
   mounted () {
     this.init();
     this.headerInterval(this.updateClock, 1000);
@@ -1815,7 +1819,7 @@ export default {
         ...this.comParams,
         deptName,
         projectName,
-        formUrl: 'largeScreen'
+        fromUrl: 'largeScreen'
       };
     },
     // 跳转路由
@@ -1828,11 +1832,23 @@ export default {
         ...this.comParams,
         deptName,
         projectName,
-        formUrl: 'largeScreen'
+        fromUrl: 'largeScreen'
       };
       const route = this.$router.resolve({ name , query: queryParams })
-      window.open(route.href, '_blank');
+      this.openSystemList(route.href)
     },
+    // 利用命名窗口跨刷新检测(已打开刷新，不存在打开新页面)
+    openSystemList(url) {
+      // 如果窗口存在且未关闭，直接跳转并聚焦
+      if (systemWindow && !systemWindow.closed) {
+          console.log("systemWindow ==> ", systemWindow);
+          systemWindow.location.href = url;
+          systemWindow.focus();
+      } else {
+          // 否则打开新窗口
+          systemWindow = window.open(url, 'systemListWindow');
+      }
+    }
   },
 };
 </script>
