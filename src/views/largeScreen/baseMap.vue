@@ -11,6 +11,7 @@ export default {
   name: 'baseMap',
   props: {
   },
+  inject: ["openSystemList"],
   data () {
     return {
       zoom: 8,
@@ -70,7 +71,7 @@ export default {
                   projectName: extData.projectName,
                 }
                 const route = _this.$router.resolve({ name: 'section', query })
-                window.open(route.href, '_blank');
+                _this.openSystemList(route.href)
               }
             });
             _this.markers.push(marker);

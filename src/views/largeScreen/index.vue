@@ -1113,7 +1113,7 @@ import dayjs from 'dayjs'
 import ChartCard from './ChartCard.vue'
 import EChartsWrapper from './EChartsWrapper.vue'
 
-
+let  systemWindow = null;
 export default {
   name: "largeScreen",
   components: {
@@ -1449,7 +1449,11 @@ export default {
     },
 
   },
-
+  provide() {
+    return {
+      openSystemList: this.openSystemList,
+    };
+  },
   mounted () {
     this.init();
     this.headerInterval(this.updateClock, 1000);
@@ -1831,8 +1835,20 @@ export default {
         fromUrl: 'largeScreen'
       };
       const route = this.$router.resolve({ name , query: queryParams })
-      window.open(route.href, '_blank');
+      this.openSystemList(route.href)
     },
+    // 利用命名窗口跨刷新检测(已打开刷新，不存在打开新页面)
+    openSystemList(url) {
+      // 如果窗口存在且未关闭，直接跳转并聚焦
+      if (systemWindow && !systemWindow.closed) {
+          console.log("systemWindow ==> ", systemWindow);
+          systemWindow.location.href = url;
+          systemWindow.focus();
+      } else {
+          // 否则打开新窗口
+          systemWindow = window.open(url, 'systemListWindow');
+      }
+    }
   },
 };
 </script>
