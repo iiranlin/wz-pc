@@ -1517,6 +1517,7 @@ export default {
   provide () {
     return {
       openSystemList: this.openSystemList,
+      toRouterPage: this.toRouterPage,
     };
   },
   mounted () {
@@ -1554,7 +1555,7 @@ export default {
           break;
         case "1":
           this.getSelfPurchased()
-          this.getPurchaseContractList()
+          
           break;
       }
     },
@@ -1783,6 +1784,7 @@ export default {
       this.getgroupByPurchaseType()
       this.getgroupByPurchaseTypeAmount()
       this.getgroupBySectionName()
+      this.getPurchaseContractList()
     },
     // 自购物资list
     async getPurchaseList () {
@@ -1840,6 +1842,7 @@ export default {
           this.barOptions2.series[1].data = sortData.map(item => item.ordinate)
 
           const maxValue = Math.max(...sortData.map(item => item.ordinate))
+          console.log("maxValue ==> ", maxValue);
 
           this.barOptions2.xAxis.max = maxValue * 1.5
           this.barOptions2.series[0].data = sortData.map(() => maxValue * 1.5)
@@ -1868,11 +1871,10 @@ export default {
     async getPurchaseContractList () {
       try {
         this.loadingTb = true
-        const { success, data } = await Api.purchaseContractList()
+        this.tableData = []
+        const { success, data } = await Api.purchaseContractList(this.comParams)
         if (success && data && Array.isArray(data.list) && data.list.length) {
           this.tableData = data.list
-        } else {
-          this.tableData = []
         }
         this.loadingTb = false
       } catch (err) {
@@ -1902,7 +1904,7 @@ export default {
         ...this.comParams,
         deptName,
         projectName,
-        fromUrl: 'largeScreen'
+        fromUrl: 'largeScreen',
       };
       const route = this.$router.resolve({ name, query: queryParams })
       this.openSystemList(route.href)

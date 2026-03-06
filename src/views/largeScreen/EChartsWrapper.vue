@@ -7,6 +7,7 @@ import * as echarts from 'echarts'
 
 export default {
     name: 'EChartsWrapper',
+    inject: ["toRouterPage"],
     props: {
         // 图表配置项
         options: {
@@ -71,6 +72,14 @@ export default {
             // 初始化图表
             this.chart = echarts.init(this.$refs.chartContainer, this.theme)
             this.chart.setOption(this.options)
+             // 图表点击事件
+            const _this = this
+            this.chart.on('click', function (params) {
+                console.log("chart ==> ", params);
+                // 图表名称
+                // const seriesName = params.seriesName
+                _this.toRouterPage('/nuclear/contract')
+            });
         },
         handleResize() {
             if (this.chart) {

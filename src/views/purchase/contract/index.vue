@@ -114,7 +114,32 @@ export default {
 		workFlowView
 	},
 	mixins: [indexMixin],
-
+	computed:{
+    deptName(){
+      return this.$route.query?.deptName || ''
+    },
+    deptId(){
+      return this.$route.query?.deptId || ''
+    },
+    startDate(){
+      return this.$route.query?.startDate || ''
+    },
+    endDate(){
+      return this.$route.query?.endDate || ''
+    },
+    projectId(){
+      return this.$route.query?.projectId || ''
+    },
+    projectName(){
+      return this.$route.query?.projectName || ''
+    },
+    fromUrl(){
+      return this.$route.query?.fromUrl  || ''
+    },
+		code(){
+			return this.$route.query?.name  || ''
+		}
+  },
 	data() {
 		return {
 			status: {
@@ -199,6 +224,7 @@ export default {
 		});
 		this.findAllListData();
 		this.getLineOptions()
+    this.setQuery();
 	},
 	filters: {
 		formatDate(value) {
@@ -207,6 +233,34 @@ export default {
 		}
 	},
 	methods: {
+			// 将Url参数赋值到搜索内（使用 $set 保证响应式）
+		setQuery(){
+			if(this.deptId){
+				// this.$set(this.formData, 'constructionUnitId', this.deptId)
+			}
+			if(this.deptName){
+				// this.$set(this.formData, 'constructionUnitName', this.deptName)
+			}
+			if(this.startDate){
+				this.$set(this.formData, 'startDate', this.startDate)
+			}
+			if(this.endDate){
+				this.$set(this.formData, 'endDate', this.endDate)
+			}
+			if(this.projectId){
+				this.$set(this.formData, 'projectId', this.projectId)
+			}
+			if(this.projectName){
+				this.$set(this.formData, 'projectName', this.projectName)
+			}
+			if(this.fromUrl){
+				// this.$set(this.formData, 'contractStatus', '2')
+				this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
+			}
+			if(this.code){
+				this.$set(this.formData, 'code', this.code)
+			}
+		},
 		getLineOptions() {
 			WzglApi.contractLineSelectOptions().then(({ data }) => {
 				this.lineOptions = data.map(x => ({

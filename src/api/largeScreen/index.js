@@ -199,13 +199,14 @@ export const groupBySectionName = (params) => {
  * @param {*} params
  * @returns
  */
-export const purchaseContractList = () => {
+export const purchaseContractList = (param) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialPurchaseContract/list`,
     method: "get",
     params: {
       pageNum: 1,
       pageSize: 9999,
+      ...param,
     },
   });
 };
