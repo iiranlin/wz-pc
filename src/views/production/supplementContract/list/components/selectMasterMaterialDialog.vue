@@ -150,7 +150,7 @@ export default {
 
       this.loading = true;
       try {
-        const res = await ContractItemApi.mainItemList({
+        const res = await ContractItemApi.mainItemDetailList({
           contractId: this.contractId
         });
         
