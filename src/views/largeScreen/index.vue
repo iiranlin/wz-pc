@@ -1160,6 +1160,7 @@
               </ChartCard>
               <ChartCard title="物资种类合同核备金额(万元)">
                 <EChartsWrapper
+                  :dataSource="barChart2Data"
                   :options="barOptions2"
                   style="height: 100%;"
                 />
@@ -1367,6 +1368,7 @@ export default {
           }
         ]
       },
+      barChart2Data: [],
       barOptions2: {
         legend: { show: false },
         backgroundColor: 'transparent',
@@ -1398,7 +1400,7 @@ export default {
         },
         series: [
           {
-            name: '',
+            name: '物资种类合同核备金额(背景条)',
             type: 'bar',
             data: [],
             itemStyle: {
@@ -1441,7 +1443,7 @@ export default {
       // 饼图配置
       pieOptions: {
         backgroundColor: 'transparent',
-        tooltip: { trigger: 'item' },
+        tooltip: { trigger: 'item',formatter: '{b}<br /> {a}: {c}' },
         legend: {
           orient: 'vertical',
           right: 0,
@@ -1797,11 +1799,13 @@ export default {
         }
         const { success, data } = await Api.purchaseList(params)
         if (success && data && Array.isArray(data.list)) {
-          this.purchaseOps = data.list.reduce((pre, cur) => {
+          this.purchaseOps = data.list
+          .reduce((pre, cur) => {
             const isHad = pre.some(item => item.code === cur.code)
-            if (!isHad) pre.push(cur)
-            return pre
-          }, [])
+                if (!isHad) pre.push(cur)
+                return pre
+            }, [])
+          .sort((a, b) => a.id - b.id) // A B
         }
       } catch (err) {
         console.log(err)
@@ -1845,7 +1849,7 @@ export default {
           })
           this.barOptions2.yAxis.data = sortData.map(item => item.abscissa)
           this.barOptions2.series[1].data = sortData.map(item => item.ordinate)
-
+          this.barChart2Data = sortData.map(item => item.ordinate)
           const maxValue = Math.max(...sortData.map(item => item.ordinate))
 
           this.barOptions2.xAxis.max = maxValue * 1.5

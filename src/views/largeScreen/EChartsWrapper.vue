@@ -33,7 +33,11 @@ export default {
         autoResize: {
             type: Boolean,
             default: true
-        }
+        },
+        dataSource: {
+            type: Array,
+            default: () => []
+        },
     },
     data() {
         return {
@@ -79,6 +83,7 @@ export default {
                 let _params = {}
                 const value = params.value
                 const name = params.name
+                const dataIndex = params.dataIndex
             
                 // 图表名称
                 const seriesName = params.seriesName
@@ -89,6 +94,9 @@ export default {
                         break;
                     case '物资种类合同核备金额(万元)':
                         _params = { purchaseTypeName: value }
+                        break;
+                    case '物资种类合同核备金额(背景条)':
+                        _params = { purchaseTypeName: _this.dataSource[dataIndex] }
                         break;
                     case '自购物资合同核备数':
                         _params = { month: name.slice(-2) }
