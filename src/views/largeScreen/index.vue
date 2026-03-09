@@ -1201,7 +1201,7 @@ export default {
       title: "铁路建设物资管理驾驶舱",
       menuNm1: "甲供物资",
       menuNm2: "自购物资",
-      screenType: '0',
+      screenType: '',
       time: "",
       queryDate: [],
       deptId: "",
@@ -1537,7 +1537,8 @@ export default {
       this.initDefault()
       const { data: deptOps } = await Api.newListByDeptCode();
       this.deptOps = deptOps;
-      this.screenChange('1')
+      const type = this.$route.query.type || '0'
+      this.screenChange(type)
       this.getPurchaseList()
     },
     async getProjectByUser (params) {
@@ -1553,6 +1554,10 @@ export default {
     },
     screenChange (type) {
       this.screenType = type
+      this.$router.replace({
+        path: this.$route.path,
+        query: { type },
+      });
       switch (type) {
         case "0":
           this.changedDept()
