@@ -3,7 +3,7 @@
 		<button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
 			:buttonDisable="buttonDisable"></button-top>
 		<form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-			:formData="formData" :labelWidth="'120px'" @cleanClick="cleanClick">
+			:formData="formData" :labelWidth="'120px'" @cleanClick="cleanClick" @handleResetField="onResetField">
 			<template #name>
 				<el-select v-model="formData.code" filterable required style="width: 100%" placeholder="请选择" clearable>
 					<el-option v-for="item in dict.type.purchase_code" :key="item.value" :label="item.label"
@@ -261,6 +261,22 @@ export default {
 				this.$set(this.formData, 'code', this.code)
 			}
 		},
+		      /** 清空 URL 参数设置的搜索字段 */
+    clearUrlQueryFields () {
+      this.$set(this.formData, 'constructionUnitId', null);
+      this.$set(this.formData, 'constructionUnitName', null);
+      this.$set(this.formData, 'startDate', null);
+      this.$set(this.formData, 'endDate', null);
+      this.$set(this.formData, 'projectId', null);
+      this.$set(this.formData, 'projectName', null);
+      this.$set(this.formData, 'constructionUnit', null);
+      this.$set(this.formData, 'dateRange', null);
+      this.$set(this.formData, 'bigScreenFlag', null);
+    },
+    /** 搜索栏“重置”按钮触发的事件 */
+    onResetField () {
+      this.clearUrlQueryFields();
+    },
 		getLineOptions() {
 			WzglApi.contractLineSelectOptions().then(({ data }) => {
 				this.lineOptions = data.map(x => ({
