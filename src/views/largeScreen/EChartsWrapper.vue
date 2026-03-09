@@ -75,10 +75,27 @@ export default {
              // 图表点击事件
             const _this = this
             this.chart.on('click', function (params) {
-                console.log("chart ==> ", params);
+                console.log("params ==> ", params);
+                let _params = {}
+                const value = params.value
+                const name = params.name
+            
                 // 图表名称
-                // const seriesName = params.seriesName
-                _this.toRouterPage('/nuclear/contract')
+                const seriesName = params.seriesName
+          
+                switch(seriesName){
+                    case '物资种类合同核备数':
+                        _params = { purchaseTypeName: value }
+                        break;
+                    case '物资种类合同核备金额(万元)':
+                        _params = { purchaseTypeName: value }
+                        break;
+                    case '自购物资合同核备数':
+                        _params = { month: name.slice(-2) }
+                        break;
+                }
+   
+                _this.toRouterPage('/nuclear/contract', _params)
             });
         },
         handleResize() {

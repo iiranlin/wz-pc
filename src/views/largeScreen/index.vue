@@ -1084,7 +1084,7 @@
                     <el-table-column
                       prop="contractName"
                       show-overflow-tooltip
-                      align="center"
+                      align="left"
                       label="合同名称"
                     >
                     </el-table-column>
@@ -1121,6 +1121,7 @@
                       show-overflow-tooltip
                       align="center"
                       label="提交时间"
+                      width="110"
                     >
                       <template slot-scope="{ row }">
                         {{ row.createDate | formatDate(row.createDate) }}
@@ -1130,6 +1131,7 @@
                       prop="status"
                       align="center"
                       label="审批状态"
+                      width="90"
                     >
                       <template slot-scope="scope">
                         <el-tag
@@ -1277,7 +1279,7 @@ export default {
       lineOptions: {
         color: ["#2584FB"],
         legend: {
-          data: ['自购物资合同设备数'],
+          data: ['自购物资合同核备数'],
           textStyle: {
             color: '#ccc'
           },
@@ -1308,7 +1310,7 @@ export default {
         },
         series: [
           {
-            name: '自购物资合同设备数',
+            name: '自购物资合同核备数',
             type: 'line',
             data: [],
             label: {
@@ -1411,7 +1413,7 @@ export default {
             z: 1
           },
           {
-            name: '物资种类合同核备金额',
+            name: '物资种类合同核备金额(万元)',
             type: 'bar',
             data: [],
             itemStyle: {
@@ -1461,7 +1463,7 @@ export default {
               borderColor: 'transparent',
               borderWidth: 2
             },
-            label: { show: false },
+            // label: { show: false },
             emphasis: {
               scale: true,
               label: { show: true, fontSize: vw(14) }
@@ -1533,7 +1535,7 @@ export default {
       this.initDefault()
       const { data: deptOps } = await Api.newListByDeptCode();
       this.deptOps = deptOps;
-      this.screenChange('0')
+      this.screenChange('1')
       this.getPurchaseList()
     },
     async getProjectByUser (params) {
@@ -1810,7 +1812,7 @@ export default {
       try {
         const { success, data } = await Api.groupByMonth(this.comParams)
         if (success && Array.isArray(data) && data.length) {
-          this.lineOptions.xAxis.data = data.map(item => item.abscissa + '月')
+          this.lineOptions.xAxis.data = data.map(item => item.abscissa)
           this.lineOptions.series[0].data = data.map(item => item.ordinate)
         } else {
         }
@@ -1837,12 +1839,14 @@ export default {
       try {
         const { success, data } = await Api.groupByPurchaseTypeAmount(this.comParams)
         if (success && Array.isArray(data) && data.length) {
-          const sortData = data.sort((a, b) => a.ordinate - b.ordinate)
+          const sortData = data.sort((a, b) => a.ordinate - b.ordinate).map(item => {
+            item.ordinate = (+item.ordinate || 0).toFixed(2)
+            return item
+          })
           this.barOptions2.yAxis.data = sortData.map(item => item.abscissa)
           this.barOptions2.series[1].data = sortData.map(item => item.ordinate)
 
           const maxValue = Math.max(...sortData.map(item => item.ordinate))
-          console.log("maxValue ==> ", maxValue);
 
           this.barOptions2.xAxis.max = maxValue * 1.5
           this.barOptions2.series[0].data = sortData.map(() => maxValue * 1.5)
@@ -1895,7 +1899,7 @@ export default {
       };
     },
     // 跳转路由
-    toRouterPage (name) {
+    toRouterPage (name, opts = {}) {
       // 获取当前选中的部门名称和项目名称
       const deptName = this.deptOps.find(item => item.id === this.deptId)?.deptName || '';
       const projectName = this.projectOps.find(item => item.id === this.projectId)?.projectName || '';
@@ -1905,6 +1909,7 @@ export default {
         deptName,
         projectName,
         fromUrl: 'largeScreen',
+        ...opts,
       };
       const route = this.$router.resolve({ name, query: queryParams })
       this.openSystemList(route.href)
@@ -2470,5 +2475,8 @@ p {
 
 ::v-deep .el-loading-mask {
   background-color: transparent;
+}
+.middle .chart-card {
+  padding-right: 0;
 }
 </style>
