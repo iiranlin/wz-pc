@@ -15,13 +15,26 @@ export const itemList = (params) => {
 }
 
 /**
- * 查询主合同物资明细列表
+ * 查询主合合同下负数合同
  * @param {*} params 
  * @returns 
  */
 export const mainItemList = (params) => {
     return request({
         url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getNegativeByUniqueNumber`,
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 查询主合同物资明细列表
+ * @param {*} params 
+ * @returns 
+ */
+export const mainItemDetailList = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getLatestVersionList`,
         method: 'get',
         params
     })
