@@ -1054,13 +1054,13 @@
             <div class="left">
               <ChartCard title="自购物资合同核备数">
                 <EChartsWrapper
-                  :options="lineOptions"
+                  ref="lineChart"
                   style="height: 90%;"
                 />
               </ChartCard>
               <ChartCard title="物资种类合同核备数">
                 <EChartsWrapper
-                  :options="pieOptions"
+                  ref="pieChart"
                   style="height: 100%;"
                 />
               </ChartCard>
@@ -1154,14 +1154,13 @@
             <div class="right">
               <ChartCard title="标段项目合同核备数">
                 <EChartsWrapper
-                  :options="barOptions1"
+                  ref="barChart0"
                   style="height: 100%;"
                 />
               </ChartCard>
               <ChartCard title="物资种类合同核备金额(万元)">
                 <EChartsWrapper
-                  :dataSource="barChart2Data"
-                  :options="barOptions2"
+                  ref="barChart1"
                   style="height: 100%;"
                 />
               </ChartCard>
@@ -1277,202 +1276,24 @@ export default {
 
       // 自购物资图片配置
       // 折线图配置
-      lineOptions: {
-        color: ["#2584FB"],
-        legend: {
-          data: ['自购物资合同核备数'],
-          textStyle: {
-            color: '#ccc'
-          },
-          // top: 10,
-          // left: 'center',
-          // orient: 'horizontal',
-        },
-        // backgroundColor: 'transparent', // 背景由外层控制
-        title: { show: false },
-        tooltip: {
-          trigger: 'axis',
-          textStyle: { fontSize: vw(16), color: '#fff' },
-          backgroundColor: 'rgba(0,0,0,0.7)',
-          borderColor: '#2584FB'
-        },
-        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-        xAxis: {
-          type: 'category',
-          data: [],
-          axisLabel: { color: '#ccc', fontSize: vw(14) },
-          axisLine: { lineStyle: { color: '#ccc' } },
-        },
-        yAxis: {
-          type: 'value',
-          axisLine: { show: false },   // 隐藏轴线
-          axisLabel: { color: '#ccc', fontSize: vw(14) },
-          splitLine: { lineStyle: { color: '#ccc' } }
-        },
-        series: [
-          {
-            name: '自购物资合同核备数',
-            type: 'line',
-            data: [],
-            label: {
-              show: true,
-              position: 'top',
-              color: '#2584FB',
-            },
-          }
-        ],
-      },
+      lineOptions: {},
       // 自购物资合同核备审批数据
       tableData: [],
       loadingTb: false,
-      barOptions1: {
-        legend: {
-          show: true,
-          textStyle: {
-            color: '#ccc'
-          },
-          top: 10,
-          left: 'center',
-          orient: 'horizontal',
-        },
-        backgroundColor: 'transparent',
-        tooltip: {
-          trigger: 'axis',
-          textStyle: { fontSize: vw(16), color: '#fff' },
-          backgroundColor: 'rgba(0,0,0,0.7)',
-          borderColor: '#2584FB'
-        },
-        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-        xAxis: {
-          type: 'category',
-          data: [],
-          axisLabel: { color: '#ccc', fontSize: vw(14), rotate: 45, },
-          axisLine: { lineStyle: { color: '#ccc' } },
-        },
-        yAxis: {
-          type: 'value',
-          axisLine: { show: false },   // 隐藏轴线
-          axisLabel: { color: '#ccc', fontSize: vw(14) },
-          splitLine: { lineStyle: { color: '#ccc' } }
-        },
-        series: [
-          {
-            name: '标段项目合同核备数',
-            type: 'bar',
-            barWidth: 15,
-            data: [],
-            itemStyle: {
-              color: '#2584FB',
-              borderRadius: [6, 6, 0, 0]
-            },
-          }
-        ]
-      },
-      barChart2Data: [],
-      barOptions2: {
-        legend: { show: false },
-        backgroundColor: 'transparent',
-        tooltip: {
-          trigger: 'axis',
-          textStyle: { fontSize: vw(16), color: '#fff' },
-          backgroundColor: 'rgba(0,0,0,0.7)',
-          borderColor: '#2584FB'
-        },
-        grid: { left: '2%', right: '4%', top: '15%', containLabel: true },
-        xAxis: {
-          type: 'value',
-          max: 8000, // 增加最大值，为标签留出空间
-          axisLine: { show: false },
-          axisTick: { show: false },
-          axisLabel: { show: false },
-          splitLine: { show: false }
-        },
-        yAxis: {
-          type: 'category',
-          data: [],
-          axisLine: { show: false },
-          axisTick: { show: false },
-          axisLabel: {
-            color: '#ccc',
-            fontSize: vw(14)
-          },
-          splitLine: { show: false }
-        },
-        series: [
-          {
-            name: '物资种类合同核备金额(背景条)',
-            type: 'bar',
-            data: [],
-            itemStyle: {
-              color: 'rgba(255,255,255,0.15)',
-              borderRadius: [6, 6, 0, 0]
-            },
-            barWidth: 15,
-            barCategoryGap: '80%',
-            barGap: '-100%',
-            label: { show: false },
-            tooltip: { show: false },
-            z: 1
-          },
-          {
-            name: '物资种类合同核备金额(万元)',
-            type: 'bar',
-            data: [],
-            itemStyle: {
-              color: function (params) {
-                const colorList = ['#2584FB', '#2B72CA', '#52D19D', '#4F9A54', '#EFB645', '#C18B35', '#EA6D33', '#D34A3D'];
-                return colorList[params.dataIndex % colorList.length];
-              },
-              borderRadius: [6, 6, 0, 0]
-            },
-            barWidth: vw(16),
-            barCategoryGap: '50%',
-            label: {
-              show: true,
-              position: 'right',
-              color: '#fff',
-              fontSize: vw(14),
-              fontWeight: 'bold',
-              formatter: '{c}',
-              distance: 8
+      emptyChartOpts: {
+        graphic: {
+          elements: [{
+            type: 'text',
+            left: 'center',
+            top: 'center',
+            style: {
+              text: '暂无数据',
+              font: '16px Arial',
+              fill: '#999' // 文字颜色
             }
-          }
-        ]
-      },
-
-      // 饼图配置
-      pieOptions: {
-        backgroundColor: 'transparent',
-        tooltip: { trigger: 'item',formatter: '{b}<br /> {a}: {c}' },
-        legend: {
-          orient: 'vertical',
-          right: 0,
-          top: 'center',
-          textStyle: { color: '#ccc', fontSize: vw(14) },
-          itemWidth: vw(20),
-          itemHeight: vw(14),
+          }]
         },
-        series: [
-          {
-            name: '物资种类合同核备数',
-            type: 'pie',
-            radius: [0, '60%'],
-            center: ['30%', '50%'],
-            avoidLabelOverlap: false,
-            color: ['#487BE6', '#5EB2BB', '#4F9A54', '#EFB645', '#EA6D33', '#D34A3D'],
-            itemStyle: {
-              borderRadius: 10,
-              borderColor: 'transparent',
-              borderWidth: 2
-            },
-            // label: { show: false },
-            emphasis: {
-              scale: true,
-              label: { show: true, fontSize: vw(14) }
-            },
-            data: []
-          }
-        ]
+        series: [] // 清空 series，避免绘制无效数据图形（可选）
       },
       // 大类名称
       matBigCateName: '',
@@ -1564,7 +1385,7 @@ export default {
           break;
         case "1":
           this.getSelfPurchased()
-          
+
           break;
       }
     },
@@ -1805,12 +1626,12 @@ export default {
         const { success, data } = await Api.purchaseList(params)
         if (success && data && Array.isArray(data.list)) {
           this.purchaseOps = data.list
-          .reduce((pre, cur) => {
-            const isHad = pre.some(item => item.code === cur.code)
-                if (!isHad) pre.push(cur)
-                return pre
+            .reduce((pre, cur) => {
+              const isHad = pre.some(item => item.code === cur.code)
+              if (!isHad) pre.push(cur)
+              return pre
             }, [])
-          .sort((a, b) => a.id - b.id) // A B
+            .sort((a, b) => a.id - b.id) // A B
         }
       } catch (err) {
         console.log(err)
@@ -1818,33 +1639,132 @@ export default {
     },
     // 自购物资合同核备数
     async getgroupByMonth () {
+      let options = this.emptyChartOpts
       try {
         const { success, data } = await Api.groupByMonth(this.comParams)
         if (success && Array.isArray(data) && data.length) {
-          this.lineOptions.xAxis.data = data.map(item => item.abscissa)
-          this.lineOptions.series[0].data = data.map(item => item.ordinate)
-        } else {
+          const xAxisData = data.map(item => item.abscissa)
+          const series0Data = data.map(item => item.ordinate)
+          options = {
+            color: ["#2584FB"],
+            legend: {
+              data: ['自购物资合同核备数'],
+              textStyle: {
+                color: '#ccc'
+              },
+              // top: 10,
+              // left: 'center',
+              // orient: 'horizontal',
+            },
+            // backgroundColor: 'transparent', // 背景由外层控制
+            title: { show: false },
+            tooltip: {
+              trigger: 'axis',
+              textStyle: { fontSize: 14, color: '#fff' },
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              borderColor: '#2584FB'
+            },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: {
+              type: 'category',
+              data: xAxisData,
+              axisLabel: { color: '#ccc', fontSize: 14 },
+              axisLine: { lineStyle: { color: '#ccc' } },
+            },
+            yAxis: {
+              type: 'value',
+              axisLine: { show: false },   // 隐藏轴线
+              axisLabel: { color: '#ccc', fontSize: 14 },
+              splitLine: { lineStyle: { color: '#ccc' } }
+            },
+            series: [
+              {
+                name: '自购物资合同核备数',
+                type: 'line',
+                data: series0Data,
+                label: {
+                  show: true,
+                  position: 'top',
+                  color: '#2584FB',
+                },
+              }
+            ],
+          }
+          if (xAxisData.length > 5) {
+          option.dataZoom = [
+            {
+              type: "inside",
+              start: 0,
+              end: 40,
+            },
+            {
+              start: 0,
+              end: 40,
+              height: 10,
+            },
+          ];
+        }
         }
       } catch (err) {
         console.log(err)
+      } finally {
+        this.$refs.lineChart.initChart(options)
       }
     },
     // 物资种类合同核备数
     async getgroupByPurchaseType () {
+      let options = this.emptyChartOpts
       try {
         const { success, data } = await Api.groupByPurchaseType(this.comParams)
         if (success && Array.isArray(data) && data.length) {
-          this.pieOptions.series[0].data = data.map(item => {
+          const series0Data = data.map(item => {
             return { value: item.ordinate, name: item.abscissa }
           })
+          // 饼图配置
+          options = {
+            backgroundColor: 'transparent',
+            tooltip: { trigger: 'item', formatter: '{b}<br /> {a}: {c}' },
+            legend: {
+              orient: 'vertical',
+              right: 0,
+              top: 'center',
+              textStyle: { color: '#ccc', fontSize: 14 },
+              itemWidth: 20,
+              itemHeight: 14,
+            },
+            series: [
+              {
+                name: '物资种类合同核备数',
+                type: 'pie',
+                radius: [0, '60%'],
+                center: ['30%', '50%'],
+                avoidLabelOverlap: false,
+                color: ['#487BE6', '#5EB2BB', '#4F9A54', '#EFB645', '#EA6D33', '#D34A3D'],
+                itemStyle: {
+                  borderRadius: 10,
+                  borderColor: 'transparent',
+                  borderWidth: 2
+                },
+                // label: { show: false },
+                emphasis: {
+                  scale: true,
+                  label: { show: true, fontSize: 14 }
+                },
+                data: series0Data
+              }
+            ]
+          }
         } else {
         }
       } catch (err) {
         console.log(err)
+      } finally {
+        this.$refs.pieChart.initChart(options)
       }
     },
     // 物资种类合同核备金额
     async getgroupByPurchaseTypeAmount () {
+      let options = this.emptyChartOpts
       try {
         const { success, data } = await Api.groupByPurchaseTypeAmount(this.comParams)
         if (success && Array.isArray(data) && data.length) {
@@ -1852,32 +1772,173 @@ export default {
             item.ordinate = (+item.ordinate || 0).toFixed(2)
             return item
           })
-          this.barOptions2.yAxis.data = sortData.map(item => item.abscissa)
-          this.barOptions2.series[1].data = sortData.map(item => item.ordinate)
-          this.barChart2Data = sortData.map(item => item.ordinate)
+          const yAxisData = sortData.map(item => item.abscissa)
+          const series1Data = sortData.map(item => item.ordinate)
           const maxValue = Math.max(...sortData.map(item => item.ordinate))
+          const xAxisMax = maxValue * 1.5
+          const series0Data = sortData.map(() => maxValue * 1.5)
 
-          this.barOptions2.xAxis.max = maxValue * 1.5
-          this.barOptions2.series[0].data = sortData.map(() => maxValue * 1.5)
-        } else {
-          this.barOptions2.xAxis.max = 100
-          this.barOptions2.series[0].data = [100, 100, 100, 100, 100, 100]
+          options = {
+            legend: { show: false },
+            backgroundColor: 'transparent',
+            tooltip: {
+              trigger: 'axis',
+              textStyle: { fontSize: 14, color: '#fff' },
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              borderColor: '#2584FB'
+            },
+            grid: { left: '2%', right: '4%', top: '15%', containLabel: true },
+            xAxis: {
+              type: 'value',
+              max: xAxisMax, // 增加最大值，为标签留出空间
+              axisLine: { show: false },
+              axisTick: { show: false },
+              axisLabel: { show: false },
+              splitLine: { show: false }
+            },
+            yAxis: {
+              type: 'category',
+              data: yAxisData,
+              axisLine: { show: false },
+              axisTick: { show: false },
+              axisLabel: {
+                color: '#ccc',
+                fontSize: 14
+              },
+              splitLine: { show: false }
+            },
+            series: [
+              {
+                name: '物资种类合同核备金额(背景条)',
+                type: 'bar',
+                data: series0Data,
+                itemStyle: {
+                  color: 'rgba(255,255,255,0.15)',
+                  borderRadius: [6, 6, 0, 0]
+                },
+                barWidth: 15,
+                barCategoryGap: '80%',
+                barGap: '-100%',
+                label: { show: false },
+                tooltip: { show: false },
+                z: 1
+              },
+              {
+                name: '物资种类合同核备金额(万元)',
+                type: 'bar',
+                data: series1Data,
+                itemStyle: {
+                  color: function (params) {
+                    const colorList = ['#2584FB', '#2B72CA', '#52D19D', '#4F9A54', '#EFB645', '#C18B35', '#EA6D33', '#D34A3D'];
+                    return colorList[params.dataIndex % colorList.length];
+                  },
+                  borderRadius: [6, 6, 0, 0]
+                },
+                barWidth: 16,
+                barCategoryGap: '50%',
+                label: {
+                  show: true,
+                  position: 'right',
+                  color: '#fff',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  formatter: '{c}',
+                  distance: 8
+                }
+              }
+            ]
+          }
+          if (sortData.length > 10) {
+            options.grid.right = '8%'
+            options.dataZoom = [
+              {
+                width: 10,
+                orient: 'vertical',
+              },
+            ];
+          }
+
+
         }
       } catch (err) {
         console.log(err)
+      } finally {
+        this.$refs.barChart1.initChart(options)
       }
     },
     // 标段项目合同核备数
     async getgroupBySectionName () {
+      let options = this.emptyChartOpts
       try {
         const { success, data } = await Api.groupBySectionName(this.comParams)
         if (success && Array.isArray(data) && data.length) {
-          this.barOptions1.xAxis.data = data.map(item => item.abscissa)
-          this.barOptions1.series[0].data = data.map(item => item.ordinate)
+          const xAxisData = data.map(item => item.abscissa)
+          const series0Data = data.map(item => item.ordinate)
+          options = {
+            legend: {
+              show: true,
+              textStyle: {
+                color: '#ccc'
+              },
+              top: 10,
+              left: 'center',
+              orient: 'horizontal',
+            },
+            backgroundColor: 'transparent',
+            tooltip: {
+              trigger: 'axis',
+              textStyle: { fontSize: 14, color: '#fff' },
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              borderColor: '#2584FB'
+            },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: {
+              type: 'category',
+              data: xAxisData,
+              axisLabel: { color: '#ccc', fontSize: 13, rotate: 30, },
+              axisLine: { lineStyle: { color: '#ccc' } },
+            },
+            yAxis: {
+              type: 'value',
+              axisLine: { show: false },   // 隐藏轴线
+              axisLabel: { color: '#ccc', fontSize: 14 },
+              splitLine: { lineStyle: { color: '#ccc' } }
+            },
+            series: [
+              {
+                name: '标段项目合同核备数',
+                type: 'bar',
+                barWidth: 15,
+                data: series0Data,
+                itemStyle: {
+                  color: '#2584FB',
+                  borderRadius: [6, 6, 0, 0]
+                },
+              }
+            ]
+          }
+          if (xAxisData.length > 5) {
+            option.grid.left = "15%"
+            option.grid.bottom = "15%"
+            option.dataZoom = [
+              {
+                type: "inside",
+                start: 0,
+                end: 40,
+              },
+              {
+                start: 0,
+                end: 40,
+                height: 10,
+              },
+            ];
+          }
         } else {
         }
       } catch (err) {
         console.log(err)
+      } finally {
+        this.$refs.barChart0.initChart(options)
       }
     },
     // 自购物资合同核备审批
@@ -2487,5 +2548,9 @@ p {
 }
 .middle .chart-card {
   padding-right: 0;
+}
+::v-deep .el-table__empty-text {
+  font-size: vw(14);
+  color: #999;
 }
 </style>

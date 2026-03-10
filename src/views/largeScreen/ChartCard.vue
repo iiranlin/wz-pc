@@ -89,7 +89,7 @@ export default {
     ::v-deep p,
     ::v-deep span,
     ::v-deep div {
-        font-size: vw(16);
+        font-size: vw(14);
     }
 }
 </style>
