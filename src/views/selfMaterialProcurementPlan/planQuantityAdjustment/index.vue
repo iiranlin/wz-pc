@@ -57,13 +57,13 @@
         {{scoped.data.status == 1?'未提交':scoped.data.status == 2?'已提交':scoped.data.status == 3?'已通过':scoped.data.status == 4?'修改同意后':scoped.data.status == 5?'已撤回':scoped.data.status == 0?'已驳回':''}}
       </template>
       <!-- 明细 -->
-      <template #planNumber="scoped">
+      <template #businessNumber="scoped">
         <el-button type="text" @click="
               () => {
                   $refs.DetailDialogRef.init(scoped.data);
               }
             ">
-          {{scoped.data.planNumber}}
+          {{scoped.data.businessNumber}}
         </el-button>
       </template>
     </table-index>
