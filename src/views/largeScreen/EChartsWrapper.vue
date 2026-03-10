@@ -87,18 +87,22 @@ export default {
                 const seriesName = params.seriesName
           
                 switch(seriesName){
-                    case '物资种类合同核备数':
-                        _params = { purchaseTypeName: seriesName }
-                        break;
-                    case '物资种类合同核备金额(万元)':
-                        _params = { purchaseTypeName: seriesName }
-                        break;
-                    case '物资种类合同核备金额(背景条)':
-                        _params = { purchaseTypeName: '物资种类合同核备金额(万元)' }
-                        break;
                     case '自购物资合同核备数':
                         _params = { month: name.slice(-2) }
                         break;
+                    case '物资种类合同核备数':
+                        _params = { purchaseTypeName: name }
+                        break;
+                    case '标段项目合同核备数':
+                        _params = { sectionShortName: name }
+                        break;
+                    case '物资种类合同核备金额(万元)':
+                        _params = { purchaseTypeName: name }
+                        break;
+                    case '物资种类合同核备金额(背景条)':
+                        _params = { purchaseTypeName: name }
+                        break;
+                    
                 }
    
                 _this.toRouterPage('/nuclear/contract', _params)
