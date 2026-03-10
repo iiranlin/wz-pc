@@ -81,22 +81,20 @@ export default {
             this.chart.on('click', function (params) {
                 console.log("params ==> ", params);
                 let _params = {}
-                const value = params.value
                 const name = params.name
-                const dataIndex = params.dataIndex
             
                 // 图表名称
                 const seriesName = params.seriesName
           
                 switch(seriesName){
                     case '物资种类合同核备数':
-                        _params = { purchaseTypeName: value }
+                        _params = { purchaseTypeName: seriesName }
                         break;
                     case '物资种类合同核备金额(万元)':
-                        _params = { purchaseTypeName: value }
+                        _params = { purchaseTypeName: seriesName }
                         break;
                     case '物资种类合同核备金额(背景条)':
-                        _params = { purchaseTypeName: _this.dataSource[dataIndex] }
+                        _params = { purchaseTypeName: '物资种类合同核备金额(万元)' }
                         break;
                     case '自购物资合同核备数':
                         _params = { month: name.slice(-2) }
