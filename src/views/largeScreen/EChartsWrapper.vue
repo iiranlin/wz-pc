@@ -4,7 +4,7 @@
 
 <script>
 import * as echarts from 'echarts'
-
+import dayjs from 'dayjs'
 export default {
     name: 'EChartsWrapper',
     inject: ["toRouterPage"],
@@ -79,7 +79,7 @@ export default {
              // 图表点击事件
             const _this = this
             this.chart.on('click', function (params) {
-                console.log("params ==> ", params);
+                // console.log("params ==> ", params);
                 let _params = {}
                 const name = params.name
             
@@ -88,7 +88,15 @@ export default {
           
                 switch(seriesName){
                     case '自购物资合同核备数':
-                        _params = { month: name.slice(-2) }
+                  
+                        const date = dayjs(name);
+                        const firstDayOfMonth = date.startOf('month'); // 获取该月的第一天
+                        const lastDayOfMonth = date.endOf('month'); // 获取该月的最后一天
+
+                        const startDate = firstDayOfMonth.format('YYYY-MM-DD')
+                        const endDate = lastDayOfMonth.format('YYYY-MM-DD')
+                       
+                        _params = { startDate, endDate }
                         break;
                     case '物资种类合同核备数':
                         _params = { purchaseTypeName: name }
@@ -104,7 +112,6 @@ export default {
                         break;
                     
                 }
-   
                 _this.toRouterPage('/nuclear/contract', _params)
             });
         },
