@@ -1,0 +1,316 @@
+<template>
+  <div class="app-container container_flex">
+    <button-top
+      :buttonTopData="buttonTop"
+      :buttonShow="buttonShow"
+      @newButton="handleButtonClick"
+    ></button-top>
+    <div :class="{ container_flex_form: type === 'view' }">
+      <VFormRender
+        :form-json="formJson"
+        :form-data="formData"
+        :option-data="optionData"
+        ref="vFormRef"
+        :global-dsv="globalDsv"
+        :class="{ formRender_view: type === 'view' }"
+      >
+       <template #projectNameSlot="{ formModel }">
+          <el-form-item prop="projectName" label="建设项目：" class="label-right-align">
+            <template v-if="type === 'create'">
+              <span class="titleCss" :title="itemData.projectName">
+                {{itemData.projectName}}
+              </span>
+            </template>
+            <template v-else>
+              <span class="titleCss" :title="formModel.projectName">
+                {{formModel.projectName}}
+                </span>
+            </template>
+          </el-form-item>
+        </template>
+         <template #sectionNameSlot="{ formModel }">
+          <el-form-item prop="sectionName" label="标段项目：" class="label-right-align">
+            <template v-if="type === 'create'">
+              <span class="titleCss" :title="itemData.sectionName">
+                {{itemData.sectionName}}
+              </span>
+            </template>
+            <template v-else>
+              <span class="titleCss" :title="formModel.sectionProjectName">
+                {{formModel.sectionProjectName}}
+                </span>
+            </template>
+          </el-form-item>
+        </template>
+
+        <template #planYearSlot="{ formModel }">
+          <el-form-item prop="planYear" label="计划年度：" class="label-right-align">
+            <el-date-picker
+              v-model="formModel.planYear"
+              type="year"
+              value-format="yyyy"
+              placeholder="选择计划年度"
+              style="width: 100%"
+              v-if="type !== 'view'"
+            />
+            <span v-else>
+              {{formModel.planYear}}
+            </span>
+          </el-form-item>
+        </template>
+
+        <!-- 计量单位选择插槽 -->
+        <template #measurementUnitSlot="{ formModel }">
+          <span></span>
+           <el-form-item label="计量单位：" prop="unit">
+              <el-select
+                v-model="formModel.unit"
+                placeholder="请选择"
+                style="width: 100%"
+                filterable
+                v-if="type !== 'view'"
+              >
+                <el-option
+                  v-for="item in dict.type.MeasureUnit"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.label"
+                />
+              </el-select>
+
+              <span v-else>
+                {{formModel.unit}}
+              </span>
+            </el-form-item>
+        </template>
+      </VFormRender>
+    </div>
+  </div>
+</template>
+
+<script>
+ import dayjs from "dayjs";
+import * as Api from "@/api/prodmgr-inv/project/annualProcurementPlan.js";
+import * as PurchasePlanApi from "@/api/prodmgr-inv/project/annualProcurementPlan.js";
+import VFormRender from "@/components/form-render/index";
+import { formFillInPage } from "@/api/form/form";
+import { getToken } from "@/utils/auth";
+
+export default {
+  name: "AddAnnualProcurementPlan",
+  dicts: ["MeasureUnit"],
+  components: { VFormRender },
+
+  data() {
+    return {
+      loading: false,
+      title: "新增",
+      itemData: {},
+      currentProjectData: null, // 保存当前项目标段数据
+      // 表单相关
+      formJson: {},
+      formData: {},
+      optionData: {},
+      globalDsv: {
+        VUE_APP_BASE_API: process.env.VUE_APP_BASE_API,
+        VUE_APP_BASE_SERVER: process.env.VUE_APP_BASE_SERVER,
+        Authorization: getToken(),
+        businessType: "24",
+      },
+      // 下拉选项
+      lineOptions: [],           // 建设项目选项
+      sectionOptions: [],        // 标段项目选项
+      // 顶部按钮配置
+      buttonTop: [
+        { buttonName: "取消", buttonCode: "cancel", buttonIcon: "Blue-Cancel", type: "create, update" },
+        { buttonName: "保存", buttonCode: "save", buttonIcon: "Blue-Save", type: "create, update" },
+      ],
+    };
+  },
+
+  computed: {
+    type() {
+      return this.$route.query.type;
+    },
+    id() {
+      return this.$route.query?.id || "";
+    }
+  },
+ async created() {
+		this.getCurrentProSection();
+	},
+  mounted() {
+    this.initPage();
+  },
+
+  methods: {
+    /** 根据页面类型初始化 */
+    initPage() {
+      if (["view", "update"].includes(this.type)) {
+        this.initEditMode(this.id);
+      } else if (this.type === "create") {
+        this.initCreateMode();
+      }
+    },
+
+    /** 新建模式初始化 */
+    async initCreateMode() {
+      this.title = "新建";
+      await this.loadFormConfig();
+      // await this.loadUnitOptions(); 暂时注释 等联调的时候问后端接口
+    },
+
+    /** 编辑/查看模式初始化 */
+    async initEditMode(id) {
+      const { data } = await PurchasePlanApi.detail(id);
+      this.title = this.type === "view" ? "查看" : "编辑";
+      await this.loadFormConfig();
+      // await this.loadUnitOptions();
+
+      // 3. 设置主表单数据
+      this.$refs.vFormRef.setFormData({
+        ...data,
+        // settlementYear: String(data.settlementYear)
+      });
+
+      // 4. 设置只读模式
+      this.$refs.vFormRef.setReadMode(this.type === "view");
+    },
+    // 获取当前项目标段
+     getCurrentProSection() {
+        if (this.type === 'view' || this.type === 'update') {
+          return
+        }
+        PurchasePlanApi.getSectionProjectBySGDW().then(({ data }) => {
+          this.itemData = data[0];
+          // 保存项目标段数据，等待表单配置加载完成后再设置
+          this.currentProjectData = {
+            projectId: data[0].projectId,
+            sectionProjectId: data[0].id,
+          };
+			})
+    },
+
+    /** 加载表单配置 */
+    async loadFormConfig() {
+      const { data } = await formFillInPage("addAnnualProcurementPlan");
+      this.$refs.vFormRef.setFormJson(data);
+
+      const currentYear = dayjs().year()
+      const formData = {
+        planYear: currentYear.toString()
+      };
+      
+      // 如果有保存的项目标段数据，一并设置
+      if (this.currentProjectData) {
+        formData.projectId = this.currentProjectData.projectId;
+        formData.sectionProjectId = this.currentProjectData.sectionProjectId;
+      }
+      
+      this.$refs['vFormRef'].setFormData(formData);
+      this.$refs.vFormRef.setReadMode(false);
+    },
+
+    // ==================== 数据加载 ====================
+
+    /** 加载计量单位选项 */
+    async loadUnitOptions() {
+      const { data } = await Api.selectOptions({ pageStatus: '1' });
+      this.lineOptions = data.map(x => ({
+        label: x.projectName,
+        value: x.projectId
+      }));
+    },
+
+    /** 计量单位事件 */
+    async handleMeasurementUnitChange(projectId) {
+      const selectedOption = this.lineOptions.find(item => item.value === projectId);
+      // 设置项目名称
+      this.$refs.vFormRef.setFormData({
+        projectName: selectedOption?.label || ''
+      });
+    },
+
+    /** 顶部按钮点击 */
+    handleButtonClick(buttonCode) {
+      const actions = {
+        cancel: () => this.$router.go(-1),
+        save: () => this.handleSubmit(),
+      };
+      actions[buttonCode]?.();
+    },
+
+    /** 按钮显示控制 */
+    buttonShow(item) {
+      if (item.buttonCode === "save") {
+        return this.type !== "view";
+      }
+      return true;
+    },
+
+    /** 表单提交 */
+    handleSubmit() {
+      this.$refs.vFormRef.validateForm(async (valid) => {
+        if (!valid) return;
+
+        this.loading = true;
+        try {
+          const formData = await this.$refs.vFormRef.getFormData();
+          
+          // 将到日的时间戳转换为到月的时间戳
+          if (formData.planPurchaseTime) {
+            formData.planPurchaseTime = dayjs(formData.planPurchaseTime).startOf('month').valueOf();
+          }
+          if (formData.planUseTime) {
+            formData.planUseTime = dayjs(formData.planUseTime).startOf('month').valueOf();
+          }
+          
+          const apiMethod = this.type === "update" ? "edit" : "save";
+          const payload = this.type === "update"
+            ? { id: this.id, ...formData }
+            : formData;
+
+          const { message } = await Api[apiMethod](payload);
+          this.$modal.msgSuccess(message);
+          this.$router.go(-1);
+        } finally {
+          this.loading = false;
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+::v-deep .label-right-align .el-form-item__label {
+  text-align: right;
+}
+
+/* 动态列垂直布局 */
+::v-deep .label-top-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 18px;
+
+  .el-form-item__label {
+    text-align: left;
+    line-height: 1.5;
+    padding-bottom: 8px;
+    width: auto !important;
+    float: none;
+  }
+
+  .el-form-item__content {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
+
+/* 动态列容器 */
+.section-list-wrapper {
+  width: 70%;
+  margin: 0 auto;
+}
+</style>
