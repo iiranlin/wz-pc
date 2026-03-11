@@ -6,6 +6,12 @@
     :close-on-click-modal="false"
     @close="handleClose"
   >
+    <div class="summary-bar">
+      <span>原合同数量：{{ summaryData.originalAmount }}</span>
+      <span>当前数量：{{ summaryData.currentAmount }}</span>
+      <span>负合同数量总和：{{ summaryData.negativeAmount }}</span>
+    </div>
+
     <!-- 补充合同数据表格 -->
     <el-table
       :data="tableData"
@@ -37,6 +43,7 @@
 
 <script>
 import * as ContractItemApi from '@/api/prodmgr-inv/project/contractItem.js';
+import { getNegativeContractSummary } from '@/utils/negativeContractSummary';
 
 export default {
   name: 'ViewNegativeContractsDialog',
@@ -45,18 +52,21 @@ export default {
       dialogVisible: false,
       loading: false,
       tableData: [],
-      masterDetailId: null
+      masterDetailId: null,
+      summaryData: getNegativeContractSummary()
     };
   },
   methods: {
     /**
      * 打开弹窗
      * @param {String|Number} masterDetailId - 主合同物资ID
+     * @param {Object} summarySource - 汇总展示源数据
      */
-    async open(masterDetailId) {
+    async open(masterDetailId, summarySource = {}) {
       this.dialogVisible = true;
       this.masterDetailId = masterDetailId;
       this.tableData = [];
+      this.summaryData = getNegativeContractSummary(summarySource);
       
       // 加载补充合同列表
       await this.loadNegativeContracts();
@@ -97,12 +107,24 @@ export default {
       this.dialogVisible = false;
       this.tableData = [];
       this.masterDetailId = null;
+      this.summaryData = getNegativeContractSummary();
     }
   }
 };
 </script>
 
 <style scoped>
+.summary-bar {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: #f5f7fa;
+  border-radius: 8px;
+  color: #606266;
+  font-weight: 600;
+}
+
 ::v-deep .el-table {
   border-radius: 8px;
   overflow: hidden;

@@ -100,13 +100,16 @@
               ></el-input-number> -->
               <span>{{ scope.row.amount }}</span>
               <!-- 负数提示图标 -->
-              <el-tooltip
-                v-if="scope.row.negative && scope.row.negative < 0"
-                class="el-icon-warning-outline negative-tip-icon clickable"
-                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`"
-                title="点击查看补充合同列表"
-              >
-             <i  @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i></el-tooltip>
+             <el-tooltip
+            v-if="scope.row.negative && scope.row.negative < 0"
+            class="el-icon-warning-outline negative-tip-icon clickable"
+          >
+            <div slot="content">
+              <div>原合同数量: {{ getNegativeSummary(scope.row).originalAmount }}</div>
+              <div>当前物资存在所有负合同数量总和为: {{ getNegativeSummary(scope.row).negativeAmount }}</div>
+            </div>
+            <i @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i>
+          </el-tooltip>
             </template>
           </el-table-column>
 
@@ -279,6 +282,7 @@ import BatchDialog from './batchDialog.vue';
 import ViewNegativeContractsDialog from './viewNegativeContractsDialog.vue';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
+import { getNegativeContractSummary } from '@/utils/negativeContractSummary';
 import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
 export default {
   name: 'tabTable',
@@ -504,6 +508,9 @@ export default {
 
   },
   methods: {
+    getNegativeSummary(row) {
+      return getNegativeContractSummary(row)
+    },
     onDialogOk(data) {
       console.log('props sellerName', this.sellerName)
       // 将批量上传的文件，导入到总的数据中
@@ -890,7 +897,7 @@ export default {
       }
 
       // 打开查看补充合同弹窗
-      this.$refs.viewNegativeContractsDialogRef.open(row.uniqueNumber || row.allocationUniqueNumber );
+      this.$refs.viewNegativeContractsDialogRef.open(row.uniqueNumber || row.allocationUniqueNumber, row);
     },
   },
 }

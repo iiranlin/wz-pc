@@ -22,13 +22,16 @@
       <el-table-column prop="amount" label="合同数量" align="center" width="120">
         <template slot-scope="scope">
           {{ scope.row.amount }}
-         <el-tooltip
-                v-if="scope.row.negative && scope.row.negative < 0"
-                class="el-icon-warning-outline negative-tip-icon clickable"
-                :content="`当前物资存在所有负合同数量总和为: ${scope.row.negative}`"
-                title="点击查看补充合同列表"
-              >
-             <i  @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i></el-tooltip>
+          <el-tooltip
+            v-if="scope.row.negative && scope.row.negative < 0"
+            class="el-icon-warning-outline negative-tip-icon clickable"
+          >
+            <div slot="content">
+              <div>原合同数量: {{ getNegativeSummary(scope.row).originalAmount }}</div>
+              <div>当前物资存在所有负合同数量总和为: {{ getNegativeSummary(scope.row).negativeAmount }}</div>
+            </div>
+            <i @click="handleNegativeIconClick(scope.row)" class="el-icon-warning-outline negative-tip-icon"></i>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column prop="cumulativeAmount" label="已累计计划数量" align="center" width="150"></el-table-column>
@@ -44,6 +47,7 @@
 <script>
 import { mapState } from 'vuex';
 import ViewNegativeContractsDialog from '@/views/production/contract/list/components/viewNegativeContractsDialog.vue';
+import { getNegativeContractSummary } from '@/utils/negativeContractSummary';
 export default {
   // 物资选择预览
   components: {
@@ -87,7 +91,10 @@ export default {
     },
   },
   methods: {
-        /**
+    getNegativeSummary(row) {
+      return getNegativeContractSummary(row);
+    },
+    /**
      * 处理负数图标点击事件
      * 打开查看补充合同列表弹窗
      */
@@ -98,7 +105,7 @@ export default {
       }
 
       // 打开查看补充合同弹窗
-      this.$refs.viewNegativeContractsDialogRef.open(row.uniqueNumber || row.allocationUniqueNumber);
+      this.$refs.viewNegativeContractsDialogRef.open(row.uniqueNumber || row.allocationUniqueNumber, row);
     },
     selectable(row) {
       // 合同数量不能为负数,且合同数量不等于已累计计划数量
