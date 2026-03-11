@@ -32,7 +32,7 @@ export default {
 
 .chart-card {
     position: relative;
-    background-color: rgba(12, 27, 51, 0.6);
+    background-color: rgba(12, 27, 51, 0.2);
     border: vw(1) solid #231AA9;
     // border-radius: vw(8);
     padding: vh(16) vw(20);
@@ -89,7 +89,7 @@ export default {
     ::v-deep p,
     ::v-deep span,
     ::v-deep div {
-        font-size: vw(14);
+        font-size: vw(12.5);
     }
 }
 </style>

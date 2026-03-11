@@ -1084,7 +1084,7 @@
                     <el-table-column
                       prop="contractName"
                       show-overflow-tooltip
-                      align="left"
+                      align="center"
                       label="合同名称"
                     >
                     </el-table-column>
@@ -1358,7 +1358,7 @@ export default {
       this.initDefault()
       const { data: deptOps } = await Api.newListByDeptCode();
       this.deptOps = deptOps;
-      const type = this.$route.query.type || '0'
+      const type = '0'
       this.screenChange(type)
       this.getPurchaseList()
     },
@@ -1375,10 +1375,7 @@ export default {
     },
     screenChange (type) {
       this.screenType = type
-      this.$router.replace({
-        path: this.$route.path,
-        query: { type },
-      });
+
       switch (type) {
         case "0":
           this.changedDept()
@@ -1650,7 +1647,8 @@ export default {
             legend: {
               data: ['自购物资合同核备数'],
               textStyle: {
-                color: '#ccc'
+                color: '#ccc',
+                fontSize: 12,
               },
               // top: 10,
               // left: 'center',
@@ -1660,7 +1658,7 @@ export default {
             title: { show: false },
             tooltip: {
               trigger: 'axis',
-              textStyle: { fontSize: 14, color: '#fff' },
+              textStyle: { fontSize: 12, color: '#fff' },
               backgroundColor: 'rgba(0,0,0,0.7)',
               borderColor: '#2584FB'
             },
@@ -1668,13 +1666,13 @@ export default {
             xAxis: {
               type: 'category',
               data: xAxisData,
-              axisLabel: { color: '#ccc', fontSize: 14 },
+              axisLabel: { color: '#ccc', fontSize: 12 },
               axisLine: { lineStyle: { color: '#ccc' } },
             },
             yAxis: {
               type: 'value',
               axisLine: { show: false },   // 隐藏轴线
-              axisLabel: { color: '#ccc', fontSize: 14 },
+              axisLabel: { color: '#ccc', fontSize: 12 },
               splitLine: { lineStyle: { color: '#ccc' } }
             },
             series: [
@@ -1691,7 +1689,7 @@ export default {
             ],
           }
           if (xAxisData.length > 5) {
-          option.dataZoom = [
+          options.dataZoom = [
             {
               type: "inside",
               start: 0,
@@ -1701,6 +1699,18 @@ export default {
               start: 0,
               end: 40,
               height: 10,
+              backgroundColor: 'transparent',
+              selectedDataBackground: 'transparent',
+              fillerColor: '#0e142b',
+              borderColor: 'transparent',
+              showDataShadow: false,
+              handleStyle: {
+                color: '#75f9fd',
+                borderColor: '#75f9fd',
+              },
+              textStyle: {
+                color: '#ccc'
+              }
             },
           ];
         }
@@ -1726,9 +1736,9 @@ export default {
             tooltip: { trigger: 'item', formatter: '{b}<br /> {a}: {c}' },
             legend: {
               orient: 'vertical',
-              right: 0,
+              right: -5,
               top: 'center',
-              textStyle: { color: '#ccc', fontSize: 14 },
+              textStyle: { color: '#ccc', fontSize: 11.5 },
               itemWidth: 20,
               itemHeight: 14,
             },
@@ -1737,7 +1747,7 @@ export default {
                 name: '物资种类合同核备数',
                 type: 'pie',
                 radius: [0, '60%'],
-                center: ['30%', '50%'],
+                center: ['35%', '50%'],
                 avoidLabelOverlap: false,
                 color: ['#487BE6', '#5EB2BB', '#4F9A54', '#EFB645', '#EA6D33', '#D34A3D'],
                 itemStyle: {
@@ -1745,10 +1755,12 @@ export default {
                   borderColor: 'transparent',
                   borderWidth: 2
                 },
-                // label: { show: false },
+                label: { 
+                  formatter: '{c}'
+                },
                 emphasis: {
                   scale: true,
-                  label: { show: true, fontSize: 14 }
+                  label: { show: true, fontSize: 12 }
                 },
                 data: series0Data
               }
@@ -1783,7 +1795,7 @@ export default {
             backgroundColor: 'transparent',
             tooltip: {
               trigger: 'axis',
-              textStyle: { fontSize: 14, color: '#fff' },
+              textStyle: { fontSize: 12, color: '#fff' },
               backgroundColor: 'rgba(0,0,0,0.7)',
               borderColor: '#2584FB'
             },
@@ -1803,7 +1815,7 @@ export default {
               axisTick: { show: false },
               axisLabel: {
                 color: '#ccc',
-                fontSize: 14
+                fontSize: 12
               },
               splitLine: { show: false }
             },
@@ -1840,7 +1852,7 @@ export default {
                   show: true,
                   position: 'right',
                   color: '#fff',
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: 'bold',
                   formatter: '{c}',
                   distance: 8
@@ -1854,6 +1866,18 @@ export default {
               {
                 width: 10,
                 orient: 'vertical',
+                backgroundColor: 'transparent',
+                selectedDataBackground: 'transparent',
+                fillerColor: '#0e142b',
+                borderColor: 'transparent',
+                showDataShadow: false,
+                handleStyle: {
+                  color: '#75f9fd',
+                  borderColor: '#75f9fd',
+                },
+                textStyle: {
+                  color: '#ccc'
+                }
               },
             ];
           }
@@ -1878,7 +1902,8 @@ export default {
             legend: {
               show: true,
               textStyle: {
-                color: '#ccc'
+                color: '#ccc',
+                fontSize: 11,
               },
               top: 10,
               left: 'center',
@@ -1887,7 +1912,7 @@ export default {
             backgroundColor: 'transparent',
             tooltip: {
               trigger: 'axis',
-              textStyle: { fontSize: 14, color: '#fff' },
+              textStyle: { fontSize: 12, color: '#fff' },
               backgroundColor: 'rgba(0,0,0,0.7)',
               borderColor: '#2584FB'
             },
@@ -1895,13 +1920,13 @@ export default {
             xAxis: {
               type: 'category',
               data: xAxisData,
-              axisLabel: { color: '#ccc', fontSize: 13, rotate: 30, },
+              axisLabel: { color: '#ccc', fontSize: 11, rotate: 30, },
               axisLine: { lineStyle: { color: '#ccc' } },
             },
             yAxis: {
               type: 'value',
               axisLine: { show: false },   // 隐藏轴线
-              axisLabel: { color: '#ccc', fontSize: 14 },
+              axisLabel: { color: '#ccc', fontSize: 12 },
               splitLine: { lineStyle: { color: '#ccc' } }
             },
             series: [
@@ -1918,9 +1943,9 @@ export default {
             ]
           }
           if (xAxisData.length > 5) {
-            option.grid.left = "15%"
-            option.grid.bottom = "15%"
-            option.dataZoom = [
+            options.grid.left = "14%"
+            options.grid.bottom = "10%"
+            options.dataZoom = [
               {
                 type: "inside",
                 start: 0,
@@ -1930,6 +1955,18 @@ export default {
                 start: 0,
                 end: 40,
                 height: 10,
+                backgroundColor: 'transparent',
+                selectedDataBackground: 'transparent',
+                fillerColor: '#0e142b',
+                borderColor: 'transparent',
+                showDataShadow: false,
+                handleStyle: {
+                  color: '#75f9fd',
+                  borderColor: '#75f9fd',
+                },
+                textStyle: {
+                  color: '#ccc'
+                }
               },
             ];
           }
@@ -2487,7 +2524,7 @@ p {
 
         // 表格行样式
         ::v-deep .el-table__body-wrapper tbody td {
-          color: #869ab9 !important;
+          color: #ccc !important;
           font-size: vw(14) !important;
           border: none !important;
           background: transparent !important;
@@ -2550,7 +2587,10 @@ p {
   padding-right: 0;
 }
 ::v-deep .el-table__empty-text {
-  font-size: vw(14);
+  font-size: vw(13);
   color: #999;
+}
+.el-tag {
+  font-size: vw(12) !important;
 }
 </style>
