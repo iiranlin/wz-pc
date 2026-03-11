@@ -127,7 +127,7 @@ export default {
   },
   watch: {
     // 监听调整方式变化
-    operateType(newValue, oldValue) {
+    'form.operateType'(newValue, oldValue) {
       this.handleOperateTypeChange(newValue);
     },
     // 监听调整数量变化
