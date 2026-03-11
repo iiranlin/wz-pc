@@ -43,8 +43,8 @@
       >
        <el-row>
           <el-col :span="24">
-            <el-form-item :label="'调整方式：'">
-              <el-radio-group v-model="operateType" @change="handleOperateTypeChange">
+            <el-form-item :label="'调整形式：'" prop="operateType">
+              <el-radio-group v-model="form.operateType" @change="handleOperateTypeChange">
                 <el-radio :label="1">增加</el-radio>
                 <el-radio :label="2">减少</el-radio>
               </el-radio-group>
@@ -53,7 +53,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="'调整数量：'" prop="planPurchaseQtyDiff">
+            <el-form-item :label="'调整数量：'" prop="displayDiff">
               <el-input v-model="form.displayDiff" name="planPurchaseQtyDiff" style="width: 200px" @input="handleInput"></el-input>
             </el-form-item>
           </el-col>
@@ -105,9 +105,13 @@ export default {
         planPurchaseQtyNow:null,//现在计划量
         planPurchaseQtyDiff:null,//差值（实际值，用于计算和提交）
         displayDiff:null,//显示值（不带符号）
-        remark:''
+        remark:'',
+        operateType:null,//调整方式 1增加 2减少
       },
       rules: {
+        operateType: [
+          { required: true, message: "请选择调整形式" }
+        ],
         displayDiff : [
           { required: true, message: "请输入调整数量" },
           {
@@ -119,17 +123,16 @@ export default {
       loading: false,
       isEdit: false,
       rowData: null, // 保存原始表单数据用于比较
-      operateType:1,//调整方式 1增加 2减少
     };
   },
   watch: {
     // 监听调整方式变化
-    operateType(newValue, oldValue) {
+    'form.operateType'(newValue, oldValue) {
       this.handleOperateTypeChange(newValue);
     },
     // 监听调整数量变化
     'form.displayDiff'(newValue, oldValue) {
-      this.handleOperateTypeChange(this.operateType);
+      this.handleOperateTypeChange(this.form.operateType);
     },
   },
   methods: {
@@ -157,7 +160,7 @@ export default {
       this.$refs.elform.validate(async (valid) => {
         if(valid) {
           // 根据操作类型设置值
-          if (this.operateType === 2) {
+          if (this.form.operateType === 2) {
             // 减少操作，添加减号
             if (!String(this.form.planPurchaseQtyDiff).startsWith('-')) {
               this.form.planPurchaseQtyDiff = '-' + this.form.planPurchaseQtyDiff;
@@ -173,7 +176,8 @@ export default {
             }
           }
           this.loading = true;
-          delete this.form.displayDiff
+          delete this.form.displayDiff;
+          delete this.form.operateType;
           await PurchasePlanApi[`PlanQtySave`](Object.assign({}, this.form))
             .then(({ message }) => {
               this.loading = false;
@@ -224,7 +228,7 @@ export default {
           case 'planPurchaseQtyDiff':
             // 根据操作类型处理实际值
             let processedValue = value;
-            if (this.operateType === 2) {
+            if (this.form.operateType === 2) {
               // 减少操作，确保实际值为负数
               if (processedValue) {
                 processedValue = '-' + processedValue;
