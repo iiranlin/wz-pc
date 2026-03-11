@@ -107,8 +107,8 @@ export const itemBatchImport = (data) => {
   })
 }
 
-// 物资提交审核
-export const itemSubmit = (data) => {
+// 提交审核
+export const submit = (data) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialCirSampling/submit`,
     method: 'post',

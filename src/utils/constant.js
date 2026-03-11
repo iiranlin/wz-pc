@@ -97,8 +97,8 @@ export const FLOW_ROUTE = {
     SHLC:'receivePage',
 	CGWJ:'detailPurchase', // 采购文件
 	CGHT:'detailPurchaseContract', // 采购合同
-    FHLC:'addSend'
-    
+    FHLC:'addSend',
+    WZCJ: 'addSpok'
 }
 
 // 生产变更日志

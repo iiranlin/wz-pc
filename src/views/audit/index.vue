@@ -239,7 +239,7 @@ export default {
     },
     //入库审核不能操作修改后同意
     buttonDisabled(button, row) {
-      if (button.buttonCode == "passEdit" && ['RKLC','WZML','SHLC', 'CGWJ', 'CGHT','FHLC'].includes(row.businessType)) {
+      if (button.buttonCode == "passEdit" && ['RKLC','WZML','SHLC', 'CGWJ', 'CGHT','FHLC','WZCJ'].includes(row.businessType)) {
         return true;
       }
     },
