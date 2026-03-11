@@ -6,19 +6,20 @@
         :global-dsv="globalDsv" :class="{ formRender_view: true }">
         <template #itemTable="scope">
           <spok-table ref="spokTable" :item-list="scope.formModel.materialCirculationDetailsTableDTOS"
-            :loading="loading" />
+            :loading="loading" :type="type" />
         </template>
         <!-- 附件 -->
         <template #fileListSlot="scope">
           <el-form-item label="抽检结果材料上传">
             <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500"
-              :fileType="['jpg', 'jpeg', 'png', 'pdf']" />
+              :fileType="['jpg', 'jpeg', 'png', 'pdf']" :preview="type ==='view'" />
           </el-form-item>
         </template>
         <!-- 附件 -->
-        <template #remark="scope">
+        <template #remarkSlot="scope">
           <el-form-item label="说明">
-            <el-input v-model="scope.formModel.remark" placeholder="请输入" />
+            <el-input v-if="type !== 'view'" v-model="scope.formModel.remark" placeholder="请输入" />
+            <span v-else>{{ scope.formModel.remark }}</span>
           </el-form-item>
         </template>
       </VFormRender>
@@ -36,7 +37,7 @@ import Decimal from 'decimal.js';
 import SpokTable from './spokTable.vue'
 import fileUpload from '@/components/upload'
 import * as Wms from "@/api/prodmgr-inv/project/wms.js";
-import * as SpokDetail from '@/api/prodmgr-inv/project/spokDetail.js'
+import * as SpokDetailApi from '@/api/prodmgr-inv/project/spokDetail.js'
 import toBeReviewed from "@/views/audit/components/toBeReviewed";
 import workFlowView from '@/components/workFlowView'
 import * as Api from '@/api/prodmgr-inv/project/spok.js'
@@ -61,6 +62,7 @@ export default {
         Authorization: getToken(),
         businessType: "24",
       },
+      detail:{},
       // 顶部按钮配置
       buttonTop: [
         { buttonName: "返回", buttonCode: "cancel", buttonIcon: "Blue-Cancel", type: "create, update" },
@@ -85,6 +87,12 @@ export default {
     },
     id() {
       return this.$route.query?.id || "";
+    },
+    name(){
+      return this.$route.query?.name
+    },
+        queryAuditArr() {
+      return JSON.parse(this.$route.query.auditArr || "[]");
     },
   },
 
@@ -113,6 +121,7 @@ export default {
       this.title = "新建";
       await this.loadFormConfig();
 
+      this.init();
 
     },
     // 编辑初始化
@@ -123,12 +132,23 @@ export default {
         this.$nextTick(async () => {
           this.loading = false;
           this.title = "编辑";
-          await this.formFillInPage();
-          // fileList回显
+          await this.loadFormConfig();
+          console.log(data,'data')
+         const   materialCirculationDetailsTableDTOS = data.materialCirSamplingDetailList.map(item=>{
+          return {
+            ...item,
+            hgzfj: item.fileByList ? JSON.parse(item.fileByList).hgz : [],
+            cjbgfj: item.fileByList ? JSON.parse(item.fileByList).cjbg : [],
+            fileList:item.fileList ? JSON.parse(item.fileList) : [],
+          }
+         }) 
+          // fileList回显 
           const newData = {
             ...data,
+            materialCirculationDetailsTableDTOS,
             fileList: data.fileList ? JSON.parse(data.fileList) : [],
           };
+          this.detail = newData
           this.$refs.vFormRef.setFormData(newData);
 
           //   form action
@@ -166,8 +186,6 @@ export default {
       const { data } = await formFillInPage("addSpok");
       this.$refs.vFormRef.setFormJson(data);
       this.$refs.vFormRef.setReadMode(true);
-
-      this.init();
     },
 
     /** 顶部按钮点击 */
@@ -202,7 +220,7 @@ export default {
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       // 流程查看 
       if (item.buttonCode === 'flowSee') {
-        // return !['1'].includes(this.detail.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
+        return !['1'].includes(this.detail.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
       }
 
       return true;

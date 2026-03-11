@@ -15,7 +15,7 @@
 
       <!-- 退货日期范围 -->
       <template #date>
-        <el-date-picker v-model="formData.date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
+        <el-date-picker v-model="formData.daterange" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </template>
 
@@ -32,7 +32,11 @@
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
           :button-disable="buttonDisabled" :customnDisabled="true">
           <template #status="scope">
-            {{ scope.value == '1' ? '未提交' : scope.value == '2' ? '审核中' : scope.value == '3' ? '审核通过' : scope.value == '0' ? '已驳回' : '' }}
+            {{ scope.value == '1' ? '未提交' : scope.value == '2' ? '审核中' : scope.value == '3' ? '审核通过' : scope.value ==
+              '0' ? '已驳回' : '' }}
+          </template>
+          <template #samplingStatus="scope">
+            {{ scope.value == '1' ? '合格' : scope.value == '2' ? '部分合格' : scope.value == '3' ? '不合格' : '' }}
           </template>
           <!-- 抽检单号 -->
           <template #samplingNumber="scope">
@@ -53,8 +57,8 @@
             </el-button>
           </template>
           <template #fileList="scope">
-            <fileUpload v-if="scope.value" :value="scope.value" :limit="9999" :fileSize="500" :fileType="['pdf']"
-              :preview="'view'" />
+            <fileUpload v-if="scope.value" :value="JSON.parse(scope.value)" :limit="9999" :fileSize="500"
+              :fileType="['pdf']" :preview="true" />
           </template>
         </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
@@ -71,9 +75,10 @@ import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
 import fileUpload from '@/components/upload';
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import * as StopApi from "@/api/prodmgr-inv/project/wms.js"
 export default {
   // 建设项目
-  name: "imList",
+  name: "spokRecords",
   components: { workFlowView, fileUpload },
   mixins: [indexMixin],
 
@@ -162,6 +167,13 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}, type = "") {
+      if(this.formData.dateRange && this.formData.dateRange.length > 0){
+        this.formData.startDate = this.formData.dateRange[0]
+        this.formData.endDate = this.formData.dateRange[1]
+      }else{
+        this.$set(this.formData, 'startDate', null)
+        this.$set(this.formData, 'endDate', null)
+      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -190,17 +202,31 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       const ids = rowArr.map(item => item.id)
       switch (buttonCode) {
-        case "revoke":
-          this.handleRecall(idArr[0]);
+        case "submit":
+          this.handleSubmit(idArr[0]);
           break;
         case "delete":
-          this.handleDelete(idArr[0]);
+          this.handleDelete(idArr);
           break;
         case "flowSee":
           this.workFlowViewVisible = true;
           this.selectedRow = { businessId: idArr[0] };
           break;
+        case "withdraw":
+          this.handleRecall(idArr[0]);
+          break;
       }
+    },
+    handleSubmit(id) {
+      this.$modal
+        .confirm("是否确认提交?")
+        .then(function () {
+          return Api.submit({ id });
+        })
+        .then(() => {
+          this.$modal.msgSuccess("提交成功");
+          this.getList();
+        });
     },
     async handleDonwload(id) {
       try {
@@ -219,7 +245,7 @@ export default {
       this.$modal
         .confirm("是否确认撤回?")
         .then(function () {
-          return Api.recall({ businessId: id, businessType: 'RKLC' });
+          return StopApi.recall({ businessId: id, businessType: 'WZCJ' });
         })
         .then(() => {
           this.$modal.msgSuccess("撤回成功");
@@ -252,21 +278,21 @@ export default {
     toCJ(row) {
       this.$router.push({
         name: 'addSpok',
-        query:{id: row.id,type:'view'}
+        query: { id: row.id, type: 'view' }
       })
     },
     //入库单号
     toIm(row) {
       this.$router.push({
         name: "imPage",
-        query: { id: row.id, type: "view", storeStatus: row.storeStatus },
+        query: { id: row.cirId, type: "view", storeStatus: row.storeStatus },
       });
     },
     //发货单
     toSend(row) {
       this.$router.push({
-        name: "addSend",
-        query: { id: row.id, type: "view" },
+        name: "addSendCy",
+        query: { id: row.cirId, type: "view" },
       });
     },
     //顶部按钮控制
@@ -282,27 +308,30 @@ export default {
       if (!this.selection || this.selection.length === 0) {
         return true;
       }
-      const status = this.selection[0].storeStatus;
+      const status = this.selection[0].status;
 
       switch (button.buttonCode) {
         case 'delete':
           // 未提交和已驳回可以删除
-          return !['1', '3'].includes(status);
-        case 'revoke':
-          // 审核中和已驳回可以撤回
-          return !['2', '3'].includes(status);
+          return !['0', '1'].includes(status);
+        case 'submit':
+          // 未提交可以提交
+          return !['0', '1'].includes(status);
+        case 'withdraw':
+          // 审核中才允许撤回
+          return !['2'].includes(status);
         default:
           return true;
       }
     },
     //查看流程按钮控制
     buttonDisabled(button, row) {
-      const status = row.storeStatus;
+      const status = row.status;
 
       switch (button.buttonCode) {
         case 'flowSee':
           // 审核中、已驳回、已通过可以查看流程
-          return !['2', '3', '4'].includes(status);
+          return ['1'].includes(status);
         default:
           return true;
       }

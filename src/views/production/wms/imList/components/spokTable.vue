@@ -40,35 +40,47 @@
 
       <el-table-column label="抽检结果" align="center" width="150">
         <template slot-scope="scope">
-          <el-select v-model="scope.row.detailStatus" size="mini" @change="handleChange(scope.row)"
-            style="width: 100%" filterable>
-            <el-option v-for="item of samplingResult" :key="item.value" :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
+          <template v-if="type != 'view'">
+            <el-select v-model="scope.row.detailStatus" size="mini" @change="handleChange(scope.row)"
+              style="width: 100%" filterable>
+              <el-option v-for="item of samplingResult" :key="item.value" :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+          </template>
+          <span v-else>{{ scope.row.detailStatus | samplingResultFilter }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="结果处理" align="center" width="200">
         <template slot-scope="scope">
-          <el-select v-if="scope.row.detailStatus === '2'" v-model="scope.row.status" size="mini"
-            style="width: 100%" filterable @change="handleDealChange(scope.row)">
-            <el-option v-for="res of dealResult" :key="res.value" :label="res.label"
-              :value="res.value"></el-option>
-          </el-select>
-          <span v-else>无</span>
+          <template v-if="type != 'view'">
+            <el-select v-if="scope.row.detailStatus === '2'" v-model="scope.row.status" size="mini"
+              style="width: 100%" filterable @change="handleDealChange(scope.row)">
+              <el-option v-for="res of dealResult" :key="res.value" :label="res.label"
+                :value="res.value"></el-option>
+            </el-select>
+          </template>
+          <span v-else>{{ scope.row.status | dealResultFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退换货数量" width="150" prop="thNum" align="center"></el-table-column>
+      <el-table-column label="退换货数量" width="150"  align="center">
+        <template slot-scope="scope">
+          {{ scope.row.thNum || 0 }}
+          </template>
+      </el-table-column>
       <el-table-column label="抽检材料附件" prop="fileList" align="center" width="200">
         <template slot-scope="scope">
           <fileUpload v-if="scope.row.detailStatus === '2'" v-model="scope.row.fileList" :limit="9999" :fileSize="500"
-            :fileType="['jpg', 'jpeg', 'png', 'pdf']" />
+            :fileType="['jpg', 'jpeg', 'png', 'pdf']" :preview="type ==='view'" />
           <span v-else>—</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" prop="remark" align="center" width="200">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.remark" placeholder="请输入" />
+          <template v-if="type !== 'view'">
+            <el-input v-model="scope.row.remark" placeholder="请输入" />
+          </template>
+          <span v-else>{{ scope.row.remark }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -78,10 +90,30 @@
 <script>
 import fileUpload from '@/components/upload'
 
+// 提取为模块级常量，以便 filters 和 data 共用
+const SAMPLING_RESULT = [
+  { value: '1', label: '合格' },
+  { value: '2', label: '不合格' }
+]
+const DEAL_RESULT = [
+  { value: '2', label: '只退换库存数量' },
+  { value: '3', label: '退换入库质检通过数量' }
+]
+
 export default {
   name: 'SpokTable',
 
   components: { fileUpload },
+  filters:{
+    samplingResultFilter(val){
+      const item = SAMPLING_RESULT.find(item => item.value == val)
+      return item ? item.label : ''
+    },
+    dealResultFilter(val){
+      const item = DEAL_RESULT.find(item => item.value == val)
+      return item ? item.label : ''
+    }
+  },
 
   props: {
     /** 表格数据列表 */
@@ -93,20 +125,18 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    type:{
+      type: String,
+      default: ''
     }
   },
 
   data() {
     return {
       searchKey: '',
-      samplingResult: [
-        { value: '1', label: '合格' },
-        { value: '2', label: '不合格' }
-      ],
-      dealResult: [
-        { value: '2', label: '只退换库存数量' },
-        { value: '3', label: '退换入库质检通过数量' }
-      ]
+      samplingResult: SAMPLING_RESULT,
+      dealResult: DEAL_RESULT
     }
   },
 
