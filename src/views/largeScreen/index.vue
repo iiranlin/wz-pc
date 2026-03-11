@@ -1855,6 +1855,7 @@ export default {
                   fontSize: 12,
                   fontWeight: 'bold',
                   formatter: '{c}',
+                  // formatter: ({ value }) => this.$fmoney(value, 2),
                   distance: 8
                 }
               }
