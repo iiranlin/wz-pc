@@ -21,6 +21,18 @@
         </el-col>
       </el-row>
       <el-row>
+        <el-form-item label="职务:" prop="duty">
+          <el-select v-model="selectedDuty" placeholder="请选择职务" @change="handleDutyChange">
+             <el-option
+                  v-for="item in dict.type.ZW"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+          </el-select>
+        </el-form-item>
+      </el-row>
+      <el-row>
         <el-col :span="12">
           <el-form-item label="电话号码:" prop="phone">
             <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
@@ -102,7 +114,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "operate",
-  dicts: ['enableStauts'],
+  dicts: ['enableStauts','ZW'],
   components: { Treeselect },
   data() {
     var validateUsername = (rule, value, callback) => {
@@ -123,12 +135,15 @@ export default {
       openDataScope: false,
       deptOptions: [],
       typeSelectDepart: false,
+      selectedDuty: null,
       // 所有等级
       allRankList: [],
       rankList: [],
       form: {
         username: '',
         nickName: '',
+        dutiesId: null,
+        duties: null,
         deptId: undefined,
         status: 0,
         rank: '1',
@@ -366,6 +381,8 @@ export default {
         this.form.deptId = data.deptId || undefined
         this.form.flag = data.flag == undefined ? 1 : data.flag
         this.form.rank = '1'
+        // 设置selectedDuty的值
+        this.selectedDuty = data.dutiesId || null
         this.$nextTick(async () => {
           if (this.form.rank == 4) {
             await this.initCustom()
@@ -517,6 +534,18 @@ export default {
           resolve(true)
         })
       })
+    },
+    handleDutyChange(value) {
+      if (value) {
+        const dutyItem = this.dict.type.ZW.find(item => item.value === value)
+        if (dutyItem) {
+          this.form.dutiesId = value
+          this.form.duties = dutyItem.label
+        }
+      } else {
+        this.form.dutiesId = null
+        this.form.duties = null
+      }
     },
   }
 }
