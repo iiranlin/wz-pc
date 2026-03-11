@@ -1851,9 +1851,9 @@ export default {
                 label: {
                   show: true,
                   position: 'right',
-                  color: '#fff',
+                  // color: '#fff',
                   fontSize: 12,
-                  fontWeight: 'bold',
+                  // fontWeight: 'bold',
                   formatter: '{c}',
                   // formatter: ({ value }) => this.$fmoney(value, 2),
                   distance: 8
@@ -1940,6 +1940,14 @@ export default {
                   color: '#2584FB',
                   borderRadius: [6, 6, 0, 0]
                 },
+                label: {
+                  show: true,
+                  position: 'top',
+                  // color: '#fff',
+                  fontSize: 12,
+                  // fontWeight: 'bold',
+                  formatter: '{c}',
+                }
               }
             ]
           }
