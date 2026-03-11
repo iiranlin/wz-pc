@@ -19,10 +19,11 @@ export const list = (params) => {
  * @param {*} params 
  * @returns 
  */
-export const detail = (id) => {
+export const detail = (id,params) => {
   return request({
     url: `${VUE_APP_PRODMGR_INV}/materialCirSampling/detail/${id}`,
     method: 'get',
+    params
   })
 }
 

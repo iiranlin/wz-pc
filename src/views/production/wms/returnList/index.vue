@@ -287,10 +287,21 @@ export default {
     },
     //退货单
     toThd(row) {
+      if(row.isQualNode == 3){
+        this.$router.push({
+          name:'addSpok',
+          query:{
+            id:row.id,
+            type:'view',
+            from:'THXQ'
+          }
+        })
+      }else{
       this.$router.push({
         name: "returnDetail_im",
         query: { id: row.id, type: "view" },
       });
+    }
     },
     //跳转货运详情
     toFhd(row) {

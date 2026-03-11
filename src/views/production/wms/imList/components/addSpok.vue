@@ -10,7 +10,7 @@
         </template>
         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item label="抽检结果材料上传">
+          <el-form-item label="抽检结果材料上传" prop="fileList" :rules="[{ required: true, message: '请上传抽检结果材料' }]"  label-width="150px">
             <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500"
               :fileType="['jpg', 'jpeg', 'png', 'pdf']" :preview="type ==='view'" />
           </el-form-item>
@@ -22,6 +22,14 @@
             <span v-else>{{ scope.formModel.remark }}</span>
           </el-form-item>
         </template>
+        <!-- 抽检时间  samplingDateSlot-->
+         <template #samplingDateSlot="scope">
+          <el-form-item label="抽检时间" prop="samplingDate" :rules="[{ required: true, message: '请选择抽检时间' }]"  label-width="150px">
+            <el-date-picker v-if="type !== 'view'" v-model="scope.formModel.samplingDate" placeholder="请选择" value-format="timestamp"  />
+            <span v-else>{{ scope.formModel.samplingDate | formatDate }}</span>
+          </el-form-item>
+         </template>
+         
       </VFormRender>
       <toBeReviewed ref="toBereview" />
       <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
@@ -94,6 +102,9 @@ export default {
         queryAuditArr() {
       return JSON.parse(this.$route.query.auditArr || "[]");
     },
+    from(){
+      return this.$route.query?.from
+    }
   },
 
   mounted() {
@@ -127,8 +138,18 @@ export default {
     // 编辑初始化
     async updateInit(id) {
       this.loading = true;
+      if(this.from === 'THXQ'){
+        // 修改tab标题
+         this.$tab.updatePage({
+          path: "/rkgl/addSpok",
+          meta: {
+            title: '抽检详情',
+          },
+        });
+        
+      }
       const api = this.type == 'view' ? 'detail' : 'detail'
-      await Api[api](id).then(({ data }) => {
+      await Api[api](id,{detailStatus:this.from ==='THXQ'?'2':''}).then(({ data }) => {
         this.$nextTick(async () => {
           this.loading = false;
           this.title = "编辑";

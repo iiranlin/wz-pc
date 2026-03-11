@@ -4,7 +4,7 @@
       @newButton="newButton"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" @handleResetField="onResetField">
-      <template #issueType="data">
+      <template #isQualNode="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
           i18nData(data.data, 'field', 'fieldCode', 'fieldName')
           " clearable style="width: 100%" size="small">
@@ -40,7 +40,7 @@
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
-          <template #issueType="scope">
+          <template #isQualNode="scope">
             {{ status[scope.value] }}
           </template>
           <!-- 退货单号 -->
@@ -112,6 +112,7 @@ computed:{
       status: {
         1: "收货不通过",
         2: "质检不通过",
+        3: "抽检不通过",
       },
       options: [
         {
@@ -122,6 +123,10 @@ computed:{
           code: "2",
           name: "质检不通过",
         },
+        {
+          code:"3",
+          name: "抽检不通过"
+        }
       ],
       lineOptions:[],
       treeCurrentKey: "",
@@ -307,14 +312,25 @@ computed:{
     },
     //退货单
     toThd(row) {
-      this.$router.push({
-        name: "returnDetail_gys",
-        query: {
-          type: "view",
-          id: row.id,
-          backNode: row.issueType
-        },
-      });
+      if(row.isQualNode == 3){
+        this.$router.push({
+          name:'addSpok',
+          query:{
+            id:row.id,
+            type:'view',
+            from:'THXQ'
+          }
+        })
+      }else{
+        this.$router.push({
+          name: "returnDetail_gys",
+          query: {
+            type: "view",
+            id: row.id,
+            backNode: row.issueType
+          },
+        });
+      }
     },
     //跳转货运详情
     toFhd(row) {
