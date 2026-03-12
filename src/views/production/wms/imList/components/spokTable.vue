@@ -12,7 +12,12 @@
       <el-table-column label="规格型号" width="150" prop="specModel" align="center" fixed="left"></el-table-column>
       <el-table-column label="计量单位" width="150" prop="unit" align="center"></el-table-column>
       <el-table-column label="发货数量" width="150" prop="sendTotal" align="center"></el-table-column>
-      <el-table-column label="可抽检数量" width="150" prop="storeTotal" align="center"></el-table-column>
+      <el-table-column label="可抽检数量" width="150" prop="storeTotal" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.samplingFlag === '0'">0</span>
+          <span v-else>{{ scope.row.storeTotal }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="包装形式" prop="packagingFm" align="center"></el-table-column>
       <el-table-column label="生产日期" width="150" prop="manufactureDate" align="center">
         <template slot-scope="scope">
