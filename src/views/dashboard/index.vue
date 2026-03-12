@@ -339,6 +339,8 @@ export default {
             } else if (item.businessType == 'HTBH') {
                 // 合同保函日期提醒
                 this.$router.push({ name: 'detailContract', query: { id: item.businessId, type: 'view' } })
+            }else if(item.businessType == 'FHTIMEOUT_14'){
+                this.$router.push({name:'addSendCy',query:{id:item.businessId,type:'view'}})
             }
         },
         handleOverviewClick(item) {
