@@ -602,12 +602,20 @@ h3 {
             &:hover {
                 border: 1px solid #165DFF;
                 box-shadow: 0 8px 16px rgba(16, 30, 115, 0.08);
+
+                .summary-label,
+                .summary-value,
+                .summary-value span,
+                .summary-value em {
+                    color: #165DFF;
+                }
             }
 
             .summary-label {
                 font-size: 14px;
                 color: #4E5969;
                 margin-bottom: 8px;
+                transition: color 0.2s ease;
             }
 
             .summary-value {
@@ -616,9 +624,11 @@ h3 {
                 color: #1D2129;
                 display: flex;
                 align-items: flex-end;
+                transition: color 0.2s ease;
 
                 span {
                     line-height: 1;
+                    transition: color 0.2s ease;
                 }
 
                 em {
@@ -627,6 +637,7 @@ h3 {
                     color: #86909C;
                     margin-left: 4px;
                     line-height: 1.2;
+                    transition: color 0.2s ease;
                 }
             }
         }
@@ -1282,6 +1293,8 @@ h3 {
 }
 
 .overview-card:hover .card-title,
+.overview-card:hover .card-value,
+.overview-card:hover .card-value span,
 .overview-card:hover .card-icon .svg-icon {
     color: #165DFF;
 }
@@ -1324,11 +1337,13 @@ h3 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.3s;
 }
 
 .card-value span {
     font-size: 20px;
     font-weight: bold;
     margin-right: 4px;
+    transition: color 0.3s;
 }
 </style>

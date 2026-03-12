@@ -49,7 +49,7 @@
               </div>
             </el-tooltip>
             <el-select v-else v-model="scope.row.detailStatus" size="mini" @change="handleChange(scope.row)"
-              :disabled="isSamplingDisabled(scope.row)" style="width: 100%" filterable>
+              :disabled="isSamplingDisabled(scope.row)" style="width: 100%" filterable clearable>
               <el-option v-for="item of samplingResult" :key="item.value" :label="item.label"
                 :value="item.value"></el-option>
             </el-select>
@@ -216,6 +216,10 @@ export default {
         const row = this.itemList[i];
         if (this.isSamplingDisabled(row) && row.detailStatus) {
           this.$message.warning(`第 ${i + 1} 行"${row.materialName}"，不允许抽检`);
+          return false;
+        }
+        if (row.detailStatus === '2' && Number(row.returnAmount) <= 0) {
+          this.$message.warning(`第 ${i + 1} 行"${row.materialName}"退换货数量必须大于0`);
           return false;
         }
         // 不合格时，校验抽检材料附件
