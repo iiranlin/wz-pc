@@ -4,7 +4,14 @@
       @newButton="newButton"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" @handleResetField="onResetField">
-       <!-- 建设物资 -->
+           <template #isQualNode="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+          i18nData(data.data, 'field', 'fieldCode', 'fieldName')
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
+        </el-select>
+      </template>
+      <!-- 建设物资 -->
       <template #projectName="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
           " clearable style="width: 100%" size="small">
@@ -33,6 +40,9 @@
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+             <template #isQualNode="scope">
+            {{ status[scope.value] }}
+          </template>
           <!-- 退货单号 -->
           <template #backQualNumber="scope">
             <el-button type="text" @click="toThd(scope.data)">
@@ -95,6 +105,25 @@ export default {
   },
   data() {
     return {
+            status: {
+        1: "收货不通过",
+        2: "质检不通过",
+        3: "抽检不通过",
+      },
+      options: [
+        {
+          code: "1",
+          name: "收货不通过",
+        },
+        {
+          code: "2",
+          name: "质检不通过",
+        },
+        {
+          code:"3",
+          name: "抽检不通过"
+        }
+      ],
       lineOptions:[],
       treeCurrentKey: "",
       // 遮罩层
@@ -314,7 +343,7 @@ export default {
     toShd(row) {
       this.$router.push({
         name: "receivePage",
-        query: { id: row.id, type: "view", takeStatus: row.takeStatus },
+        query: { id: row.isQualNode == 3 ? row.cirId: row.id, type: "view", takeStatus: row.takeStatus },
       });
     },
   },

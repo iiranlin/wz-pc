@@ -336,7 +336,7 @@ computed:{
     toFhd(row) {
       this.$router.push({
         name: "addSend",
-        query: { id: row.id, type: "view" },
+        query: { id: row.isQualNode == 3 ? row.cirId : row.id, type: "view" },
       });
     },
     //跳转需求供应详情
