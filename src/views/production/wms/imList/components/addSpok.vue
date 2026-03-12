@@ -275,7 +275,10 @@ export default {
 
           const { message } = await Api[apiMethod](payload);
           this.$modal.msgSuccess(message);
-          this.$router.push({name:'spokRecords'})
+          this.$tab.closeOpenPage(true)
+          setTimeout(() => {
+            this.$router.push({name:'spokRecords'})
+          }, 200);
         } finally {
           this.loading = false;
         }
