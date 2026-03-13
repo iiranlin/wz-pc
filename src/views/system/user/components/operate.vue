@@ -22,7 +22,7 @@
       </el-row>
       <el-row>
         <el-form-item label="职务:" prop="duty">
-          <el-select v-model="selectedDuty" placeholder="请选择职务" @change="handleDutyChange">
+          <el-select v-model="selectedDuty" placeholder="请选择职务" clearable @change="handleDutyChange">
              <el-option
                   v-for="item in dict.type.ZW"
                   :key="item.value"
