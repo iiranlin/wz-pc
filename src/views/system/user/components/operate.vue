@@ -142,8 +142,8 @@ export default {
       form: {
         username: '',
         nickName: '',
-        dutiesId: null,
-        duties: null,
+        dutiesId: '',
+        duties: '',
         deptId: undefined,
         status: 0,
         rank: '1',
@@ -543,8 +543,8 @@ export default {
           this.form.duties = dutyItem.label
         }
       } else {
-        this.form.dutiesId = null
-        this.form.duties = null
+        this.form.dutiesId = ''
+        this.form.duties = ''
       }
     },
   }
