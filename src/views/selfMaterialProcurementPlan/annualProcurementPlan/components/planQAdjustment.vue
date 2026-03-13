@@ -15,18 +15,18 @@
 
       <div class="divCss">
         <el-row>
-          <el-col :span="10" style="text-align: center;">
+          <el-col :span="10">
             <span><span class="itemclass">物资名称：</span>{{ rowData.materialName }}</span>
           </el-col>
-          <el-col :span="12" style="text-align: center;">
+          <el-col :span="12">
             <span><span class="itemclass">计量单位：</span>{{ rowData.unit }}</span>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="10" style="text-align: center; padding-right: 58px;">
+          <el-col :span="10">
             <span><span class="itemclass">原计划量：</span>{{ rowData.planPurchaseQty }}</span>
           </el-col>
-          <el-col :span="12" style="text-align: center;">
+          <el-col :span="12">
             <span><span class="itemclass">项目需求剩余量：</span>{{ rowData.totalAvailableQty }}</span>
           </el-col>
         </el-row>
@@ -238,9 +238,14 @@ export default {
             this.form.planPurchaseQtyDiff = processedValue;
             
             // 计算调整后计划量
-            const oldValue = Number(this.form.planPurchaseQtyOld) || 0;
-            const diffValue = Number(this.form.planPurchaseQtyDiff) || 0;
-            this.form.planPurchaseQtyNow = oldValue + diffValue;
+            if (value) {
+              const oldValue = Number(this.form.planPurchaseQtyOld) || 0;
+              const diffValue = Number(this.form.planPurchaseQtyDiff) || 0;
+              this.form.planPurchaseQtyNow = oldValue + diffValue;
+            } else {
+              // 当调整数量为空时，清空调整后计划量
+              this.form.planPurchaseQtyNow = null;
+            }
             break;
         }
       }
@@ -268,6 +273,9 @@ export default {
         const oldValue = Number(this.form.planPurchaseQtyOld) || 0;
         const diffValue = Number(this.form.planPurchaseQtyDiff) || 0;
         this.form.planPurchaseQtyNow = oldValue + diffValue;
+      } else {
+        // 当调整数量为空时，清空调整后计划量
+        this.form.planPurchaseQtyNow = null;
       }
     },
   },
@@ -275,7 +283,7 @@ export default {
 </script>
 <style scoped>
 .divCss{
-  line-height: 32px;    margin: 20px 0;
+  line-height: 32px; margin: 25px 0 20px 100px;
 }
 .itemclass{
   display: inline-block;
