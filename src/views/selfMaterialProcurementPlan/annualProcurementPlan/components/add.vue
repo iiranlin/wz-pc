@@ -61,7 +61,6 @@
 
         <!-- 计量单位选择插槽 -->
         <template #measurementUnitSlot="{ formModel }">
-          <span></span>
            <el-form-item label="计量单位：" prop="unit">
               <el-select
                 v-model="formModel.unit"
@@ -157,7 +156,6 @@ export default {
     async initCreateMode() {
       this.title = "新建";
       await this.loadFormConfig();
-      // await this.loadUnitOptions(); 暂时注释 等联调的时候问后端接口
     },
 
     /** 编辑/查看模式初始化 */
@@ -165,7 +163,6 @@ export default {
       const { data } = await PurchasePlanApi.detail(id);
       this.title = this.type === "view" ? "查看" : "编辑";
       await this.loadFormConfig();
-      // await this.loadUnitOptions();
 
       // 3. 设置主表单数据
       this.$refs.vFormRef.setFormData({
@@ -213,14 +210,6 @@ export default {
 
     // ==================== 数据加载 ====================
 
-    /** 加载计量单位选项 */
-    async loadUnitOptions() {
-      const { data } = await Api.selectOptions({ pageStatus: '1' });
-      this.lineOptions = data.map(x => ({
-        label: x.projectName,
-        value: x.projectId
-      }));
-    },
 
     /** 计量单位事件 */
     async handleMeasurementUnitChange(projectId) {
