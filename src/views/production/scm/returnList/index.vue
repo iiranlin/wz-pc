@@ -78,6 +78,7 @@ import indexMixin from "@/views/mixins";
 import { getUserInfo } from "@/utils/user-info";
 import dayjs from 'dayjs'
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "returnList_gys",
@@ -296,8 +297,23 @@ computed:{
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton(buttonCode, idArr, rowArr, { buttonData }) { },
-
+    handleButton(buttonCode, idArr, rowArr, { buttonData }) { 
+       switch (buttonCode) {
+        case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+    async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:126,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
+      }
+    },
     clickReset() {
       this.handleQuery();
     },

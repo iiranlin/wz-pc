@@ -60,6 +60,7 @@ import Add from "./components/add.vue";
 import SellerDialog from "./components/sellerDialog.vue";
 import dayjs from "dayjs";
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 保函有效期列表
   name: "validityGuarantee",
@@ -242,6 +243,19 @@ export default {
             query: { id: idArr[0], type: "view" },
           });
           break;
+        case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+    async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:124,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     handleDelete(ids) {

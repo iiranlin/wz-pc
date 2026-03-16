@@ -103,6 +103,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import SectionDialog from './components/sectionDialog.vue'
 import ConstrctDialog from './components/constrctDialog.vue'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "line",
@@ -312,6 +313,19 @@ export default {
         case 'createContract':
           this.$router.push({ name: 'addContract', query: { type: 'create', projectId: rowArr[0].id } })
           break;
+        case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+    async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:120,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     handleDelete (ids) {

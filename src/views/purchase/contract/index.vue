@@ -34,17 +34,11 @@
 					<el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
 				</el-select>
 			</template>
-			     <!-- 日期范围搜索 -->
-      <template #date>
-        <el-date-picker
-          v-model="formData.dateRange"
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </template>
+			<!-- 日期范围搜索 -->
+			<template #date>
+				<el-date-picker v-model="formData.dateRange" type="daterange" value-format="yyyy-MM-dd"
+					range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+			</template>
 		</form-data>
 		<el-row type="flex" class="container_h">
 			<!--用户数据-->
@@ -125,41 +119,41 @@ export default {
 		workFlowView
 	},
 	mixins: [indexMixin],
-	computed:{
-    deptName(){
-      return this.$route.query?.deptName || ''
-    },
-    deptId(){
-      return this.$route.query?.deptId || ''
-    },
-    startDate(){
-      return this.$route.query?.startDate || ''
-    },
-    endDate(){
-      return this.$route.query?.endDate || ''
-    },
-    projectId(){
-      return this.$route.query?.projectId || ''
-    },
-    projectName(){
-      return this.$route.query?.projectName || ''
-    },
-    fromUrl(){
-      return this.$route.query?.fromUrl  || ''
-    },
-	code(){
-			return this.$route.query?.name  || ''
+	computed: {
+		deptName() {
+			return this.$route.query?.deptName || ''
 		},
-	sectionShortName(){
-			return this.$route.query?.sectionShortName  || ''
+		deptId() {
+			return this.$route.query?.deptId || ''
 		},
-	purchaseTypeName(){
-			return this.$route.query?.purchaseTypeName  || ''
+		startDate() {
+			return this.$route.query?.startDate || ''
 		},
-	month(){
-			return this.$route.query?.month  || ''
+		endDate() {
+			return this.$route.query?.endDate || ''
+		},
+		projectId() {
+			return this.$route.query?.projectId || ''
+		},
+		projectName() {
+			return this.$route.query?.projectName || ''
+		},
+		fromUrl() {
+			return this.$route.query?.fromUrl || ''
+		},
+		code() {
+			return this.$route.query?.name || ''
+		},
+		sectionShortName() {
+			return this.$route.query?.sectionShortName || ''
+		},
+		purchaseTypeName() {
+			return this.$route.query?.purchaseTypeName || ''
+		},
+		month() {
+			return this.$route.query?.month || ''
 		}
-  },
+	},
 	data() {
 		return {
 			status: {
@@ -244,7 +238,7 @@ export default {
 		});
 		this.findAllListData();
 		this.getLineOptions()
-    this.setQuery();
+		this.setQuery();
 	},
 	filters: {
 		formatDate(value) {
@@ -253,65 +247,65 @@ export default {
 		}
 	},
 	methods: {
-			// 将Url参数赋值到搜索内（使用 $set 保证响应式）
-		setQuery(){
-			if(this.deptId){
+		// 将Url参数赋值到搜索内（使用 $set 保证响应式）
+		setQuery() {
+			if (this.deptId) {
 				// this.$set(this.formData, 'constructionUnitId', this.deptId)
 			}
-			if(this.deptName){
+			if (this.deptName) {
 				// this.$set(this.formData, 'constructionUnitName', this.deptName)
 			}
-			if(this.startDate){
+			if (this.startDate) {
 				this.$set(this.formData, 'startDate', this.startDate)
-       		    this.$set(this.formData, 'dateRange', [this.startDate, this.endDate])
+				this.$set(this.formData, 'dateRange', [this.startDate, this.endDate])
 			}
-			if(this.endDate){
+			if (this.endDate) {
 				this.$set(this.formData, 'endDate', this.endDate)
 			}
-			if(this.projectId){
+			if (this.projectId) {
 				this.$set(this.formData, 'projectId', this.projectId)
 			}
-			if(this.projectName){
+			if (this.projectName) {
 				this.$set(this.formData, 'projectName', this.projectName)
 			}
-			if(this.fromUrl){
+			if (this.fromUrl) {
 				this.$set(this.formData, 'status', '3')
-				this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
+				this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen' ? '1' : '0')
 			}
-			if(this.code){
+			if (this.code) {
 				this.$set(this.formData, 'code', this.code)
 			}
-			if(this.sectionShortName){
+			if (this.sectionShortName) {
 				this.$set(this.formData, 'sectionShortName', this.sectionShortName)
 			}
-			if(this.purchaseTypeName){
+			if (this.purchaseTypeName) {
 				this.$set(this.formData, 'purchaseTypeName', this.purchaseTypeName)
 			}
-			if(this.month){
+			if (this.month) {
 				this.$set(this.formData, 'month', this.month)
 			}
 		},
-		      /** 清空 URL 参数设置的搜索字段 */
-    clearUrlQueryFields () {
-      this.$set(this.formData, 'constructionUnitId', null);
-      this.$set(this.formData, 'constructionUnitName', null);
-      this.$set(this.formData, 'startDate', null);
-      this.$set(this.formData, 'endDate', null);
-      this.$set(this.formData, 'projectId', null);
-      this.$set(this.formData, 'projectName', null);
-      this.$set(this.formData, 'constructionUnit', null);
-      this.$set(this.formData, 'dateRange', null);
-      this.$set(this.formData, 'bigScreenFlag', null);
-	  this.$set(this.formData, 'code', null);
-	  this.$set(this.formData, 'sectionShortName', null);
-	  this.$set(this.formData, 'purchaseTypeName', null);
-	  this.$set(this.formData, 'month', null);
-	  this.$set(this.formData, 'status', null);
-    },
-    /** 搜索栏“重置”按钮触发的事件 */
-    onResetField () {
-      this.clearUrlQueryFields();
-    },
+		/** 清空 URL 参数设置的搜索字段 */
+		clearUrlQueryFields() {
+			this.$set(this.formData, 'constructionUnitId', null);
+			this.$set(this.formData, 'constructionUnitName', null);
+			this.$set(this.formData, 'startDate', null);
+			this.$set(this.formData, 'endDate', null);
+			this.$set(this.formData, 'projectId', null);
+			this.$set(this.formData, 'projectName', null);
+			this.$set(this.formData, 'constructionUnit', null);
+			this.$set(this.formData, 'dateRange', null);
+			this.$set(this.formData, 'bigScreenFlag', null);
+			this.$set(this.formData, 'code', null);
+			this.$set(this.formData, 'sectionShortName', null);
+			this.$set(this.formData, 'purchaseTypeName', null);
+			this.$set(this.formData, 'month', null);
+			this.$set(this.formData, 'status', null);
+		},
+		/** 搜索栏“重置”按钮触发的事件 */
+		onResetField() {
+			this.clearUrlQueryFields();
+		},
 		getLineOptions() {
 			WzglApi.contractLineSelectOptions().then(({ data }) => {
 				this.lineOptions = data.map(x => ({
@@ -395,22 +389,22 @@ export default {
 			this.handleQuery();
 		},
 		handleQuery(row = {}, type = '') {
-			  // 如果projectName为空，则projectId也为空
-      if(!this.formData.projectName){
-        this.$set(this.formData, 'projectId', null)
-      }
-      // 如果constructionUnitName为空，则constructionUnitId也为空
-      if(!this.formData.constructionUnitName){
-        this.$set(this.formData, 'constructionUnitId', null)
-      }
+			// 如果projectName为空，则projectId也为空
+			if (!this.formData.projectName) {
+				this.$set(this.formData, 'projectId', null)
+			}
+			// 如果constructionUnitName为空，则constructionUnitId也为空
+			if (!this.formData.constructionUnitName) {
+				this.$set(this.formData, 'constructionUnitId', null)
+			}
 
-      if(this.formData.dateRange && this.formData.dateRange.length > 0){
-        this.formData.startDate = this.formData.dateRange[0]
-        this.formData.endDate = this.formData.dateRange[1]
-      }else{
-        this.$set(this.formData, 'startDate', null)
-        this.$set(this.formData, 'endDate', null)
-      }
+			if (this.formData.dateRange && this.formData.dateRange.length > 0) {
+				this.formData.startDate = this.formData.dateRange[0]
+				this.formData.endDate = this.formData.dateRange[1]
+			} else {
+				this.$set(this.formData, 'startDate', null)
+				this.$set(this.formData, 'endDate', null)
+			}
 			this.listQuery.pageNum = 1
 			this.formData = Object.assign({}, this.formData, row);
 			this.formDataClick = Object.assign({}, this.formData, row);
@@ -494,15 +488,28 @@ export default {
 				case 'addCertificate':
 					this.handAddCertificate(rowArr[0]);
 					break;
-        case "download":
-          this.handleExport(rowArr[0])
-          break;
+				case "download":
+					this.handleExport(rowArr[0])
+					break;
+				case 'export':
+					this.handleDonwload()
+					break;
 			}
 		},
-     // 下载合同核备单据信息
-    handleExport(obj) {
-      FileApi.customDownload({ businessType: 111, businessData: obj.id })
-    },
+		async handleDonwload() {
+			try {
+				this.loading = true;
+				await FileApi.customDownload({ businessType: 128, businessData: JSON.stringify(this.formData) });
+			} catch (error) {
+				this.$modal.msgError("下载失败，请重试");
+			} finally {
+				this.loading = false;
+			}
+		},
+		// 下载合同核备单据信息
+		handleExport(obj) {
+			FileApi.customDownload({ businessType: 111, businessData: obj.id })
+		},
 		handAddCertificate(row) {
 			if (row != undefined) {
 				this.addStatus = true;

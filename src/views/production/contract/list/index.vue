@@ -75,31 +75,32 @@ import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import dayjs from 'dayjs'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "contractList",
   components: { Add },
   mixins: [indexMixin],
-  computed:{
-    deptName(){
+  computed: {
+    deptName() {
       return this.$route.query?.deptName || ''
     },
-    deptId(){
+    deptId() {
       return this.$route.query?.deptId || ''
     },
-    startDate(){
+    startDate() {
       return this.$route.query?.startDate || ''
     },
-    endDate(){
+    endDate() {
       return this.$route.query?.endDate || ''
     },
-    projectId(){
+    projectId() {
       return this.$route.query?.projectId || ''
     },
-    projectName(){
+    projectName() {
       return this.$route.query?.projectName || ''
     },
-    fromUrl(){
+    fromUrl() {
       return this.$route.query?.fromUrl || ''
     }
 
@@ -160,34 +161,34 @@ export default {
     }
   },
   methods: {
-         // 将Url参数赋值到搜索内（使用 $set 保证响应式）
-     setQuery(){
-      if(this.deptId){
+    // 将Url参数赋值到搜索内（使用 $set 保证响应式）
+    setQuery() {
+      if (this.deptId) {
         this.$set(this.formData, 'constructionUnitId', this.deptId)
       }
-      if(this.deptName){
+      if (this.deptName) {
         this.$set(this.formData, 'buyer', this.deptName)
         this.$set(this.formData, 'constructionUnitName', this.deptName)
       }
-      if(this.startDate){
+      if (this.startDate) {
         this.$set(this.formData, 'startDate', this.startDate)
       }
-      if(this.endDate){
+      if (this.endDate) {
         this.$set(this.formData, 'endDate', this.endDate)
       }
-      if(this.projectId){
+      if (this.projectId) {
         this.$set(this.formData, 'projectId', this.projectId)
       }
-      if(this.projectName){
+      if (this.projectName) {
         this.$set(this.formData, 'projectName', this.projectName)
       }
-      if(this.fromUrl){
+      if (this.fromUrl) {
         this.$set(this.formData, 'contractStatus', '2')
-        this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
+        this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen' ? '1' : '0')
       }
-     },
-      /** 清空 URL 参数设置的搜索字段 */
-    clearUrlQueryFields () {
+    },
+    /** 清空 URL 参数设置的搜索字段 */
+    clearUrlQueryFields() {
       this.$set(this.formData, 'constructionUnitId', null);
       this.$set(this.formData, 'constructionUnitName', null);
       this.$set(this.formData, 'startDate', null);
@@ -200,7 +201,7 @@ export default {
       this.$set(this.formData, 'bigScreenFlag', null);
     },
     /** 搜索栏“重置”按钮触发的事件 */
-    onResetField () {
+    onResetField() {
       this.clearUrlQueryFields();
     },
     getLineOptions() {
@@ -329,6 +330,19 @@ export default {
         case 'addBh':
           this.$router.push({ name: 'addValidityGuarantee', query: { type: 'create', contractId: idArr[0] } })
           break;
+        case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+    async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:122,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     async changeStatus(row) {

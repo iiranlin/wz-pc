@@ -59,6 +59,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import dayjs from 'dayjs'
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 补充合同列表
   name: "supplementContract",
@@ -230,7 +231,20 @@ export default {
         case 'add':
           this.$router.push({ name: 'addValidityGuarantee', query: { type: 'create', contractId: idArr[0] } })
           break;
+        case 'export':
+          this.handleDonwload()
+          break;
 
+      }
+    },
+    async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:123,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     async changeStatus(row) {

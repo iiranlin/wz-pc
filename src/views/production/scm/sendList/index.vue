@@ -83,6 +83,7 @@ import AddAdress from "./components/addAdress.vue";
 import fileUpload from "@/components/upload";
 import workFlowView from '@/components/workFlowView'
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "sendList",
@@ -338,6 +339,19 @@ export default {
           this.workFlowViewVisible = true
           this.selectedRow = { businessId: idArr[0] }
           break;
+         case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+    async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:125,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     handleDelete(ids, rowArr) {
@@ -425,6 +439,7 @@ export default {
     },
     //上方按钮控制
     buttonDisabledTop(button) {
+      if (!this.selection || !this.selection.length) return false;
       //状态不是未发货，按钮全不能操作,审核中也不能操作
       if (button.buttonCode == 'update') {
         return this.selection[0].status == 3 || this.selection[0].status == 8;

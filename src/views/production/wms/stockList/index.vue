@@ -71,6 +71,7 @@
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import indexMixin from "@/views/mixins";
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 建设项目
   name: "stock",
@@ -303,6 +304,19 @@ export default {
             },
           });
           break;
+        case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+     async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:127,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -330,10 +344,13 @@ export default {
     },
     //上方按钮控制
     buttonDisabledTop(button) {
+      if (!this.selection || !this.selection.length) return false;
       //状态为已完成，不能操作出库
       // return this.selection[0].status == "5";
       //无库存不能出库
-      return this.selection[0].relatedCount == "0";
+      if(button.buttonCode == 'om'){
+        return this.selection[0].relatedCount == "0";
+      }
     },
   },
 };

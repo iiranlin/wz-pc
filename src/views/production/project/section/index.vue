@@ -51,6 +51,7 @@ import * as Api from '@/api/prodmgr-inv/project/section.js'
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import SellerDialog from './components/sellerDialog.vue'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 标段项目
   name: "section",
@@ -278,6 +279,19 @@ export default {
         case 'view':
           this.$router.push({ name: 'detailSection', query: { id: idArr[0], type: 'view' } })
           break;
+        case 'export':
+          this.handleDonwload()
+          break;
+      }
+    },
+     async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:121,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     handleDelete(ids) {
