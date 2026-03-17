@@ -254,6 +254,17 @@ export default {
             formData.planUseTime = dayjs(formData.planUseTime).startOf('month').valueOf();
           }
           
+          // 验证计划采购量不能超过项目需求总数量
+          if (formData.planPurchaseQty && formData.totalRequiredQty) {
+            const planPurchaseQty = Number(formData.planPurchaseQty);
+            const totalRequiredQty = Number(formData.totalRequiredQty);
+            if (planPurchaseQty > totalRequiredQty) {
+              this.$modal.msgError(`计划采购量不能超过项目需求总数量！`);
+              this.loading = false;
+              return;
+            }
+          }
+          
           const apiMethod = this.type === "update" ? "edit" : "save";
           const payload = this.type === "update"
             ? { id: this.id, ...formData }
