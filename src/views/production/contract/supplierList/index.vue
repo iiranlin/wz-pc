@@ -50,43 +50,43 @@
           @handleButton="handleButton"
         >
           <!-- 标段数量 -->
-          <template #sectionList="scoped">
+          <template #sectionCount="scoped">
             <el-button
               type="text"
               @click="
                 () => {
-                  if (scoped.data.sectionList.length)
+                  if (scoped.data.sectionNameList.length)
                     $refs.sectionDialogRef.open(
-                      scoped.data.sectionList.map((x) => ({
-                        name: x.sectionName,
+                      scoped.data.sectionNameList.map((x) => ({
+                        name: x,
                       }))
                     );
                 }
               "
             >
-              {{ scoped.data.sectionList.length }}
+              {{ scoped.data.sectionCount }}
             </el-button>
           </template>
           <!-- 合同数量 -->
-          <template #contractList="scoped">
+          <template #contractCount="scoped">
             <el-button
               type="text"
               @click="
                 () => {
-                  if (scoped.data.contractList.length)
+                  if (scoped.data.contractNameList.length)
                     $refs.constrctDialogRef.open(
-                      scoped.data.contractList.map((x) => ({
-                        name: x.contractName,
+                      scoped.data.contractNameList.map((x) => ({
+                        name: x,
                       }))
                     );
                 }
               "
             >
-              {{ scoped.data.contractList.length }}
+              {{ scoped.data.contractCount }}
             </el-button>
           </template>
-          <template #ratio="scoped">
-            {{scoped.data.materialUsedRatio || 0}}%
+          <template #sendRatio="scoped">
+            {{scoped.data.sendRatio || 0}}%
           </template>
         </table-index>
         <pagination
@@ -106,7 +106,7 @@
 
 <script>
 import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
-import * as Api from '@/api/prodmgr-inv/project/line.js'
+import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import indexMixin from "@/views/mixins";
 import SectionDialog from './components/sectionDialog.vue'
@@ -285,7 +285,7 @@ export default {
     /** 查询菜单列表 */
     getList () {
       this.loading = true
-      Api.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+      Api.supplierList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list
         this.total = data.total
       }).finally(() => {

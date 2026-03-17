@@ -15,6 +15,19 @@ export const itemList = (params) => {
 }
 
 /**
+ * 供应商列表
+ * @param {*} params 
+ * @returns 
+ */
+export const supplierList = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialContract/sellerList`,
+        method: 'get',
+        params
+    })
+}
+
+/**
  * 详情
  * @param {*} params 
  * @returns 
