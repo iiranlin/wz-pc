@@ -17,11 +17,12 @@
      <template #planStatus="data">
         <el-select
           class="select-box"
-          v-model="formData[data.data.fieldCode]"
+          v-model="formData.statusList"
           :placeholder="
              '请选择状态'
           "
           clearable
+          multiple
           style="width: 100%"
           size="small"
         >
@@ -129,7 +130,33 @@ export default {
   name: "wzxqList",
   components: { workFlowView },
   mixins: [indexMixin],
+  computed:{
+    deptName(){
+      return this.$route.query?.deptName || ''
+    },
+    deptId(){
+      return this.$route.query?.deptId || ''
+    },
+    startDate(){
+      return this.$route.query?.startDate || ''
+    },
+    endDate(){
+      return this.$route.query?.endDate || ''
+    },
+    projectId(){
+      return this.$route.query?.projectId || ''
+    },
+    projectName(){
+      return this.$route.query?.projectName || ''
+    },
+    fromUrl(){
+      return this.$route.query?.fromUrl  || ''
+    },
+    statusList(){
+      return this.$route.query?.statusList  || []
+    }
 
+  },
   data () {
     // 计划状态(1-未提交 2-审核中 3-修改后通过 4-已驳回 5-已撤回 6-发货中 7-收货完成 8-已入库 9-已出库)
     const planStatus = {
@@ -195,9 +222,55 @@ export default {
     });
 
     this.getLineOptions()
+    this.setQuery();
   },
 
   methods: {
+     // 将Url参数赋值到搜索内（使用 $set 保证响应式）
+     setQuery(){
+      if(this.deptId){
+        this.$set(this.formData, 'constructionUnitId', this.deptId)
+      }
+      if(this.deptName){
+        this.$set(this.formData, 'constructionUnitName', this.deptName)
+      }
+      if(this.startDate){
+        this.$set(this.formData, 'startDate', this.startDate)
+        this.$set(this.formData, 'dateRange', [this.startDate, this.endDate])
+      }
+      if(this.endDate){
+        this.$set(this.formData, 'endDate', this.endDate)
+      }
+      if(this.projectId){
+        this.$set(this.formData, 'projectId', this.projectId)
+      }
+      if(this.projectName){
+        this.$set(this.formData, 'projectName', this.projectName)
+      }
+      if(this.fromUrl){ // 如果fromUrl=largeScreen 则表示是大屏-传1给后端，否则传0
+        this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
+      }
+      if(this.statusList.length>0){
+        this.$set(this.formData, 'statusList', this.statusList)
+      }
+     },
+      /** 清空 URL 参数设置的搜索字段 */
+    clearUrlQueryFields () {
+      this.$set(this.formData, 'constructionUnitId', null);
+      this.$set(this.formData, 'constructionUnitName', null);
+      this.$set(this.formData, 'startDate', null);
+      this.$set(this.formData, 'endDate', null);
+      this.$set(this.formData, 'projectId', null);
+      this.$set(this.formData, 'projectName', null);
+      this.$set(this.formData, 'constructionUnit', null);
+      this.$set(this.formData, 'dateRange', null);
+      this.$set(this.formData, 'bigScreenFlag', null);
+      this.$set(this.formData, 'statusList', null);
+    },
+    /** 搜索栏“重置”按钮触发的事件 */
+    onResetField () {
+      this.clearUrlQueryFields();
+    },
     handleTableButtonDisable (item, row) {
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       if (item.buttonCode === 'flowSee') {
@@ -281,9 +354,21 @@ export default {
       this.handleQuery();
     },
     handleQuery (row = {}, type = '') {
+       // 如果projectName为空，则projectId也为空
+      if(!this.formData.projectName){
+        this.$set(this.formData, 'projectId', null)
+      }
+      // 如果constructionUnitName为空，则constructionUnitId也为空
+      if(!this.formData.constructionUnitName){
+        this.$set(this.formData, 'constructionUnitId', null)
+      }
+
       if(this.formData.dateRange && this.formData.dateRange.length > 0){
-        this.formData.starDate = this.formData.dateRange[0]
+        this.formData.startDate = this.formData.dateRange[0]
         this.formData.endDate = this.formData.dateRange[1]
+      }else{
+        this.$set(this.formData, 'startDate', null)
+        this.$set(this.formData, 'endDate', null)
       }
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);

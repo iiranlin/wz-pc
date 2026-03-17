@@ -205,6 +205,7 @@ import { messagePage } from "@/api/system/message";
 // import { getAllTaskByUser, funcRecentList } from "@/api/examine/to-be-reviewed"
 // import { memoGetOneMonthMemo } from '@/api/system/dashboard.js';
 import moment from 'moment';
+import dayjs from 'dayjs';
 // import { sysMsgSettingSelectOwnMesPage, sysMsgSettingBatchUpdateOwnMes } from "@/api/system/messageToDo";
 import { mapGetters,mapState } from "vuex";
 
@@ -224,7 +225,7 @@ export default {
                 { label: '本年', value: '3' },
             ],
             summaryStats: [
-                { key: 'planCount', label: '计划数', value: 0, unit: '条', route: { name: 'wzxqList' } },
+                { key: 'planCount', label: '计划数', value: 0, unit: '条', route: { name: 'wzxqList',query:{statusList: ['2','3','4','5']} } },
                 { key: 'shippingCount', label: '发货数', value: 0, unit: '次', route: { name: 'sendList' } },
                 { key: 'takeCount', label: '收货数', value: 0, unit: '次', route: { name: 'receiveList' }},
                 { key: 'inCount', label: '入库数', value: 0, unit: '次', route: { name: 'imList'  }},
@@ -241,12 +242,12 @@ export default {
             dataOverview: [
                 { title: '建设项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
                 { title: '标段项目', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'section' }) } },
-                { title: '供应商', value: '0', unit: '个', onClickFun: undefined },
-                { title: '启用合同数量', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
-                { title: '物资总金额', value: '0', unit: '万元', onClickFun: undefined },
-                { title: '已收货金额', value: '0', unit: '万元', onClickFun: undefined },
-                { title: '已入库金额', value: '0', unit: '万元', onClickFun: undefined },
-                { title: '已出库金额', value: '0', unit: '万元', onClickFun: undefined },
+                { title: '供应商', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'supplierList' }) } },
+                { title: '启用合同数量', value: '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList',query:{bigScreenFlag:'1'} }) } },
+                { title: '物资总金额', value: '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'contractList',query:{bigScreenFlag:'1'} }) } },
+                { title: '已收货金额', value: '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'receiveList', query:{statusList:['2','3','4'], bigScreenFlag:'1'} }) } },
+                { title: '已入库金额', value: '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'imList',query:{bigScreenFlag:'1'} }) } },
+                { title: '已出库金额', value: '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'omList',query:{bigScreenFlag:'1'} }) } },
             ],
             selectProjectId:'',
             selectType:'1',
@@ -314,6 +315,29 @@ export default {
         fetchSummaryData(range) {
             this.getDataCount()
         },
+        // 根据当前选中的时间范围计算日期区间
+        getDateRange() {
+            const now = dayjs();
+            let startDate, endDate;
+            switch (this.summaryRange) {
+                case '1': // 本周
+                    startDate = now.startOf('week').add(1, 'day').format('YYYY-MM-DD'); // 周一
+                    endDate = now.startOf('week').add(7, 'day').format('YYYY-MM-DD');   // 周日
+                    break;
+                case '2': // 本月
+                    startDate = now.startOf('month').format('YYYY-MM-DD');
+                    endDate = now.endOf('month').format('YYYY-MM-DD');
+                    break;
+                case '3': // 本年
+                    startDate = now.startOf('year').format('YYYY-MM-DD');
+                    endDate = now.endOf('year').format('YYYY-MM-DD');
+                    break;
+                default:
+                    startDate = now.startOf('week').add(1, 'day').format('YYYY-MM-DD');
+                    endDate = now.startOf('week').add(7, 'day').format('YYYY-MM-DD');
+            }
+            return { startDate, endDate };
+        },
         // 左侧概览点击跳转
         handleSummaryNavigate(item) {
             if (typeof item.onClick === 'function') {
@@ -321,7 +345,16 @@ export default {
                 return;
             }
             if (item.route) {
-                this.$router.push(item.route).catch(() => { });
+                const { startDate, endDate } = this.getDateRange();
+                const route = {
+                    ...item.route,
+                    query: {
+                        ...(item.route.query || {}),
+                        startDate,
+                        endDate,
+                    },
+                };
+                this.$router.push(route).catch(() => { });
                 return;
             }
             this.$emit('summary-card-click', item);
@@ -389,20 +422,20 @@ export default {
                 this.dataOverview = [
                     { title: '建设项目', value: res.data.projectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
                     { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'section' }) } },
-                    { title: '供应商', value: res.data.sellerTotal || '0', unit: '个', onClickFun: undefined },
+                    { title: '供应商', value: res.data.sellerTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'supplierList' }) } },
                     { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
-                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
-                    { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
-                    { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
-                    { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: undefined },
+                    { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'contractList',query:{fromUrl:'largeScreen'} }) } },
+                    { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'receiveList', query:{statusList:['2','3','4'],fromUrl:'largeScreen'} }) } },
+                    { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'imList',query:{statusList:['2','3','4'],fromUrl:'largeScreen'} }) } },
+                    { title: '已出库金额', value: ((res.data.OUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'omList',query:{fromUrl:'largeScreen'} }) } },
                 ]
 
                  this.summaryStats = [
-                { key: 'planCount', label: '计划数', value: res.data.planCount || 0, unit: '条', route: { name: 'wzxqList' } },
-                { key: 'shippingCount', label: '发货数', value: res.data.shippingCount || 0, unit: '次', route: { name: 'sendList' } },
-                { key: 'takeCount', label: '收货数', value: res.data.takeCount || 0, unit: '次', route: { name: 'receiveList' }},
-                { key: 'inCount', label: '入库数', value:res.data.inCount || 0, unit: '次', route: { name: 'imList'  }},
-                { key: 'outCount', label: '出库数', value: res.data.outCount || 0, unit: '次', route: { name: 'omList' }},
+                { key: 'planCount', label: '计划数', value: res.data.planCount || 0, unit: '条', route: { name: 'wzxqList',query:{statusList: ['2','3','4','5']} } },
+                { key: 'shippingCount', label: '发货数', value: res.data.shippingCount || 0, unit: '次', route: { name: 'sendList' ,query: {statusList: ['2','3','8']}} },
+                { key: 'takeCount', label: '收货数', value: res.data.takeCount || 0, unit: '次', route: { name: 'receiveList',query:{statusList:['2','3','4'],fromUrl:'largeScreen'} }},
+                { key: 'inCount', label: '入库数', value:res.data.inCount || 0, unit: '次', route: { name: 'imList',query:{statusList:['2','3','4'],fromUrl:'largeScreen'} }},
+                { key: 'outCount', label: '出库数', value: res.data.outCount || 0, unit: '次', route: { name: 'omList',query:{fromUrl:'largeScreen'} }},
             ]
             })
                 .finally(() => {

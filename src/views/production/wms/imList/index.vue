@@ -5,9 +5,9 @@
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" @handleResetField="onResetField">
       <template #storeStatus="data">
-        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="($t(`please_select`) || '请选择') +
+        <el-select class="select-box" v-model="formData.statusList" :placeholder="($t(`please_select`) || '请选择') +
           i18nData(data.data, 'field', 'fieldCode', 'fieldName')
-          " clearable style="width: 100%" size="small">
+          " clearable style="width: 100%" size="small" multiple>
           <el-option v-for="(item, key) in options" :key="key" :label="item.name" :value="item.code" />
         </el-select>
       </template>
@@ -98,6 +98,9 @@ export default {
     },
     fromUrl(){
       return this.$route.query?.fromUrl  || ''
+    },
+    statusList(){
+      return this.$route.query?.statusList  || ''
     }
 
   },
@@ -211,6 +214,9 @@ export default {
       if(this.fromUrl){ // 如果fromUrl=largeScreen 则表示是大屏-传1给后端，否则传0
         this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
       }
+      if(this.statusList){
+        this.$set(this.formData, 'statusList', this.statusList)
+      }
      },
       /** 清空 URL 参数设置的搜索字段 */
     clearUrlQueryFields () {
@@ -223,6 +229,7 @@ export default {
       this.$set(this.formData, 'constructionUnit', null);
       this.$set(this.formData, 'dateRange', null);
       this.$set(this.formData, 'bigScreenFlag', null);
+      this.$set(this.formData, 'statusList', null);
     },
     /** 搜索栏“重置”按钮触发的事件 */
     onResetField () {
