@@ -14,7 +14,7 @@
       <el-table-column label="发货数量" width="150" prop="sendTotal" align="center"></el-table-column>
       <el-table-column label="可抽检数量" width="150" prop="storeTotal" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.samplingFlag === '0'">0</span>
+          <span v-if="scope.row.samplingFlag === '0' && type === 'create'">0</span>
           <span v-else>{{ scope.row.storeTotal }}</span>
         </template>
       </el-table-column>

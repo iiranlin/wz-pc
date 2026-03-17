@@ -115,10 +115,19 @@ export default {
     // ==================== 页面初始化 ====================
     /** 根据页面类型初始化 */
     initPage() {
+
       if (this.type === 'create') {
         this.initCreateMode();
         return
       }
+
+      const title = this.type === 'view' ? '抽检详情' : this.type === 'update' ? '编辑抽检' : '新增抽检'
+        this.$tab.updatePage({
+          path: "/rkgl/addSpok",
+          meta: {
+            title: title,
+          },
+        });
 
       if (["view", "update"].includes(this.type)) {
         this.updateInit(this.id);
