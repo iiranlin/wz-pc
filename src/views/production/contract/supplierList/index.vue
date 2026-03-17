@@ -301,15 +301,15 @@ export default {
     handleButton (buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
-        case "downLoad":
-          this.handleDonwload(idArr[0])
+        case "export":
+          this.handleDonwload()
           break;
       }
     },
-     async handleDonwload(id) {
+     async handleDonwload() {
       try {
         this.loading = true;
-        await FileApi.customDownload({ businessType: 5, businessData: id });
+        await FileApi.customDownload({ businessType: 12, businessData:JSON.stringify(this.formData) });
 
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
