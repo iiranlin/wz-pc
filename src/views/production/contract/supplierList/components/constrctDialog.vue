@@ -11,7 +11,7 @@
     class="dialog-route"
     width="60%"
   >
-    <el-table :data="tableData" style="width: 100%;margin-top: 16px; max-height: 500px; overflow: auto;">
+    <el-table :data="tableData" style="width: 100%;margin-top: 16px;" max-height="500">
       <el-table-column
         type="index"
         label="序号"

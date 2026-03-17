@@ -2,7 +2,7 @@
   <Dialog :title="title" :visible.sync="visible" v-if="visible" :show-close="true" :close-on-click-modal="false"
     :close-on-press-escape="false" append-to-body :destroy-on-close="true" class="dialog-route" width="60%"
     height="600px">
-    <el-table :data="tableData" style="width: 100%;margin-top: 16px;" height="500px">
+    <el-table :data="tableData" style="width: 100%;margin-top: 16px;" max-height="500">
       <el-table-column type="index" label="序号" width="120px" align="center">
       </el-table-column>
       <el-table-column prop="number" label="合同编号" align="center"> </el-table-column>
