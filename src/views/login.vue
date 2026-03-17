@@ -76,6 +76,7 @@ export default {
     },
     data() {
         return {
+            testFlag: process.env.VUE_APP_TEST_FLAG,
             logoBg,
             loginTitle,
             dialogVisible: false,

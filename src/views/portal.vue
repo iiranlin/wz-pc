@@ -3,6 +3,7 @@
       <div class="top-bar">
         <div class="top-content">
           <div class="logo"></div>
+          <span v-if="testFlag" class="testTitle">{{ testFlag }}</span>
           <div class="user-list">
               <ul>
                 <li v-for="(item,index ) in menuList" :key="index">
@@ -157,6 +158,7 @@ export default {
     },
     data() {
         return {
+          testFlag: process.env.VUE_APP_TEST_FLAG,
            logoBg,
            logoBg1,
            logo1,
@@ -915,5 +917,16 @@ export default {
     }
   }
 
+}
+
+.testTitle {
+  position: absolute;
+        left: 50%;
+        top:14px;
+        transform: translateX(-50%);
+        color: red;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 48px;
 }
 </style>
