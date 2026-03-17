@@ -423,7 +423,7 @@ export default {
                     { title: '建设项目', value: res.data.projectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'line' }) } },
                     { title: '标段项目', value: res.data.sectionProjectTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'section' }) } },
                     { title: '供应商', value: res.data.sellerTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'supplierList' }) } },
-                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList' }) } },
+                    { title: '启用合同数量', value: res.data.contractTotal || '0', unit: '个', onClickFun: () => { this.$router.push({ name: 'contractList',query:{fromUrl:'largeScreen'} }) } },
                     { title: '物资总金额', value: (res.data.totalAmount / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'contractList',query:{fromUrl:'largeScreen'} }) } },
                     { title: '已收货金额', value: ((res.data.PUTTOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'receiveList', query:{statusList:['2','3','4'],fromUrl:'largeScreen'} }) } },
                     { title: '已入库金额', value: ((res.data.STORETOTAL || 0) / 10000).toFixed(2) || '0', unit: '万元', onClickFun: () => { this.$router.push({ name: 'imList',query:{statusList:['2','3','4'],fromUrl:'largeScreen'} }) } },
