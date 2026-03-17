@@ -155,4 +155,12 @@ export const planQtyBatchRemove = (data) => {
   })
 }
 
+// 计划量调整详情
+export const planQtyDetail = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/zgPurchasePlanQty/detail/${id}`,
+    method: 'get',
+  })
+}
+
 
