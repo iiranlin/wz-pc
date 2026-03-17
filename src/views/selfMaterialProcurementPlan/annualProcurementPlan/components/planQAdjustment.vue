@@ -67,7 +67,7 @@
           </el-col>
           <el-col :span="16">
             <el-form-item :label="'调整后项目需求剩余量：'">
-              yyyy
+              <span>{{ form.remainingAvailableQty }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -107,6 +107,7 @@ export default {
         displayDiff:null,//显示值（不带符号）
         remark:'',
         operateType:null,//调整方式 1增加 2减少
+        remainingAvailableQty:null,//调整后项目需求剩余量
       },
       rules: {
         operateType: [
@@ -242,9 +243,15 @@ export default {
               const oldValue = Number(this.form.planPurchaseQtyOld) || 0;
               const diffValue = Number(this.form.planPurchaseQtyDiff) || 0;
               this.form.planPurchaseQtyNow = oldValue + diffValue;
+              
+              // 计算调整后项目需求剩余量 = （原计划量 + 项目需求剩余量） - 调整后计划量
+              const planPurchaseQty = Number(this.rowData.planPurchaseQty) || 0;
+              const totalAvailableQty = Number(this.rowData.totalAvailableQty) || 0;
+              this.form.remainingAvailableQty = (totalAvailableQty + planPurchaseQty) - this.form.planPurchaseQtyNow;
             } else {
-              // 当调整数量为空时，清空调整后计划量
+              // 当调整数量为空时，清空调整后计划量和调整后项目需求剩余量
               this.form.planPurchaseQtyNow = null;
+              this.form.remainingAvailableQty = null;
             }
             break;
         }
@@ -273,9 +280,15 @@ export default {
         const oldValue = Number(this.form.planPurchaseQtyOld) || 0;
         const diffValue = Number(this.form.planPurchaseQtyDiff) || 0;
         this.form.planPurchaseQtyNow = oldValue + diffValue;
+        
+        // 计算调整后项目需求剩余量 = 项目需求剩余量 - 调整后计划量
+        const totalAvailableQty = Number(this.rowData.totalAvailableQty) || 0;
+        const planPurchaseQty = Number(this.rowData.planPurchaseQty) || 0;
+        this.form.remainingAvailableQty = (totalAvailableQty + planPurchaseQty) - this.form.planPurchaseQtyNow; 
       } else {
-        // 当调整数量为空时，清空调整后计划量
+        // 当调整数量为空时，清空调整后计划量和调整后项目需求剩余量
         this.form.planPurchaseQtyNow = null;
+        this.form.remainingAvailableQty = null;
       }
     },
   },
