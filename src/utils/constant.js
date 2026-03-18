@@ -98,7 +98,9 @@ export const FLOW_ROUTE = {
 	CGWJ:'detailPurchase', // 采购文件
 	CGHT:'detailPurchaseContract', // 采购合同
     FHLC:'addSend',
-    WZCJ: 'addSpok'
+    WZCJ: 'addSpok',
+    ZGCGJH:'addAnnualProcurementPlan', // 自购物资采购计划
+    ZGCGJHXG:'detailPlanQulity', // 自购物资调整计划量详情
 }
 
 // 生产变更日志

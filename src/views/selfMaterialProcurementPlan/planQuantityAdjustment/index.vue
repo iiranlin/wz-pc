@@ -58,11 +58,7 @@
       </template>
       <!-- 明细 -->
       <template #businessNumber="scoped">
-        <el-button type="text" @click="
-              () => {
-                  $refs.DetailDialogRef.init(scoped.data);
-              }
-            ">
+        <el-button type="text" @click="toDetail(scoped.data)">
           {{scoped.data.businessNumber}}
         </el-button>
       </template>
@@ -76,8 +72,6 @@
       @pagination="getList"
     />
 
-    <!--展开弹窗-->
-    <DetailDialog ref="DetailDialogRef"/>
     <!--流程查看-->
     <workFlowView
       :bill-data="selectedRow"
@@ -90,13 +84,12 @@
   import * as FileApi from "@/api/prodmgr-inv/project/file.js";
   import * as PurchasePlanApi from "@/api/prodmgr-inv/project/annualProcurementPlan.js";
   import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
-  import DetailDialog from './components/detail';
   import workFlowView from '@/components/workFlowView'
 
   export default {
     name: "annualProcurementPlan",
     mixins: [indexMixin],
-    components: { DetailDialog , workFlowView},
+    components: { workFlowView},
     data() {
       return {
         // 页面属性
@@ -184,6 +177,16 @@
           this.total = data.total;
           this.loading = false;
         });
+      },
+      /** 计划量调整详情 */
+      toDetail(row){
+        this.$router.push({
+          name: 'detailPlanQulity',
+          query: {
+            id: row.id,
+            type: 'view',
+          }
+        })
       },
       handleCheckAllChange(columns) {
         this.$refs.tableIndex.init(columns);
@@ -300,16 +303,6 @@
               this.$modal.msgSuccess("删除成功");
           })
           .catch(() => { });
-      },
-      async handleDonwload(id) {
-        try {
-          this.loading = true;
-          await FileApi.customDownload({ businessType:109,businessData:  JSON.stringify(this.globalSearchParams) });
-        } catch (error) {
-          this.$modal.msgError("下载失败，请重试");
-        } finally {
-          this.loading = false;
-        }
       },
     }
   }

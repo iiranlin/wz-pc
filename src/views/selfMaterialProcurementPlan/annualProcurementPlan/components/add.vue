@@ -83,6 +83,9 @@
             </el-form-item>
         </template>
       </VFormRender>
+
+      <toBeReviewed ref="toBereview" />
+      <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     </div>
   </div>
 </template>
@@ -92,13 +95,15 @@
 import * as Api from "@/api/prodmgr-inv/project/annualProcurementPlan.js";
 import * as PurchasePlanApi from "@/api/prodmgr-inv/project/annualProcurementPlan.js";
 import VFormRender from "@/components/form-render/index";
+import toBeReviewed from "@/views/audit/components/toBeReviewed";
+import workFlowView from '@/components/workFlowView'
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 
 export default {
   name: "AddAnnualProcurementPlan",
   dicts: ["MeasureUnit"],
-  components: { VFormRender },
+  components: { VFormRender ,toBeReviewed,workFlowView},
 
   data() {
     return {
@@ -106,6 +111,9 @@ export default {
       title: "新增",
       itemData: {},
       currentProjectData: null, // 保存当前项目标段数据
+      selectedRow: null,
+      rowData: {},
+      workFlowViewVisible: false,
       // 表单相关
       formJson: {},
       formData: {},
@@ -123,6 +131,14 @@ export default {
       buttonTop: [
         { buttonName: "取消", buttonCode: "cancel", buttonIcon: "Blue-Cancel", type: "create, update" },
         { buttonName: "保存", buttonCode: "save", buttonIcon: "Blue-Save", type: "create, update" },
+        { buttonName: "通过", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
+        {
+          buttonName: "驳回",
+          buttonCode: "reject",
+          buttonIcon: "Blue-EditCard",
+          type: "",
+        },
+        { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
       ],
     };
   },
@@ -133,7 +149,13 @@ export default {
     },
     id() {
       return this.$route.query?.id || "";
-    }
+    },
+    name(){
+      return this.$route.query?.name
+    },
+    queryAuditArr() {
+      return JSON.parse(this.$route.query.auditArr || "[]");
+    },
   },
  async created() {
 		this.getCurrentProSection();
@@ -165,6 +187,7 @@ export default {
       await this.loadFormConfig();
 
       // 3. 设置主表单数据
+      this.rowData = data;
       this.$refs.vFormRef.setFormData({
         ...data,
         // settlementYear: String(data.settlementYear)
@@ -225,6 +248,17 @@ export default {
       const actions = {
         cancel: () => this.$router.go(-1),
         save: () => this.handleSubmit(),
+
+        pass: () => {
+            this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
+        },
+        reject: () => {
+          this.$refs.toBereview.init("reject", this.queryAuditArr, this.name);
+        },
+        flowSee: () => {
+          this.workFlowViewVisible = true
+          this.selectedRow = { businessId: this.id }
+        },
       };
       actions[buttonCode]?.();
     },
@@ -233,6 +267,16 @@ export default {
     buttonShow(item) {
       if (item.buttonCode === "save") {
         return this.type !== "view";
+      }
+      // 审核中才能显示同意和不同意按钮
+      if (item.buttonCode === "pass" || item.buttonCode === "reject") {
+        return this.name == 'audit'
+      }
+
+      // 已提交、已生效、修改后同意、已驳回、允许查看流程
+      // 流程查看 
+      if (item.buttonCode === 'flowSee') {
+        return !['1'].includes(this.rowData.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
       }
       return true;
     },
