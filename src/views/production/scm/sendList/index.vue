@@ -354,7 +354,10 @@ export default {
     async handleDonwload() {
       try {
         this.loading = true;
-        await FileApi.customDownload({businessType:125,businessData : JSON.stringify(this.formData) });
+        const isAllSelected = this.selection.length > 0 && this.selection.length === this.list.length;
+        const isNoneSelected = this.selection.length === 0;
+        const idList = (isAllSelected || isNoneSelected) ? null : this.ids;
+        await FileApi.customDownload({businessType:125,businessData : JSON.stringify({...this.formData,idList}) });
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
       } finally {
@@ -455,7 +458,10 @@ export default {
       if (button.buttonCode == "confirm") {
         return this.selection[0].status != 1 && this.selection[0].status != 9;
       }
-      return this.selection[0].status != 1;
+      if(button.buttonCode == 'delete'){
+        return this.selection[0].status != 1;
+      }
+      return false
     },
   },
 };
