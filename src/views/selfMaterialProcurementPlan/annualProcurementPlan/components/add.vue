@@ -61,7 +61,7 @@
 
         <!-- 计量单位选择插槽 -->
         <template #measurementUnitSlot="{ formModel }">
-           <el-form-item label="计量单位：" prop="unit">
+           <el-form-item label="计量单位：" prop="unit" required class="label-right-align">
               <el-select
                 v-model="formModel.unit"
                 placeholder="请选择"
@@ -138,14 +138,16 @@ export default {
           buttonIcon: "Blue-EditCard",
           type: "",
         },
+        { buttonName: "编辑", buttonCode: "update", buttonIcon: "Blue-Edit", type: "create, update" },
         { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
       ],
+      // 页面类型
+      currentType: null,
     };
   },
-
   computed: {
     type() {
-      return this.$route.query.type;
+      return this.currentType || this.$route.query.type;
     },
     id() {
       return this.$route.query?.id || "";
@@ -247,6 +249,11 @@ export default {
     handleButtonClick(buttonCode) {
       const actions = {
         cancel: () => this.$router.go(-1),
+        update: () =>{
+          this.$refs.vFormRef.setReadMode(false);
+          this.currentType = "update";
+          this.title = "编辑";
+        },
         save: () => this.handleSubmit(),
 
         pass: () => {
@@ -272,11 +279,14 @@ export default {
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
         return this.name == 'audit'
       }
-
+      // 只有handle状态下才显示编辑按钮
+      if (item.buttonCode === "update") {
+        return this.name === "handle" && this.type !== "update"
+      }
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       // 流程查看 
       if (item.buttonCode === 'flowSee') {
-        return !['1'].includes(this.rowData.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
+        return !['1'].includes(this.rowData.status) && ['handle', 'toBeDeal', 'audit', 'todoList'].includes(this.name)
       }
       return true;
     },
@@ -316,7 +326,17 @@ export default {
 
           const { message } = await Api[apiMethod](payload);
           this.$modal.msgSuccess(message);
-          this.$router.go(-1);
+          
+          // 如果是name = handle模式说明是待处理状态进来的，保存后留在当前页面并切换回只读模式
+          if (this.name === "handle") {
+            this.currentType = "view";
+            this.title = "查看";
+            this.$refs.vFormRef.setReadMode(true);
+            // 重新加载数据以显示最新状态
+            await this.initEditMode(this.id);
+          } else {
+            this.$router.go(-1);
+          }
         } finally {
           this.loading = false;
         }

@@ -205,7 +205,7 @@ export default {
     },
     clickLink(row) {
       const name = FLOW_ROUTE[row.businessType];
-      this.$router.push({ name, query: { type: 'view', id: row.businessId, name: 'handle' } });
+      this.$router.push({ name, query: { type: 'view', id: row.businessId, name: 'todoList' } });
     },
   },
 }

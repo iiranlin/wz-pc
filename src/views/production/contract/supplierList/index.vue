@@ -15,10 +15,10 @@
       @handleResetField="onResetField"
       :formData="formData"
     >
-      <template #unit="data">
+      <template #constructionUnit="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择供应商指挥部'
           " clearable style="width: 100%" size="small">
-          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+          <el-option v-for="(item, key) in constructionUnitOptions" :key="key" :label="item.label" :value="item.label" />
         </el-select>
       </template>
     </form-data>
@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
+import { list, deptTree, deptDeleteBatch,newListByDeptCode } from "@/api/system/dept";
 import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import indexMixin from "@/views/mixins";
@@ -181,14 +181,18 @@ export default {
       filterText: "",
       selection: [],
       hasOwn: true,
+      constructionUnitOptions: [],
     };
   },
-  created () {
+  async created () {
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
     this.setQuery();
+
+    // 获取供应商指挥部树
+    this.constructionUnitOptions = await this.getDeptTree('SN')
   },
   watch: {
     filterText (val) {
@@ -221,6 +225,20 @@ export default {
         this.$set(this.formData, 'bigScreenFlag', this.fromUrl === 'largeScreen'?'1':'0')
       }
      },
+      // 加载枢纽
+    async getDeptTree (deptCodePrefix ,status = '') {
+      const res = await newListByDeptCode({
+        deptCodePrefix,
+        status
+      })
+      const data = res.data.map(item => {
+        return {
+          value: item.id,
+          label: item.deptName
+        }
+      })
+      return Promise.resolve(data)
+    },
      buttonDisable (btn) {
       // 没有合同物资才允许删除
       if (btn.buttonCode === 'delete') {

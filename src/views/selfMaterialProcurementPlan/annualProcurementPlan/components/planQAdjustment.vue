@@ -124,7 +124,14 @@ export default {
       loading: false,
       isEdit: false,
       rowData: null, // 保存原始表单数据用于比较
+      name: null, // 保存从init方法传入的name值
     };
+  },
+  computed: {
+    // 优先使用从init方法传入的name值，否则从路由参数中获取
+    currentName() {
+      return this.name || this.$route.query?.name;
+    },
   },
   watch: {
     // 监听调整方式变化
@@ -138,8 +145,9 @@ export default {
   },
   methods: {
     //初始化
-    init(row) {
+    init(row, name) {
       this.rowData = row;
+      this.name = name;
       this.form = {
         zgPurchasePlanId: row.id,
         zgPurchasePlanNumber: row.planNumber,
@@ -185,6 +193,14 @@ export default {
               this.$modal.msgSuccess(message);
               this.visible = false;
               this.$emit("createSuccess");
+              
+              // 如果是handle模式，保存后刷新当前详情页面
+              if (this.currentName === "handle") {
+                // 关闭弹窗后，刷新父页面
+                this.$nextTick(() => {
+                  window.location.reload();
+                });
+              }
             })
             .catch((err) => {
               this.loading = false;
