@@ -10,6 +10,8 @@
 
     <toBeReviewed ref="toBereview" />
     <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
+
+    <PlanQAdjustmentDialog ref="planQAdjustmentDialogRef" @createSuccess="createSuccess"/>
   </div>
 </template>
 <script>
@@ -18,13 +20,14 @@
   import * as PurchasePlanApi from "@/api/prodmgr-inv/project/annualProcurementPlan.js";
   import toBeReviewed from "@/views/audit/components/toBeReviewed";
   import workFlowView from '@/components/workFlowView'
+  import PlanQAdjustmentDialog from '@/views/selfMaterialProcurementPlan/annualProcurementPlan/components/planQAdjustment.vue'
   import VFormRender from "@/components/form-render/index";
   import { formFillInPage } from "@/api/form/form";
   import { getToken } from "@/utils/auth";
   export default {
     name: "detailPlanQulity",
     mixins: [indexMixin],
-    components: { toBeReviewed, workFlowView,VFormRender },
+    components: { toBeReviewed, workFlowView,VFormRender,PlanQAdjustmentDialog },
     computed: {
       type() {
         return this.$route.query.type;
@@ -54,6 +57,7 @@
           buttonIcon: "Blue-EditCard",
           type: "",
         },
+        { buttonName: "编辑", buttonCode: "update", buttonIcon: "Blue-Edit", type: "create, update" },
         { buttonName: '流程查看', buttonCode: 'flowSee', buttonIcon: 'Blue-Flow', type: '' }
 
       ],
@@ -120,6 +124,10 @@
       handleButtonClick(buttonCode) {
         const actions = {
           cancel: () => this.$router.go(-1),
+          update: () =>{
+            // 跳转到planQAdjustment.vue页面进行编辑
+            this.$refs["planQAdjustmentDialogRef"].init( this.rowData, this.name);
+          },
           pass: () => {
             this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
           },
@@ -143,11 +151,15 @@
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
         return this.name == 'audit'
       }
+      // 只有handle状态下且当前不是编辑模式时才显示编辑按钮
+      if (item.buttonCode === "update") {
+        return this.name === "handle" && this.type !== "update"
+      }
 
       // 已提交、已生效、修改后同意、已驳回、允许查看流程
       // 流程查看 
       if (item.buttonCode === 'flowSee') {
-        return !['1'].includes(this.rowData.status) && ['handle', 'toBeDeal', 'audit'].includes(this.name)
+        return !['1'].includes(this.rowData.status) && ['handle', 'toBeDeal', 'audit', 'todoList'].includes(this.name)
       }
 
       return true;
