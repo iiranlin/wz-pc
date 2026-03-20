@@ -151,6 +151,7 @@ export default {
       
       // 初始化表单数据
       const formData = {
+        id: name==='handle'?row.id:'',
         zgPurchasePlanId: row.id,
         zgPurchasePlanNumber: row.planNumber,
         planPurchaseQtyOld:row.planPurchaseQty,//原计划量
@@ -206,6 +207,9 @@ export default {
           this.loading = true;
           delete this.form.displayDiff;
           delete this.form.operateType;
+          if(this.name!=='handle'){ // 标识代表待处理进来的可以编辑
+            delete this.form.id // 保存的时候不传id ,编辑的时候才传值
+          }
           await PurchasePlanApi[`PlanQtySave`](Object.assign({}, this.form))
             .then(({ message }) => {
               this.loading = false;
