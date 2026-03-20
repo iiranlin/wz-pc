@@ -27,7 +27,7 @@
             <span><span class="itemclass">原计划量：</span>{{ rowData.planPurchaseQty }}</span>
           </el-col>
           <el-col :span="12">
-            <span><span class="itemclass">项目需求剩余量：</span>{{ rowData.totalAvailableQty }}</span>
+            <span><span class="itemclass">项目剩余需求量：</span>{{ rowData.totalAvailableQty }}</span>
           </el-col>
         </el-row>
       </div>
@@ -66,7 +66,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="16">
-            <el-form-item :label="'调整后项目需求剩余量：'">
+            <el-form-item :label="'调整后项目剩余需求量：'">
               <span>{{ form.remainingAvailableQty }}</span>
             </el-form-item>
           </el-col>
@@ -148,15 +148,34 @@ export default {
     init(row, name) {
       this.rowData = row;
       this.name = name;
-      this.form = {
+      
+      // 初始化表单数据
+      const formData = {
         zgPurchasePlanId: row.id,
         zgPurchasePlanNumber: row.planNumber,
         planPurchaseQtyOld:row.planPurchaseQty,//原计划量
-        planPurchaseQtyNow:null,//现在计划量
-        planPurchaseQtyDiff:null,//差值（实际值，用于计算和提交）
-        displayDiff:null,//显示值（不带符号）
-        remark:''
+        planPurchaseQtyNow:name==='handle'?row.planPurchaseQtyNow:null,//现在计划量
+        planPurchaseQtyDiff:name==='handle'?row.planPurchaseQtyDiff:null,//差值（实际值，用于计算和提交给后端）
+        displayDiff:null,//显示值（不带符号）仅仅展示，不参与计算
+        operateType:null,//调整方式 1增加 2减少
+        remainingAvailableQty:null,//调整后项目需求剩余量
+        remark:name==='handle'?row.remark:'',//调整说明
       };
+      
+      // 当name=handle时，处理displayDiff和operateType
+      if (name === 'handle' && row.planPurchaseQtyDiff) {
+        const diff = Number(row.planPurchaseQtyDiff);
+        // 根据差值的正负设置调整方式和显示值
+        formData.operateType = diff >= 0 ? 1 : 2;
+        formData.displayDiff = Math.abs(diff).toString();
+        
+        // 计算调整后项目剩余需求量
+        const planPurchaseQty = Number(row.planPurchaseQty) || 0;
+        const totalAvailableQty = Number(row.totalAvailableQty) || 0;
+        formData.remainingAvailableQty = (totalAvailableQty + planPurchaseQty) - (formData.planPurchaseQtyNow || 0);
+      }
+      
+      this.form = formData;
       this.isEdit = false;
       this.visible = true;
       this.$nextTick(() => {
@@ -197,9 +216,9 @@ export default {
               // 如果是handle模式，保存后刷新当前详情页面
               if (this.currentName === "handle") {
                 // 关闭弹窗后，刷新父页面
-                this.$nextTick(() => {
-                  window.location.reload();
-                });
+                // this.$nextTick(() => {
+                //   window.location.reload();
+                // });
               }
             })
             .catch((err) => {
