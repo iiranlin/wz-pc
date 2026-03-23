@@ -337,6 +337,7 @@ export default {
       await Api.detail(this.parentId).then(({ data }) => {
         this.$refs.vFormRef.setFormData({
           ...data,
+          signDate: null,
           contractNo: '',
           oldName: data.contractName,
           contractName: "",
