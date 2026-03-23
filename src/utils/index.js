@@ -738,7 +738,7 @@ export function extractSelectOptions(node) {
  * 
  * @param {*} data 数组 
  * @param {*} targetBusinessType  目标业务类型
- * 51物代公司给供应商提供的需求计划表
+ * 51物资代理机构给供应商提供的需求计划表
  * 54需求计划表附件
  * @returns  目标业务类型的数组
  */

@@ -159,12 +159,12 @@
             </template>
           </el-form-item>
         </template>
-        <!-- 物代公司 -->
+        <!-- 物资代理机构 -->
         <template #materialAgentCompanySlot="{ formModel }">
           <el-form-item
             prop="materialAgentCompanyId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="物代公司"
+            label="物资代理机构"
             class="label-right-align"
           >
             <template v-if="type !== 'view'">

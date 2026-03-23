@@ -117,12 +117,12 @@
             </template>
           </el-form-item>
         </template>
-        <!-- 物代公司 -->
+        <!-- 物资代理机构 -->
         <template #materialAgentCompanySlot="{ formModel }">
           <el-form-item
             prop="materialAgentCompanyId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="物代公司"
+            label="物资代理机构"
             class="label-right-align"
           >
             <template v-if="type !== 'view'">
@@ -155,12 +155,12 @@
             </template>
           </el-form-item>
         </template>
-        <!-- 物代公司联络人 -->
+        <!-- 物资代理机构联络人 -->
         <template #materialAgentLeaderSlot="{ formModel }">
           <el-form-item
             prop="materialAgentLeaderId"
             :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label="物代公司联络人"
+            label="物资代理机构联络人"
             class="label-right-align"
           >
             <template v-if="type !== 'view'">
@@ -436,7 +436,7 @@ export default {
           [key]: options.find(item => item.value === val)?.label
         })
 
-        // 选择物代公司时，获取对应公司的物代公司联络人
+        // 选择物资代理机构时，获取对应公司的物资代理机构联络人
         if (key === 'materialAgentCompany') {
           this.getmaterialAgentLeaderOptions(val);
         }
@@ -444,7 +444,7 @@ export default {
     },
     async getmaterialAgentLeaderOptions(deptId) {
 
-      // 变化后清空物代公司联络人选项和已选值
+      // 变化后清空物资代理机构联络人选项和已选值
       this.materialAgentLeaderOptions = [];
       this.$refs.vFormRef.setFormData({
         materialAgentLeader: '',

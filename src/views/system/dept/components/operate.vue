@@ -121,7 +121,7 @@ export default {
 				value: "SN"
 			},
 			{
-				label: "物代公司",
+				label: "物资代理机构",
 				value: "WZDL"
 			},
 			{

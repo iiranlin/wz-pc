@@ -64,7 +64,7 @@ export default {
       const deptEnums = {
         'TLJ': '路局',
         'SN': '指挥部',
-        'WZDL': '物代公司',
+        'WZDL': '物资代理机构',
         'ZB': '施工单位(局指)',
         'FB': '施工单位(分部)',
         'JL': '监理单位',
