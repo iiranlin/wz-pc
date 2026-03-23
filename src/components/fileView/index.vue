@@ -24,8 +24,25 @@
                 <vue-office-excel v-else-if="isSuccess && ['xlsx', 'xls'].includes(fileType)" :src="url"
                     :options="excelOptions" @rendered="handleRendered" @error="handleError" />
                 <template v-else-if="isSuccess && ['pdf'].includes(fileType)">
-                    <vue-office-pdf ref="pdf" :page="currentPage" @num-pages="pageCount = $event"
-                        @page-loaded="currentPage = $event" :src="url" @loaded="handleRendered" />
+                    <div class="pdfPreviewWrapper">
+                        <div class="pdfFloatingToolbar">
+                            <el-tooltip content="缩小" placement="left">
+                                <el-button circle size="mini" icon="el-icon-minus" @click="handlePdfZoomOut"
+                                    :disabled="pdfScale <= pdfScaleMin" />
+                            </el-tooltip>
+                            <el-tooltip content="放大" placement="left">
+                                <el-button circle size="mini" icon="el-icon-plus" @click="handlePdfZoomIn"
+                                    :disabled="pdfScale >= pdfScaleMax" />
+                            </el-tooltip>
+                            <el-tooltip content="向右旋转" placement="left">
+                                <el-button circle size="mini" icon="el-icon-refresh-right" @click="handlePdfRotate(90)" />
+                            </el-tooltip>
+                        </div>
+                        <div class="pdfPreviewInner" :style="pdfPreviewInnerStyle">
+                            <vue-office-pdf ref="pdf" :page="currentPage" :rotate="pdfRotate" @num-pages="pageCount = $event"
+                                @page-loaded="currentPage = $event" :src="url" @loaded="handleRendered" />
+                        </div>
+                    </div>
                 </template>
 
                 <div v-else-if="isSuccess && pngTypes.includes(fileType)" class="gifFile">
@@ -104,6 +121,11 @@ export default {
         return {
             currentPage: 0, // pdf文件页码
             pageCount: 0, // pdf文件总页数
+            pdfScale: 1,
+            pdfScaleStep: 0.25,
+            pdfScaleMin: 0.5,
+            pdfScaleMax: 2,
+            pdfRotate: 0,
 
             svgIcon: {
                 png: imgIcon,
@@ -138,11 +160,19 @@ export default {
             }
         }
     },
+    computed: {
+        pdfPreviewInnerStyle() {
+            return {
+                width: `${this.pdfScale * 100}%`
+            }
+        }
+    },
     methods: {
         handleFullChange() {
             this.key = `${Date.now()}`
         },
         async handlePreview() {
+            this.resetPdfView()
             if (['xlsx', 'xls'].includes(this.fileType)) {
                 this.excelOptions.xls = this.fileType == 'xls'
             }
@@ -156,6 +186,7 @@ export default {
         },
         handleClose() {
             this.visible = false
+            this.resetPdfView()
         },
 
         handleRendered(res) {
@@ -163,6 +194,19 @@ export default {
             this.loading = false
             this.currentPage = 1; // 加载的时候先加载第一页
 
+        },
+        resetPdfView() {
+            this.pdfScale = 1
+            this.pdfRotate = 0
+        },
+        handlePdfZoomIn() {
+            this.pdfScale = Math.min(this.pdfScale + this.pdfScaleStep, this.pdfScaleMax)
+        },
+        handlePdfZoomOut() {
+            this.pdfScale = Math.max(this.pdfScale - this.pdfScaleStep, this.pdfScaleMin)
+        },
+        handlePdfRotate(step) {
+            this.pdfRotate = (this.pdfRotate + step + 360) % 360
         },
         //上一页
         prev() {
@@ -380,10 +424,43 @@ export default {
 
 
     .filePreview {
+        position: relative;
         height: 100%;
         min-height: 400px;
-        overflow-y: auto;
+        overflow: auto;
         background-color: #fff;
+
+        .pdfPreviewWrapper {
+            position: relative;
+            min-width: 100%;
+            min-height: 100%;
+            padding: 12px 0;
+            box-sizing: border-box;
+        }
+
+        .pdfFloatingToolbar {
+            position: absolute;
+            top: 100px;
+            right: 24px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid #ebeef5;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+            .el-button {
+                margin-left: 0;
+            }
+        }
+
+        .pdfPreviewInner {
+            min-width: 320px;
+            margin: 0 auto;
+        }
 
         .gifFile {
             height: 100%;
@@ -411,6 +488,16 @@ export default {
             justify-content: center;
             align-items: center;
             color: #999;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .fileViewDialog {
+        .filePreview {
+            .pdfFloatingToolbar {
+                display: none;
+            }
         }
     }
 }
