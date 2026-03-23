@@ -442,6 +442,22 @@ export default {
         case "export":
           this.handleDonwload(idArr[0]);
           break;
+        case "download":
+          this.download(idArr[0]);
+        break;
+      }
+    },
+      async download() {
+      try {
+        this.loading = true;
+        const isAllSelected = this.selection.length > 0 && this.selection.length === this.list.length;
+        const isNoneSelected = this.selection.length === 0;
+        const idList = (isAllSelected || isNoneSelected) ? null : this.ids;
+        await FileApi.customDownload({businessType:130,businessData : JSON.stringify({...this.formData,idList}) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     async handleDonwload(id) {

@@ -55,6 +55,15 @@ export const downloadSettlementList = (params) => {
  * 126:供应商退货列表下载
  * 127:需求库存列表下载
  * 128:采购合同核备列表下载
+ * 
+ * 129:物资价格预警列表下载
+ * 130:物资计划管理/用料需求列表下载
+ * 131:物资计划管理/需求供应管理下载
+ * 132:供应管理/供应需求列表下载
+ * 133:初验收货管理/收货列表下载
+ * 134:入库管理/入库列表下载
+ * 135:出库管理/出库列表下载
+ 
  **/
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')
