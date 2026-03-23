@@ -23,7 +23,8 @@
         <template #contractNumberSlot="{ formModel }">
           <el-form-item label-width="175px" prop="contractNumber" label="合同编号" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
             <div style="position: relative;">
-              <el-input v-model="formModel.contractNumber" placeholder="请选择" @blur="handleContractNoBlur(formModel.contractNumber)"></el-input>
+              <el-input v-if="type === 'create'" v-model="formModel.contractNumber" placeholder="请选择" @blur="handleContractNoBlur(formModel.contractNumber)"></el-input>
+              <span v-else>{{ formModel.contractNumber }}</span>
             </div>
             <div v-if="contractNoDuplicate" style="color: #f56c6c; font-size: 12px; line-height: 1; padding-top: 4px;">合同编号已存在，可重复提交</div>
           </el-form-item>
