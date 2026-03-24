@@ -437,6 +437,7 @@ export default {
 			getCurrentSection().then(res => {
 				this.projectData = res.data;
 				this.$refs['vFormRef'].setFormData({
+					sectionId: res.data.id,
 					projefctName: res.data.projectName,
 					unitName: res.data.constructionCompany,
 					sectionShortName: res.data.projectShortName,
