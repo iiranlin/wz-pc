@@ -13,7 +13,25 @@
                     <div class="title">{{ title }}</div>
                 </div>
             </template>
-            <div v-loading="loading" :key="key" class="filePreview">
+            <div class="pdfFloatingToolbar" v-if="isSuccess && ['pdf'].includes(fileType)">
+                <el-tooltip content="缩小" placement="bottom">
+                    <el-button circle size="mini" icon="el-icon-minus" @click="handlePdfZoomOut"
+                        :disabled="pdfScale <= pdfScaleMin" />
+                </el-tooltip>
+                <span class="scale-text">{{ Math.round(pdfScale * 100) }}%</span>
+                <el-tooltip content="放大" placement="bottom">
+                    <el-button circle size="mini" icon="el-icon-plus" @click="handlePdfZoomIn"
+                        :disabled="pdfScale >= pdfScaleMax" />
+                </el-tooltip>
+                <div class="divider"></div>
+                <el-tooltip content="向左旋转" placement="bottom">
+                    <el-button circle size="mini" icon="el-icon-refresh-left" @click="handlePdfRotate(-90)" />
+                </el-tooltip>
+                <el-tooltip content="向右旋转" placement="bottom">
+                    <el-button circle size="mini" icon="el-icon-refresh-right" @click="handlePdfRotate(90)" />
+                </el-tooltip>
+            </div>
+            <div ref="filePreview" v-loading="loading" :key="key" class="filePreview">
                 <vue-office-docx v-if="isSuccess && fileType === 'docx'" :src="url" @rendered="handleRendered"
                     @error="handleError" />
                 <div v-else-if="isSuccess && fileType === 'doc'" class="docx-container">
@@ -24,20 +42,8 @@
                 <vue-office-excel v-else-if="isSuccess && ['xlsx', 'xls'].includes(fileType)" :src="url"
                     :options="excelOptions" @rendered="handleRendered" @error="handleError" />
                 <template v-else-if="isSuccess && ['pdf'].includes(fileType)">
-                    <div class="pdfPreviewWrapper">
-                        <div class="pdfFloatingToolbar">
-                            <el-tooltip content="缩小" placement="left">
-                                <el-button circle size="mini" icon="el-icon-minus" @click="handlePdfZoomOut"
-                                    :disabled="pdfScale <= pdfScaleMin" />
-                            </el-tooltip>
-                            <el-tooltip content="放大" placement="left">
-                                <el-button circle size="mini" icon="el-icon-plus" @click="handlePdfZoomIn"
-                                    :disabled="pdfScale >= pdfScaleMax" />
-                            </el-tooltip>
-                            <el-tooltip content="向右旋转" placement="left">
-                                <el-button circle size="mini" icon="el-icon-refresh-right" @click="handlePdfRotate(90)" />
-                            </el-tooltip>
-                        </div>
+                    <div class="pdfPreviewWrapper" :class="{ 'is-dragging': isPdfDragging }"
+                        @mousedown="handlePdfDragStart" @dragstart.prevent>
                         <div class="pdfPreviewInner" :style="pdfPreviewInnerStyle">
                             <vue-office-pdf ref="pdf" :page="currentPage" :rotate="pdfRotate" @num-pages="pageCount = $event"
                                 @page-loaded="currentPage = $event" :src="url" @loaded="handleRendered" />
@@ -126,6 +132,11 @@ export default {
             pdfScaleMin: 0.5,
             pdfScaleMax: 2,
             pdfRotate: 0,
+            isPdfDragging: false,
+            pdfDragStartX: 0,
+            pdfDragStartY: 0,
+            pdfDragScrollLeft: 0,
+            pdfDragScrollTop: 0,
 
             svgIcon: {
                 png: imgIcon,
@@ -186,6 +197,7 @@ export default {
         },
         handleClose() {
             this.visible = false
+            this.stopPdfDrag()
             this.resetPdfView()
         },
 
@@ -207,6 +219,44 @@ export default {
         },
         handlePdfRotate(step) {
             this.pdfRotate = (this.pdfRotate + step + 360) % 360
+        },
+        handlePdfDragStart(event) {
+            if (this.fileType !== 'pdf' || event.button !== 0) {
+                return
+            }
+            if (event.target.closest('.pdfFloatingToolbar')) {
+                return
+            }
+            const previewEl = this.$refs.filePreview
+            if (!previewEl) {
+                return
+            }
+            this.isPdfDragging = true
+            this.pdfDragStartX = event.clientX
+            this.pdfDragStartY = event.clientY
+            this.pdfDragScrollLeft = previewEl.scrollLeft
+            this.pdfDragScrollTop = previewEl.scrollTop
+            window.addEventListener('mousemove', this.handlePdfDragMove)
+            window.addEventListener('mouseup', this.stopPdfDrag)
+            event.preventDefault()
+        },
+        handlePdfDragMove(event) {
+            if (!this.isPdfDragging) {
+                return
+            }
+            const previewEl = this.$refs.filePreview
+            if (!previewEl) {
+                return
+            }
+            const deltaX = event.clientX - this.pdfDragStartX
+            const deltaY = event.clientY - this.pdfDragStartY
+            previewEl.scrollLeft = this.pdfDragScrollLeft - deltaX
+            previewEl.scrollTop = this.pdfDragScrollTop - deltaY
+        },
+        stopPdfDrag() {
+            this.isPdfDragging = false
+            window.removeEventListener('mousemove', this.handlePdfDragMove)
+            window.removeEventListener('mouseup', this.stopPdfDrag)
         },
         //上一页
         prev() {
@@ -323,6 +373,9 @@ export default {
             }
         }
     },
+    beforeDestroy() {
+        this.stopPdfDrag()
+    },
 };
 </script>
 <style lang="scss">
@@ -387,6 +440,62 @@ export default {
 
     .el-dialog__body {
         height: calc(100% - 100px);
+        position: relative;
+    }
+
+    .pdfFloatingToolbar {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        z-index: 10;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 30px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+
+        .scale-text {
+            font-size: 13px;
+            color: #606266;
+            min-width: 42px;
+            text-align: center;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .divider {
+            width: 1px;
+            height: 16px;
+            background: #dcdfe6;
+            margin: 0 4px;
+        }
+
+        .el-button {
+            margin-left: 0;
+            border: none;
+            background: rgba(255, 255, 255, 0.6);
+            color: #606266;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            
+            &:hover:not(.is-disabled) {
+                color: #1890ff;
+                background: #e6f7ff;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(24, 144, 255, 0.15);
+            }
+            
+            &.is-disabled {
+                background: transparent;
+                box-shadow: none;
+            }
+        }
     }
 
     .filePreviewTitle {
@@ -436,26 +545,15 @@ export default {
             min-height: 100%;
             padding: 12px 0;
             box-sizing: border-box;
-        }
+            cursor: grab;
+            user-select: none;
 
-        .pdfFloatingToolbar {
-            position: absolute;
-            top: 100px;
-            right: 24px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.96);
-            border: 1px solid #ebeef5;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-
-            .el-button {
-                margin-left: 0;
+            &.is-dragging {
+                cursor: grabbing;
             }
         }
+
+
 
         .pdfPreviewInner {
             min-width: 320px;
@@ -494,10 +592,8 @@ export default {
 
 @media screen and (max-width: 768px) {
     .fileViewDialog {
-        .filePreview {
-            .pdfFloatingToolbar {
-                display: none;
-            }
+        .pdfFloatingToolbar {
+            display: none;
         }
     }
 }
