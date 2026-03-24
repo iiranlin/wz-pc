@@ -168,3 +168,47 @@ export const countByContractNo = (params) => {
     params
   })
 }
+/**
+ * 招标信息
+ * @param {*} params 
+ * @returns 
+ */
+export const biddingInfo = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTender/list`,
+    method: 'get',
+    params
+  })
+}
+// 招标信息新增
+export const biddingInfoAdd = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTender/save`,
+    method: 'post',
+    data
+  })
+}
+// 招标信息获取招标人名称
+export const getTendererNames = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTender/getTendererNames`,
+    method: 'get',
+    params
+  })
+}
+// 招标信息详情
+export const biddingInfoDetail = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTender/detail/${id}`,
+    method: 'get',
+  })
+}
+
+// 招标信息删除
+export const biddingInfoRemove = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialTender/batchRemove`,
+    method: 'post',
+    data
+  })
+}

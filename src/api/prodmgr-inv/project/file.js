@@ -63,7 +63,7 @@ export const downloadSettlementList = (params) => {
  * 133:初验收货管理/收货列表下载
  * 134:入库管理/入库列表下载
  * 135:出库管理/出库列表下载
- 
+ * 136:招标信息列表导出列表
  **/
 export const customDownload = (params) => {
   return download(`${VUE_APP_PRODMGR_INV}/materialBaseExport/export`, params, 'get')
