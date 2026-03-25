@@ -288,14 +288,14 @@ export default {
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       switch (buttonCode) {
         case "export":
-          this.handleDonwload(idArr[0]);
+          this.handleDonwload(idArr[0],rowArr);
           break;
       }
      },
-    async handleDonwload(id) {
+    async handleDonwload(id,rowArr) {
       try {
         this.loading = true;
-        await FileApi.customDownload({ businessType:9,businessData:id });
+        await FileApi.customDownload({ businessType:rowArr[0].isQualNode == 3 ? 13 : 9,businessData:id });
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
       } finally {
