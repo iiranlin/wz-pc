@@ -103,19 +103,23 @@ export default {
       return this.$route.query?.id || ''
     }
   },
+  watch: {
+    type: {
+      handler (newType) {
+        if (newType === 'create') {
+          this.init()
+        } else if (['view', 'update'].includes(newType)) {
+          this.updateInit(this.id)
+        }
+      },
+      immediate: true
+    }
+  },
   created () {
     console.log(this.userInfo)
   },
   mounted () {
-    if (['view', 'update'].includes(this.type)) {
-      this.updateInit(this.id)
-      return
-    }
-    if (this.type === 'create') {
-      this.init()
-      return
-    }
-
+    // 初始化逻辑已移至watch中
   },
   methods: {
      formatTimestamp(timestamp) {
