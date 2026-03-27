@@ -17,7 +17,9 @@
         <template #unitNameSlot="{ formModel }">
           <el-form-item prop="unitName" label="填报单位：" class="label-right-align"
           >
-            <span>{{ formModel.tenderUnit }}</span>
+            <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
+              <span class="ellipsis-text">{{ formModel.tenderUnit }}</span>
+            </el-tooltip>
           </el-form-item>
          </template>
          <template #fillDateSlot="{ formModel}">
@@ -334,5 +336,13 @@ export default {
 
 .mt-20 {
   margin-top: 20px !important;
+}
+
+.ellipsis-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

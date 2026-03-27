@@ -145,7 +145,7 @@
           <span v-else>{{ scope.row.winningBidder }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="中标金额" width="120">
+      <el-table-column label="中标金额（万元）" width="150">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.bidAmount" placeholder="请输入" style="width: 100%" 
           @input="handleBidAmountInput(scope.row, $event)"/>
@@ -172,7 +172,7 @@
       </el-table-column>
       <el-table-column v-if="!isView" label="操作" width="120" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" style="margin-right: 20px;" @click="editItem(scope.$index)">修改</el-button>
+          <!-- <el-button type="text" size="mini" style="margin-right: 20px;" @click="editItem(scope.$index)">修改</el-button> -->
           <el-button type="text" size="mini" @click="removeItem(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -314,9 +314,9 @@ export default {
         formattedValue = parts[0] + '.' + parts.slice(1).join('');
       }
       
-      // 限制小数点后两位
-      if (parts.length === 2 && parts[1].length > 2) {
-        formattedValue = parts[0] + '.' + parts[1].substring(0, 2);
+      // 限制小数点后六位
+      if (parts.length === 2 && parts[1].length > 6) {
+        formattedValue = parts[0] + '.' + parts[1].substring(0, 6);
       }
       
       // 更新值
