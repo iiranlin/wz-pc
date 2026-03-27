@@ -283,7 +283,7 @@ export default {
         const isAllSelected = this.selection.length > 0 && this.selection.length === this.list.length;
         const isNoneSelected = this.selection.length === 0;
         const idList = (isAllSelected || isNoneSelected) ? null : this.ids;
-        await FileApi.customDownload({businessType:120, businessData: JSON.stringify({...this.formData,idList})});
+        await FileApi.customDownload({businessType:14, businessData: JSON.stringify({...this.formData,idList})});
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
       } finally {
