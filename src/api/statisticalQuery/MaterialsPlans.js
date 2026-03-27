@@ -1,14 +1,14 @@
 import request from '@/utils/request'
-let VUE_APP_WORK_FLOW_SERVER = process.env.VUE_APP_WORK_FLOW_SERVER;
+let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
 
 /**
- * 审批列表
+ * 物资明细列表
  * @param {*} params 
  * @returns 
  */
-export const auditList = (params) => {
+export const materialDetailsQueryList = (params) => {
   return request({
-      url: `${VUE_APP_WORK_FLOW_SERVER}/wf/todoList`,
+      url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/getLatestVersionPage`,
       method: 'get',
       params
   })

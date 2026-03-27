@@ -168,6 +168,52 @@ export const countByContractNo = (params) => {
     params
   })
 }
+
+
+/**
+ * 招标统计列表
+ * @param {*} params 
+ * @returns 
+ */
+// 统计查询
+export const tenderStatisticsList = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/matTenderRest/list`,
+    method: 'get',
+    params
+  })
+}
+// 招标统计详情
+export const tenderStatisticsDetail = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/matTenderRest/detail/${id}`,
+    method: 'get',
+  })
+}
+// 招标统计批量更新状态(提交/撤回)
+export const batchUpdateStatus = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/matTenderRest/batchUpdateStatus`,
+    method: 'post',
+    data
+  })
+}
+// 招标统计新增/修改
+export const tenderStatisticsAdd = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/matTenderRest/save`,
+    method: 'post',
+    data
+  })
+}
+// 招标统计批量删除
+export const batchRemoveTenderStatistics = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/matTenderRest/batchRemove`,
+    method: 'post',
+    data
+  })
+}
 /**
  * 招标信息
  * @param {*} params 
@@ -175,7 +221,7 @@ export const countByContractNo = (params) => {
  */
 export const biddingInfo = (params) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialTender/list`,
+    url: `${VUE_APP_PRODMGR_INV}/materialTenderInfo/list`,
     method: 'get',
     params
   })
@@ -183,7 +229,7 @@ export const biddingInfo = (params) => {
 // 招标信息新增
 export const biddingInfoAdd = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialTender/save`,
+    url: `${VUE_APP_PRODMGR_INV}/materialTenderInfo/save`,
     method: 'post',
     data
   })
@@ -191,7 +237,7 @@ export const biddingInfoAdd = (data) => {
 // 招标信息获取招标人名称
 export const getTendererNames = (params) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialTender/getTendererNames`,
+    url: `${VUE_APP_PRODMGR_INV}/materialTenderInfo/getTendererNames`,
     method: 'get',
     params
   })
@@ -199,7 +245,7 @@ export const getTendererNames = (params) => {
 // 招标信息详情
 export const biddingInfoDetail = (id) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialTender/detail/${id}`,
+    url: `${VUE_APP_PRODMGR_INV}/materialTenderInfo/detail/${id}`,
     method: 'get',
   })
 }
@@ -207,7 +253,7 @@ export const biddingInfoDetail = (id) => {
 // 招标信息删除
 export const biddingInfoRemove = (data) => {
   return request({
-    url: `${VUE_APP_PRODMGR_INV}/materialTender/batchRemove`,
+    url: `${VUE_APP_PRODMGR_INV}/materialTenderInfo/batchRemove`,
     method: 'post',
     data
   })

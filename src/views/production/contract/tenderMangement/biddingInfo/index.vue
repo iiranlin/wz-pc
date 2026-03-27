@@ -27,7 +27,7 @@
       <template #materialCategory="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择'
           " clearable style="width: 100%" size="small">
-          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.value" />
+          <el-option  v-for="item in dict.type.WZDL" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </template>
     </form-data>
@@ -60,9 +60,9 @@
           :customnDisabled="true"
         >
           <!-- 单据明细 -->
-      <template #tenderProjectName="scoped">
+      <template #tenderNo="scoped">
         <el-button type="text" @click="getDtail(scoped.data.id)">
-          {{scoped.data.tenderProjectName}}
+          {{scoped.data.tenderNo}}
         </el-button>
       </template>
         </table-index>
@@ -88,6 +88,7 @@ export default {
   // 招标信息列表
   name: "biddingInfoList",
   mixins: [indexMixin],
+  dicts: ["WZDL"],
   activated() {
     this.getList();
   },
@@ -230,7 +231,10 @@ export default {
      async handleDonwload() {
       try {
         this.loading = true;
-        await FileApi.customDownload({ businessType: 136, businessData:JSON.stringify(this.formData) });
+        const isAllSelected = this.selection.length > 0 && this.selection.length === this.list.length;
+        const isNoneSelected = this.selection.length === 0;
+        const idList = (isAllSelected || isNoneSelected) ? null : this.ids;
+        await FileApi.customDownload({businessType:137, businessData: JSON.stringify({...this.formData,idList})});
 
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");

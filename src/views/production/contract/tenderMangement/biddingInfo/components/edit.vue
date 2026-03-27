@@ -21,8 +21,7 @@
             label="项目："
             class="label-right-align"
           >
-            <template>
-              <el-select
+              <el-select v-if="type !== 'view'"
                 v-model="formModel.tenderProjectId"
                 filterable
                 style="width: 100%"
@@ -37,8 +36,9 @@
                 >
                 </el-option>
               </el-select>
-            </template>
+              <span v-else>{{ formModel.tenderProjectName }}</span>
           </el-form-item>
+          
         </template>
         
          <template #personNameSlot>
@@ -47,7 +47,9 @@
             label="招标人名称："
             class="label-right-align"
           >
-            <span>{{ formData.tendererName }}</span>
+            <el-tooltip :content="formData.tendererName" placement="top" effect="dark">
+              <span class="ellipsis-text">{{ formData.tendererName }}</span>
+            </el-tooltip>
           </el-form-item>
          </template>
 
@@ -59,8 +61,8 @@
             label="物资类别："
             class="label-right-align"
           >
-            <template>
               <el-select
+              v-if="type !== 'view'"
                 v-model="formModel.materialCategory"
                 filterable
                 style="width: 100%"
@@ -73,7 +75,7 @@
                   :value="item.value"
                 />
               </el-select>
-            </template>
+              <span v-else>{{ formModel.materialCategory }}</span>
           </el-form-item>
         </template>
 
@@ -298,5 +300,13 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+.ellipsis-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

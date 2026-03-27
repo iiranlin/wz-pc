@@ -1,0 +1,338 @@
+<template>
+  <div class="app-container container_flex">
+    <button-top
+      :buttonTopData="buttonTop"
+      :buttonShow="buttonShow"
+      @newButton="newButton"
+    ></button-top>
+    <div :class="{ container_flex_form: type === 'view' }">
+      <VFormRender
+        :form-json="formJson"
+        :form-data="formData"
+        :option-data="optionData"
+        ref="vFormRef"
+        :global-dsv="globalDsv"
+        :class="{ formRender_view: type === 'view' }"
+      >
+        <template #unitNameSlot="{ formModel }">
+          <el-form-item prop="unitName" label="填报单位：" class="label-right-align"
+          >
+            <span>{{ formModel.tenderUnit }}</span>
+          </el-form-item>
+         </template>
+         <template #fillDateSlot="{ formModel}">
+             <el-form-item  prop="fillReportTime" label="填报时间：" class="label-right-align"
+             :rules=" { required: true, message: '请选择填报时间', trigger: 'blur' }">
+               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" />
+                <span v-else>{{ formatTimestamp(formModel.fillReportTime) }}</span>
+              </el-form-item>
+             
+         </template>
+         <template #personNameSlot="{ formModel }">
+           <el-form-item  prop="fillPerson" label="填表人：" class="label-right-align"
+           :rules=" { required: true, message: '请输入填表人', trigger: 'blur' }">
+             <el-input v-if="type !== 'view'" v-model="formModel.fillPerson" placeholder="请输入填表人" />
+             <span v-else>{{ formModel.fillPerson }}</span>
+           </el-form-item>
+           
+         </template>
+         <template #relatePersonlSlot="{ formModel }">
+           <el-form-item  prop="contactPerson" label="联系人：" class="label-right-align"
+           :rules=" { required: true, message: '请输入联系人', trigger: 'blur' }">
+              <el-input v-if="type !== 'view'" v-model="formModel.contactPerson" placeholder="请输入联系人" />
+              <span v-else>{{ formModel.contactPerson }}</span>
+           </el-form-item>
+         </template>
+       
+         <!-- 甲供物资列表 -->
+         <template #tableSlot="{formModel}">
+          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" @input="handleTableInput" />
+        </template>
+      </VFormRender>
+    </div>
+  </div>
+</template>
+
+<script>
+import * as Api from '@/api/prodmgr-inv/project/contract.js'
+import * as LineApi from '@/api/prodmgr-inv/project/line.js'
+import VFormRender from '@/components/form-render/index'
+import { formFillInPage } from '@/api/form/form'
+import { getToken } from '@/utils/auth'
+import dayjs from 'dayjs'
+import ItemsTable from './itemsTable.vue'
+import { getUserInfo } from '@/utils/user-info'
+export default {
+  name: "addTenderStatics",
+  dicts: ["MeasureUnit", "WZDL"],
+  components: {VFormRender,ItemsTable},
+  data () {
+      return {
+        loading: false,
+        title: '新增',
+        checked: false,
+        fileList: [],
+        formJson: {
+        },
+        formData: {
+          materialTenderInfoDOList: [],
+        },
+        optionData: {},
+        globalDsv: {
+          VUE_APP_BASE_API: process.env.VUE_APP_BASE_API,
+          VUE_APP_BASE_SERVER: process.env.VUE_APP_BASE_SERVER,
+          Authorization: getToken(),
+          businessType: '24'
+        },
+        // 菜单按钮、字段等数据
+        buttonTop: [
+          { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
+          { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
+        ],
+        lineOptions: [],
+        userInfo: getUserInfo(),
+      }
+    },
+  computed: {
+    type () {
+      return this.$route.query.type
+    },
+    id () {
+      return this.$route.query?.id || ''
+    }
+  },
+  created () {
+    console.log(this.userInfo)
+  },
+  mounted () {
+    if (['view', 'update'].includes(this.type)) {
+      this.updateInit(this.id)
+      return
+    }
+    if (this.type === 'create') {
+      this.init()
+      return
+    }
+
+  },
+  methods: {
+     formatTimestamp(timestamp) {
+      // 如果是时间戳（数字类型），转换为年月日格式
+      if (timestamp && typeof timestamp === 'number') {
+        return dayjs(timestamp).format('YYYY-MM-DD');
+      }
+      // 如果已经是字符串格式，直接返回
+      return timestamp;
+    },
+
+    //获取招标人名称
+    async getTendererNames() {
+      try {
+        const response = await Api.getTendererNames();
+        console.log(response)
+        
+        const tenderUnit = response.data[0].name || '';
+        
+        // 更新 formData
+        this.formData.tenderUnit = tenderUnit;
+        
+        // 更新VFormRender中的表单数据
+        if (this.$refs.vFormRef) {
+          // 确保同时设置所有默认值，避免覆盖
+          this.$refs.vFormRef.setFormData({
+            ...this.formData
+          });
+        }
+      } catch (error) {
+        console.error('获取填报单位失败:', error);
+      }
+    },
+
+
+    //初始化
+    init () {
+      this.$nextTick(async () => {
+        this.title = "新建";
+        await this.formFillInPage();
+        // 获取招标人名称
+        await this.getTendererNames();
+        // 设置默认当前日期
+        const currentDate = dayjs().format('YYYY-MM-DD');
+        // 初始化 formData
+        this.formData = {
+          fillReportTime: currentDate,
+          fillPerson: this.userInfo.nickName,
+          contactPerson: this.userInfo.nickName,
+          materialTenderInfoDOList: []
+        };
+        if (this.$refs.vFormRef) {
+          // 初始化默认值
+          this.$refs.vFormRef.setFormData(this.formData);
+        }
+      });
+    },
+    // 编辑初始化
+    async updateInit (id) {
+      await Api.tenderStatisticsDetail(id).then(({ data }) => {
+        this.$nextTick(async () => {
+          this.title = "编辑";
+          await this.formFillInPage()
+          // 更新 formData
+          this.formData = data;
+          // 确保 materialTenderInfoDOList 是数组
+          if (!this.formData.materialTenderInfoDOList) {
+            this.formData.materialTenderInfoDOList = [];
+          }
+          this.$refs.vFormRef.setFormData(data)
+          //   form action
+          this.$refs.vFormRef.setReadMode(this.type === 'view')
+        });
+      });
+    },
+    newButton (buttonCode) {
+      if (buttonCode === 'cancel') {
+        this.cancel()
+        return
+      }
+      if (buttonCode === 'save') {
+        this.handleCreate()
+        return
+      }
+
+    },
+    cancel () {
+       this.$router.go(-1);
+    },
+
+    buttonShow (item) {
+      if (item.buttonCode === 'save') {
+        return this.type !== 'view'
+      }
+      return true
+    },
+    //新建
+    handleCreate () {
+      this.$refs.vFormRef.validateForm(async (valid) => {
+        if (valid) {
+          this.loading = true;
+           const vFormRefData = await this.$refs.vFormRef.getFormData();
+          // 直接使用 this.formData，因为 VFormRender 可能不会包含 materialTenderInfoDOList
+           const formData = this.formData;
+          // 验证表格中的必填项
+          const materialTenderInfoDOList = formData.materialTenderInfoDOList || [];
+          for (let i = 0; i < materialTenderInfoDOList.length; i++) {
+            const item = materialTenderInfoDOList[i];
+            if (!item.tenderProjectId) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标项目名称为必填项`);
+              return;
+            }
+            if (!item.tenderYear) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标年度为必填项`);
+              return;
+            }
+            if (!item.tenderTradePlace) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标交易场所为必填项`);
+              return;
+            }
+            if (!item.projectCategory) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：项目类别为必填项`);
+              return;
+            }
+          }
+
+          let submitData = {...formData,...vFormRefData};
+          
+          // 将日期字段转换为时间戳
+          if (submitData.materialTenderInfoDOList) {
+            submitData.materialTenderInfoDOList.forEach(item => {
+              // 转换招标年度
+              if (item.tenderYear) {
+                item.tenderYear = new Date(item.tenderYear).getFullYear();
+                item.tenderYear = item.tenderYear.toString();
+              }
+              // 转换招标发布公告时间
+              if (item.tenderNoticePubTime) {
+                item.tenderNoticePubTime = new Date(item.tenderNoticePubTime).getTime();
+              }
+              // 转换开标时间
+              if (item.bidOpenTime) {
+                item.bidOpenTime = new Date(item.bidOpenTime).getTime();
+              }
+              // 转换推荐中标候选人公示时间
+              if (item.candidatePubTime) {
+                item.candidatePubTime = new Date(item.candidatePubTime).getTime();
+              }
+              // 转换中标通知书时间
+              if (item.bidNoticeTime) {
+                item.bidNoticeTime = new Date(item.bidNoticeTime).getTime();
+              }
+              // 转换合同签订时间
+              if (item.contractSignTime) {
+                item.contractSignTime = new Date(item.contractSignTime).getTime();
+              }
+            });
+          }
+          // 将 fillReportTime 转换为时间戳
+          if (submitData.fillReportTime) {
+            submitData.fillReportTime = new Date(submitData.fillReportTime).getTime();
+          }
+          
+          await Api[`tenderStatisticsAdd`](Object.assign({ id: this.type === 'update' ? this.id : null }, submitData))
+            .then(({ message }) => {
+              this.loading = false;
+              this.$modal.msgSuccess(message);
+              this.cancel();
+            })
+            .finally((err) => {
+              this.loading = false;
+            });
+        }
+      });
+    },
+    formFillInPage () {
+      return new Promise((resolve) => {
+        formFillInPage('addTenderStatics').then(res => {
+          this.$refs['vFormRef'].setFormJson(res.data)
+          resolve(true)
+        })
+      })
+    },
+    
+    // 处理表格数据变化
+    handleTableInput(newData) {
+      console.log('handleTableInput called with:', newData);
+      // 更新formData
+      this.formData = { ...this.formData, ...newData };
+      // 更新VFormRender中的表单数据
+      if (this.$refs.vFormRef) {
+        this.$refs.vFormRef.setFormData(this.formData);
+        console.log('Form data updated in VFormRender');
+      }
+      console.log('Updated formData:', this.formData);
+    },
+
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.slotIcon-color-content {
+  color: red;
+}
+
+.slotIcon-color {
+  color: #1890ff;
+}
+
+.ml-20 {
+  margin-left: 20px !important;
+}
+
+.mt-20 {
+  margin-top: 20px !important;
+}
+</style>
