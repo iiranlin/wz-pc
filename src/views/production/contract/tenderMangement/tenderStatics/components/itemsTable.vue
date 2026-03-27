@@ -15,7 +15,7 @@
     <!-- 动态table项 -->
     <el-table :data="materialTenderInfoDOList" style="margin-top: 20px;" size="small">
       <el-table-column label="序号" type="index" width="50" align="center" />
-      <el-table-column width="180">
+      <el-table-column width="180" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标项目名称
         </template>
@@ -31,7 +31,7 @@
           {{ scope.row.tendererName }}
         </template>
       </el-table-column>
-      <el-table-column prop="year" width="130">
+      <el-table-column prop="year" width="130" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标年度
         </template>
@@ -40,7 +40,7 @@
           <span v-else>{{ formatTimestamp(scope.row.tenderYear) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150">
+      <el-table-column width="150" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标交易场所
         </template>
@@ -49,7 +49,7 @@
           <span v-else>{{ scope.row.tenderTradePlace }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120">
+      <el-table-column width="120" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 项目类别
         </template>
@@ -58,7 +58,7 @@
           <span v-else>{{ scope.row.projectCategory }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="物资类别" width="160">
+      <el-table-column label="物资类别" width="160" align="center">
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.materialCategory" placeholder="请选择" style="width: 100%">
             <el-option v-for="item in dict.type.WZDL" :key="item.value" :label="item.label" :value="item.value" />
@@ -66,31 +66,31 @@
           <span v-else>{{ scope.row.materialCategory }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="招标编号" width="150">
+      <el-table-column label="招标编号" width="150" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tenderNo" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.tenderNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="包件号" width="100">
+      <el-table-column label="包件号" width="100" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.packageNo" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.packageNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="物资种类" width="120">
+      <el-table-column label="物资种类" width="120" align="center">
         <template slot-scope="scope">
          <el-input v-if="!isView" v-model="scope.row.materialType" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.materialType }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="细目" width="120">
+      <el-table-column label="细目" width="120" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.itemDetail" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.itemDetail }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="计量单位" width="120">
+      <el-table-column label="计量单位" width="120" align="center">
         <template slot-scope="scope">
           <el-select 
             v-model="scope.row.measureUnit"
@@ -109,62 +109,62 @@
           <span v-else>{{ scope.row.measureUnit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="招标数量" width="100">
+      <el-table-column label="招标数量" width="100" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tenderQuantity" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.tenderQuantity }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="招标发布公告时间" width="170">
+      <el-table-column label="招标发布公告时间" width="170" align="center">
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.tenderNoticePubTime" placeholder="请选择" type="date" style="width: 100%" />
           <span v-else>{{ formatTimestamp(scope.row.tenderNoticePubTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="开标时间" width="160">
+      <el-table-column label="开标时间" width="160" align="center">
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.bidOpenTime" placeholder="请选择" type="date" style="width: 100%" />
           <span v-else>{{ formatTimestamp(scope.row.bidOpenTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="推荐中标候选人公示时间" width="180">
+      <el-table-column label="推荐中标候选人公示时间" width="180" align="center">
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.candidatePubTime" placeholder="请选择" type="date" style="width: 100%" />
           <span v-else>{{ formatTimestamp(scope.row.candidatePubTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="中标通知书时间" width="160">
+      <el-table-column label="中标通知书时间" width="160" align="center">
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.bidNoticeTime" placeholder="请选择" type="date" style="width: 100%" />
           <span v-else>{{ formatTimestamp(scope.row.bidNoticeTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="中标单位" width="150">
+      <el-table-column label="中标单位" width="150" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.winningBidder" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.winningBidder }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="中标金额（万元）" width="150">
+      <el-table-column label="中标金额（万元）" width="150" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.bidAmount" placeholder="请输入" style="width: 100%" 
           @input="handleBidAmountInput(scope.row, $event)"/>
           <span v-else>{{ scope.row.bidAmount }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="合同签订时间" width="160">
+      <el-table-column label="合同签订时间" width="160" align="center">
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.contractSignTime" placeholder="请选择" type="date" style="width: 100%" />
           <span v-else>{{ formatTimestamp(scope.row.contractSignTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="投标人名称" width="150">
+      <el-table-column label="投标人名称" width="150" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.bidderName" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.bidderName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" width="150">
+      <el-table-column label="备注" width="150" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.remark" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.remark }}</span>

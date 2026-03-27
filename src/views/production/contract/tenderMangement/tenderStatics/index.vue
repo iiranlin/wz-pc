@@ -206,12 +206,17 @@ export default {
          * 未提交可操作: 修改（单条操作），提交，删除（批量操作）
          * 已提交可操作: 撤回 （批量操作）
          * 
-         * 新增和下载按钮随时都可点击
+         * 新增按钮随时都可点击，下载按钮需要选中数据
          * **/
         
-        // 新增和下载按钮随时都可点击
-        if (btn.buttonCode === 'create' || btn.buttonCode === 'export') {
+        // 新增按钮随时都可点击
+        if (btn.buttonCode === 'create') {
           return false;
+        }
+
+        // 下载按钮需要选中且只能选中一条数据
+        if (btn.buttonCode === 'export') {
+          return !this.selection || this.selection.length !== 1;
         }
 
         // 如果没有选中行，禁用其他按钮
@@ -263,18 +268,18 @@ export default {
           })
           break;
         case "export":
-          this.handleDonwload()
+          this.handleDonwload(idArr[0])
           break;
       }
     },
-     async handleDonwload() {
+     async handleDonwload(id) {
       try {
         this.loading = true;
-        await FileApi.customDownload({ businessType: 136, businessData:JSON.stringify(this.formData) });
+        await FileApi.customDownload({businessType:136, businessData: id});
 
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
-        console.error('下载入库单失败:', error);
+        console.error('下载统计信息失败:', error);
       } finally {
         this.loading = false;
       }
