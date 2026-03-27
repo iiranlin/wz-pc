@@ -367,8 +367,24 @@ export default {
 				case "download":
 					this.handleExport(rowArr[0])
 					break;
+				case "export":
+					this.export()
+					break;
 			}
 		},
+		 async export() {
+      try {
+        this.loading = true;
+        const isAllSelected = this.selection.length > 0 && this.selection.length === this.list.length;
+        const isNoneSelected = this.selection.length === 0;
+        const idList = (isAllSelected || isNoneSelected) ? null : this.ids;
+        await FileApi.customDownload({businessType:138,businessData : JSON.stringify({...this.formData,idList}) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
+      }
+    },
 		handleExport(obj) {
 			FileApi.customDownload({ businessType: 7, businessData: obj.id })
 		},
