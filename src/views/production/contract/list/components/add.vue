@@ -70,7 +70,7 @@
         <!-- 附件 -->
         <template #fileListSlot="scope">
           <el-form-item prop="fileList" label="合同附件" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList" :limit="9999" :fileSize="500" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.contractFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'"
               />
           </el-form-item>
@@ -79,7 +79,7 @@
 
         <template #fileListGgSlot="scope">
           <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList1" :limit="9999" :fileSize="500" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.technicalFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
 
@@ -289,9 +289,13 @@ export default {
             contractStatus: data.contractStatus == '2',
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
+            contractFiles:JSON.parse(data.contractFiles || '[]'),
+            technicalFiles:JSON.parse(data.technicalFiles || '[]'),
             files: JSON.parse(data.files || '[]'),
           }
           newData.files = JSON.parse(JSON.stringify(newData.files || []))
+          newData.contractFiles = JSON.parse(JSON.stringify(newData.contractFiles || []))
+          newData.technicalFiles = JSON.parse(JSON.stringify(newData.technicalFiles || []))
           // validityGuarantee 重新组合为数组
           newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
           this.$refs.vFormRef.setFormData(newData)
@@ -363,6 +367,8 @@ export default {
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
             fileList: [{ fileList },{fileList:fileList1}],
+            contractFiles: JSON.stringify(formData.contractFiles || []),
+            technicalFiles: JSON.stringify(formData.technicalFiles || []),
             files: JSON.stringify(formData.files || []), 
             materialList: this.tableData.map(x => ({
               ...x,

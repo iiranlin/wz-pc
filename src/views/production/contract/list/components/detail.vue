@@ -102,7 +102,7 @@
             class="label-right-align"
           >
             <fileUpload
-              v-model="scope.formModel.fileList"
+              v-model="scope.formModel.contractFiles"
               :limit="9999"
               :fileSize="500"
               :fileType="['pdf']"
@@ -113,7 +113,7 @@
 
          <template #fileListGgSlot="scope">
           <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
-            <fileUpload v-model="scope.formModel.fileList1" :limit="9999" :fileSize="500" :fileType="['pdf']"
+            <fileUpload v-model="scope.formModel.technicalFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
 
@@ -304,6 +304,8 @@ export default {
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
             files: JSON.parse(data.files || '[]'),
+            contractFiles: JSON.parse(data.contractFiles || '[]'),
+            technicalFiles: JSON.parse(data.technicalFiles || '[]'),
           }
           // validityGuarantee 重新组合为数组
           newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
@@ -369,6 +371,8 @@ export default {
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
             fileList: [{ fileList },{fileList:fileList1}],
             files: JSON.stringify(formData.files || []),
+            contractFiles: JSON.stringify(formData.contractFiles || []),
+            technicalFiles: JSON.stringify(formData.technicalFiles || []),
             materialList: this.tableData.map(x => ({
               ...x,
               id: null,

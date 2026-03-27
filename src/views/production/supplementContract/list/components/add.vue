@@ -174,7 +174,7 @@
             class="label-right-align"
           >
             <fileUpload
-              v-model="scope.formModel.fileList"
+              v-model="scope.formModel.contractFiles"
               :limit="9999"
               :fileSize="500"
               :fileType="['pdf']"
@@ -190,7 +190,7 @@
             class="label-right-align"
           >
             <fileUpload
-              v-model="scope.formModel.fileList1"
+              v-model="scope.formModel.technicalFiles"
               :limit="9999"
               :fileSize="500"
               :fileType="['pdf']"
@@ -344,6 +344,8 @@ export default {
           validityGuarantee: [],
           fileList:  [],
           fileList1: [],
+          contractFiles: JSON.parse(data.contractFiles || "[]"),
+          technicalFiles: JSON.parse(data.technicalFiles || "[]"),
         });
 
         // 设置 sellerName 数据属性，确保新增行时能正确获取卖方名称
@@ -440,6 +442,9 @@ export default {
             fileList: data.fileList[0]?.fileList || [],
             fileList1: data.fileList[1]?.fileList || [],
             files: JSON.parse(data.files || "[]"),
+            contractFiles: JSON.parse(data.contractFiles || "[]"),
+            technicalFiles: JSON.parse(data.technicalFiles || "[]"),
+            
           };
           // validityGuarantee 重新组合为数组
           newData.validityGuarantee = [
@@ -528,6 +533,8 @@ export default {
               formData,
               {
                   files: JSON.stringify(formData.files || []),
+                  contractFiles: JSON.stringify(formData.contractFiles || []),
+                  technicalFiles: JSON.stringify(formData.technicalFiles || []),
                 parentId: this.parentId,
                 fileList: [{ fileList }, { fileList: fileList1 }],
                 materialList: this.tableData.map((x) => ({
