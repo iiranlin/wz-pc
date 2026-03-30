@@ -196,7 +196,11 @@ export default {
       this.selection = selection;
     },
     getDtail(id){
-        this.$router.push({name: 'addBidInfo', query: {type: 'view', id: id}})
+        this.$router.push({name: 'addBidInfo', query: {type: 'view', id: id},
+          meta: {
+            title: "招标信息详情",  //改title
+          }
+        })
     },
     buttonDisable (btn) {
       // 如果没有选中行，删除和修改按钮禁止点击
@@ -215,13 +219,18 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
-          this.$router.push({name: 'addBidInfo', query: {type: 'create'}})
+          this.$router.push({name: 'addBidInfo', query: {type: 'create'},
+            meta: {
+              title: "新增招标信息",
+            }
+          })
           break;
         case "update":
-          this.$router.push({name: 'addBidInfo', query: {type: 'update', id: rowArr[0].id}})
-          break;
-        case "delete":
-          this.handleDelete(idArr)
+          this.$router.push({name: 'addBidInfo', query: {type: 'update', id: rowArr[0].id},
+            meta: {
+              title: "修改招标信息",
+            }
+          })
           break;
         case "export":
           this.handleDonwload()
