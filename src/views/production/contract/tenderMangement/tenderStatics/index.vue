@@ -243,10 +243,18 @@ export default {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
-          this.$router.push({name: 'addTenderStatics', query: {type: 'create'}})
+          this.$router.push({name: 'addTenderStatics', query: {type: 'create'},
+            meta: {
+              title: "新增统计信息",
+            }
+          })
           break;
         case "update":
-          this.$router.push({name: 'addTenderStatics', query: {type: 'update', id: rowArr[0].id}})
+          this.$router.push({name: 'addTenderStatics', query: {type: 'update', id: rowArr[0].id},
+            meta: {
+              title: "修改统计信息",
+            }
+          })
           break;
         case "delete":
           this.handleDelete(idArr)

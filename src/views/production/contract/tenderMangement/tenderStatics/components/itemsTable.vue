@@ -1,11 +1,11 @@
 <template>
-  <div class="license-panel">
-    <div class="panel-header">
+  <div class="license-panel" >
+    <div class="panel-header" v-if="!isView">
       <div class="title">
-        <span>{{ !isView ? "操作" : "" }}</span>
+        <span>操作</span>
         <i class="el-icon-warning-outline tooltip-icon" @click="showTooltip"></i>
       </div>
-      <div v-if="!isView">
+      <div>
         <el-button  type="primary" size="mini" icon="el-icon-plus" @click="addItem">
           新增
         </el-button>
@@ -15,7 +15,7 @@
     <!-- 动态table项 -->
     <el-table :data="materialTenderInfoDOList" style="margin-top: 20px;" size="small">
       <el-table-column label="序号" type="index" width="50" align="center" />
-      <el-table-column width="180" align="center">
+      <el-table-column width="260" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标项目名称
         </template>
@@ -26,9 +26,12 @@
           <span v-else>{{ scope.row.tenderProjectName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="招标人名称" width="120" align="center">
+      <el-table-column label="招标人名称" width="200" align="center">
         <template slot-scope="scope">
-          {{ scope.row.tendererName }}
+          <el-input v-if="!isView" v-model="scope.row.tendererName" placeholder="请输入填报单位" />
+          <el-tooltip v-else :content="scope.row.tendererName" placement="top" effect="dark">
+            <span class="ellipsis-text">{{ scope.row.tendererName }}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column prop="year" width="130" align="center">
@@ -46,7 +49,9 @@
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tenderTradePlace" placeholder="请输入" style="width: 100%" />
-          <span v-else>{{ scope.row.tenderTradePlace }}</span>
+          <el-tooltip v-else :content="scope.row.tenderTradePlace" placement="top" effect="dark">
+            <span class="ellipsis-text">{{ scope.row.tenderTradePlace }}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column width="120" align="center">
@@ -60,10 +65,10 @@
       </el-table-column>
       <el-table-column label="物资类别" width="160" align="center">
         <template slot-scope="scope">
-          <el-select v-if="!isView" v-model="scope.row.materialCategory" placeholder="请选择" style="width: 100%">
+          <el-select v-if="!isView" v-model="scope.row.materialCategory" placeholder="请选择" style="width: 100%" @change="handleMaterialCategoryChange(scope.row, $event)">
             <el-option v-for="item in dict.type.WZDL" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <span v-else>{{ scope.row.materialCategory }}</span>
+          <span v-else>{{ getMaterialCategoryLabel(scope.row.materialCategory) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="招标编号" width="150" align="center">
@@ -78,16 +83,20 @@
           <span v-else>{{ scope.row.packageNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="物资种类" width="120" align="center">
+      <el-table-column label="物资种类" width="150" align="center">
         <template slot-scope="scope">
-         <el-input v-if="!isView" v-model="scope.row.materialType" placeholder="请输入" style="width: 100%" />
-          <span v-else>{{ scope.row.materialType }}</span>
+          <el-select v-if="!isView" v-model="scope.row.materialType" placeholder="请选择" style="width: 100%" @change="handleMaterialTypeChange(scope.row, $event)">
+            <el-option v-for="item in typeOptions[scope.row.materialCategory] || []" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <span v-else>{{ getMaterialTypeLabel(scope.row.materialCategory, scope.row.materialType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="细目" width="120" align="center">
+      <el-table-column label="细目" width="150" align="center">
         <template slot-scope="scope">
-          <el-input v-if="!isView" v-model="scope.row.itemDetail" placeholder="请输入" style="width: 100%" />
-          <span v-else>{{ scope.row.itemDetail }}</span>
+          <el-select v-if="!isView" v-model="scope.row.itemDetail" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in detailOptions[scope.row.materialType] || []" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <span v-else>{{ getItemDetailLabel(scope.row.materialType, scope.row.itemDetail) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="计量单位" width="120" align="center">
@@ -109,9 +118,9 @@
           <span v-else>{{ scope.row.measureUnit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="招标数量" width="100" align="center">
+      <el-table-column label="招标数量" width="130" align="center">
         <template slot-scope="scope">
-          <el-input v-if="!isView" v-model="scope.row.tenderQuantity" placeholder="请输入" style="width: 100%" />
+          <el-input v-if="!isView" v-model="scope.row.tenderQuantity" placeholder="请输入" style="width: 100%" @input="handleTenderQuantityInput(scope.row, $event)" />
           <span v-else>{{ scope.row.tenderQuantity }}</span>
         </template>
       </el-table-column>
@@ -166,7 +175,7 @@
       </el-table-column>
       <el-table-column label="备注" width="150" align="center">
         <template slot-scope="scope">
-          <el-input v-if="!isView" v-model="scope.row.remark" placeholder="请输入" style="width: 100%" />
+          <el-input v-if="!isView" v-model="scope.row.remark" placeholder="请输入" style="width: 100%" maxlength="1000"/>
           <span v-else>{{ scope.row.remark }}</span>
         </template>
       </el-table-column>
@@ -200,15 +209,19 @@
 <script>
 import dayjs from "dayjs";
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
-import { watch } from "vue";
+import * as TypeApi from "@/api/prodmgr-inv/project/itemType.js";
+import * as DetailApi from "@/api/prodmgr-inv/project/itemDetail.js";
 
 export default {
   name: 'itemsTable',
   dicts: ['MeasureUnit', 'WZDL'],
   data() {
     return {
-      lineOptions: [], // 招标项目名称
-      dialogVisible: false // 填写说明弹窗显示状态
+      lineOptions: [], // 项目名称选项
+      dialogVisible: false, // 填写说明弹窗显示状态
+       isInitializing: true, // 添加初始化标记
+      typeOptions: {}, // 物资种类选项，按物资类别分类
+      detailOptions: {}, // 物资细目选项，按物资种类分类
     }
   },
   props: {
@@ -240,17 +253,119 @@ export default {
     },
   },
 
-  filters: {
-    formatDate(value) {
-      if (!value) return "";
-      return dayjs(value).format("YYYY-MM-DD");
-    },
-  },
-
   created () {
     this.getLineOptions()
+     // 初始化完成
+    this.$nextTick(() => {
+      this.isInitializing = false;
+    });
+  },
+  watch: {
+    value: {
+      handler(newValue) {
+        if (newValue && newValue.materialTenderInfoDOList) {
+          this.loadExistingData(newValue.materialTenderInfoDOList);
+        }
+      },
+      immediate: true,
+      deep: true
+    }
   },
   methods: {
+    // 加载已有的数据，为编辑和查看详情做准备
+    async loadExistingData(items) {
+      for (const item of items) {
+        // 加载物资种类数据
+        if (item.materialCategory) {
+          await this.getTypeOptions(item.materialCategory);
+          // 加载细目数据
+          if (item.materialType) {
+            await this.getDetailOptions(item.materialType);
+          }
+        }
+      }
+    },
+    // 处理物资类别变化
+    async handleMaterialCategoryChange(row, materialCategory) {
+      console.log('handleMaterialCategoryChange触发', { row, materialCategory });
+      // 清空物资种类和细目
+      row.materialType = '';
+      row.itemDetail = '';
+      
+      // 如果选择了物资类别，获取对应的物资种类
+      if (materialCategory) {
+        await this.getTypeOptions(materialCategory);
+      } else {
+        console.log('物资类别为空');
+      }
+    },
+    
+    // 处理物资种类变化
+    async handleMaterialTypeChange(row, materialType) {
+      // 清空细目
+      row.itemDetail = '';
+      
+      // 如果选择了物资种类，获取对应的细目
+      if (materialType) {
+        await this.getDetailOptions(materialType);
+      } else {
+        console.log('物资种类为空');
+      }
+    },
+    
+    // 获取物资种类选项（依赖物资大类）
+    async getTypeOptions(speciesCode = "") {
+      try {
+        const params = {
+          pageNum: 1,
+          pageSize: -1,
+          speciesCode: speciesCode,
+        };
+
+        const res = await TypeApi.itemList(params);
+        if (res.data && res.data.list) {
+          const options = res.data.list.map((x) => ({
+            ...x,
+            label: x.materialCategoriesName,
+            value: x.materialCategoriesCode,
+          }));
+          // 响应式处理 否则无法正常显示
+          this.$set(this.typeOptions, speciesCode, options);
+        } else {
+          this.$set(this.typeOptions, speciesCode, []);
+        }
+      } catch (error) {
+        console.error("获取物资种类失败", error);
+        this.$set(this.typeOptions, speciesCode, []);
+      }
+    },
+    // 获取物资细目选项（依赖物资种类）
+    async getDetailOptions(categoriesCode) {
+      try {
+        console.log('调用DetailApi.itemList', categoriesCode);
+        const params = {
+          pageNum: 1,
+          pageSize: -1,
+          categoriesCode: categoriesCode,
+        };
+
+        const res = await DetailApi.itemList(params);
+        console.log('DetailApi.itemList返回', res);
+        if (res.data && res.data.list) {
+          const options = res.data.list.map((x) => ({
+            ...x,
+            label: x.detailName,
+            value: x.detailCode,
+          }));
+          this.$set(this.detailOptions, categoriesCode, options);
+        } else {
+          this.$set(this.detailOptions, categoriesCode, []);
+        }
+      } catch (error) {
+        this.$set(this.detailOptions, categoriesCode, []);
+      }
+    },
+
     addItem() {
       this.materialTenderInfoDOList.push({
         tenderProjectId: "",            //项目id
@@ -322,6 +437,24 @@ export default {
       // 更新值
       row.bidAmount = formattedValue;
     },
+    handleTenderQuantityInput(row, value) {
+      // 只允许输入数字和小数点
+      let formattedValue = value.replace(/[^\d.]/g, '');
+      
+      // 确保只有一个小数点
+      const parts = formattedValue.split('.');
+      if (parts.length > 2) {
+        formattedValue = parts[0] + '.' + parts.slice(1).join('');
+      }
+      
+      // 限制小数点后两位
+      if (parts.length === 2 && parts[1].length > 2) {
+        formattedValue = parts[0] + '.' + parts[1].substring(0, 2);
+      }
+      
+      // 更新值
+      row.tenderQuantity = formattedValue;
+    },
     formatTimestamp(timestamp) {
       // 如果是时间戳（数字类型），转换为年月日格式
       if (timestamp && typeof timestamp === 'number') {
@@ -329,6 +462,26 @@ export default {
       }
       // 如果已经是字符串格式，直接返回
       return timestamp;
+    },
+    getMaterialCategoryLabel(value) {
+      // 从字典中查找物资类别对应的标签
+      if (!value) return '';
+      const item = this.dict.type.WZDL.find(item => item.value === value);
+      return item ? item.label : value;
+    },
+    getMaterialTypeLabel(materialCategory, materialType) {
+      // 从typeOptions中查找物资种类对应的标签
+      if (!materialCategory || !materialType) return '';
+      const options = this.typeOptions[materialCategory] || [];
+      const item = options.find(item => item.value === materialType);
+      return item ? item.label : materialType;
+    },
+    getItemDetailLabel(materialType, itemDetail) {
+      // 从detailOptions中查找细目对应的标签
+      if (!materialType || !itemDetail) return '';
+      const options = this.detailOptions[materialType] || [];
+      const item = options.find(item => item.value === itemDetail);
+      return item ? item.label : itemDetail;
     },
   },
 };
@@ -428,4 +581,12 @@ export default {
   font-size: 14px;
 }
 
+/* 省略号样式 */
+.ellipsis-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>

@@ -154,9 +154,6 @@ export default {
     }
   },
   created () {
-    this.getLineOptions()
-  },
-  mounted () {
     if (['view', 'update'].includes(this.type)) {
       this.updateInit(this.id)
       return
@@ -165,9 +162,34 @@ export default {
       this.init()
       return
     }
-
+    this.getLineOptions()
+  },
+  mounted () {
+     // 设置页面标题
+     this.setPageTitle()
   },
   methods: {
+     // 设置页面标题
+     setPageTitle() {
+       let title = ''
+       switch (this.type) {
+         case 'create':
+           title = '新增招标信息'
+           break
+         case 'update':
+           title = '修改招标信息'
+           break
+         case 'view':
+           title = '招标信息详情'
+           break
+         default:
+           title = '招标信息'
+       }
+       // 更新路由meta标题
+       this.$route.meta.title = title
+       // 更新tagsView中的访问记录
+       this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+     },
      getLineOptions() {
        LineApi.lineSelectOptions().then(({ data }) => {
         this.lineOptions = data.map(x => ({

@@ -15,33 +15,35 @@
         :class="{ formRender_view: type === 'view' }"
       >
         <template #unitNameSlot="{ formModel }">
-          <el-form-item prop="unitName" label="填报单位：" class="label-right-align"
-          >
+          <el-form-item prop="unitName" label="填报单位：" class="label-right-align">
             <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
-              <span class="ellipsis-text">{{ formModel.tenderUnit }}</span>
+              <span class="ellipsis-text">
+                <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位" style="width: 320px"/>
+                <span v-else>{{ formModel.tenderUnit }}</span>
+              </span>
             </el-tooltip>
           </el-form-item>
          </template>
          <template #fillDateSlot="{ formModel}">
              <el-form-item  prop="fillReportTime" label="填报时间：" class="label-right-align"
              :rules=" { required: true, message: '请选择填报时间', trigger: 'blur' }">
-               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" />
+               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" style="width: 320px;"/>
                 <span v-else>{{ formatTimestamp(formModel.fillReportTime) }}</span>
               </el-form-item>
              
          </template>
          <template #personNameSlot="{ formModel }">
            <el-form-item  prop="fillPerson" label="填表人：" class="label-right-align"
-           :rules=" { required: true, message: '请输入填表人', trigger: 'blur' }">
-             <el-input v-if="type !== 'view'" v-model="formModel.fillPerson" placeholder="请输入填表人" />
+           :rules=" [{ required: true, message: '请输入填表人', trigger: 'blur' }, { max: 50, message: '填表人长度不能超过50个字符', trigger: 'blur' }]">
+             <el-input v-if="type !== 'view'" v-model="formModel.fillPerson" placeholder="请输入填表人"/>
              <span v-else>{{ formModel.fillPerson }}</span>
            </el-form-item>
            
          </template>
          <template #relatePersonlSlot="{ formModel }">
            <el-form-item  prop="contactPerson" label="联系人：" class="label-right-align"
-           :rules=" { required: true, message: '请输入联系人', trigger: 'blur' }">
-              <el-input v-if="type !== 'view'" v-model="formModel.contactPerson" placeholder="请输入联系人" />
+           :rules=" [{ required: true, message: '请输入联系人', trigger: 'blur' }, { max: 50, message: '联系人长度不能超过50个字符', trigger: 'blur' }]">
+              <el-input v-if="type !== 'view'" v-model="formModel.contactPerson" placeholder="请输入联系人"/>
               <span v-else>{{ formModel.contactPerson }}</span>
            </el-form-item>
          </template>
@@ -103,25 +105,37 @@ export default {
       return this.$route.query?.id || ''
     }
   },
-  watch: {
-    type: {
-      handler (newType) {
-        if (newType === 'create') {
-          this.init()
-        } else if (['view', 'update'].includes(newType)) {
-          this.updateInit(this.id)
-        }
-      },
-      immediate: true
-    }
-  },
-  created () {
-    console.log(this.userInfo)
-  },
   mounted () {
-    // 初始化逻辑已移至watch中
+     // 设置页面标题
+     this.setPageTitle()
+     if (this.type === 'create') {
+          this.init()
+      } else if (['view', 'update'].includes(this.type)) {
+        this.updateInit(this.id)
+      }
   },
   methods: {
+     // 设置页面标题
+     setPageTitle() {
+       let title = ''
+       switch (this.type) {
+         case 'create':
+           title = '新增招标统计'
+           break
+         case 'update':
+           title = '修改招标统计'
+           break
+         case 'view':
+           title = '招标统计详情'
+           break
+         default:
+           title = '招标统计'
+       }
+       // 更新路由meta标题
+       this.$route.meta.title = title
+       // 更新tagsView中的访问记录
+       this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+     },
      formatTimestamp(timestamp) {
       // 如果是时间戳（数字类型），转换为年月日格式
       if (timestamp && typeof timestamp === 'number') {
@@ -224,7 +238,31 @@ export default {
            const vFormRefData = await this.$refs.vFormRef.getFormData();
           // 直接使用 this.formData，因为 VFormRender 可能不会包含 materialTenderInfoDOList
            const formData = this.formData;
-          // 验证表格中的必填项
+          // 验证填表人和联系人长度
+          if (formData.fillPerson && formData.fillPerson.length > 50) {
+            this.loading = false;
+            this.$modal.msgError('填表人长度不能超过50个字符');
+            return;
+          }
+          if (formData.contactPerson && formData.contactPerson.length > 50) {
+            this.loading = false;
+            this.$modal.msgError('联系人长度不能超过50个字符');
+            return;
+          }
+          // 验证联系电话长度（如果存在）
+          if (formData.contactPhone && formData.contactPhone.length > 100) {
+            this.loading = false;
+            this.$modal.msgError('联系电话长度不能超过100个字符');
+            return;
+          }
+          // 验证备注长度
+          if (formData.remark && formData.remark.length > 1000) {
+            this.loading = false;
+            this.$modal.msgError('备注长度不能超过1000个字符');
+            return;
+          }
+          
+          // 验证表格中的必填项和备注长度
           const materialTenderInfoDOList = formData.materialTenderInfoDOList || [];
           for (let i = 0; i < materialTenderInfoDOList.length; i++) {
             const item = materialTenderInfoDOList[i];
@@ -246,6 +284,22 @@ export default {
             if (!item.projectCategory) {
               this.loading = false;
               this.$modal.msgError(`第${i + 1}行：项目类别为必填项`);
+              return;
+            }
+            if (item.tendererName && item.tendererName.length > 100) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标人名称长度不能超过100个字符`);
+              return;
+            }
+            if (item.tenderTradePlace && item.tenderTradePlace.length > 100) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标交易场所长度不能超过100个字符`);
+              return;
+            }
+            // 验证备注长度
+            if (item.remark && item.remark.length > 1000) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：备注长度不能超过1000个字符`);
               return;
             }
           }
