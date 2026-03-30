@@ -18,7 +18,7 @@
           <el-form-item prop="unitName" label="填报单位：" class="label-right-align">
             <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
               <span class="ellipsis-text">
-                <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位" style="width: 320px"/>
+                <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位" style="width: 360px"/>
                 <span v-else>{{ formModel.tenderUnit }}</span>
               </span>
             </el-tooltip>
@@ -27,7 +27,7 @@
          <template #fillDateSlot="{ formModel}">
              <el-form-item  prop="fillReportTime" label="填报时间：" class="label-right-align"
              :rules=" { required: true, message: '请选择填报时间', trigger: 'blur' }">
-               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" style="width: 320px;"/>
+               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" style="width: 360px;"/>
                 <span v-else>{{ formatTimestamp(formModel.fillReportTime) }}</span>
               </el-form-item>
              
@@ -104,6 +104,15 @@ export default {
     id () {
       return this.$route.query?.id || ''
     }
+  },
+ activated() {
+    // 设置页面标题
+     this.setPageTitle()
+     if (this.type === 'create') {
+          this.init()
+      } else if (['view', 'update'].includes(this.type)) {
+        this.updateInit(this.id)
+      }
   },
   mounted () {
      // 设置页面标题
