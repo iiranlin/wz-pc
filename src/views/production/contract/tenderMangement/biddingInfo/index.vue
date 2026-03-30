@@ -26,8 +26,14 @@
       </template>
       <template #materialCategory="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择'
-          " clearable style="width: 100%" size="small">
+          " clearable style="width: 100%" size="small" @change="handleMaterialCategoryChange">
           <el-option  v-for="item in dict.type.WZDL" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </template>
+      <template #materialType="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择'
+          " clearable style="width: 100%" size="small">
+          <el-option  v-for="item in typeOptions[formData.materialCategory] || []" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </template>
     </form-data>
@@ -83,6 +89,7 @@ import { list, deptTree, deptDeleteBatch,newListByDeptCode } from "@/api/system/
 import * as Api from '@/api/prodmgr-inv/project/contract.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
+import * as TypeApi from "@/api/prodmgr-inv/project/itemType.js";
 import indexMixin from "@/views/mixins";
 export default {
   // 招标信息列表
@@ -131,6 +138,7 @@ export default {
       selection: [],
       hasOwn: true,
       lineOptions: [],
+      typeOptions: {}, // 物资种类选项，按物资类别分类
     };
   },
   created () {
@@ -203,6 +211,42 @@ export default {
             title: "招标信息详情",  //改title
           }
         })
+    },
+    // 处理物资类别变化
+    async handleMaterialCategoryChange(materialCategory) {
+      // 清空物资种类
+      this.formData.materialType = '';
+      
+      // 如果选择了物资类别，获取对应的物资种类
+      if (materialCategory) {
+        await this.getTypeOptions(materialCategory);
+      }
+    },
+    // 获取物资种类选项（依赖物资大类）
+    async getTypeOptions(speciesCode = "") {
+      try {
+        const params = {
+          pageNum: 1,
+          pageSize: -1,
+          speciesCode: speciesCode,
+        };
+
+        const res = await TypeApi.itemList(params);
+        if (res.data && res.data.list) {
+          const options = res.data.list.map((x) => ({
+            ...x,
+            label: x.materialCategoriesName,
+            value: x.materialCategoriesCode,
+          }));
+          // 响应式处理 否则无法正常显示
+          this.$set(this.typeOptions, speciesCode, options);
+        } else {
+          this.$set(this.typeOptions, speciesCode, []);
+        }
+      } catch (error) {
+        console.error("获取物资种类失败", error);
+        this.$set(this.typeOptions, speciesCode, []);
+      }
     },
     buttonDisable (btn) {
       // 如果没有选中行，删除和修改按钮禁止点击
