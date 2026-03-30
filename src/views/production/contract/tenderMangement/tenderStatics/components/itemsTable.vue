@@ -118,9 +118,9 @@
           <span v-else>{{ scope.row.measureUnit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="招标数量" width="100" align="center">
+      <el-table-column label="招标数量" width="130" align="center">
         <template slot-scope="scope">
-          <el-input v-if="!isView" v-model="scope.row.tenderQuantity" placeholder="请输入" style="width: 100%" />
+          <el-input v-if="!isView" v-model="scope.row.tenderQuantity" placeholder="请输入" style="width: 100%" @input="handleTenderQuantityInput(scope.row, $event)" />
           <span v-else>{{ scope.row.tenderQuantity }}</span>
         </template>
       </el-table-column>
@@ -436,6 +436,24 @@ export default {
       
       // 更新值
       row.bidAmount = formattedValue;
+    },
+    handleTenderQuantityInput(row, value) {
+      // 只允许输入数字和小数点
+      let formattedValue = value.replace(/[^\d.]/g, '');
+      
+      // 确保只有一个小数点
+      const parts = formattedValue.split('.');
+      if (parts.length > 2) {
+        formattedValue = parts[0] + '.' + parts.slice(1).join('');
+      }
+      
+      // 限制小数点后两位
+      if (parts.length === 2 && parts[1].length > 2) {
+        formattedValue = parts[0] + '.' + parts[1].substring(0, 2);
+      }
+      
+      // 更新值
+      row.tenderQuantity = formattedValue;
     },
     formatTimestamp(timestamp) {
       // 如果是时间戳（数字类型），转换为年月日格式
