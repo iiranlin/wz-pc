@@ -106,8 +106,30 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     word-break: break-all;
+    min-height: 4.5em;
+  }
+
+  /* 只读模式下，将 el-form-item 切换为 flex 布局，让 label 高度随内容区自动撑开 */
+  ::v-deep .el-form-item {
+    display: flex !important;
+    align-items: stretch;
+
+    .el-form-item__label {
+      float: none !important;
+      height: auto !important;
+      line-height: 1.6 !important;
+      padding-top: 6px;
+      white-space: normal;
+      flex-shrink: 0;
+    }
+
+    .el-form-item__content {
+      margin-left: 0 !important;
+      flex: 1;
+    }
   }
 </style>
