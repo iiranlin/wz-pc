@@ -1,5 +1,17 @@
 <template>
   <div class="contract-attachment-table">
+    <div class="search-bar">
+      <el-input
+        v-model="queryField"
+        :placeholder="searchPlaceholder"
+        size="small"
+        clearable
+        style="width: 260px"
+        @keyup.enter.native="handleSearch"
+      />
+      <el-button type="primary" size="small" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+      <el-button size="small" icon="el-icon-refresh" @click="handleReset">重置</el-button>
+    </div>
     <el-table
       v-loading="loading"
       :data="tableData"
@@ -58,6 +70,10 @@ export default {
       type: Function,
       required: true
     },
+    searchPlaceholder: {
+      type: String,
+      default: '请输入关键词搜索'
+    },
     requestParams: {
       type: Object,
       default: () => ({})
@@ -88,7 +104,8 @@ export default {
       tableData: [],
       pageNum: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      queryField: ''
     }
   },
   computed: {
@@ -140,7 +157,8 @@ export default {
         const params = {
           ...this.requestParams,
           pageNum: this.pageNum,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          ...(this.queryField ? { queryField: this.queryField } : {})
         }
         const res = await this.fetchApi(params)
         const data = res?.data ?? res ?? {}
@@ -151,6 +169,15 @@ export default {
         this.loading = false
       }
     },
+    handleSearch () {
+      this.pageNum = 1
+      this.loadData()
+    },
+    handleReset () {
+      this.queryField = ''
+      this.pageNum = 1
+      this.loadData()
+    },
     refresh () {
       this.pageNum = 1
       this.loadData()
@@ -160,6 +187,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 .pagination-wrapper {
   display: flex;
   justify-content: flex-end;
