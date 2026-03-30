@@ -13,3 +13,16 @@ export const materialDetailsQueryList = (params) => {
       params
   })
 }
+
+/**
+ * 总数据求和
+ * @param {*} params 
+ * @returns 
+ */
+export const latestVersionTotal = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/latestVersionTotal`,
+    method: 'get',
+    params
+  })
+}

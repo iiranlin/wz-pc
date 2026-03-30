@@ -3,17 +3,17 @@
 
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane label="建设项目" name="total"></el-tab-pane>
-      <el-tab-pane v-for="project in projectTabs" :key="project.name" :label="project.label"
-        :name="project.name"></el-tab-pane>
+      <el-tab-pane v-for="section in sectionList" :key="section.id" :label="section.sectionName"
+        :name="section.id"></el-tab-pane>
     </el-tabs>
 
-    <el-table :data="filteredTableData" border style="width: 100%" :max-height="600" v-loading="loading"
+    <el-table :data="list" border style="width: 100%" :max-height="600" v-loading="loading"
       :row-key="getRowKey" @selection-change="handleSelectionChange" ref="dataTable">
-      <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
+      <el-table-column type="index" :index="indexMethod" label="序号" width="55" align="center" fixed="left" />
       <el-table-column prop="projectShortName" label="项目简称" width="120" align="center"></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
-      <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center">
+      <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="200" align="center">
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId" placeholder="请选择标段项目名称"
             size="mini" style="width: 100%" filterable @change="handleFieldChange('sectionId', scope.row)">
@@ -145,70 +145,66 @@
       </el-table-column>
     </el-table>
 
-    <!-- 统计信息 -->
-   <!-- <div class="summary-info" v-if="currentTableData.length > 0">
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <div class="summary-item">
-            <span class="summary-label">总条数：</span>
-            <span class="summary-value amount-text">{{ currentTableData.length }} 条</span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="summary-item">
-            <span class="summary-label">到站合价含税合计：</span>
-            <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }} 元</span>
-          </div>
-        </el-col>
-      </el-row>
-    </div>-->
+    <!-- 分页 -->
+    <el-pagination
+      v-if="total > 0"
+      :current-page="pageNum"
+      :page-size="pageSize"
+      :page-sizes="[50, 100, 200, 500]"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handlePageChange"
+      style="margin-top: 12px; text-align: right;"
+    />
 
-    <div class="summary-info" v-if="currentTableData.length > 0">
+    <!-- 统计信息 -->
+    <div class="summary-info" v-if="list.length > 0">
       <div class="summary-item">
         <span class="summary-label">总条数：</span>
-        <span class="summary-value amount-text">{{ currentTableData.length }} 条</span>
+        <span class="summary-value amount-text">{{ total }} 条</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">到站合价含税合计：</span>
-        <span class="summary-value amount-text">{{ totalAmount.toFixed(2) }}</span>
+        <span class="summary-value amount-text">{{ (summaryData.totalAmount || 0) }}</span>
       </div>
       <!-- 总数量 -->
       <div class="summary-item">
         <span class="summary-label">总数量：</span>
-        <span class="summary-value amount-text">{{ totalNum }}</span>
+        <span class="summary-value amount-text">{{ summaryData.amount || 0 }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">下达数量：</span>
-        <span class="summary-value amount-text">{{ totalQuantity}}</span>
+        <span class="summary-value amount-text">{{ summaryData.cumulativeAmount || 0 }}</span>
       </div>
 
       <div class="summary-item">
         <span class="summary-label">发货数量：</span>
-        <span class="summary-value amount-text">{{ totalSendCount}}</span>
+        <span class="summary-value amount-text">{{ summaryData.sendTotal || 0 }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">收货数量：</span>
-        <span class="summary-value amount-text">{{ totalPutTotal}}</span>
+        <span class="summary-value amount-text">{{ summaryData.putTotal || 0 }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">收货金额：</span>
-        <span class="summary-value amount-text">{{ totalStoreRates.toFixed(2)}}</span>
+        <span class="summary-value amount-text">{{ (summaryData.putTotalRates || 0).toFixed(2) }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">入库量：</span>
-        <span class="summary-value amount-text">{{ totalStoreCount}}</span>
+        <span class="summary-value amount-text">{{ summaryData.storeTotal || 0 }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">入库金额：</span>
-        <span class="summary-value amount-text">{{ totalStoreTotalRates.toFixed(2)}}</span>
+        <span class="summary-value amount-text">{{ (summaryData.storeTotalRates || 0).toFixed(2) }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">出库量：</span>
-        <span class="summary-value amount-text">{{ totalOutCount}}</span>
+        <span class="summary-value amount-text">{{ summaryData.outTotal || 0 }}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">出库金额：</span>
-        <span class="summary-value amount-text">{{ totalOutRates.toFixed(2)}}</span>
+        <span class="summary-value amount-text">{{ (summaryData.outTotalRates || 0).toFixed(2) }}</span>
       </div>
     </div>
 
@@ -218,339 +214,160 @@
 
 <script>
 import Decimal from 'decimal.js';
-import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
-import * as LineApi from '@/api/prodmgr-inv/project/line.js';
+import { materialDetailsQueryList, latestVersionTotal } from '@/api/statisticalQuery/MaterialsPlans.js';
 export default {
   name: 'tabTable',
   dicts: ['MeasureUnit'],
   props: {
-    // 接收外部传入的表格数据
-    tableData: {
+    // 标段列表，用于渲染 Tab（由父组件 detail.vue 传入）
+    sectionList: {
       type: Array,
       default: () => []
+    },
+    // 建设项目 ID（取自路由 query.id）
+    projectId: {
+      type: String,
+      default: ''
     },
     sellerName: {
       type: String,
       default: ''
     }
-
   },
   data() {
     return {
-      activeTab: 'total', // 当前激活的tab
-      currentTableData: [], // 当前显示的表格数据
+      activeTab: 'total', // 当前激活的 tab
+      list: [],           // 当前页数据
       loading: false,
-      selectedRowKeys: { total: [] }, // 用户存储当前选择的数据
-      maxManualIndex: 0,
+      pageNum: 1,
+      pageSize: 50,
+      total: 0,
+      summaryData: {},    // 存储接口返回的汇总统计数据
       options: {},
-      params: {
-        pageNum: 1,
-        pageSize: -1,
-      },
-      originalTableData: [], // 原始表格数据备份
-      searchKeyword: '', // 添加搜索关键词数据属性
     }
   },
   computed: {
+    // 保持 filteredTableData 命名，供部分可能存在的逻辑引用
     filteredTableData() {
-      let baseData = [];
-      // 根据当前tab获取基础数据
-      if (this.activeTab === 'total') {
-        baseData = this.tableData;
-      } else {
-        const selectedProject = this.projectTabs.find(p => p.name === this.activeTab);
-        if (selectedProject) {
-          baseData = this.tableData.filter(item =>
-            item.sectionName === selectedProject.projectName
-          );
-        } else {
-          baseData = [];
-        }
-      }
-
-      // 如果有搜索关键词，进行过滤
-      if (this.searchKeyword && this.searchKeyword.trim()) {
-        const keyword = this.searchKeyword.trim().toLowerCase();
-        return baseData.filter(item => {
-          return item.materialName && item.materialName.toLowerCase().includes(keyword);
-        });
-      }
-
-      return baseData;
-    },
-    // 计算总数量（使用 decimal.js 精确加法避免浮点数精度问题）
-    totalNum() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const amount = new Decimal(item.amount || 0);
-        // 只累加正数，忽略负数和零
-        if (amount.greaterThan(0)) {
-          return sum.plus(amount);
-        }
-        return sum;
-      }, new Decimal(0)).toNumber();
-    },
-    // 计算总金额
-    totalAmount() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const totalAmount = parseFloat(item.totalAmount) || 0;
-        // 只累加正数，忽略负数和零
-        if (totalAmount > 0) {
-          return sum + totalAmount;
-        }
-        return sum;
-      }, 0);
-    },
-    // 计算累计下达数量
-    totalQuantity() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const cumulativeAmount = new Decimal(item.cumulativeAmount || 0);
-        // 只累加正数，忽略负数和零
-        if (cumulativeAmount.greaterThan(0)) {
-          return sum.plus(cumulativeAmount);
-        }
-        return sum;
-      }, new Decimal(0)).toNumber();
-    },
-    // 计算累计收货数量
-    totalPutTotal() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const putTotal = new Decimal(item.putTotal || 0);
-        // 只累加正数，忽略负数和零
-        if (putTotal.greaterThan(0)) {
-          return sum.plus(putTotal);
-        }
-        return sum;
-      }, new Decimal(0)).toNumber();
-    },
-    // 计算累计发货数量
-    totalSendCount() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const sendTotal = new Decimal(item.sendTotal || 0);
-        // 只累加正数，忽略负数和零
-        if (sendTotal.greaterThan(0)) {
-          return sum.plus(sendTotal);
-        }
-        return sum;
-      }, new Decimal(0)).toNumber();
-    },
-
-    // 计算已收货金额
-    totalStoreRates() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const storeTotalRates = parseFloat(item.storeTotalRates) || 0;
-        // 只累加正数，忽略负数和零
-        if (storeTotalRates > 0) {
-          return sum + storeTotalRates;
-        }
-        return sum;
-      }, 0);
-    },
-    // 计算累计入库量
-    totalStoreCount() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const storeTotal = new Decimal(item.storeTotal || 0);
-        // 只累加正数，忽略负数和零
-        if (storeTotal.greaterThan(0)) {
-          return sum.plus(storeTotal);
-        }
-        return sum;
-      }, new Decimal(0)).toNumber();
-    },
-    // 计算累计入库金额
-    totalStoreTotalRates() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const storeTotalRates = parseFloat(item.storeTotalRates) || 0;
-        // 只累加正数，忽略负数和零
-        if (storeTotalRates > 0) {
-          return sum + storeTotalRates;
-        }
-        return sum;
-      }, 0);
-    },
-    // 计算累计出库量
-    totalOutCount() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const outTotal = new Decimal(item.outTotal || 0);
-        // 只累加正数，忽略负数和零
-        if (outTotal.greaterThan(0)) {
-          return sum.plus(outTotal);
-        }
-        return sum;
-      }, new Decimal(0)).toNumber();
-    },
-    // 计算已出库金额
-    totalOutRates() {
-      return this.filteredTableData.reduce((sum, item) => {
-        const outTotalRates = parseFloat(item.outTotalRates) || 0;
-        // 只累加正数，忽略负数和零
-        if (outTotalRates > 0) {
-          return sum + outTotalRates;
-        }
-        return sum;
-      }, 0);
-    },
-
-    projectTabs() {
-      const projectNames = [...new Set(this.tableData.map(item => item.sectionName).filter(Boolean))];
-      return projectNames.map((name, index) => ({
-        name: `project-${index}`,
-        label: name,
-        projectName: name
-      }));
-    },
-    projectId() {
-      return this.$store.state.project.projectId || this.$route.query.projectId
+      return this.list;
     },
     type() {
       return this.$route.query.type
     }
   },
   watch: {
-    // 监听外部数据变化
-    tableData: {
-      handler(newData) {
-        this.updateCurrentData();
-      },
-      immediate: true,
-      deep: true
-    },
-    // 监听activeTab变化
-    activeTab() {
-      this.updateCurrentData();
-    },
-    projectId() {
-      this.getSectionOptions()
+    // projectId prop 变化时重新初始化
+    projectId(val) {
+      if (val) {
+        this.activeTab = 'total';
+        this.pageNum = 1;
+        this.fetchList();
+      }
     }
   },
-  created() {
-    // this.getItemsOptions()
-    this.getSectionOptions()
+  mounted() {
+    if (this.projectId) {
+      this.fetchList();
+    }
   },
   methods: {
-    // 处理搜索输入
-    handleSearch(value) {
-      // 搜索功能通过computed属性filteredTableData自动实现
-      // 这里可以添加防抖逻辑如果需要的话
-      console.log('搜索关键词:', value);
-    },
+    // ==================== 数据获取 ====================
 
-    // 处理清空搜索
-    handleClearSearch() {
-      this.searchKeyword = '';
-      console.log('清空搜索');
-      // 数据会通过computed属性自动恢复
-    },
-
-    onDialogOk(data) {
-      // 将批量上传的文件，导入到总的数据中
-      const newData = data.map(item => ({
-        ...item,
-        type: 'add',
-        sellerName: this.sellerName,
-      }))
-      this.tableData.push(...newData)
-    },
-    // 获取options数据
-    async getItemsOptions() {
-      const res = await ItemApi.itemList(this.params)
-      this.options.itemOptions = res.data.list.map(item => {
-        return {
-          ...item,
-          value: item.id,
-          label: item.materialName
+    // 获取列表数据（分页）
+    async fetchList() {
+      this.loading = true;
+      try {
+        const params = { pageNum: this.pageNum, pageSize: this.pageSize };
+        if (this.activeTab === 'total') {
+          params.projectId = this.projectId;
+        } else {
+          params.sectionId = this.activeTab;
         }
-      })
-    },
-    async getSectionOptions() {
-      if (!this.projectId) {
-        return
+
+        // 并行请求列表数据和统计汇总数据
+        const [listRes, totalRes] = await Promise.all([
+          materialDetailsQueryList(params),
+          latestVersionTotal(params)
+        ]);
+
+        this.list = listRes.data.list || [];
+        this.total = listRes.data.total || 0;
+        this.summaryData = totalRes.data || {};
+      } catch (e) {
+        this.list = [];
+        this.total = 0;
+        this.summaryData = {};
+      } finally {
+        this.loading = false;
       }
-      const res = await LineApi.detail(this.projectId)
-      this.options.setcionOptions = res.data.sectionList.map(item => {
-        return {
-          ...item,
-          value: item.id,
-          label: item.sectionName
-        }
-      })
-    },
-    // 新增物资行
-    onAdd() {
-
-      // 向父组件发送新增事件
-      this.$emit('data-change', {
-        type: 'add',
-        row: {},
-      });
-
-      // 刷新当前数据显示
-      this.updateCurrentData();
-
-      this.$message.success('已添加新行，请填写物资信息');
     },
 
-    onBatchUpload() {
-      this.$refs.batchDialogRef.open();
+    // ==================== Tab & 分页 ====================
+
+    // 处理 Tab 点击
+    handleTabClick(tab) {
+      this.activeTab = tab.name;
+      this.pageNum = 1;
+      this.fetchList();
     },
-    // 批量删除选中数据
-    onDelete() {
-      this.$confirm('确认删除选中数据吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          // 找到当前tab对应的所有选中行
-          // this.tableData = this.tableData.filter(row => !this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)))
-          this.$emit('data-change', {
-            type: 'delete',
-            row: this.selectedRowKeys[this.activeTab],
-          });
-        })
+
+    // 处理页码变化
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.fetchList();
     },
-    // 每个字段的变化都触发这个方法
+
+    // 处理每页条数变化
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.pageNum = 1;
+      this.fetchList();
+    },
+
+    // ==================== 表格基础 ====================
+
+    // 自定义序号计算，实现跨页连续
+    indexMethod(index) {
+      return (this.pageNum - 1) * this.pageSize + index + 1;
+    },
+
+    // 返回唯一行 key
+    getRowKey(row) {
+      return `${row.id}`;
+    },
+
+    // 处理表格的勾选变化
+    handleSelectionChange(selection) {
+      // view 模式下无需处理
+    },
+
+    // ==================== 字段计算（编辑模式保留）====================
+
     handleFieldChange(fieldType, row) {
-
-
-      console.log('handleFieldChange', fieldType, row);
-
-      // 选择物资名称时，同步更新其他物资信息，选择标段名称时，同步简称
       switch (fieldType) {
         case 'materialId':
-          // 同步更新其他物资信息
-          const selectedItem = this.options.itemOptions.find(item => item.value === row.materialId);
+          const selectedItem = this.options.itemOptions?.find(item => item.value === row.materialId);
           if (selectedItem) {
             row.specModel = selectedItem.specModel;
             row.unit = selectedItem.unit;
-            row.materialName = selectedItem.materialName
+            row.materialName = selectedItem.materialName;
           }
           break;
         case 'sectionId':
-          // 同步更新简称
-          const selectedSection = this.options.setcionOptions.find(item => item.value === row.sectionId);
+          const selectedSection = this.options.setcionOptions?.find(item => item.value === row.sectionId);
           if (selectedSection) {
-            this.$set(row, 'projectShortName', selectedSection.projectShortName)
-            this.$set(row, 'sectionName', selectedSection.sectionName)
+            this.$set(row, 'projectShortName', selectedSection.projectShortName);
+            this.$set(row, 'sectionName', selectedSection.sectionName);
           }
           break;
-        // (100 + 税率) * 不含税单价 = 到站含税单价
         case 'vatRate':
           this.calculateTaxPrice(row);
           break;
         case 'price':
           this.calculateTaxPrice(row);
-          this.$emit('data-change', {
-            type: fieldType,
-            row
-          });
           break;
-        // 数量 * 到站含税单价 = 到站合价含税
         case 'amount':
           this.calculateTotalAmount(row);
-          this.$emit('data-change', {
-            type: fieldType,
-            row
-          });
           break;
         case 'taxPrice':
           this.calculateTotalAmount(row);
@@ -559,105 +376,25 @@ export default {
     },
     calculateTaxPrice(row) {
       if (row.vatRate && row.price) {
-        const taxPrice = (100 + row.vatRate) * row.price / 100
-        row.taxPrice = taxPrice
-
-        this.calculateTotalAmount(row)
+        const taxPrice = (100 + row.vatRate) * row.price / 100;
+        row.taxPrice = taxPrice;
+        this.calculateTotalAmount(row);
       }
     },
     calculateTotalAmount(row) {
       if (row.amount && row.taxPrice) {
-        const totalAmount = row.amount * row.taxPrice
-        row.totalAmount = totalAmount
+        const totalAmount = row.amount * row.taxPrice;
+        row.totalAmount = totalAmount;
       }
     },
-    // 处理Tab点击事件
-    handleTabClick(tab) {
-      this.activeTab = tab.name;
-      this.loading = false;
-      // 切换Tab后恢复选中状态
-      this.restoreSelectionAfterTabChange();
-      // 向父组件发送事件
-      this.$emit('tab-change', {
-        activeTab: this.activeTab,
-        currentData: this.filteredTableData
-      });
-    },
 
-    // 切换Tab后恢复选中状态
-    restoreSelectionAfterTabChange() {
-      const tableRef = this.$refs.dataTable;
-      if (!tableRef) return;
-      // 获取已经选中所有keys
-      const allKeys = Object.keys(this.selectedRowKeys).reduce((acc, key) => {
-        return acc.concat(this.selectedRowKeys[key]);
-      }, []);
+    // ==================== 验证（编辑模式保留）====================
 
-      // 计算当前 tab 应该选中的 key（自身 + total 中包含的 key）
-      const shouldBeSelectedKeys = [...new Set(
-        allKeys
-      )];
-
-      this.currentTableData.forEach(row => {
-        const key = this.getRowKey(row);
-        const shouldSelect = shouldBeSelectedKeys.includes(key);
-
-        tableRef.toggleRowSelection(row, shouldSelect);
-      });
-    },
-
-
-    // 获取原始数据中的索引
-    getOriginalIndex(row) {
-      return this.tableData.findIndex(item =>
-        item.id === row.id && item.materialName === row.materialName
-      );
-    },
-
-
-    // 返回唯一行 key，用于多选保留状态
-    getRowKey(row) {
-      return `${row.id}`;
-    },
-    // 处理表格的勾选变化 - 修改版本
-    handleSelectionChange(selection) {
-      // 第一次进入时，将selectedRowKeys备份
-      const currentSelectedKeys = selection.map(row => this.getRowKey(row));
-      // 再添加当前选中的key
-      this.selectedRowKeys[this.activeTab] = currentSelectedKeys
-      this.emitSelectionChange();
-    },
-    // 新增方法：向父组件发送选中变化事件
-    emitSelectionChange() {
-      const allSelectedRows = this.tableData.filter(row => this.selectedRowKeys[this.activeTab].includes(this.getRowKey(row)));
-    },
-    // ✅ 当切换Tab时刷新表格并恢复多选
-    updateCurrentData() {
-      if (!this.selectedRowKeys[this.activeTab]) {
-        this.$set(this.selectedRowKeys, this.activeTab, []);
-      }
-
-      if (this.activeTab === 'total') {
-        this.currentTableData = [...this.tableData];
-      } else {
-        const selectedProject = this.projectTabs.find(p => p.name === this.activeTab);
-        this.currentTableData = selectedProject
-          ? this.tableData.filter(item => item.sectionName === selectedProject.projectName)
-          : [];
-      }
-
-      this.$nextTick(() => {
-        this.restoreSelectionAfterTabChange();
-      });
-    },
-    // 验证表格数据
     onCheck() {
       const validationErrors = this.validateTableData();
-
       if (validationErrors.length === 0) {
         return true;
       } else {
-        // 显示验证错误信息
         const errorMessage = this.formatValidationErrors(validationErrors);
         this.$message({
           message: errorMessage,
@@ -668,82 +405,36 @@ export default {
         return false;
       }
     },
-
-    // 验证表格数据的核心方法
     validateTableData() {
       const errors = [];
-      const currentData = this.filteredTableData;
-
-      currentData.forEach((row, index) => {
+      this.list.forEach((row, index) => {
         const rowErrors = [];
-        const displayIndex = index + 1; // 显示行号从1开始
-
-        // 验证数量字段
-        if (!row.amount || row.amount <= 0) {
-          rowErrors.push('数量');
-        }
-
-        // 验证物资名称（对于手动添加的行）
-        if (row.isManual && (!row.materialId || !row.materialName)) {
-          rowErrors.push('物资名称');
-        }
-
-        // 验证计量单位
-        if (!row.unit || row.unit.trim() === '') {
-          rowErrors.push('计量单位');
-        }
-
-        // 验证标段名称
-        if (!row.sectionId || row.sectionId.trim() === '') {
-          rowErrors.push('标段名称');
-        }
-
-        // 到站不含税单价
-        if (!row.price || row.price <= 0) {
-          rowErrors.push('到站不含税单价');
-        }
-
-        // 物资增值税率
-        if (!row.vatRate || row.vatRate <= 0) {
-          rowErrors.push('物资增值税率');
-        }
-
-
-        // 如果有错误，添加到错误列表
+        const displayIndex = index + 1;
+        if (!row.amount || row.amount <= 0) rowErrors.push('数量');
+        if (row.isManual && (!row.materialId || !row.materialName)) rowErrors.push('物资名称');
+        if (!row.unit || row.unit.trim() === '') rowErrors.push('计量单位');
+        if (!row.sectionId || row.sectionId.trim() === '') rowErrors.push('标段名称');
+        if (!row.price || row.price <= 0) rowErrors.push('到站不含税单价');
+        if (!row.vatRate || row.vatRate <= 0) rowErrors.push('物资增值税率');
         if (rowErrors.length > 0) {
-          errors.push({
-            rowIndex: displayIndex,
-            rowData: row,
-            missingFields: rowErrors
-          });
+          errors.push({ rowIndex: displayIndex, rowData: row, missingFields: rowErrors });
         }
       });
-
       return errors;
     },
-
-    // 格式化验证错误信息
     formatValidationErrors(errors) {
       const currentTabName = this.activeTab === 'total' ? '总数据' :
-        this.projectTabs.find(p => p.name === this.activeTab)?.label || '当前标签页';
-
+        this.sectionList.find(s => s.id === this.activeTab)?.sectionName || '当前标签页';
       let message = `<div style="text-align: left;"><strong>${currentTabName} 数据验证失败：</strong><br/>`;
-
       errors.forEach(error => {
         const fieldsText = error.missingFields.join('、');
         message += `<div style="margin: 5px 0; color: #f56c6c;">• 第 ${error.rowIndex} 行：${fieldsText} 未填写</div>`;
       });
-
       message += '</div>';
       return message;
     },
-
-    // 高亮显示有错误的行（可选功能）
     highlightErrorRows(errors) {
-      // 清除之前的高亮
       this.clearRowHighlight();
-
-      // 高亮错误行
       errors.forEach(error => {
         const rowIndex = error.rowIndex - 1;
         this.$nextTick(() => {
@@ -758,8 +449,6 @@ export default {
         });
       });
     },
-
-    // 清除行高亮
     clearRowHighlight() {
       this.$nextTick(() => {
         const tableRef = this.$refs.dataTable;
@@ -775,6 +464,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 /* 自定义Tab样式 */
@@ -819,10 +509,6 @@ export default {
 
 /* 统计信息样式 */
 .summary-info {
- /* margin-left: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
-
   margin-top: 15px;
   padding: 10px;
   background: #f8f9fa;
@@ -833,14 +519,6 @@ export default {
 }
 
 .summary-item {
-  /*display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);*/
-
   min-width: 180px;
   display: flex;
   align-items: center;

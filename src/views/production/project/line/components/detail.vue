@@ -123,9 +123,9 @@
         </template>
         <template #table>
           <TabTable
-            ref="tabTableRef"
-            :tableData="tableData"
-            :sellerName="$refs.vFormRef.getFieldValue('seller')"
+          :sectionList="sectionList"
+          :projectId="id"
+          :sellerName="$refs.vFormRef.getFieldValue('seller')"
           />
         </template>
       </VFormRender>
@@ -153,7 +153,7 @@ export default {
   data () {
     return {
       loading: false,
-      tableData: [],
+      sectionList: [],
       title: '新增',
       checked: false,
       //   fileList type
@@ -218,18 +218,20 @@ export default {
     },
     // 编辑初始化
     async updateInit (id) {
-
-      await Api.detail(id).then(({ data }) => {
-        this.$nextTick(async () => {
-          this.title = "编辑";
-          await this.formFillInPage()
-          this.$refs.vFormRef.setFormData(data)
-
-          this.tableData = data.materialList
-          //   form action
-          this.$refs.vFormRef.setReadMode(this.type === 'view')
-        });
-      });
+      this.tableLoading = true;
+      // 等待 DOM 渲染，确保 vFormRef 可用
+      await this.$nextTick();
+      // 提前启动 detail 请求（不 await，与 formFillInPage 并行）
+      const detailPromise = Api.detail(id);
+      // 加载表单结构，完成后立即切换只读模式（骨架直接显示只读态，消除输入框）
+      await this.formFillInPage();
+      this.$refs.vFormRef.setReadMode(true);
+      // 等待 detail 数据（大概率此时已在途中或已完成）
+      const { data } = await detailPromise;
+      this.title = "编辑";
+      this.$refs.vFormRef.setFormData(data);
+      // 存储标段列表供 TabTable 渲染 Tab
+      this.sectionList = Object.freeze(data.sectionList || []);
     },
     newButton (buttonCode) {
       if (buttonCode === 'cancel') {
