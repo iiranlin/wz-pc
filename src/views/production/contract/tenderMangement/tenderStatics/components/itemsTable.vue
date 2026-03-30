@@ -83,20 +83,20 @@
           <span v-else>{{ scope.row.packageNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="物资种类" width="120" align="center">
+      <el-table-column label="物资种类" width="150" align="center">
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.materialType" placeholder="请选择" style="width: 100%" @change="handleMaterialTypeChange(scope.row, $event)">
-            <el-option v-for="item in typeOptions[scope.row.materialCategory] || []" :key="item.value" :label="item.label" :value="item.label" />
+            <el-option v-for="item in typeOptions[scope.row.materialCategory] || []" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <span v-else>{{ scope.row.materialType }}</span>
+          <span v-else>{{ getMaterialTypeLabel(scope.row.materialCategory, scope.row.materialType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="细目" width="120" align="center">
+      <el-table-column label="细目" width="150" align="center">
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.itemDetail" placeholder="请选择" style="width: 100%">
-            <el-option v-for="item in detailOptions[scope.row.materialType] || []" :key="item.value" :label="item.label" :value="item.label" />
+            <el-option v-for="item in detailOptions[scope.row.materialType] || []" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <span v-else>{{ scope.row.itemDetail }}</span>
+          <span v-else>{{ getItemDetailLabel(scope.row.materialType, scope.row.itemDetail) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="计量单位" width="120" align="center">
@@ -260,7 +260,31 @@ export default {
       this.isInitializing = false;
     });
   },
+  watch: {
+    value: {
+      handler(newValue) {
+        if (newValue && newValue.materialTenderInfoDOList) {
+          this.loadExistingData(newValue.materialTenderInfoDOList);
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   methods: {
+    // 加载已有的数据，为编辑和查看详情做准备
+    async loadExistingData(items) {
+      for (const item of items) {
+        // 加载物资种类数据
+        if (item.materialCategory) {
+          await this.getTypeOptions(item.materialCategory);
+          // 加载细目数据
+          if (item.materialType) {
+            await this.getDetailOptions(item.materialType);
+          }
+        }
+      }
+    },
     // 处理物资类别变化
     async handleMaterialCategoryChange(row, materialCategory) {
       console.log('handleMaterialCategoryChange触发', { row, materialCategory });
@@ -426,6 +450,20 @@ export default {
       if (!value) return '';
       const item = this.dict.type.WZDL.find(item => item.value === value);
       return item ? item.label : value;
+    },
+    getMaterialTypeLabel(materialCategory, materialType) {
+      // 从typeOptions中查找物资种类对应的标签
+      if (!materialCategory || !materialType) return '';
+      const options = this.typeOptions[materialCategory] || [];
+      const item = options.find(item => item.value === materialType);
+      return item ? item.label : materialType;
+    },
+    getItemDetailLabel(materialType, itemDetail) {
+      // 从detailOptions中查找细目对应的标签
+      if (!materialType || !itemDetail) return '';
+      const options = this.detailOptions[materialType] || [];
+      const item = options.find(item => item.value === itemDetail);
+      return item ? item.label : itemDetail;
     },
   },
 };
