@@ -168,7 +168,7 @@
           <span v-else>{{ formatTimestamp(scope.row.contractSignTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="投标人名称" width="150" align="center">
+      <el-table-column label="投标人名称" width="200" align="center">
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.bidderName" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.bidderName }}</span>
