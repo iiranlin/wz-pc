@@ -168,7 +168,7 @@
               <span v-else>{{ scope.row.deliveryLocation }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="receiver" label="收货人" width="150" align="center">
+          <el-table-column prop="receiver" label="收货人" width="300" align="center">
             <template slot-scope="scope">
               <el-input v-if="type !== 'view'" v-model="scope.row.receiver" size="mini"
                 @change="handleFieldChange('receiver', scope.row)" style="width: 100%"></el-input>
