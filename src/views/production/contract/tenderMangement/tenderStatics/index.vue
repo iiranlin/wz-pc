@@ -15,11 +15,6 @@
       @handleResetField="handleResetField"
       :formData="formData"
     >
-      <template #tenderUnit="data">
-        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择' " clearable style="width: 100%" size="small">
-          <el-option v-for="(item, key) in unitOptions" :key="key" :label="item.label" :value="item.label" />
-        </el-select>
-      </template>
     
       <template #status="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择'" clearable style="width: 100%" size="small">
@@ -120,7 +115,6 @@ export default {
       total: 0,
       selection: [],
       hasOwn: true,
-      unitOptions: [],
       statusOptions: [
         {label: '未提交', value: '0'},
         {label: '已提交', value: '1'} 
@@ -132,24 +126,8 @@ export default {
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
     });
-
-    // 获取供应商指挥部树
-    this.getUnitOptions()
   },
   methods: {
-     getUnitOptions() {
-       Api.getTendererNames().then(({ data }) => {
-        this.unitOptions = data.map(x => ({
-          label: x.name,
-          value: x.id
-        }))
-        // // 默认选中第一个
-        // if (this.unitOptions.length > 0) {
-        //   // 注意：el-option的value绑定的是item.label，所以这里也应该使用label
-        //   this.formData.tenderUnit = this.unitOptions[0].label;
-        // }
-      })
-    },
     numberChange (val) {
       this.numberShow = val;
     },

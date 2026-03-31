@@ -85,7 +85,8 @@
       </el-table-column>
       <el-table-column label="物资种类" width="150" align="center">
         <template slot-scope="scope">
-          <el-select v-if="!isView" v-model="scope.row.materialType" placeholder="请选择" style="width: 100%" @change="handleMaterialTypeChange(scope.row, $event)">
+          <el-select v-if="!isView" v-model="scope.row.materialType" placeholder="请选择"
+              filterable style="width: 100%" @change="handleMaterialTypeChange(scope.row, $event)">
             <el-option v-for="item in typeOptions[scope.row.materialCategory] || []" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <span v-else>{{ getMaterialTypeLabel(scope.row.materialCategory, scope.row.materialType) }}</span>
@@ -93,7 +94,7 @@
       </el-table-column>
       <el-table-column label="细目" width="150" align="center">
         <template slot-scope="scope">
-          <el-select v-if="!isView" v-model="scope.row.itemDetail" placeholder="请选择" style="width: 100%">
+          <el-select v-if="!isView" v-model="scope.row.itemDetail" placeholder="请选择" filterable style="width: 100%">
             <el-option v-for="item in detailOptions[scope.row.materialType] || []" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
           <span v-else>{{ getItemDetailLabel(scope.row.materialType, scope.row.itemDetail) }}</span>
@@ -222,6 +223,14 @@ export default {
        isInitializing: true, // 添加初始化标记
       typeOptions: {}, // 物资种类选项，按物资类别分类
       detailOptions: {}, // 物资细目选项，按物资种类分类
+       // 查询参数
+      formData: {
+        parentId: null,
+      },
+      listQuery:{
+        pageNum: 1,
+        pageSize: 1000,
+      }
     }
   },
   props: {
@@ -407,8 +416,8 @@ export default {
       this.isView = false;
     },
      getLineOptions() {
-       LineApi.lineSelectOptions().then(({ data }) => {
-        this.lineOptions = data.map(x => ({
+      LineApi.itemList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+         this.lineOptions = data.list.map(x => ({
           label: x.projectName,
           value: x.id
         }))
