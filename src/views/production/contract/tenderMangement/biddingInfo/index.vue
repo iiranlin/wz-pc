@@ -24,14 +24,14 @@
       <template #tenderYear="data">
         <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="选择年份" size="small" value-format="yyyy" style="width: 100%" />
       </template>
-      <template #materialCategory="data">
-        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择'
+      <template #materialCategory>
+        <el-select class="select-box" v-model="formData.materialCategory" :placeholder="'请选择'
           " clearable style="width: 100%" size="small" @change="handleMaterialCategoryChange">
           <el-option  v-for="item in dict.type.WZDL" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </template>
-      <template #materialType="data">
-        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择'
+      <template #materialType>
+        <el-select class="select-box" v-model="formData.materialType" :placeholder="'请选择'
           " clearable style="width: 100%" size="small">
           <el-option  v-for="item in typeOptions[formData.materialCategory] || []" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
@@ -131,7 +131,8 @@ export default {
       },
       // 查询参数
       formData: {
-        parentId: null,
+        materialCategory: null,
+        materialType: null,
       },
       formDataClick: {},
       total: 0,

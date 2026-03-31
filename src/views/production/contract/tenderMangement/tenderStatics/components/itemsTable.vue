@@ -280,7 +280,7 @@ export default {
           await this.getTypeOptions(item.materialCategory);
           // 加载细目数据
           if (item.materialType) {
-            await this.getDetailOptions(item.materialType);
+            await this.getDetailOptions(item.materialType, item.materialCategory);
           }
         }
       }
@@ -307,7 +307,8 @@ export default {
       
       // 如果选择了物资种类，获取对应的细目
       if (materialType) {
-        await this.getDetailOptions(materialType);
+        // 传递物资类别的code作为speciesCode参数
+        await this.getDetailOptions(materialType, row.materialCategory);
       } else {
         console.log('物资种类为空');
       }
@@ -340,13 +341,14 @@ export default {
       }
     },
     // 获取物资细目选项（依赖物资种类）
-    async getDetailOptions(categoriesCode) {
+    async getDetailOptions(categoriesCode, speciesCode) {
       try {
-        console.log('调用DetailApi.itemList', categoriesCode);
+        console.log('调用DetailApi.itemList', { categoriesCode, speciesCode });
         const params = {
           pageNum: 1,
           pageSize: -1,
           categoriesCode: categoriesCode,
+          speciesCode: speciesCode,
         };
 
         const res = await DetailApi.itemList(params);

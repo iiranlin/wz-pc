@@ -105,6 +105,15 @@ export default {
       return this.$route.query?.id || ''
     }
   },
+ activated() {
+    // 设置页面标题
+     this.setPageTitle()
+     if (this.type === 'create') {
+          this.init()
+      } else if (['view', 'update'].includes(this.type)) {
+        this.updateInit(this.id)
+      }
+  },
   mounted () {
      // 设置页面标题
      this.setPageTitle()
