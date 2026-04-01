@@ -7,7 +7,7 @@
         </div>
         <Dialog v-if="visible" custom-class="fileViewDialog" :show-close="false" :visible="true"
             :destroy-on-close="true" @close="handleClose" :close-on-click-modal="false" :modal-append-to-body="true"
-            @full="handleFullChange" :append-to-body="true">
+            @full="handleFullChange" :append-to-body="true" :resizable="!isDialogFullscreen">
             <template slot="title">
                 <div class="filePreviewTitle">
                     <div class="title">{{ title }}</div>
@@ -156,6 +156,7 @@ export default {
             pngTypes: ['png', 'gif', 'jpg', 'jpeg'],
             fileType: '',
             visible: false,
+            isDialogFullscreen: false,
             title: '附件预览',
             loading: false,
             url: '',
@@ -179,11 +180,13 @@ export default {
         }
     },
     methods: {
-        handleFullChange() {
+        handleFullChange(isFullScreen) {
+            this.isDialogFullscreen = Boolean(isFullScreen)
             this.key = `${Date.now()}`
         },
         async handlePreview() {
             this.resetPdfView()
+            this.isDialogFullscreen = false
             if (['xlsx', 'xls'].includes(this.fileType)) {
                 this.excelOptions.xls = this.fileType == 'xls'
             }
@@ -197,6 +200,7 @@ export default {
         },
         handleClose() {
             this.visible = false
+            this.isDialogFullscreen = false
             this.stopPdfDrag()
             this.resetPdfView()
         },

@@ -1,9 +1,31 @@
 <template>
-    <el-dialog v-bind="$attrs" v-on="$listeners" :show-close="false" v-dialogFullScreen ref="elDialog">
+    <el-dialog v-if="isResizable" v-bind="$attrs" v-on="$listeners" :show-close="false" v-dialogFullScreen
+        v-dialogDragWidth v-dialogDragHeight ref="elDialog">
         <div slot="title" class="el-dialog__title t-dialog" v-if="'title' in $slots" ref="fullRef">
             <slot name="title">
             </slot>
-            <i class="full-btn el-icon-full-screen"></i>
+            <i class="full-btn el-icon-plus"></i>
+            <i class="full-btn-close el-icon-close" @click="handleClose"></i>
+
+        </div>
+
+        <div slot="title" v-else class="el-dialog__title t-dialog" ref="fullRef">
+            <span>{{ $attrs.title }}
+            </span>
+            <i class="full-btn el-icon-plus"></i>
+            <i class="full-btn-close el-icon-close" @click="handleClose"></i>
+        </div>
+
+        <template v-for="slotName in Object.keys($slots).filter(key => key != 'title')" #[slotName]>
+            <slot :name="slotName"></slot>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-else v-bind="$attrs" v-on="$listeners" :show-close="false" v-dialogFullScreen ref="elDialog">
+        <div slot="title" class="el-dialog__title t-dialog" v-if="'title' in $slots" ref="fullRef">
+            <slot name="title">
+            </slot>
+            <i class="full-btn el-icon-plus"></i>
             <i class="full-btn-close el-icon-close" @click="handleClose"></i>
             
         </div>
@@ -11,7 +33,7 @@
         <div slot="title" v-else class="el-dialog__title t-dialog" ref="fullRef">
             <span>{{ $attrs.title }}
             </span>
-            <i class="full-btn el-icon-full-screen"></i>
+            <i class="full-btn el-icon-plus"></i>
             <i class="full-btn-close el-icon-close" @click="handleClose"></i>
         </div>
 
@@ -23,6 +45,11 @@
 <script>
 export default {
     name: 'dialog',
+    computed: {
+        isResizable() {
+            return Boolean(this.$attrs.resizable)
+        }
+    },
     methods: {
         handleClose() {
             if('close' in this.$refs.elDialog.$listeners) {
