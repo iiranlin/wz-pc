@@ -42,6 +42,11 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
+        <!-- 项目状态 -->
+         <!-- 已计划物资金额比例 == 100 增状态显示完工，否则在建 -->
+         <template #status="scoped">
+           {{ scoped.data.materialUsedRatio == 100 ? '完工' : '在建' }}
+         </template>
           <!-- 标段数量 -->
           <template #sectionList="scoped">
             <el-button
