@@ -75,7 +75,11 @@
 
 					<!-- 招标归档资料链接跳转 -->
 					<template #archivedMaterials="scope">
-						<el-link type="primary" @click.stop="goArchivedMaterials(scope.data)">
+						<el-link
+							type="primary"
+							:class="{ 'is-empty-archive': !hasArchivedAttachments(scope.data) }"
+							@click.stop="goArchivedMaterials(scope.data)"
+						>
 							归档资料
 						</el-link>
 					</template>
@@ -189,6 +193,45 @@ export default {
 		}
 	},
 	methods: {
+		hasArchivedAttachments(row) {
+			const archivedFields = [
+				'acceptance',
+				'bidAddendum',
+				'bidCandidateWeb',
+				'bidCopy',
+				'bidEvaluationReport',
+				'commitment',
+				'contractCopy',
+				'other',
+				'tenderAnnouncement'
+			];
+			return archivedFields.some((field) => this.hasValidAttachment(row && row[field]));
+		},
+		hasValidAttachment(value) {
+			const files = this.parseAttachmentList(value);
+			return files.some((item) => this.isValidAttachmentItem(item));
+		},
+		parseAttachmentList(value) {
+			if (!value) {
+				return [];
+			}
+			try {
+				const parsedValue = typeof value === 'string' ? JSON.parse(value) : value;
+				return Array.isArray(parsedValue) ? parsedValue : [];
+			} catch (error) {
+				return [];
+			}
+		},
+		isValidAttachmentItem(item) {
+			if (!item || typeof item !== 'object' || Array.isArray(item)) {
+				return false;
+			}
+			const attachmentKeys = ['name', 'url', 'fileName', 'fileUrl'];
+			return attachmentKeys.some((key) => {
+				const fieldValue = item[key];
+				return typeof fieldValue === 'string' && fieldValue.trim();
+			});
+		},
 		getLineOptions() {
 			WzglApi.fileLineSelectOptions().then(({ data }) => {
 				this.lineOptions = data.map(x => ({
@@ -450,5 +493,9 @@ export default {
 	flex: 1;
 	height: 100%;
 	overflow-y: scroll;
+}
+
+.is-empty-archive {
+	color: #c0c4cc !important;
 }
 </style>
