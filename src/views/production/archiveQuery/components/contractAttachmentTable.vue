@@ -78,6 +78,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    searchField: {
+      type: String,
+      default: 'queryField'
+    },
     columns: {
       type: Array,
       default: () => []
@@ -154,11 +158,11 @@ export default {
     async loadData () {
       this.loading = true
       try {
-        const params = {
+      const params = {
           ...this.requestParams,
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          ...(this.queryField ? { queryField: this.queryField } : {})
+          ...(this.queryField ? { [this.searchField]: this.queryField } : {})
         }
         const res = await this.fetchApi(params)
         const data = res?.data ?? res ?? {}
@@ -171,11 +175,13 @@ export default {
     },
     handleSearch () {
       this.pageNum = 1
+      this.$emit('search-change', this.queryField)
       this.loadData()
     },
     handleReset () {
       this.queryField = ''
       this.pageNum = 1
+      this.$emit('search-change', this.queryField)
       this.loadData()
     },
     refresh () {
@@ -200,4 +206,3 @@ export default {
   margin-top: 12px;
 }
 </style>
-
