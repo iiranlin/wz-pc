@@ -20,6 +20,17 @@
           <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.value" />
         </el-select>
       </template>
+
+      <template #dateRange>
+        <el-date-picker
+          v-model="formData.dateRange"
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -67,6 +78,7 @@ import * as Api from '@/api/statisticalQuery/MaterialsPlans.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import indexMixin from "@/views/mixins";
+import dayjs from 'dayjs';
 export default {
   // 物资明细查询
   name: "materialDetailsQuery",
@@ -97,7 +109,9 @@ export default {
       // 部门树遮罩
       treeLoading: false,
       // 查询参数
-      formData: {},
+      formData: {
+        dateRange: [], // 日期范围
+      },
       formDataClick: {},
       total: 0,
       selection: [],
@@ -113,6 +127,8 @@ export default {
 
     // 获取填报单位
     this.getUnitOptions()
+    // 初始化默认日期为最近一个月
+    this.initDefaultDate()
   },
   methods: {
      getUnitOptions() {
@@ -122,6 +138,16 @@ export default {
           value: x.id
         }))
       })
+    },
+    // 初始化默认日期为最近一个月
+    initDefaultDate() {
+      const end = dayjs();
+      const start = dayjs().subtract(1, 'month');
+
+      this.formData.dateRange = [
+        start.format('YYYY-MM-DD'),
+        end.format('YYYY-MM-DD')
+      ];
     },
     numberChange (val) {
       this.numberShow = val;
@@ -146,6 +172,9 @@ export default {
       this.handleQuery();
     },
     handleQuery (row = {}, type = '') {
+      this.formData = {
+        dateRange: [],
+      };
       this.listQuery.pageNum = 1
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
@@ -154,7 +183,14 @@ export default {
     /** 查询菜单列表 */
     getList () {
       this.loading = true
-      Api.materialDetailsQueryList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
+       // 处理日期范围，转换为 startDate 和 endDate
+      const params = { ...this.listQuery, ...this.formData };
+       if (this.formData.dateRange && this.formData.dateRange.length === 2) {
+        params.startDate = this.formData.dateRange[0];
+        params.endDate = this.formData.dateRange[1];
+        delete params.dateRange; // 移除原始日期范围字段
+      }
+      Api.materialDetailsQueryList(params).then(({ data }) => {
         this.list = data.list
         this.total = data.total
       }).finally(() => {
