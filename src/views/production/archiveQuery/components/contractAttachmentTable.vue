@@ -9,6 +9,17 @@
         style="width: 260px"
         @keyup.enter.native="handleSearch"
       />
+      <el-date-picker
+        v-if="showDateRange"
+        v-model="dateRange"
+        type="daterange"
+        range-separator="-"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        value-format="yyyy-MM-dd"
+        size="small"
+        style="width:260px !important"
+      />
       <el-button type="primary" size="small" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       <el-button size="small" icon="el-icon-refresh" @click="handleReset">重置</el-button>
     </div>
@@ -82,6 +93,10 @@ export default {
       type: String,
       default: 'queryField'
     },
+    showDateRange: {
+      type: Boolean,
+      default: false
+    },
     columns: {
       type: Array,
       default: () => []
@@ -109,7 +124,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      queryField: ''
+      queryField: '',
+      dateRange: []
     }
   },
   computed: {
@@ -162,7 +178,13 @@ export default {
           ...this.requestParams,
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          ...(this.queryField ? { [this.searchField]: this.queryField } : {})
+          ...(this.queryField ? { [this.searchField]: this.queryField } : {}),
+          ...(this.showDateRange && this.dateRange?.length === 2
+            ? {
+              startDate: this.dateRange[0],
+              endDate: this.dateRange[1]
+            }
+            : {})
         }
         const res = await this.fetchApi(params)
         const data = res?.data ?? res ?? {}
@@ -180,6 +202,7 @@ export default {
     },
     handleReset () {
       this.queryField = ''
+      this.dateRange = []
       this.pageNum = 1
       this.$emit('search-change', this.queryField)
       this.loadData()
