@@ -450,12 +450,12 @@ export default {
             submitData.fillReportTime = new Date(submitData.fillReportTime).getTime();
           }
           
-          // 确保 submitData.tenderYear 是字符串格式的 yyyy 格式
+          // 确保 submitData.tenderYear 是数字格式的 yyyy 格式
           if (submitData.tenderYear) {
             if (typeof submitData.tenderYear === 'object') {
-              submitData.tenderYear = submitData.tenderYear.getFullYear().toString();
-            } else if (typeof submitData.tenderYear === 'number') {
-              submitData.tenderYear = submitData.tenderYear.toString();
+              submitData.tenderYear = submitData.tenderYear.getFullYear();
+            } else if (typeof submitData.tenderYear === 'string') {
+              submitData.tenderYear = parseInt(submitData.tenderYear);
             }
           }
           

@@ -22,7 +22,7 @@
         </el-select>
       </template>
       <template #tenderYear="data">
-        <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="请选择招标年度"/>
+        <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="请选择" style="width: 100%"/>
       </template>
     </form-data>
     <el-row type="flex" class="container_h">
@@ -164,7 +164,17 @@ export default {
       this.loading = true
       this.listQuery.orderByColumn = 'status,createTime'
       this.listQuery.isAsc = "false"
-      const queryParams = Object.assign({}, this.listQuery, this.formData);
+      // 处理tenderYear字段，确保它是数字类型
+      const formDataWithYear = { ...this.formData };
+      if (formDataWithYear.tenderYear) {
+        if (typeof formDataWithYear.tenderYear === 'object') {
+          formDataWithYear.tenderYear = formDataWithYear.tenderYear.getFullYear();
+        } else if (typeof formDataWithYear.tenderYear === 'string') {
+          formDataWithYear.tenderYear = parseInt(formDataWithYear.tenderYear);
+        }
+      }
+
+      const queryParams = Object.assign({}, this.listQuery, formDataWithYear);
       Api.tenderStatisticsList(queryParams).then(({ data }) => {
         this.list = data.list
         this.total = data.total
