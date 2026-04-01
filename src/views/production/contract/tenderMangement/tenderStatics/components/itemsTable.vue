@@ -29,7 +29,7 @@
           <span v-else>{{ scope.row.tenderProjectName }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center">
+      <el-table-column width="300" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标人名称
         </template>
@@ -49,7 +49,7 @@
           <span v-else>{{ formatTimestamp(scope.row.tenderYear) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center">
+      <el-table-column width="300" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标交易场所
         </template>
@@ -60,7 +60,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center">
+      <el-table-column width="200" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 项目类别
         </template>
@@ -69,7 +69,7 @@
           <span v-else>{{ scope.row.projectCategory }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center">
+      <el-table-column width="200" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 物资类别
         </template>
@@ -80,7 +80,7 @@
           <span v-else>{{ getMaterialCategoryLabel(scope.row.materialCategory) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center">
+      <el-table-column width="200" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 招标编号
         </template>
@@ -89,7 +89,7 @@
           <span v-else>{{ scope.row.tenderNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center">
+      <el-table-column width="180" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 包件号
         </template>
@@ -98,7 +98,7 @@
           <span v-else>{{ scope.row.packageNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center">
+      <el-table-column width="300" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 物资种类
         </template>
@@ -110,7 +110,7 @@
           <span v-else>{{ getMaterialTypeLabel(scope.row.materialCategory, scope.row.materialType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center">
+      <el-table-column width="300" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 细目
         </template>
@@ -216,7 +216,7 @@
           <span v-else>{{ formatTimestamp(scope.row.contractSignTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="230" align="center">
+      <el-table-column width="300" align="center">
         <template slot="header">
           <span style="color: red;">*</span> 投标人名称
         </template>
