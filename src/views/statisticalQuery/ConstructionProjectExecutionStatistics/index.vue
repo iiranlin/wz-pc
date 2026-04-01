@@ -29,6 +29,17 @@
           <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.value" />
         </el-select>
       </template>
+       <!-- 日期范围搜索 -->
+      <template #date>
+        <el-date-picker
+          v-model="formData.dateRange"
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </template>
     </form-data>
     <right-toolbar
       ref="rightToolbar"
@@ -177,6 +188,13 @@ export default {
       this.handleQuery();
     },
     handleQuery(row = {}) {
+       if(this.formData.dateRange && this.formData.dateRange.length > 0){
+        this.formData.startDate = this.formData.dateRange[0]
+        this.formData.endDate = this.formData.dateRange[1]
+      }else{
+        this.$set(this.formData, 'startDate', null)
+        this.$set(this.formData, 'endDate', null)
+      }
       this.listQuery.pageNum = 1;
       this.formData = Object.assign({}, this.formData, row);
       this.formDataClick = Object.assign({}, this.formData, row);
