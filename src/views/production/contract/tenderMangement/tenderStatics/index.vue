@@ -21,6 +21,9 @@
           <el-option v-for="(item, key) in statusOptions" :key="key" :label="item.label" :value="item.value" />
         </el-select>
       </template>
+      <template #tenderYear="data">
+        <el-date-picker v-model="formData[data.data.fieldCode]" type="year" placeholder="请选择招标年度"/>
+      </template>
     </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->

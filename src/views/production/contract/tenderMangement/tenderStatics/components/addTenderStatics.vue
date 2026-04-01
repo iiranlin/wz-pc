@@ -58,7 +58,7 @@
        
          <!-- 甲供物资列表 -->
          <template #tableSlot="{formModel}">
-          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" :tenderYear="formModel.tenderYear" :id="id" @input="handleTableInput" />
+          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" :tenderYear="typeof formModel.tenderYear === 'object' ? formModel.tenderYear.getFullYear().toString() : formModel.tenderYear.toString()" :id="id" @input="handleTableInput" />
         </template>
       </VFormRender>
     </div>
@@ -216,6 +216,10 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
+          // 确保 tenderYear 是字符串类型
+          if (data.tenderYear) {
+            data.tenderYear = data.tenderYear.toString();
+          }
           // 更新 formData
           this.formData = data;
           // 确保 materialTenderInfoDOList 是数组
@@ -444,6 +448,15 @@ export default {
           // 将 fillReportTime 转换为时间戳
           if (submitData.fillReportTime) {
             submitData.fillReportTime = new Date(submitData.fillReportTime).getTime();
+          }
+          
+          // 确保 submitData.tenderYear 是字符串格式的 yyyy 格式
+          if (submitData.tenderYear) {
+            if (typeof submitData.tenderYear === 'object') {
+              submitData.tenderYear = submitData.tenderYear.getFullYear().toString();
+            } else if (typeof submitData.tenderYear === 'number') {
+              submitData.tenderYear = submitData.tenderYear.toString();
+            }
           }
           
           await Api[`tenderStatisticsAdd`](Object.assign({ id: this.type === 'update' ? this.id : null }, submitData))
