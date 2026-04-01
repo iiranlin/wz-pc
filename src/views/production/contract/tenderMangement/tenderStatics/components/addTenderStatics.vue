@@ -14,8 +14,16 @@
         :global-dsv="globalDsv"
         :class="{ formRender_view: type === 'view' }"
       >
+        <template #tenderYearSlot="{ formModel }">
+          <el-form-item prop="tenderYear" label="招标年度：" class="label-right-align"
+            :rules=" { required: true, message: '请选择招标年度', trigger: 'blur' }">
+              <el-date-picker v-if="type !== 'view'" v-model="formModel.tenderYear" type="year" placeholder="请选择招标年度" style="width: 320px;" @change="handleTenderYearChange"/>
+              <span v-else>{{ formModel.tenderYear }}</span>
+            </el-form-item>
+        </template>
         <template #unitNameSlot="{ formModel }">
-          <el-form-item prop="unitName" label="填报单位：" class="label-right-align">
+          <el-form-item prop="tenderUnit" label="填报单位：" class="label-right-align"
+          :rules=" [{ required: true, message: '请输入填报单位', trigger: 'blur' }, { max: 100, message: '填报单位长度不能超过50个字符', trigger: 'blur' }]">
             <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
               <span class="ellipsis-text">
                 <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位" style="width: 320px"/>
@@ -50,7 +58,7 @@
        
          <!-- 甲供物资列表 -->
          <template #tableSlot="{formModel}">
-          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" @input="handleTableInput" />
+          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" :tenderYear="formModel.tenderYear" :id="id" @input="handleTableInput" />
         </template>
       </VFormRender>
     </div>
@@ -185,11 +193,13 @@ export default {
         await this.formFillInPage();
         // 获取招标人名称
         await this.getTendererNames();
-        // 设置默认当前日期
+        // 设置默认当前日期和年份
         const currentDate = dayjs().format('YYYY-MM-DD');
+        const currentYear = dayjs().format('YYYY');
         // 初始化 formData
         this.formData = {
           fillReportTime: currentDate,
+          tenderYear: currentYear,
           fillPerson: this.userInfo.nickName,
           contactPerson: this.userInfo.nickName,
           materialTenderInfoDOList: []
@@ -247,6 +257,12 @@ export default {
            const vFormRefData = await this.$refs.vFormRef.getFormData();
           // 直接使用 this.formData，因为 VFormRender 可能不会包含 materialTenderInfoDOList
            const formData = this.formData;
+           // 判断填报单位的长度不能超过100个字符
+           if (formData.tenderUnit && formData.tenderUnit.length > 100) {
+            this.loading = false;
+            this.$modal.msgError('填报单位长度不能超过100个字符');
+            return;
+          }
           // 验证填表人和联系人长度
           if (formData.fillPerson && formData.fillPerson.length > 50) {
             this.loading = false;
@@ -280,6 +296,11 @@ export default {
               this.$modal.msgError(`第${i + 1}行：招标项目名称为必填项`);
               return;
             }
+            if (!item.tendererName) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标人名称为必填项`);
+              return;
+            }
             if (!item.tenderYear) {
               this.loading = false;
               this.$modal.msgError(`第${i + 1}行：招标年度为必填项`);
@@ -293,6 +314,81 @@ export default {
             if (!item.projectCategory) {
               this.loading = false;
               this.$modal.msgError(`第${i + 1}行：项目类别为必填项`);
+              return;
+            }
+            if (!item.materialCategory) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：物资类别为必填项`);
+              return;
+            }
+            if (!item.tenderNo) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标编号为必填项`);
+              return;
+            }
+            if (!item.packageNo) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：包件号为必填项`);
+              return;
+            }
+            if (!item.materialType) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：物资种类为必填项`);
+              return;
+            }
+            if (!item.itemDetail) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：细目为必填项`);
+              return;
+            }
+            if (!item.measureUnit) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：计量单位为必填项`);
+              return;
+            }
+            if (!item.tenderQuantity) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标数量为必填项`);
+              return;
+            }
+            if (!item.tenderNoticePubTime) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：招标发布公告时间为必填项`);
+              return;
+            }
+            if (!item.bidOpenTime) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：开标时间为必填项`);
+              return;
+            }
+            if (!item.candidatePubTime) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：推荐中标候选人公示时间为必填项`);
+              return;
+            }
+            if (!item.bidNoticeTime) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：中标通知书时间为必填项`);
+              return;
+            }
+            if (!item.winningBidder) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：中标单位为必填项`);
+              return;
+            }
+            if (!item.bidAmount) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：中标金额（万元）为必填项`);
+              return;
+            }
+            if (!item.contractSignTime) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：合同签订时间为必填项`);
+              return;
+            }
+            if (!item.bidderName) {
+              this.loading = false;
+              this.$modal.msgError(`第${i + 1}行：投标人名称为必填项`);
               return;
             }
             if (item.tendererName && item.tendererName.length > 100) {
@@ -374,14 +470,14 @@ export default {
     // 处理表格数据变化
     handleTableInput(newData) {
       console.log('handleTableInput called with:', newData);
-      // 更新formData
-      this.formData = { ...this.formData, ...newData };
-      // 更新VFormRender中的表单数据
-      if (this.$refs.vFormRef) {
-        this.$refs.vFormRef.setFormData(this.formData);
-        console.log('Form data updated in VFormRender');
+    },
+    // 处理招标年度变化，同步更新表格中的招标年度
+    handleTenderYearChange(value) {
+      if (this.formData.materialTenderInfoDOList && this.formData.materialTenderInfoDOList.length > 0) {
+        this.formData.materialTenderInfoDOList.forEach(item => {
+          item.tenderYear = value;
+        });
       }
-      console.log('Updated formData:', this.formData);
     },
 
   },
