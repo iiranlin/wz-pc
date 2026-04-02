@@ -229,7 +229,7 @@ export default {
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData);
       switch (buttonCode) {
-        case "download":
+        case "export":
           this.handleDonwload(idArr[0]);
 
           break;

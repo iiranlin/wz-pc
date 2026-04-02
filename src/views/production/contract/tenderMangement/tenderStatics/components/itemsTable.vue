@@ -6,9 +6,10 @@
         <i class="el-icon-warning-outline tooltip-icon" @click="showTooltip" v-if="!isView"></i>
       </div>
       <div>
-        <el-button v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">
-          新增
-        </el-button>
+        <template v-if="!isView">
+          <el-button type="success" icon="el-icon-upload" size="mini" @click="onBatchUpload">批量导入</el-button>
+          <el-button style="margin-left: 20px;" type="primary" size="mini" icon="el-icon-plus" @click="addItem">新增</el-button>
+        </template>
         <el-button v-if="isView" type="primary" size="mini" icon="el-icon-download" @click="exportItems">
           导出明细
         </el-button>
@@ -255,6 +256,9 @@
         <el-button @click="dialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
+
+    <!-- 批量导入弹窗组件 -->
+     <BatchDialog ref="batchDialogRef" />
   </div>
 </template>
 
@@ -264,15 +268,17 @@ import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as TypeApi from "@/api/prodmgr-inv/project/itemType.js";
 import * as DetailApi from "@/api/prodmgr-inv/project/itemDetail.js";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import BatchDialog from './batchDialog.vue'
 
 export default {
   name: 'itemsTable',
   dicts: ['MeasureUnit', 'WZDL'],
+  components: {BatchDialog},
   data() {
     return {
       lineOptions: [], // 项目名称选项
       dialogVisible: false, // 填写说明弹窗显示状态
-       isInitializing: true, // 添加初始化标记
+      isInitializing: true, // 添加初始化标记
       typeOptions: {}, // 物资种类选项，按物资类别分类
       detailOptions: {}, // 物资细目选项，按物资种类分类
        // 查询参数
@@ -322,7 +328,9 @@ export default {
       },
     },
   },
-
+  mounted(){
+    this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
+  },
   created () {
     this.getLineOptions()
      // 初始化完成
@@ -566,7 +574,18 @@ export default {
       } finally {
         this.loading = false;
       }
-    }
+    },
+    onBatchUpload() {
+      this.$refs.batchDialogRef.open(this.tenderYear);
+    },
+    onDialogOk(data) {
+      // 将批量上传的文件，导入到总的数据中
+      const newData = data.map(item => ({
+        ...item,
+        tenderYear: this.tenderYear
+      }))
+      this.materialTenderInfoDOList.push(...newData)
+    },
   },
 };
 </script>
