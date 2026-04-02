@@ -6,8 +6,10 @@
         <i class="el-icon-warning-outline tooltip-icon" @click="showTooltip" v-if="!isView"></i>
       </div>
       <div>
-        <el-button type="success" icon="el-icon-upload" size="mini" @click="onBatchUpload">批量导入</el-button>
-        <el-button style="margin-left: 20px;" v-if="!isView" type="primary" size="mini" icon="el-icon-plus" @click="addItem">新增</el-button>
+        <template v-if="!isView">
+          <el-button type="success" icon="el-icon-upload" size="mini" @click="onBatchUpload">批量导入</el-button>
+          <el-button style="margin-left: 20px;" type="primary" size="mini" icon="el-icon-plus" @click="addItem">新增</el-button>
+        </template>
         <el-button v-if="isView" type="primary" size="mini" icon="el-icon-download" @click="exportItems">
           导出明细
         </el-button>
