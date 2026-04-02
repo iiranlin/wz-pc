@@ -1,25 +1,37 @@
 <template>
   <div class="contract-attachment-table">
     <div class="search-bar">
-      <el-input
-        v-model="queryField"
-        :placeholder="searchPlaceholder"
-        size="small"
-        clearable
-        style="width: 260px"
-        @keyup.enter.native="handleSearch"
-      />
-      <el-date-picker
+      <el-tooltip
+        :content="inputTooltipContent"
+        placement="top"
+        :disabled="inputTooltipDisabled"
+      >
+        <el-input
+          v-model="queryField"
+          :placeholder="inputTooltipContent"
+          size="small"
+          clearable
+          style="width: 260px"
+          @keyup.enter.native="handleSearch"
+        />
+      </el-tooltip>
+      <el-tooltip
         v-if="showDateRange"
-        v-model="dateRange"
-        type="daterange"
-        range-separator="-"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        value-format="yyyy-MM-dd"
-        size="small"
-        style="width:260px !important"
-      />
+        :content="dateTooltipContent"
+        placement="top"
+        :disabled="dateTooltipDisabled"
+      >
+        <el-date-picker
+          v-model="dateRange"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          size="small"
+          style="width:260px !important"
+        />
+      </el-tooltip>
       <el-button type="primary" size="small" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       <el-button size="small" icon="el-icon-refresh" @click="handleReset">重置</el-button>
     </div>
@@ -81,10 +93,6 @@ export default {
       type: Function,
       required: true
     },
-    searchPlaceholder: {
-      type: String,
-      default: '请输入关键词搜索'
-    },
     requestParams: {
       type: Object,
       default: () => ({})
@@ -115,6 +123,12 @@ export default {
         list: 'records',
         total: 'total'
       })
+    },
+    tooltipConfig: {
+      type: Object,
+      default: () => ({
+        input: '请输入关键词搜索'
+      })
     }
   },
   data () {
@@ -131,6 +145,26 @@ export default {
   computed: {
     mergedColumns () {
       return this.columns?.length ? this.columns : DEFAULT_COLUMNS
+    },
+    inputTooltipContent () {
+      const inputCfg = this.tooltipConfig?.input
+      if (typeof inputCfg === 'string' && inputCfg) return inputCfg
+      return '请输入关键词搜索'
+    },
+    inputTooltipDisabled () {
+      const inputCfg = this.tooltipConfig?.input
+      // 如果没有文字或者显式设置为 false ，则禁用 Tooltip，否则默认开启展示当前占位符
+      return inputCfg === false || !this.inputTooltipContent
+    },
+    dateTooltipContent () {
+      const dateCfg = this.tooltipConfig?.date
+      if (typeof dateCfg === 'string' && dateCfg) return dateCfg
+      return '开始日期 - 结束日期'
+    },
+    dateTooltipDisabled () {
+      const dateCfg = this.tooltipConfig?.date
+      // 控制日期框的 tooltip 显隐，同理
+      return dateCfg === false || !this.dateTooltipContent
     }
   },
   watch: {
