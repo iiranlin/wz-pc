@@ -132,7 +132,6 @@ export default {
       return isExcel && isLt100M
     },
     handleUpload ({ file }) {
-      console.log("-------------请先选择招标年份------")
       console.log(this.tenderYear)
       if (!this.tenderYear) {
         this.$message.warning('请先选择招标年份')
