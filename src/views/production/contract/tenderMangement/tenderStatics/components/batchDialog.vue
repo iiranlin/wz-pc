@@ -87,7 +87,8 @@ export default {
       title: '导入招标信息明细',
       visible: false,
       tableData: [],
-      fileList: []
+      fileList: [],
+      tenderYear: ''
     }
   },
   methods: {
@@ -101,9 +102,10 @@ export default {
         return sizeInMB.toFixed(2) + ' MB'
       }
     },
-    open () {
+    open (tenderYear) {
       this.visible = true;
       this.fileList = []
+      this.tenderYear = tenderYear
     },
     //取消
     handleCancel () {
@@ -130,6 +132,12 @@ export default {
       return isExcel && isLt100M
     },
     handleUpload ({ file }) {
+      console.log("-------------请先选择招标年份------")
+      console.log(this.tenderYear)
+      if (!this.tenderYear) {
+        this.$message.warning('请先选择招标年份')
+        return
+      }
       const formData = new FormData();
       formData.append('file', file);
       formData.append('businessType',5)

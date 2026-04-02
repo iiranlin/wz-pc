@@ -58,7 +58,7 @@
        
          <!-- 甲供物资列表 -->
          <template #tableSlot="{formModel}">
-          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" :tenderYear="typeof formModel.tenderYear === 'object' ? formModel.tenderYear.getFullYear().toString() : formModel.tenderYear.toString()" :id="id" @input="handleTableInput" />
+          <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" :tenderYear="formModel.tenderYear ? (typeof formModel.tenderYear === 'object' ? formModel.tenderYear.getFullYear().toString() : formModel.tenderYear.toString()) : ''" :id="id" @input="handleTableInput" />
         </template>
       </VFormRender>
     </div>

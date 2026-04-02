@@ -576,15 +576,15 @@ export default {
       }
     },
     onBatchUpload() {
-      this.$refs.batchDialogRef.open();
+      this.$refs.batchDialogRef.open(this.tenderYear);
     },
     onDialogOk(data) {
       // 将批量上传的文件，导入到总的数据中
       const newData = data.map(item => ({
         ...item,
+        tenderYear: this.tenderYear
       }))
       this.materialTenderInfoDOList.push(...newData)
-      console.log(this.materialTenderInfoDOList)
     },
   },
 };
