@@ -26,14 +26,14 @@
             :default-page-size="10"
             :columns="sectionColumns"
             search-field="sectionShortName"
-            searchPlaceholder="标段简称搜索"
+            :tooltipConfig="{ input: '支持标段简称搜索' }"
             @search-change="handleSectionSearchChange"
           />
         </template>
         <template #htfjSlot>
           <div v-show="false" data-anchor="contract">合同附件锚点</div>
           <contract-attachment-table :fetch-api="ArchiveQueryApi.contractFile" :request-params="contractQueryParams"
-            :default-page-size="10" :columns="contractColumns" searchPlaceholder="合同名称/合同编号搜索" :showDateRange="true">
+            :default-page-size="10" :columns="contractColumns" :tooltipConfig="{ input: '支持合同名称/合同编号搜索' }" :showDateRange="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -44,9 +44,9 @@
           </contract-attachment-table>
         </template>
         <template #jhfjSlot>
-          <div v-show="false" data-anchor="requirement">计划附件锚点</div>
+          <div v-show="false" data-anchor="requirement">需求计划附件锚点</div>
            <contract-attachment-table :fetch-api="ArchiveQueryApi.planFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="planColumns" searchPlaceholder="需求计划ID/标段项目/需求名称搜索" :show-date-range="true">
+            :default-page-size="10" :columns="planColumns" :tooltipConfig="{ input: '支持需求计划ID/标段项目/需求名称搜索/提报人搜索' }" :show-date-range="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -59,7 +59,7 @@
         <template #fhfjSlot>
           <div v-show="false" data-anchor="delivery">发货附件锚点</div>
            <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile" :request-params="{...relatedQueryParams,type:1}"
-            :default-page-size="10" :columns="deliveryColumns" searchPlaceholder="发货ID/标段项目/供应商名称搜索" :show-date-range="true">
+            :default-page-size="10" :columns="deliveryColumns" :tooltipConfig="{ input: '支持发货ID/需求名称/标段项目/供应商名称/操作人搜索' }" :show-date-range="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -75,7 +75,7 @@
         <template #cyshfjSlot>
           <div v-show="false" data-anchor="receipt">初验收附件锚点</div>
            <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile" :request-params="{...relatedQueryParams,type:2}"
-            :default-page-size="10" :columns="receiptColumns" searchPlaceholder="收货ID/标段项目搜索" :show-date-range="true">
+            :default-page-size="10" :columns="receiptColumns" :tooltipConfig="{ input: '支持收货ID/需求名称/供应商/标段项目/操作人搜索' }" :show-date-range="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -91,7 +91,7 @@
         <template #zjrkfjSlot>
           <div v-show="false" data-anchor="inspection">质检入库数据锚点</div>
            <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile" :request-params="{...relatedQueryParams,type:3}"
-            :default-page-size="10" :columns="inspectionColumns" searchPlaceholder="质检入库ID/标段项目搜索" :show-date-range="true">
+            :default-page-size="10" :columns="inspectionColumns" :tooltipConfig="{ input: '支持质检入库ID/标段项目/收货单号/需求名称/供应商/操作人搜索' }" :show-date-range="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -107,7 +107,7 @@
         <template #ckfjSlot>
           <div v-show="false" data-anchor="outbound">出库附件锚点</div>
             <contract-attachment-table :fetch-api="ArchiveQueryApi.supplierOutFileFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="outboundColumns" searchPlaceholder="出库ID/标段项目搜索" :show-date-range="true">
+            :default-page-size="10" :columns="outboundColumns" :tooltipConfig="{ input: '支持出库ID/标段项目/需求名称/领用单位/领用人/发料人/操作人搜索' }" :show-date-range="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -120,7 +120,7 @@
         <template #thfjSlot>
           <div v-show="false" data-anchor="return">退货附件锚点</div>
           <contract-attachment-table :fetch-api="ArchiveQueryApi.backFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="returnColumns" searchPlaceholder="退货ID/标段项目/供应商搜索" :show-date-range="true">
+            :default-page-size="10" :columns="returnColumns" :tooltipConfig="{ input: '支持退货ID/标段项目/退货环节/收货单号/发货单号/需求名称/供应商/操作人搜索',date:'支持退货时间范围搜索' }" :show-date-range="true">
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -283,8 +283,8 @@ export default {
       { label: '需求名称', prop: 'planName', minWidth: 150, align: 'center' },
       { label: '领用单位', prop: 'receiveDeptName', minWidth: 150, align: 'center' },
       { label: '领用人', prop: 'pickUserName', minWidth: 150, align: 'center' },
-      { label: '发料人', prop: 'issueUserName', minWidth: 150, align: 'center' },
       { label: '领料日期', prop: 'pickDate', minWidth: 120, align: 'center', slot: 'pickDate' },
+      { label: '发料人', prop: 'issueUserName', minWidth: 150, align: 'center' },
       { label: '操作人', prop: 'createUserName', minWidth: 150, align: 'center' },
       { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center',},
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
