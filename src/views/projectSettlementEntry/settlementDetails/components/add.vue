@@ -122,7 +122,7 @@
           <el-form-item
             prop="amount"
             :rules="[{ required: true, message: '请输入', trigger: 'change' }]"
-            label="结算金额"
+            label="结算金额(元)"
             class="label-right-align"
           >
               <el-input v-model="formModel.amount" placeholder="请输入"  @input="handleAmountInput(formModel, $event, 'amount')" @change="changeAmount"/>
@@ -133,7 +133,7 @@
           <el-form-item
             prop="investorAmount"
             :rules="[{ required: true, message: '请输入', trigger: 'change' }]"
-            label="付款金额"
+            label="付款金额(元)"
             class="label-right-align"
           >
               <el-input v-model="formModel.investorAmount" placeholder="请输入"  @input="handleAmountInput(formModel, $event, 'investorAmount')" @change="changeAmount"/>
