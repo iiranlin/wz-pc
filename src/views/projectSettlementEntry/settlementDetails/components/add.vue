@@ -117,6 +117,28 @@
            
           </el-form-item>
         </template>
+        <!-- 结算金额 -->
+        <template #amountSlot="{ formModel }">
+          <el-form-item
+            prop="amount"
+            :rules="[{ required: true, message: '请输入', trigger: 'change' }]"
+            label="结算金额"
+            class="label-right-align"
+          >
+              <el-input v-model="formModel.amount" placeholder="请输入"  @input="handleAmountInput(formModel, $event, 'amount')" @change="changeAmount"/>
+          </el-form-item>
+        </template>
+        <!-- 付款金额 -->
+        <template #investorAmountSlot="{ formModel }">
+          <el-form-item
+            prop="investorAmount"
+            :rules="[{ required: true, message: '请输入', trigger: 'change' }]"
+            label="付款金额"
+            class="label-right-align"
+          >
+              <el-input v-model="formModel.investorAmount" placeholder="请输入"  @input="handleAmountInput(formModel, $event, 'investorAmount')" @change="changeAmount"/>
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -144,7 +166,11 @@ export default {
       // type: 'create', //update , view ,create
       fileList: [],
       formJson: {},
-      formData: {},
+      formData: {
+        amount: '', // 结算金额
+        investorAmount: '', // 付款金额
+        retentionMoney: '', // 质保金金额
+      },
       optionData: {},
       globalDsv: {
         VUE_APP_BASE_API: process.env.VUE_APP_BASE_API,
@@ -268,6 +294,47 @@ export default {
         ...x // 保留原始数据
       }));
     },
+    handleAmountInput(row, value, type) {  
+      // 只允许输入数字和小数点
+      let formattedValue = value.replace(/[^\d.]/g, '');
+      
+      // 确保只有一个小数点
+      const parts = formattedValue.split('.');
+      if (parts.length > 2) {
+        formattedValue = parts[0] + '.' + parts.slice(1).join('');
+      }
+      
+      // 限制小数点后六位
+      if (parts.length === 2 && parts[1].length > 6) {
+        formattedValue = parts[0] + '.' + parts[1].substring(0, 6);
+      }
+      
+      // 更新值
+      if (type) {
+        row[type] = formattedValue;
+      }
+    },
+    // 结算金额改变时，计算质保金金额 = 结算金额 - 付款金额
+    changeAmount() {
+      if (this.$refs.vFormRef) {
+        const formData = this.$refs.vFormRef.getFormData(false);
+
+        const amount = parseFloat(formData.amount || 0);
+        const investorAmount = parseFloat(formData.investorAmount || 0);
+        
+        // 验证付款金额不能大于结算金额
+        if (investorAmount > amount) {
+          this.$modal.msgError('付款金额不能大于结算金额');
+        } else {
+          // 计算并更新质保金金额，保留小数点后六位
+          const retentionMoney = parseFloat((amount - investorAmount).toFixed(6));
+          // 更新质保金金额
+          this.$refs.vFormRef.setFormData({
+            retentionMoney: retentionMoney
+          });
+        }
+      }
+    },
     newButton(buttonCode) {
       if (buttonCode === "cancel") {
         this.cancel();
@@ -295,6 +362,13 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
+          
+          // 验证备注长度不能超过1000
+          if (formData.remark && formData.remark.length > 1000) {
+            this.loading = false;
+            this.$modal.msgError('备注长度不能超过1000个字符');
+            return;
+          }
 
           await Api[this.type === "update" ? `save` : `save`](
             Object.assign(
