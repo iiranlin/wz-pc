@@ -8,18 +8,8 @@
 
             <template #billType>
                 <el-select v-model="formData.billType" filterable required style="width: 100%" placeholder="请选择">
-                    <el-option v-for="item in [
-                        { label: 'FBYLXQ', value: 'FBYLXQ' },
-                        { label: 'YLXQ', value: 'YLXQ' },
-                        { label: 'FBYLJH', value: 'FBYLJH' },
-                        { label: 'YLJH', value: 'YLJH' },
-                        { label: 'WZML', value: 'WZML' },
-                        { label: 'RKLC', value: 'RKLC' },
-                        { label: 'SHLC', value: 'SHLC' },
-                        { label: 'CGWJ', value: 'CGWJ' },
-                        { label: 'CGHT', value: 'CGHT' },
-                        { label: 'FHLC', value: 'FHLC' },
-                    ]" :key="item.value" :label="item.label" :value="item.value">
+                    <el-option v-for="item in dict.type.flowBusinessType" :key="item.value" :label="item.label"
+                        :value="item.value">
                     </el-option>
                 </el-select>
             </template>
@@ -31,6 +21,10 @@
         <table-index ref="tableIndex" :loading="loading" :tableData="dataList" :property="property"
             :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton"
             @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink">
+
+            <template #billType="scoped">
+                {{ billTypeLabel(scoped.data.billType) }}
+            </template>
         </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
             @pagination="getList" />
@@ -66,6 +60,7 @@ import operate from './components/operate'
 
 export default {
     name: "processDesign",
+    dicts: ['flowBusinessType'],
     mixins: [indexMixin],
     components: {
         ProcessDesigner,
@@ -138,6 +133,12 @@ export default {
         this.menuProperty();
     },
     methods: {
+        /** 根据 billType 值获取字典对应的中文文本 */
+        billTypeLabel(value) {
+            if (!value || !this.dict?.type?.flowBusinessType) return value
+            const item = this.dict.type.flowBusinessType.find(d => d.value === value)
+            return item ? item.label : value
+        },
         menuProperty() {
             let id = this.$route.meta.id;
             this.$store.dispatch('menuProperty', id).then((data) => {
