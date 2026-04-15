@@ -133,7 +133,7 @@
             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
             <el-table-column prop="putTotal" label="实收数量" width="120" fixed="right" align="center">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.putTotal" :min="0" @change="changePut(scope.row)" size="mini"
+                <el-input-number v-model="scope.row.putTotal" :min="0" :precision="4" @change="changePut(scope.row)" size="mini"
                   style="width: 100%" v-if="type != 'view' && show"></el-input-number>
                 <span v-else>
                   {{ scope.row.putTotal }}
@@ -142,7 +142,7 @@
             </el-table-column>
             <el-table-column prop="refundTotal" label="退货数量" width="120" fixed="right" align="center">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.refundTotal" :min="0" size="mini" style="width: 100%"
+                <el-input-number v-model="scope.row.refundTotal" :min="0" :precision="4" size="mini" style="width: 100%"
                   v-if="type != 'view' && show" @change="changeRefund(scope.row)"></el-input-number>
                 <span v-else>
                   {{ scope.row.refundTotal }}
@@ -304,8 +304,7 @@ export default {
       this.$nextTick(async () => {
         this.loading = true;
         // 审核中或已驳回
-        console.log(this.takeStatus, "--------------this.takeStatus-------------");
-        const api = this.takeStatus == 5 || this.takeStatus == void 0 || this.takeStatus == 0 ? 'detailTakeBack' : 'detailTake';
+        const api = this.takeStatus == 5 || this.takeStatus == void 0 || this.takeStatus == 0 ? 'detailTakeBack' : 'getDismissedDetails';
         await Api[api](id).then(({ data }) => {
           this.approvalStatus = data.approvalStatus;
           this.$nextTick(async () => {
@@ -315,10 +314,6 @@ export default {
               //收货的时候默认本机日期
               data.takeDate = this.getDate();
               this.shippingDate = data.shippingDate;
-              console.log(
-                this.shippingDate,
-                "--------------this.shippingDate-------------"
-              );
               data.shippingDate = dayjs(data.shippingDate).format("YYYY-MM-DD");
             } else {
               data.takeDate = dayjs(data.takeDate).format("YYYY-MM-DD HH:mm");
@@ -341,7 +336,7 @@ export default {
                 ? dayjs(x.expirationDate).format("YYYY-MM-DD")
                 : "",
               supplyDate: x.supplyDate ? dayjs(x.supplyDate).format("YYYY-MM-DD") : '',
-              putTotal: this.type == "create" ? x.sendTotal : x.putTotal, //新建默认实收数量=发货数量
+              putTotal: data.takeStatus == 0 ? x.putTotal : this.type == "create" ? x.sendTotal : x.putTotal, //新建默认实收数量=发货数量
               zczp: x.fileByList ? JSON.parse(x.fileByList).zczp || [] : [], //装车照片
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告

@@ -23,6 +23,18 @@ export const detailTake = (id) => {
         method: 'get',
     })
 }
+
+/**
+ * 驳回明细查看
+ */
+export const getDismissedDetails = (id) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/getDismissedDetails`,
+        method:'get',
+        params:{id}
+    })
+}
+
 /**
  * 收货备份明细详情
  * @param {*} params 

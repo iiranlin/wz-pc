@@ -149,3 +149,14 @@ export const outSave = (data) => {
     data
   })
 }
+
+/**
+ * 驳回明细查看
+ */
+export const getDismissedDetails = (id) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/getDismissedDetails`,
+        method:'get',
+        params:{id}
+    })
+}

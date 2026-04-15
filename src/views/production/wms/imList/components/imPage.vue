@@ -364,7 +364,7 @@
 	      this.loading = true;
 	      //不同的状态调用不同的明细接口
 	      var name =
-	        this.storeStatus == "5" || this.storeStatus == "6"|| this.storeStatus == "0"
+	     this.storeStatus == "0" ? 'getDismissedDetails' :  this.storeStatus == "5" || this.storeStatus == "6"
 	          ? "detailStoreBack"
 	          : "detailStore";
 	      this.$nextTick(async () => {
@@ -389,8 +389,8 @@
 	                ? dayjs(x.expirationDate).format("YYYY-MM-DD")
 	                : "",
 	              supplyDate: x.supplyDate?dayjs(x.supplyDate).format("YYYY-MM-DD"):'',
-	               storeTotal: this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=实收数量
-	              refundZjTotal: this.type == "create" ? 0 : x.refundZjTotal, //新增默认退货数量为0
+	               storeTotal: data.storeStatus === '0' ? x.storeTotal : this.type == "create" ? x.putTotal : x.storeTotal, //新增默认入库数量=实收数量
+	              refundZjTotal: data.storeStatus === '0'? x.refundZjTotal: this.type == "create" ? 0 : x.refundZjTotal, //新增默认退货数量为0
 	              fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
 	              fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
 	              fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
