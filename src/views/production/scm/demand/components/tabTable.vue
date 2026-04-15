@@ -12,7 +12,8 @@
       <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
       <!-- <el-table-column prop="sectionName" label="标段项目名称" width="250" fixed="left">
       </el-table-column> -->
-      <el-table-column prop="materialName" label="物资名称" width="200" fixed="left">
+      <el-table-column prop="sellerName" label="供应商" width="200" fixed="left"></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" width="200">
       </el-table-column>
       <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
 

@@ -101,6 +101,7 @@
 	              align="center"
 	              fixed="left"
 	            />
+				<el-table-column prop="sellerName" label="供应商" width="200"></el-table-column>
 	            <el-table-column prop="materialName" label="物资名称" width="200">
 	            </el-table-column>
 	            <el-table-column
