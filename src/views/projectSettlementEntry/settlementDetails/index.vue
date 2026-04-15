@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
+import { list } from "@/api/system/dept";
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as Api from '@/api/prodmgr-inv/project/settlementDetails.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
@@ -85,9 +85,7 @@ export default {
         label: "deptName",
       },
       // 查询参数
-      formData: {
-        parentId: null,
-      },
+      formData: {},
       formDataClick: {},
       total: 0,
       filterText: "",
@@ -147,27 +145,6 @@ export default {
       } else {
         this.formData = Object.assign({}, this.formData, formData);
       }
-    },
-    deptTree() {
-      this.treeLoading = true;
-      this.formData.parentId = null;
-      deptTree().then(({ data }) => {
-        this.deptOptions = data;
-        this.treeLoading = false;
-      });
-    },
-    // 节点单击事件
-    handleNodeClick(data) {
-      if (data.id === this.treeCurrentKey) {
-        // 再次点击当前节点取消选中,查询全部
-        this.formData.parentId = null;
-        this.$refs.tree.setCurrentKey(null);
-        this.treeCurrentKey = "";
-      } else {
-        this.treeCurrentKey = data.id;
-        this.formData.parentId = data.id;
-      }
-      this.getList();
     },
     emitAblFilter(listQuery) {
       this.listQuery = Object.assign({}, this.listQuery, listQuery);
@@ -233,10 +210,6 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       })
-    },
-    deptSuccess() {
-      this.handleQuery();
-      this.deptTree();
     },
     clickReset() {
       this.handleQuery();
