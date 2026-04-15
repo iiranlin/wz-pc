@@ -132,3 +132,18 @@ export const getSectionProjectListByProjectIds = (data) => {
     data
   })
 }
+// 根据合同id,查询标段项目
+export const getSectionProjectListByContractId = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSectionProject/getSectionProjectByContractId`,
+    method: 'post',
+    data
+  })
+}
+// 根据标段id,查询标段项目详情
+export const getSectionDetail = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/settlementMonth/detail/${id}`,
+    method: 'get',
+  })
+}
