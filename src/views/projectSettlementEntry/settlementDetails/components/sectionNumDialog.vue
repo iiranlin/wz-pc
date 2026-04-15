@@ -19,7 +19,10 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="name" label="名称" align="center"> </el-table-column>
+      <el-table-column prop="sectionName" label="标段项目" align="center"> </el-table-column>
+      <el-table-column prop="amount" label="结算金额/元" align="center"> </el-table-column>
+      <el-table-column prop="investorAmount" label="付款金额/元" align="center"> </el-table-column>
+      <el-table-column prop="retentionMoney" label="质保金金额/元" align="center"> </el-table-column>
     </el-table>
 
     <div slot="footer" class="dialog-footer">
@@ -29,10 +32,10 @@
 </template>
 
 <script>
-import * as Api from '@/api/prodmgr-inv/project/contract.js'
+import * as Api from '@/api/prodmgr-inv/project/settlementDetails.js'
 export default {
   // 合同数量弹窗 
-    name: "sellerDialog",
+    name: "sectionNumDialog",
     data () {
         return {
             loading: false,
@@ -42,21 +45,17 @@ export default {
         }
     },
     methods: {
-        open (data) {
-         this.getContractNameList(data)
-            // this.tableData = data;
-            this.visible = true;
-        },
-        indexMethod (index) {
-            return '合同' + (index + 1);
+        open (id) {
+         this.getSectionDetail(id)
+         this.visible = true;
         },
         //取消
         handleCancel () {
             this.visible = false;
         },
-        async getContractNameList (ids){
-          const res = await Api.getContractNameList(ids)
-          this.tableData = res.data.map(x => ({name:x}))
+        async getSectionDetail(id){
+          const res = await Api.getSectionDetail(id)
+          this.tableData = res.data.settlementMonths || []
         }
     }
 }

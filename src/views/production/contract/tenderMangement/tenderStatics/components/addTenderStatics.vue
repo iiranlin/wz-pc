@@ -14,28 +14,28 @@
         :global-dsv="globalDsv"
         :class="{ formRender_view: type === 'view' }"
       >
-        <template #tenderYearSlot="{ formModel }">
-          <el-form-item prop="tenderYear" label="招标年度：" class="label-right-align"
-            :rules=" { required: true, message: '请选择招标年度', trigger: 'blur' }">
-              <el-date-picker v-if="type !== 'view'" v-model="formModel.tenderYear" type="year" placeholder="请选择招标年度" style="width: 320px;" @change="handleTenderYearChange"/>
-              <span v-else>{{ formModel.tenderYear }}</span>
-            </el-form-item>
-        </template>
         <template #unitNameSlot="{ formModel }">
           <el-form-item prop="tenderUnit" label="填报单位：" class="label-right-align"
           :rules=" [{ required: true, message: '请输入填报单位', trigger: 'blur' }, { max: 100, message: '填报单位长度不能超过50个字符', trigger: 'blur' }]">
-            <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
-              <span class="ellipsis-text">
-                <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位" style="width: 320px"/>
+            <!-- <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
+              <span class="ellipsis-text" style="width: 100%;"> -->
+                <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位"/>
                 <span v-else>{{ formModel.tenderUnit }}</span>
-              </span>
-            </el-tooltip>
+              <!-- </span>
+            </el-tooltip> -->
           </el-form-item>
          </template>
+         <template #tenderYearSlot="{ formModel }">
+          <el-form-item prop="tenderYear" label="招标年度：" class="label-right-align"
+            :rules=" { required: true, message: '请选择招标年度', trigger: 'blur' }">
+              <el-date-picker v-if="type !== 'view'" v-model="formModel.tenderYear" type="year" placeholder="请选择招标年度" @change="handleTenderYearChange" style="width: 100%;"/>
+              <span v-else>{{ formModel.tenderYear }}</span>
+            </el-form-item>
+        </template>
          <template #fillDateSlot="{ formModel}">
              <el-form-item  prop="fillReportTime" label="填报时间：" class="label-right-align"
              :rules=" { required: true, message: '请选择填报时间', trigger: 'blur' }">
-               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" style="width: 320px;"/>
+               <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" style="width: 100%;"/>
                 <span v-else>{{ formatTimestamp(formModel.fillReportTime) }}</span>
               </el-form-item>
              
@@ -520,5 +520,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+::v-deep .label-right-align .el-form-item__label {
+  text-align: right;
 }
 </style>

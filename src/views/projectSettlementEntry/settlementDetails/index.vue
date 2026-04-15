@@ -22,39 +22,36 @@
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
           <!-- 合同数量 -->
-          <template #contractIdList="scoped">
+          <template #countSection="scoped">
             <el-button type="text" @click="
               () => {
-                if (scoped.data.contractIdList.length)
-                  $refs.sellerDialogRef.open(scoped.data.contractIdList);
+                  $refs.sellerDialogRef.open(scoped.data.id);
               }
             ">
-              {{ scoped.data.contractIdList.length }}
+              {{ scoped.data.countSection }}
             </el-button>
-          </template>
-          <template #materialUsedRatio="scoped">
-            {{ scoped.data.materialUsedRatio || 0 }}%
           </template>
         </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
           @pagination="getList" />
       </el-col>
     </el-row>
-    <SellerDialog ref="sellerDialogRef" />
+    <SectionNumDialog ref="sellerDialogRef" />
   </div>
 </template>
 
 <script>
-import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
+import { list } from "@/api/system/dept";
 import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 import * as Api from '@/api/prodmgr-inv/project/settlementDetails.js'
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
-import SellerDialog from './components/sellerDialog.vue'
+import SectionNumDialog from './components/sectionNumDialog.vue'
 export default {
   // 结算明细
   name: "settlementDetails",
-  components: { Add, SellerDialog },
+  components: { Add, SectionNumDialog },
   mixins: [indexMixin],
 
   data() {
@@ -88,9 +85,7 @@ export default {
         label: "deptName",
       },
       // 查询参数
-      formData: {
-        parentId: null,
-      },
+      formData: {},
       formDataClick: {},
       total: 0,
       filterText: "",
@@ -151,27 +146,6 @@ export default {
         this.formData = Object.assign({}, this.formData, formData);
       }
     },
-    deptTree() {
-      this.treeLoading = true;
-      this.formData.parentId = null;
-      deptTree().then(({ data }) => {
-        this.deptOptions = data;
-        this.treeLoading = false;
-      });
-    },
-    // 节点单击事件
-    handleNodeClick(data) {
-      if (data.id === this.treeCurrentKey) {
-        // 再次点击当前节点取消选中,查询全部
-        this.formData.parentId = null;
-        this.$refs.tree.setCurrentKey(null);
-        this.treeCurrentKey = "";
-      } else {
-        this.treeCurrentKey = data.id;
-        this.formData.parentId = data.id;
-      }
-      this.getList();
-    },
     emitAblFilter(listQuery) {
       this.listQuery = Object.assign({}, this.listQuery, listQuery);
       this.handleQuery();
@@ -214,6 +188,19 @@ export default {
         case 'view':
           this.$router.push({ name: 'detailSection', query: { id: idArr[0], type: 'view' } })
           break;
+        case 'export':
+           this.handleDonwload()
+          break;
+      }
+    },
+     async handleDonwload() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({businessType:139,businessData : JSON.stringify(this.formData) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     handleDelete(ids) {
@@ -223,10 +210,6 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       })
-    },
-    deptSuccess() {
-      this.handleQuery();
-      this.deptTree();
     },
     clickReset() {
       this.handleQuery();
