@@ -7,12 +7,24 @@ let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
  * @returns 
  */
 export const itemList = (params) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialContract/list`,
-        method: 'get',
-        params
-    })
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/list`,
+    method: 'get',
+    params
+  })
 }
+
+/**
+ * 终止合同
+ */
+export const deactivated = (id) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/deactivated`,
+    method: 'get',
+    params: { id }
+  })
+}
+
 
 /**
  * 供应商列表
@@ -20,11 +32,11 @@ export const itemList = (params) => {
  * @returns 
  */
 export const supplierList = (params) => {
-    return request({
-        url: `${VUE_APP_PRODMGR_INV}/materialContract/sellerList`,
-        method: 'get',
-        params
-    })
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/sellerList`,
+    method: 'get',
+    params
+  })
 }
 
 /**
