@@ -15,25 +15,40 @@
           </div>
         </template>
 
+        <template #projectNumberSlot="{ formModel }">
+          <el-form-item prop="projectNumber" label="项目编号" class="label-right-align">
+
+            <el-button type="text" @click="toDetail(formModel, 'project')">
+              {{ formModel.projectNumber }}
+            </el-button>
+          </el-form-item>
+        </template>
+
         <template #detailSlot>
-          <div  v-show="false" data-anchor="project">项目信息锚点</div>
+          <div v-show="false" data-anchor="project">项目信息锚点</div>
         </template>
         <template #sectionSlot>
           <div v-show="false" data-anchor="section">标段信息锚点</div>
-          <contract-attachment-table
-            :fetch-api="SectionApi.itemList"
-            :request-params="sectionQueryParams"
-            :default-page-size="10"
-            :columns="sectionColumns"
-            search-field="sectionShortName"
-            :tooltipConfig="{ input: '支持标段简称搜索' }"
-            @search-change="handleSectionSearchChange"
-          />
+          <contract-attachment-table :fetch-api="SectionApi.itemList" :request-params="sectionQueryParams"
+            :default-page-size="10" :columns="sectionColumns" search-field="sectionShortName"
+            :tooltipConfig="{ input: '支持标段简称搜索' }" @search-change="handleSectionSearchChange">
+            <template #sectionNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'section')">
+                {{ scoped.row.sectionNumber }}
+              </el-button>
+            </template>
+          </contract-attachment-table>
         </template>
         <template #htfjSlot>
           <div v-show="false" data-anchor="contract">合同附件锚点</div>
           <contract-attachment-table :fetch-api="ArchiveQueryApi.contractFile" :request-params="contractQueryParams"
-            :default-page-size="10" :columns="contractColumns" :tooltipConfig="{ input: '支持合同名称/合同编号搜索' }" :showDateRange="true">
+            :default-page-size="10" :columns="contractColumns" :tooltipConfig="{ input: '支持合同名称/合同编号搜索' }"
+            :showDateRange="true">
+            <template #contractNo="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'contract')">
+                {{ scoped.row.contractNo }}
+              </el-button>
+            </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -45,8 +60,14 @@
         </template>
         <template #jhfjSlot>
           <div v-show="false" data-anchor="requirement">需求计划附件锚点</div>
-           <contract-attachment-table :fetch-api="ArchiveQueryApi.planFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="planColumns" :tooltipConfig="{ input: '支持需求计划ID/标段项目/需求名称搜索/提报人搜索' }" :show-date-range="true">
+          <contract-attachment-table :fetch-api="ArchiveQueryApi.planFile" :request-params="relatedQueryParams"
+            :default-page-size="10" :columns="planColumns" :tooltipConfig="{ input: '支持需求计划ID/标段项目/需求名称搜索/提报人搜索' }"
+            :show-date-range="true">
+            <template #planNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'requirement')">
+                {{ scoped.row.planNumber }}
+              </el-button>
+            </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -58,8 +79,14 @@
         </template>
         <template #fhfjSlot>
           <div v-show="false" data-anchor="delivery">发货附件锚点</div>
-           <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile" :request-params="{...relatedQueryParams,type:1}"
-            :default-page-size="10" :columns="deliveryColumns" :tooltipConfig="{ input: '支持发货ID/需求名称/标段项目/供应商名称/操作人搜索' }" :show-date-range="true">
+          <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile"
+            :request-params="{ ...relatedQueryParams, type: 1 }" :default-page-size="10" :columns="deliveryColumns"
+            :tooltipConfig="{ input: '支持发货ID/需求名称/标段项目/供应商名称/操作人搜索' }" :show-date-range="true">
+            <template #shippingNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'delivery')">
+                {{ scoped.row.shippingNumber }}
+              </el-button>
+            </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -74,8 +101,14 @@
         </template>
         <template #cyshfjSlot>
           <div v-show="false" data-anchor="receipt">初验收附件锚点</div>
-           <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile" :request-params="{...relatedQueryParams,type:2}"
-            :default-page-size="10" :columns="receiptColumns" :tooltipConfig="{ input: '支持收货ID/需求名称/供应商/标段项目/操作人搜索' }" :show-date-range="true">
+          <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile"
+            :request-params="{ ...relatedQueryParams, type: 2 }" :default-page-size="10" :columns="receiptColumns"
+            :tooltipConfig="{ input: '支持收货ID/需求名称/供应商/标段项目/操作人搜索' }" :show-date-range="true">
+            <template #takeNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'receipt')">
+                {{ scoped.row.takeNumber }}
+              </el-button>
+            </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -90,8 +123,19 @@
         </template>
         <template #zjrkfjSlot>
           <div v-show="false" data-anchor="inspection">质检入库数据锚点</div>
-           <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile" :request-params="{...relatedQueryParams,type:3}"
-            :default-page-size="10" :columns="inspectionColumns" :tooltipConfig="{ input: '支持质检入库ID/标段项目/收货单号/需求名称/供应商/操作人搜索' }" :show-date-range="true">
+          <contract-attachment-table :fetch-api="ArchiveQueryApi.customFile"
+            :request-params="{ ...relatedQueryParams, type: 3 }" :default-page-size="10" :columns="inspectionColumns"
+            :tooltipConfig="{ input: '支持质检入库ID/标段项目/收货单号/需求名称/供应商/操作人搜索' }" :show-date-range="true">
+            <template #storeNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'inspection')">
+                {{ scoped.row.storeNumber }}
+              </el-button>
+            </template>
+            <template #takeNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'receipt')">
+                {{ scoped.row.takeNumber }}
+              </el-button>
+            </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -106,8 +150,14 @@
         </template>
         <template #ckfjSlot>
           <div v-show="false" data-anchor="outbound">出库附件锚点</div>
-            <contract-attachment-table :fetch-api="ArchiveQueryApi.supplierOutFileFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="outboundColumns" :tooltipConfig="{ input: '支持出库ID/标段项目/需求名称/领用单位/领用人/发料人/操作人搜索' }" :show-date-range="true">
+          <contract-attachment-table :fetch-api="ArchiveQueryApi.supplierOutFileFile"
+            :request-params="relatedQueryParams" :default-page-size="10" :columns="outboundColumns"
+            :tooltipConfig="{ input: '支持出库ID/标段项目/需求名称/领用单位/领用人/发料人/操作人搜索' }" :show-date-range="true">
+            <template #outNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'outbound')">
+                {{ scoped.row.outNumber }}
+              </el-button>
+            </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -120,7 +170,26 @@
         <template #thfjSlot>
           <div v-show="false" data-anchor="return">退货附件锚点</div>
           <contract-attachment-table :fetch-api="ArchiveQueryApi.backFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="returnColumns" :tooltipConfig="{ input: '支持退货ID/标段项目/退货环节/收货单号/发货单号/需求名称/供应商/操作人搜索',date:'支持退货时间范围搜索' }" :show-date-range="true">
+            :default-page-size="10" :columns="returnColumns"
+            :tooltipConfig="{ input: '支持退货ID/标段项目/退货环节/收货单号/发货单号/需求名称/供应商/操作人搜索', date: '支持退货时间范围搜索' }"
+            :show-date-range="true">
+            <template #backNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'return')">
+                {{ scoped.row.backNumber }}
+              </el-button>
+            </template>
+
+            <template #takeNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row.cirId, 'SH')">
+                {{ scoped.row.takeNumber }}
+              </el-button>
+            </template>
+            <template #shipmentBatchNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row.cirId, 'FH')">
+                {{ scoped.row.shipmentBatchNumber }}
+              </el-button>
+            </template>
+
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
                 :preview="'view'" />
@@ -160,7 +229,7 @@ export default {
     contractAttachmentTable,
     fileUpload
   },
-  filters:{
+  filters: {
     mapFileType(value) {
       const map = {
         'fhd': '发货单',
@@ -175,12 +244,12 @@ export default {
         'zjrkfj': '质检入库附件',
         'ckfj': '出库附件',
 
-        'qtzl':'其他资料',
-        'zjd':'验收单',
-        'jhd':'交货单',
+        'qtzl': '其他资料',
+        'zjd': '验收单',
+        'jhd': '交货单',
 
-        'jcbg':'报检结果材料',
-        'lld':'领料单',
+        'jcbg': '报检结果材料',
+        'lld': '领料单',
 
       }
       return map[value] || value
@@ -228,57 +297,57 @@ export default {
       constructionOptions: [],
       leftAnchorStyle: {},
       sectionColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '项目编号', prop: 'sectionNumber', minWidth: 140, align: 'center' },
+      { label: '项目编号', prop: 'sectionNumber', minWidth: 140, align: 'center', slot: 'sectionNumber' },
       { label: '项目名称', prop: 'sectionName', minWidth: 180, align: 'center' },
       { label: '项目简称', prop: 'projectShortName', minWidth: 160, align: 'center' },
       { label: '项目类型', prop: 'projectType', minWidth: 100, align: 'center' },
       { label: '施工单位', prop: 'constructionCompany', minWidth: 200, align: 'center' },
       { label: '监理单位', prop: 'supervisionUnit', minWidth: 200, align: 'center' },],
       contractColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '合同编号', prop: 'contractNo', minWidth: 150, align: 'center', slot: 'contractNo' },
       { label: '合同名称', prop: 'contractName', minWidth: 200, align: 'center' },
-      { label: '合同编号', prop: 'contractNo', minWidth: 150, align: 'center' },
-      { label: '签订日期', prop: 'signDate', minWidth: 150, align: 'center',slot:'signDate' },
+      { label: '签订日期', prop: 'signDate', minWidth: 150, align: 'center', slot: 'signDate' },
       { label: '买方', prop: 'buyer', minWidth: 150, align: 'center' },
       { label: '卖方', prop: 'seller', minWidth: 150, align: 'center' },
       { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center' },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
-       planColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '需求计划ID', prop: 'planNumber', minWidth: 130, align: 'center' },
+      planColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '需求计划ID', prop: 'planNumber', minWidth: 130, align: 'center', slot: 'planNumber' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
       { label: '需求名称', prop: 'planName', minWidth: 200, align: 'center' },
       { label: '提交时间', prop: 'submitTime', minWidth: 120, align: 'center', slot: 'submitTime' },
       { label: '提报人', prop: 'createUserName', minWidth: 120, align: 'center' },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
-      deliveryColumns:[{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '发货ID', prop: 'shippingNumber', minWidth: 130, align: 'center' },
+      deliveryColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '发货ID', prop: 'shippingNumber', minWidth: 130, align: 'center', slot: 'shippingNumber' },
       { label: '需求名称', prop: 'planName', minWidth: 150, align: 'center' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
       { label: '供应商名称', prop: 'sellerName', minWidth: 200, align: 'center' },
       { label: '发货时间', prop: 'shippingDate', minWidth: 120, align: 'center', slot: 'shippingDate' },
       { label: '操作人', prop: 'createUserName', minWidth: 120, align: 'center' },
-      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center',slot:'fileType' },
+      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center', slot: 'fileType' },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
-      receiptColumns:[{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '收货ID', prop: 'takeNumber', minWidth: 130, align: 'center' },
+      receiptColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '收货ID', prop: 'takeNumber', minWidth: 130, align: 'center', slot: 'takeNumber' },
       { label: '需求名称', prop: 'planName', minWidth: 150, align: 'center' },
       { label: '供应商', prop: 'sellerName', minWidth: 160, align: 'center' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
       { label: '收货时间', prop: 'takeDate', minWidth: 120, align: 'center', slot: 'takeDate' },
       { label: '操作人', prop: 'createUserName', minWidth: 120, align: 'center' },
-      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center',slot:'fileType' },
+      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center', slot: 'fileType' },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
-      inspectionColumns:[{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '质检入库ID', prop: 'storeNumber', minWidth: 130, align: 'center' },
+      inspectionColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '质检入库ID', prop: 'storeNumber', minWidth: 130, align: 'center', slot: 'storeNumber' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
-      { label: '收货单号', prop: 'takeNumber', minWidth: 150, align: 'center'},
-      { label: '需求名称', prop: 'planName', minWidth: 150, align: 'center'},
-      { label: '供应商', prop: 'sellerName', minWidth: 150, align: 'center'},
+      { label: '收货单号', prop: 'takeNumber', minWidth: 150, align: 'center', slot: 'takeNumber' },
+      { label: '需求名称', prop: 'planName', minWidth: 150, align: 'center' },
+      { label: '供应商', prop: 'sellerName', minWidth: 150, align: 'center' },
       { label: '报检时间', prop: 'storeDate', minWidth: 120, align: 'center', slot: 'storeDate' },
-      { label: '操作人', prop: 'createUserName', minWidth: 120, align: 'center'},
-      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center',slot:'fileType' },
+      { label: '操作人', prop: 'createUserName', minWidth: 120, align: 'center' },
+      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center', slot: 'fileType' },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
-      outboundColumns:[{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '出库ID', prop: 'outNumber', minWidth: 130, align: 'center' },
+      outboundColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '出库ID', prop: 'outNumber', minWidth: 130, align: 'center', slot: 'outNumber' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
       { label: '需求名称', prop: 'planName', minWidth: 150, align: 'center' },
       { label: '领用单位', prop: 'receiveDeptName', minWidth: 150, align: 'center' },
@@ -286,16 +355,16 @@ export default {
       { label: '领料日期', prop: 'pickDate', minWidth: 120, align: 'center', slot: 'pickDate' },
       { label: '发料人', prop: 'issueUserName', minWidth: 150, align: 'center' },
       { label: '操作人', prop: 'createUserName', minWidth: 150, align: 'center' },
-      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center',},
+      { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center', },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
-      returnColumns:[{ label: '序号', prop: '__index', width: 80, align: 'center' },
-      { label: '退货ID', prop: 'backNumber', minWidth: 130, align: 'center' },
+      returnColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '退货ID', prop: 'backNumber', minWidth: 130, align: 'center', slot: 'backNumber' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
       { label: '退货环节', prop: 'isQualNodeName', minWidth: 150, align: 'center' },
-      { label: '收货单号', prop: 'takeNumber', minWidth: 150, align: 'center' },
-      { label: '发货单号', prop: 'shipmentBatchNumber', minWidth: 150, align: 'center' },
+      { label: '收货单号', prop: 'takeNumber', minWidth: 150, align: 'center',slot:'takeNumber' },
+      { label: '发货单号', prop: 'shipmentBatchNumber', minWidth: 150, align: 'center',slot:'shipmentBatchNumber' },
       { label: '需求名称', prop: 'planName', minWidth: 200, align: 'center' },
-      { label: '发货时间', prop: 'shippingDate', minWidth: 150, align: 'center',slot:'shippingDate' },
+      { label: '发货时间', prop: 'shippingDate', minWidth: 150, align: 'center', slot: 'shippingDate' },
       { label: '退货时间', prop: 'backDate', minWidth: 120, align: 'center', slot: 'backDate' },
       { label: '供应商', prop: 'sellerName', minWidth: 200, align: 'center' },
       { label: '操作人', prop: 'backOperator', minWidth: 150, align: 'center' },
@@ -351,6 +420,125 @@ export default {
     window.removeEventListener('resize', this.updateLeftAnchorStyle)
   },
   methods: {
+    toDetail(row, type) {
+      switch (type) {
+        case 'project':
+          this.$router.push({
+            name: 'detailLine',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'section':
+          this.$router.push({
+            name: 'detailSection',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'contract':
+          this.$router.push({
+            name: 'detailContract',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'requirement':
+          this.$router.push({
+            name: 'requestDetail',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'delivery':
+          this.$router.push({
+            name: 'addSend',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'receipt':
+          this.$router.push({
+            name: 'receivePage',
+            query: {
+              id: row.id,
+              takeStatus: 2,
+              type: 'view',
+            }
+          })
+          break
+        case 'SH':
+          this.$router.push({
+            name: 'receivePage',
+            query: {
+              id: row,
+              takeStatus: 2,
+              type: 'view',
+            }
+          })
+          break
+        case 'FH':
+          this.$router.push({
+            name: 'addSend',
+            query: {
+              id: row,
+              type: 'view',
+            }
+          })
+          break
+        case 'inspection':
+          this.$router.push({
+            name: 'imPage',
+            query: {
+              id: row.id,
+              storeStatus: row.storeStatus,
+              type: 'view',
+            }
+          })
+          break
+        case 'outbound':
+          this.$router.push({
+            name: 'omDetail',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'return':
+          if (row.isQualNode == 3) {
+
+            this.$router.push({
+              name: 'addSpok',
+              query: {
+                id: row.id,
+                type: 'view',
+                from: 'THXQ'
+              }
+            })
+          } else {
+            this.$router.push({
+              name: "returnDetail_gys",
+              query: {
+                type: "view",
+                id: row.id,
+                backNode: row.issueType
+              },
+            });
+          }
+          break
+      }
+    },
     handleAnchorClick(anchorValue) {
       this.activeAnchor = anchorValue
       this.scrollToAnchor(anchorValue)

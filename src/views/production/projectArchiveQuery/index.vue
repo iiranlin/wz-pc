@@ -66,7 +66,7 @@
 
 <script>
 import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
-import * as Api from '@/api/prodmgr-inv/project/line.js'
+import * as Api from '@/api/prodmgr-inv/project/section.js'
 import indexMixin from "@/views/mixins";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
@@ -268,7 +268,7 @@ export default {
           this.handleDelete(idArr)
           break;
         case 'view':
-          this.$router.push({ name: 'detailProjectArchive', query: { id: idArr[0], type: 'view' } })
+          this.$router.push({ name: 'detailProjectArchive', query: { id: idArr[0], projectId:rowArr[0].projectId, type: 'view' } })
           break;
         case 'createSection':
           console.log(rowArr, 'rowArr')

@@ -40,6 +40,19 @@ export const detail = (id) => {
 }
 
 /**
+ * 根据项目id获取合同列表
+ * @param {*} params 
+ * @returns 
+ */
+export const getListBySectionId = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/getListBySectionId`,
+    method: 'get',
+    params
+  })
+}
+
+/**
  * 新增
  * @param {*} params 
  * @returns 

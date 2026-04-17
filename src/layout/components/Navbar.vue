@@ -49,7 +49,7 @@
         <div class="top-right-nav">
             <el-link :underline="false" @click="goPortal(true)"><i class="el-icon-s-home"></i> 返回门户</el-link>
             <el-divider direction="vertical"></el-divider>
-            <el-link :underline="false" @click="searchClick()"><svg-icon icon-class="search-bar" /> 全局搜索</el-link>
+            <!-- <el-link :underline="false" @click="searchClick()"><svg-icon icon-class="search-bar" /> 全局搜索</el-link> -->
             <el-divider direction="vertical"></el-divider>
             <el-link @click="toHelpDia"><svg-icon icon-class="question" /> 系统帮助</el-link>
             <el-divider direction="vertical"></el-divider>
