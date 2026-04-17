@@ -146,3 +146,12 @@ export function batchImport(data) {
     data
   })
 }
+
+//  单条新增合同物资
+export const verifyAllocation = (data) => {
+   return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSectionAllocation/verifyAllocation`,
+    method: 'post',
+    data
+  })
+}

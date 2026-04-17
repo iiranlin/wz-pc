@@ -2,9 +2,7 @@
   <div class="tab-table-container">
     <!-- Action Button -->
     <div style="display: flex;">
-      <!-- <el-button type="primary" icon="el-icon-plus" size="mini" @click="onAdd"
-        >添加物资</el-button
-      > -->
+      <el-button v-if="type !== 'view'" type="primary" icon="el-icon-plus" size="mini" @click="onAdd">添加物资</el-button>
       <!-- 批量导入 -->
       <div v-if="type !== 'view'">
 
@@ -41,7 +39,7 @@
         ></el-table-column> -->
           <el-table-column prop="materialName" label="物资名称" width="250" fixed align="center">
             <template slot-scope="scope">
-              <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.materialId"
+              <el-select v-if="scope.row.isManual && !scope.row.readonlyItem && type !== 'view'" v-model="scope.row.materialId"
                 placeholder="请选择物资名称" size="mini" @change="handleFieldChange('materialId', scope.row)"
                 style="width: 100%" filterable>
                 <el-option v-for="unit of options['itemOptions']" :key="unit.value" :label="unit.label"
@@ -60,7 +58,7 @@
           <!-- 条件渲染：仅在总表中显示 -->
           <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="250" align="center">
             <template slot-scope="scope">
-              <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId"
+              <el-select v-if="scope.row.isManual && !scope.row.readonlyItem && type !== 'view'" v-model="scope.row.sectionId"
                 placeholder="请选择标段项目名称" size="mini" @change="handleFieldChange('sectionId', scope.row)"
                 style="width: 100%" filterable>
                 <el-option v-for="item of options['setcionOptions']" :key="item.value" :label="item.label"
@@ -163,35 +161,35 @@
           </el-table-column>
           <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center">
             <template slot-scope="scope">
-              <el-input v-if="type !== 'view'" v-model="scope.row.deliveryLocation" size="mini"
+              <el-input v-if="type !== 'view' && !scope.row.readonlyItem" v-model="scope.row.deliveryLocation" size="mini"
                 @change="handleFieldChange('deliveryLocation', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryLocation }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="receiver" label="收货人" width="300" align="center">
             <template slot-scope="scope">
-              <el-input v-if="type !== 'view'" v-model="scope.row.receiver" size="mini"
+              <el-input v-if="type !== 'view' && !scope.row.readonlyItem" v-model="scope.row.receiver" size="mini"
                 @change="handleFieldChange('receiver', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.receiver }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center">
             <template slot-scope="scope">
-              <el-input v-if="type !== 'view'" v-model="scope.row.deliveryStatus" size="mini"
+              <el-input v-if="type !== 'view' && !scope.row.readonlyItem" v-model="scope.row.deliveryStatus" size="mini"
                 @change="handleFieldChange('deliveryStatus', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryStatus }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center">
             <template slot-scope="scope">
-              <el-input v-if="type !== 'view'" v-model="scope.row.deliveryTerms" size="mini"
+              <el-input v-if="type !== 'view' && !scope.row.readonlyItem" v-model="scope.row.deliveryTerms" size="mini"
                 @change="handleFieldChange('deliveryTerms', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryTerms }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="deliveryDate" label="交货期" width="150" align="center">
             <template slot-scope="scope">
-              <el-input v-if="type !== 'view'" v-model="scope.row.deliveryDate" size="mini"
+              <el-input v-if="type !== 'view' && !scope.row.readonlyItem" v-model="scope.row.deliveryDate" size="mini"
                 @change="handleFieldChange('deliveryDate', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryDate }}</span>
             </template>
@@ -272,6 +270,7 @@
     </div>
 
     <BatchDialog ref="batchDialogRef" />
+    <ManualAddDialog ref="manualAddDialogRef" @success="onManualAddSuccess" />
     <ViewNegativeContractsDialog ref="viewNegativeContractsDialogRef" />
   </div>
 </template>
@@ -279,6 +278,7 @@
 <script>
   import Decimal from 'decimal.js';
 import BatchDialog from './batchDialog.vue';
+import ManualAddDialog from './manualAddDialog.vue';
 import ViewNegativeContractsDialog from './viewNegativeContractsDialog.vue';
 import * as ItemApi from '@/api/prodmgr-inv/project/item.js';
 import * as LineApi from '@/api/prodmgr-inv/project/line.js';
@@ -301,6 +301,7 @@ export default {
   },
   components: {
     BatchDialog,
+    ManualAddDialog,
     ViewNegativeContractsDialog,
     VirtualScroll,
     VirtualColumn
@@ -508,6 +509,16 @@ export default {
 
   },
   methods: {
+    onManualAddSuccess(row) {
+      const rowId = row?.id || `verify-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+      this.tableData.push({
+        ...row,
+        id: rowId,
+        readonlyItem: true,
+        isManual: false
+      })
+      this.$message.success('新增成功')
+    },
     getNegativeSummary(row) {
       return getNegativeContractSummary(row)
     },
@@ -546,17 +557,7 @@ export default {
     },
     // 新增物资行
     onAdd() {
-
-      // 向父组件发送新增事件
-      this.$emit('data-change', {
-        type: 'add',
-        row: {},
-      });
-
-      // 刷新当前数据显示
-      this.updateCurrentData();
-
-      this.$message.success('已添加新行，请填写物资信息');
+      this.$refs.manualAddDialogRef.open()
     },
 
     onBatchUpload() {
