@@ -1,6 +1,6 @@
 <template>
   <div class="app-container container_flex">
-    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+    <button-top :buttonTopData="contractStatusButtonTop" :multiple="multiple" :single="single" @newButton="newButton"
       :buttonDisable="buttonDisable"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" labelWidth="150px">
@@ -65,6 +65,20 @@ export default {
   name: "supplementContract",
   components: { Add },
   mixins: [indexMixin],
+  computed: {
+    contractStatusButtonTop() {
+      return (this.property.buttonTop || []).map(item => {
+        if (item.buttonCode !== 'contractStatus') {
+          return item
+        }
+        const action = this.getContractStatusAction(this.selection[0])
+        return {
+          ...item,
+          buttonName: action === 'deactivate' ? '终止' : '启用'
+        }
+      })
+    }
+  },
 
   data() {
     return {
@@ -121,6 +135,15 @@ export default {
     }
   },
   methods: {
+    isEnabledContract(row) {
+      return String(row?.contractStatus) === '2'
+    },
+    canDeactivateContract(row) {
+      return this.isEnabledContract(row) && row?.materialUsedRatio == 0
+    },
+    getContractStatusAction(row) {
+      return this.isEnabledContract(row) ? 'deactivate' : 'enable'
+    },
     getLineOptions() {
       LineApi.lineSelectOptions().then(({ data }) => {
         this.lineOptions = data.map(x => ({
@@ -135,9 +158,10 @@ export default {
       return row.materialUsedRatio == 0
     },
     buttonDisable(btn) {
+      const currentRow = this.selection[0]
       // 履约比例等于0允许删除
       if (btn.buttonCode === 'delete') {
-        return this.selection.some(x => x.materialUsedRatio != 0)
+        return this.selection.some(x => x.contractStatus != 1)
       }
       /**
        * 合同状态 1-未启用 2-已启用 
@@ -145,18 +169,18 @@ export default {
        * 已启用只能变更
        */
       if (btn.buttonCode === 'update') {
-        return this.selection[0].contractStatus == 2
+        return currentRow?.contractStatus == 2
       }
       if (btn.buttonCode === 'contractStatus') {
-        return this.selection[0].contractStatus == 2
+        return this.isEnabledContract(currentRow) && !this.canDeactivateContract(currentRow)
       }
       // 变更 - 非启用不能变更
       if (btn.buttonCode === 'change') {
-        return this.selection[0].contractStatus == 1
+        return currentRow?.contractStatus == 1
       }
       // 已启用允许新增保函
       if (btn.buttonCode === 'add') {
-        return this.selection[0].contractStatus == 1
+        return currentRow?.contractStatus == 1
       }
       return false
     },
@@ -251,14 +275,19 @@ export default {
       }
     },
     async changeStatus(row) {
-      this.$confirm('确定要启用吗？', '提示', {
+      const action = this.getContractStatusAction(row)
+      const actionText = action === 'deactivate' ? '终止' : '启用'
+      const request = () => (action === 'deactivate'
+        ? Api.deactivated(row.id)
+        : Api.editStatus({ id: row.id, contractStatus: 2 }))
+      this.$confirm(`确定要${actionText}吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => Api.editStatus({ id: row.id, contractStatus: 2 }))
+      }).then(() => request())
         .then(() => {
           this.getList();
-          this.$modal.msgSuccess("启用成功");
+          this.$modal.msgSuccess(`${actionText}成功`);
         })
     },
     handleDelete(ids) {
