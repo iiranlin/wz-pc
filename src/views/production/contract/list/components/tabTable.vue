@@ -2,7 +2,7 @@
   <div class="tab-table-container">
     <!-- Action Button -->
     <div style="display: flex;">
-      <el-button v-if="type !== 'view'" type="primary" icon="el-icon-plus" size="mini" @click="onAdd">添加物资</el-button>
+      <el-button v-if="type !== 'view'" type="primary" icon="el-icon-plus" size="mini" @click="onAdd">单条添加</el-button>
       <!-- 批量导入 -->
       <div v-if="type !== 'view'">
 

@@ -14,7 +14,21 @@
       <el-row :gutter="16">
         <el-col :span="12" v-for="item in fieldList" :key="item.prop">
           <el-form-item :label="item.label" :prop="item.prop">
-            <el-input v-model.trim="formData[item.prop]" :placeholder="`请输入${item.label}`"></el-input>
+            <el-select
+              v-if="item.prop === 'unit'"
+              v-model="formData[item.prop]"
+              :placeholder="`请选择${item.label}`"
+              style="width: 100%"
+              filterable
+            >
+              <el-option
+                v-for="dictItem in dict.type.MeasureUnit"
+                :key="dictItem.value"
+                :label="dictItem.label"
+                :value="dictItem.label"
+              />
+            </el-select>
+            <el-input v-else v-model.trim="formData[item.prop]" :placeholder="`请输入${item.label}`"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -72,6 +86,7 @@ const createDefaultFormData = () => ({
 
 export default {
   name: 'ManualAddDialog',
+  dicts: ['MeasureUnit'],
   data() {
     return {
       title: '新增物资',
@@ -116,7 +131,11 @@ export default {
   },
   created() {
     this.formRules = this.fieldList.reduce((rules, item) => {
-      rules[item.prop] = [{ required: true, message: `请输入${item.label}`, trigger: 'blur' }]
+      rules[item.prop] = [{
+        required: true,
+        message: item.prop === 'unit' ? `请选择${item.label}` : `请输入${item.label}`,
+        trigger: item.prop === 'unit' ? 'change' : 'blur'
+      }]
       return rules
     }, {})
   },
