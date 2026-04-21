@@ -50,9 +50,7 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>应用数据查询</span>
-        <el-button type="primary" icon="el-icon-download" @click="handleDownload" style="float: right;">
-          下载
-        </el-button>
+        <el-button type="primary" icon="el-icon-download" @click="handleDownload" style="float: right;">下载</el-button>
       </div>
       <div class="filter-container">
         <el-date-picker
