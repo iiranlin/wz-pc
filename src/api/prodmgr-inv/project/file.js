@@ -24,6 +24,7 @@ export const downloadSettlementList = (params) => {
 /**
  * 通用下载接口
  * businessType businessData
+ * 0:应用数据查询下载
  * 1:需求计划表下载
  * 2:采购合同许可证台账下载
  * 3:供应需求结算单下载
