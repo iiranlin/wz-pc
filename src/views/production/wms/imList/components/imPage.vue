@@ -122,6 +122,12 @@
 	              width="120"
 	              align="center"
 	            ></el-table-column>
+				 <el-table-column
+	              prop="storeSum"
+	              label="累计入库"
+	              width="120"
+	              align="center"
+	            ></el-table-column>
 	            <el-table-column
 	              prop="putTotal"
 	              label="本次实收数量"
