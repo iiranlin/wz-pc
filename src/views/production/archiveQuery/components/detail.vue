@@ -25,7 +25,7 @@
         </template>
 
         <template #detailSlot>
-          <div v-show="false" data-anchor="project">项目信息锚点</div>
+          <div v-show="false" data-anchor="project">建设项目锚点</div>
         </template>
         <template #sectionSlot>
           <div v-show="false" data-anchor="section">标段信息锚点</div>
@@ -265,7 +265,7 @@ export default {
       checked: false,
       activeAnchor: 'project',
       anchorList: [
-        { label: '项目信息', value: 'project' },
+        { label: '建设项目', value: 'project' },
         { label: '标段项目', value: 'section' },
         { label: '合同附件', value: 'contract' },
         { label: '需求计划附件', value: 'requirement' },

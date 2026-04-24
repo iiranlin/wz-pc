@@ -283,8 +283,8 @@ export default {
       checked: false,
       activeAnchor: 'project',
       anchorList: [
-        { label: '建设项目信息', value: 'project' },
-        { label: '标段项目信息', value: 'section' },
+        { label: '建设项目', value: 'project' },
+        { label: '标段项目', value: 'section' },
         { label: '合同', value: 'contract' },
         { label: '需求计划', value: 'requirement' },
         { label: '发货', value: 'delivery' },
