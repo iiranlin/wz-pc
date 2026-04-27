@@ -1,16 +1,25 @@
 <template>
 	<div class="app-container container_flex">
 		<button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
-		<div :class="{ container_flex_form: type === 'view' }">
+		<div :class="{ container_flex_form: type === 'view' || type === 'update' }">
 			<VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
-				:global-dsv="globalDsv" :class="{ formRender_view: type === 'view' }">
+				:global-dsv="globalDsv" :class="{ formRender_view: type === 'view' || type === 'update' }">
 				<template #projefctNameSolt="{ formModel }">
-					<el-form-item prop="projefctName" label-width="140px" label="标段项目" class="label-right-align">
+					<el-form-item prop="projefctName" label-width="155px" label="标段项目" class="label-right-align">
 						<template v-if="type === 'create'">
-							<span class="titleCss" :title="projectData.sectionName">{{ projectData.sectionName }}</span>
+							<span :title="projectData.sectionName">{{ projectData.sectionName }}</span>
 						</template>
 						<template v-else>
-							<span class="titleCss" :title="formModel.projefctName">{{ formModel.projefctName }}</span>
+							<el-tooltip :content="formModel.projefctName" placement="bottom" effect="light">
+								<div style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  ">
+									{{ formModel.projefctName }}
+								</div>
+							</el-tooltip>
+							<!-- <span :title="formModel.projefctName">{{ formModel.projefctName }}</span> -->
 						</template>
 					</el-form-item>
 				</template>
@@ -22,7 +31,16 @@
 								projectData.constructionCompany }}</span>
 						</template>
 						<template v-else>
-							<span class="titleCss" :title="formModel.unitName">{{ formModel.unitName }}</span>
+							<el-tooltip :content="formModel.unitName" placement="bottom" effect="light">
+								<div style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  ">
+									{{ formModel.unitName }}
+								</div>
+							</el-tooltip>
+							<!-- <span class="titleCss" :title="formModel.unitName">{{ formModel.unitName }}</span> -->
 						</template>
 					</el-form-item>
 				</template>
@@ -47,7 +65,7 @@
 
 				<template #purchaseCodeSolt="{ formModel }">
 					<el-form-item prop="purchaseCode"
-						:rules="[{ required: false, message: '请选择类别', trigger: 'change' }]" label-width="140px"
+						:rules="[{ required: false, message: '请选择类别', trigger: 'change' }]" label-width="155px"
 						label="类别" class="label-right-align">
 						<template v-if="type !== 'update'">
 							<el-select :disabled="checked" v-model="formModel.purchaseCode" filterable required
@@ -126,7 +144,7 @@
 					</el-form-item>
 				</template>
 				<template #amountSolt="{ formModel }">
-					<el-form-item prop="amount" label-width="140px"
+					<el-form-item prop="amount" label-width="155px"
 						:rules="[{ required: false, message: '请输入预估采购金额', trigger: 'change' }]" label=" 预估采购金额(万元)"
 						class="label-right-align">
 						<template v-if="type !== 'update'">
@@ -138,8 +156,8 @@
 					</el-form-item>
 				</template>
 				<template #registrationDateSlot="{ formModel }">
-					<el-form-item prop="registrationDate" label-width="140px" label="预计采购完成日期"
-						:rules="[{ required: true, message: '请选择', trigger: 'change' }]" class="label-right-align">
+					<el-form-item prop="registrationDate" label-width="150px" label="预计采购完成日期"
+						:rules="[{ required: false, message: '请选择', trigger: 'change' }]" class="label-right-align">
 						<template v-if="type !== 'update'">
 							<el-date-picker v-model="formModel.registrationDate" :value-format="timestamp"
 								:disabled="checked" style="width:100%" type="date" placeholder="选择日期">
@@ -151,12 +169,20 @@
 					</el-form-item>
 				</template>
 				<template #remakSolt="{ formModel }">
-					<el-form-item prop="remak" label="备注" class="label-right-align">
+					<el-form-item prop="remak" label="备注" class="label-right-align" label-width="140px">
 						<template v-if="type !== 'update'">
 							<el-input type="text" v-model="formModel.remak" />
 						</template>
 						<template v-else>
-							{{ formModel.remak }}
+							<el-tooltip :content="formModel.remak" placement="bottom" effect="light">
+								<div style="
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  ">
+									{{ formModel.remak }}
+								</div>
+							</el-tooltip>
 						</template>
 					</el-form-item>
 				</template>
@@ -165,93 +191,107 @@
 				<template #registrationSolt="{ formModel }">
 					<el-form-item prop="registration" label-width="190px"
 						:rules="[{ required: false, message: '请上传采购文件审查登记表', trigger: 'change' }]" label="采购文件审查登记表"
-						class="label-right-align">
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
 					</el-form-item>
 				</template>
 
 				<template #bidDocumentSolt="scope">
 					<el-form-item prop="bidDocument" label-width="190px"
 						:rules="[{ required: false, message: '请上传招标文件(含技术规格书)', trigger: 'change' }]"
-						label="招标文件(含技术规格书)" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']"   />
+						label="招标文件(含技术规格书)" class="label-right-align no-border-item">
+						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
 					</el-form-item>
 				</template>
 
 				<template #schemeSolt="scope">
 					<el-form-item prop="scheme" label-width="170px"
 						:rules="[{ required: false, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
-						class="label-right-align">
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
 					</el-form-item>
 				</template>
 
 				<template #schemeApprovalSolt="scope">
 					<el-form-item prop="schemeApproval" label-width="190px"
 						:rules="[{ required: false, message: '请上传采购方案（批复）文件', trigger: 'change' }]" label="采购方案（批复）"
-						class="label-right-align">
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.schemeApproval" :limit="9999"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
 					</el-form-item>
 				</template>
 
 				<template #tenderAnnouncementSolt="scope">
 					<el-form-item prop="tenderAnnouncement" label-width="170px" label="招标公告网页版"
-						class="label-right-align">
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.tenderAnnouncement" :limit="9999"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidAddendumSolt="scope">
-					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗"
+						class="label-right-align no-border-item">
+						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidEvaluationReportSolt="scope">
-					<el-form-item prop="bidEvaluationReport" label-width="170px" label="评标报告" class="label-right-align">
+					<el-form-item prop="bidEvaluationReport" label-width="170px" label="评标报告"
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidEvaluationReport" :limit="9999"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCandidateWebSolt="scope">
 					<el-form-item prop="bidCandidateWeb" label-width="170px" label="中标候选人公示网页版"
-						class="label-right-align">
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCandidateWeb" :limit="9999"
-							:fileSize="500" :fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #acceptanceSolt="scope">
-					<el-form-item prop="acceptance" label-width="190px" label="中标通知书" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+					<el-form-item prop="acceptance" label-width="190px" label="中标通知书"
+						class="label-right-align no-border-item">
+						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
-					<el-form-item prop="bidCopy" label-width="170px" label="中标人的投标副本" class="label-right-align">
+					<el-form-item prop="bidCopy" label-width="170px" label="中标人的投标副本"
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCopy" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #contractCopySolt="scope">
-					<el-form-item prop="contractCopy" label-width="170px" label="合同副本" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+					<el-form-item prop="contractCopy" label-width="170px" label="合同副本"
+						class="label-right-align no-border-item">
+						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #commitmentSolt="scope">
-					<el-form-item prop="commitment" label-width="190px" label="供应商质量终身责任承诺书" class="label-right-align">
-						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+					<el-form-item prop="commitment" label-width="190px" label="供应商质量终身责任承诺书"
+						class="label-right-align no-border-item">
+						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="9999"
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="type === 'view'" />
 					</el-form-item>
 				</template>
 				<template #otherSolt="scope">
-					<el-form-item prop="other" label-width="170px" label="其他文件" class="label-right-align">
+					<el-form-item prop="other" label-width="170px" label="其他文件"
+						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.other" :limit="9999" :fileSize="500"
-							:fileType="['pdf','jpg','png','jpeg','doc','docx']" :preview="type === 'view'"   />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
 					</el-form-item>
 				</template>
 			</VFormRender>
@@ -294,12 +334,12 @@ export default {
 		fileUpload
 	},
 	filters: {
-		dateFormat (value, format = 'YYYY-MM-DD') {
+		dateFormat(value, format = 'YYYY-MM-DD') {
 			if (!value) return ''
 			return dayjs(value).format(format)
 		}
 	},
-	data () {
+	data() {
 		const userInfo = getUserInfo()
 		return {
 			purchaseItem: [],
@@ -349,23 +389,24 @@ export default {
 		}
 	},
 	computed: {
-		type () {
+		type() {
 			return this.$route.query.type
 		},
-		id () {
+		id() {
 			return this.$route.query?.id || ''
 		}
 	},
-	async created () {
-		this.findAllListData();
+	async created() {
 	},
-	mounted () {
+	mounted() {
 		if (['view', 'update'].includes(this.type)) {
 			this.updateInit(this.id)
 			return
 		}
 
 		if (this.type === 'create') {
+			this.findAllListData();
+
 			this.init()
 			return
 		}
@@ -374,7 +415,7 @@ export default {
 
 	},
 	methods: {
-		findAllListData () {
+		findAllListData() {
 			getCurrentSection().then(res => {
 				this.projectData = res.data;
 				this.$refs['vFormRef'].setFormData({
@@ -383,7 +424,7 @@ export default {
 				})
 			});
 		},
-		onDataChange (data) {
+		onDataChange(data) {
 			if (['delete'].includes(data.type)) {
 				this.tableData = this.tableData.filter(item => !data.row.includes(item.id + ''))
 				return
@@ -393,16 +434,17 @@ export default {
 				return
 			}
 		},
-		onAdd () { },
+		onAdd() { },
 		//初始化
-		init () {
+		init() {
 			this.$nextTick(async () => {
 				this.title = "新建";
 				await this.formFillInPage()
+				this.$refs.vFormRef.setReadMode(true);
 			});
 		},
 		// 编辑初始化
-		async updateInit (id) {
+		async updateInit(id) {
 			await Api.detail(id).then(res => {
 				this.$nextTick(async () => {
 					this.title = '编辑';
@@ -433,11 +475,11 @@ export default {
 
 					this.$refs.vFormRef.setFormData(newData);
 
-					this.$refs.vFormRef.setReadMode(this.type === 'view')
+					this.$refs.vFormRef.setReadMode(this.type === 'update')
 				});
 			});
 		},
-		newButton (buttonCode) {
+		newButton(buttonCode) {
 			if (buttonCode === 'cancel') {
 				this.cancel()
 				return
@@ -447,18 +489,18 @@ export default {
 				return
 			}
 		},
-		cancel () {
+		cancel() {
 			this.$tab.closeOpenPage(true);
 		},
 
-		buttonShow (item) {
+		buttonShow(item) {
 			if (item.buttonCode === 'save') {
 				return this.type !== 'view'
 			}
 			return true
 		},
 		//新建
-		handleCreate () {
+		handleCreate() {
 			this.$refs.vFormRef.validateForm(async (valid) => {
 				if (!valid) {
 					this.$message.warning('请完善信息')
@@ -503,7 +545,7 @@ export default {
 				}
 			});
 		},
-		formFillInPage () {
+		formFillInPage() {
 			return new Promise((resolve) => {
 				formFillInPage('purchaseBackData').then(res => {
 					this.$refs['vFormRef'].setFormJson(res.data)
@@ -514,25 +556,25 @@ export default {
 				})
 			})
 		},
-		getItemList (code) {
+		getItemList(code) {
 			purchaseItemFindAllList({ code: code }).then(res => {
 				this.purchaseItem = res.data;
 			});
 		},
 
-		getTypeData (code, purchaseCode) {
+		getTypeData(code, purchaseCode) {
 			purchaseTypeFindAllList({ code: code, purchaseCode, purchaseCode }).then(res => {
 				this.purchaseType = res.data;
 			});
 		},
 
-		getDetailDate (code, purchaseCode, purchaseTypeCode) {
+		getDetailDate(code, purchaseCode, purchaseTypeCode) {
 			purchaseDetailFindAllList({ code: code, purchaseCode: purchaseCode, purchaseTypeCode: purchaseTypeCode }).then(res => {
 				this.purcahseDetail = res.data;
 			});
 		},
 
-		selectDataChange (options, val, key) {
+		selectDataChange(options, val, key) {
 			if (key == 'code') {
 				this.code = val;
 				this.purchaseCode = null;
@@ -582,7 +624,7 @@ export default {
 				});
 			}
 		},
-		selectChange (options, val, key) {
+		selectChange(options, val, key) {
 			this.$refs.vFormRef.setFormData({
 				[key]: options.find(item => item.value === val)?.label
 			})
@@ -611,20 +653,26 @@ export default {
 ::v-deep .label-right-align .el-form-item__label {
 	text-align: right;
 }
-::v-deep .container-wrapper{
-	margin-bottom:-16px;
-}
 
-.titleCss {
-	display: inline-block;
-	/* 或者 block */
-	width: 250px;
-	/* 设置一个具体的宽度 */
-	white-space: nowrap;
-	/* 防止文本换行 */
-	overflow: hidden;
-	/* 隐藏溢出的内容 */
-	text-overflow: ellipsis;
-	/* 显示省略符号来代表被修剪的文本 */
+::v-deep .formRender_view {
+	.no-border-item {
+		border: none !important;
+		background: transparent !important;
+		margin-bottom: 0px !important;
+
+		.el-form-item__label {
+			background: transparent !important;
+			border: none !important;
+		}
+
+		.el-form-item__content {
+			border: none !important;
+			padding-left: 12px !important;
+		}
+	}
+
+	.el-row:has(.no-border-item) {
+		border: none !important;
+	}
 }
 </style>
