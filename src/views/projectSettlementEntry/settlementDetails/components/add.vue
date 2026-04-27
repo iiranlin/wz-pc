@@ -103,12 +103,12 @@
                   <span class="section-value">{{ item.label }}</span>
                 </div>
                 <div class="section-item">
-                  <span class="section-label">结算金额：</span>
+                  <span class="section-label">结算金额(元)：</span>
                   <el-input v-model="formModel[`sectionAmount_${item.value}`]" placeholder="请输入" @input="handleAmountInput(formModel, $event, `sectionAmount_${item.value}`)" @change="changeAmount" class="section-input" />
                 </div>
 
                 <div class="section-item">
-                  <span class="section-label">付款金额：</span>
+                  <span class="section-label">付款金额(元)：</span>
                   <el-input v-model="formModel[`sectionInvestorAmount_${item.value}`]" placeholder="请输入" @input="handleAmountInput(formModel, $event, `sectionInvestorAmount_${item.value}`)" @change="changeAmount" class="section-input"/>
                 </div>
               </div>
