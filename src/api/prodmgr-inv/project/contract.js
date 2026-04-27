@@ -194,6 +194,15 @@ export const countByContractNo = (params) => {
   })
 }
 
+// 合同闭合
+export const closedContract = (params) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialContract/closedContract`,
+    method: 'get',
+    params
+  })
+}
+
 
 /**
  * 招标统计列表

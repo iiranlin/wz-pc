@@ -8,7 +8,8 @@
         <el-select v-model="formData.contractStatus" filterable required style="width: 100%" placeholder="请选择">
           <el-option v-for="item in [
             { label: '启用', value: '2' },
-            { label: '未启用', value: '1' }
+            { label: '未启用', value: '1' },
+            { label: '已完成',value:'3' }
           ]" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -54,8 +55,8 @@
                 1: "State-Waiting", //未提交
                 2: "State-Audit", //审核中
                 3: "State-Success" //审核通过 -->
-            <icon-svg :class="iconClassSize({ '1': 0, '2': 3 }[scope.value])" :icon-class="iconEnableStautsClass({ '1': 0, '2': 3 }[scope.value])
-              " />{{ scope.value == 2 ? '启用' : '未启用' }}
+            <icon-svg :class="iconClassSize({ '1': 0, '2': 3 ,'3':3}[scope.value])" :icon-class="iconEnableStautsClass({ '1': 0, '2': 3,'3':3 }[scope.value])
+              " />{{ scope.value == 2 ? '启用' : scope.value == 3 ? '已完成' : '未启用' }}
           </template>
 
           <template #materialUsedRatio="scope"> {{ scope.value }}% </template>
@@ -108,7 +109,14 @@ export default {
         if (item.buttonCode !== 'contractStatus') {
           return item
         }
-        const action = this.getContractStatusAction(this.selection[0])
+        const currentRow = this.selection[0]
+        if (currentRow?.closed == '1') {
+          return {
+            ...item,
+            buttonName: '闭合'
+          }
+        }
+        const action = this.getContractStatusAction(currentRow)
         return {
           ...item,
           buttonName: action === 'deactivate' ? '终止' : '启用'
@@ -261,6 +269,8 @@ export default {
         return currentRow?.contractStatus == 2
       }
       if (btn.buttonCode === 'contractStatus') {
+        if (currentRow?.contractStatus === '3') return true
+        if (currentRow?.closed == '1') return false
         return this.isEnabledContract(currentRow) && !this.canDeactivateContract(currentRow)
       }
       // 变更 - 非启用不能变更
@@ -269,7 +279,7 @@ export default {
       }
       // 已启用允许新增合同
       if (btn.buttonCode === 'add') {
-        return currentRow?.contractStatus != 2
+        return currentRow?.contractStatus != 2 || currentRow?.closed !== '0'
       }
       // 已启用允许新增保函
       if (btn.buttonCode === 'addBh') {
@@ -343,7 +353,11 @@ export default {
           this.$router.push({ name: 'changeContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })
           break;
         case 'contractStatus':
-          this.changeStatus(rowArr[0])
+          if (rowArr[0]?.closed == '1') {
+            this.handleClosed(rowArr[0])
+          } else {
+            this.changeStatus(rowArr[0])
+          }
           break;
         case 'add':
           this.$router.push({ name: 'addSupplementContract', query: { type: 'create', parentId: idArr[0], projectId: rowArr[0].projectId } })
@@ -385,6 +399,18 @@ export default {
           this.getList();
           this.$modal.msgSuccess(`${actionText}成功`);
         })
+    },
+    handleClosed(row) {
+      this.$confirm('确定要闭合吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return Api.closedContract({ id: row.id })
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess('闭合成功');
+      })
     },
     handleDelete(ids) {
       this.$modal.confirm("是否确认删除?").then(function () {
