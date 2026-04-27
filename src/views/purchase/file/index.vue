@@ -23,8 +23,8 @@
 			<template #status>
 				<el-select v-model="formData.status" filterable required style="width: 100%" placeholder="请选择"
 					clearable>
-					<el-option v-for="item in dict.type.flowStatus" :key="item.value" :label="item.label"
-						:value="item.value">
+					<el-option v-for="item in  Object.entries(status)" :key="item[0]" :label="item[1]"
+						:value="item[0]">
 					</el-option>
 				</el-select>
 			</template>
@@ -124,8 +124,8 @@ export default {
 			status: {
 				'1': '未提交',
 				'2': '审核中',
-				'3': '已同意',
-				'0': '不同意'
+				'3': '已完成',
+				'0': '已驳回'
 			},
 			statusOptions: [{
 				label: '启用',
