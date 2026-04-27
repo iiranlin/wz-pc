@@ -14,7 +14,15 @@
       @handleQuery="handleQuery"
       @handleResetField="onResetField"
       :formData="formData"
-    />
+    >
+          <!-- 建设物资 -->
+      <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择项目名称'
+          " clearable filterable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
+    </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">
@@ -69,6 +77,7 @@ import { list, deptTree, deptDeleteBatch } from "@/api/system/dept";
 import * as Api from '@/api/prodmgr-inv/project/section.js'
 import indexMixin from "@/views/mixins";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import * as LineApi from '@/api/prodmgr-inv/project/line.js'
 export default {
   // 档案查询
   name: "archiveQuery",
@@ -100,8 +109,10 @@ export default {
   activated() {
     this.getList();
   },
+
   data () {
     return {
+      lineOptions: [],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -146,6 +157,7 @@ export default {
       this.property = data;
     });
     this.setQuery();
+    this.getLineOptions();
   },
   watch: {
     filterText (val) {
@@ -153,6 +165,14 @@ export default {
     },
   },
   methods: {
+        getLineOptions() {
+      LineApi.itemList({ pageNum: 1, pageSize: -1 }).then(({ data }) => {
+        this.lineOptions = data.list.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
       // 将Url参数赋值到搜索内（使用 $set 保证响应式）
      setQuery(){
       if(this.deptId){
