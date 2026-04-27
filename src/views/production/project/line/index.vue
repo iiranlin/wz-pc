@@ -14,7 +14,15 @@
       @handleQuery="handleQuery"
       @handleResetField="onResetField"
       :formData="formData"
-    />
+    >
+           <!-- 项目状态 -->
+        <template #projectStatus="data">
+          <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择项目状态'" clearable
+            style="width: 100%" size="small">
+            <el-option v-for="(item) in ['在建', '完工']" :key="item" :label="item" :value="item" />
+          </el-select>
+        </template>
+  </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="20" :xs="24" class="container_flex">

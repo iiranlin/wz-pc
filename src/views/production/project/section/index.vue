@@ -4,6 +4,14 @@
       :buttonDisable="buttonDisable"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" @handleResetField="onResetField">
+        <!-- 项目状态 -->
+        <template #sectionStatus="data">
+          <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择项目状态'" clearable
+            style="width: 100%" size="small">
+            <el-option v-for="(item) in ['在建', '完工']" :key="item" :label="item" :value="item" />
+          </el-select>
+        </template>
+
       <template #projectName="data">
         <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
           " clearable style="width: 100%" size="small">
