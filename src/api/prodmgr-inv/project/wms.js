@@ -58,6 +58,19 @@ export const submitTodo = (data) => {
     data
   })
 }
+
+/**
+ * 保存入库单附件
+ * @param {*} params
+ * @returns
+ */
+export const updateFileList = (data) => {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialCirculationTableRest/updateFileList`,
+    method: 'post',
+    data
+  })
+}
 //撤回
 export const recall = (data) => {
   return request({

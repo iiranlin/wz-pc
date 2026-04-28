@@ -317,6 +317,7 @@ export default {
               supplyId: rowArr[0].planId,
               type: "create",
               storeStatus: rowArr[0].storeStatus,
+              from:'list'
             },
           });
           //撤回
@@ -399,7 +400,7 @@ export default {
     toIm(row) {
       this.$router.push({
         name: "imPage",
-        query: { id: row.id, type: "view", storeStatus: row.storeStatus },
+        query: { id: row.id, type: "view", storeStatus: row.storeStatus, from:'list' },
       });
     },
     //收货单

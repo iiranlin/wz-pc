@@ -11,6 +11,14 @@
               :limit="9999" />
           </el-form-item>
         </template>
+        <!-- 入库单 -->
+       	<template #rkdFileSlot="scope">
+						<el-form-item prop="rkd" label="入库单附件" label-width="200px" class="label-right-align">
+							<fileUpload v-model="scope.formModel.rkd" :value="scope.formModel.rkd" :limit="9999"
+								:multiple="true" :fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg']"
+								:isShowTip="false" :preview="true" />
+						</el-form-item>
+					</template>
         <!-- 附件 -->
         <template #file2Slot="scope">
           <el-form-item prop="fileList02" label="质量证明文件" class="label-right-align">
@@ -192,6 +200,7 @@ export default {
               fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
               fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //证明文件
               fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
+              rkd: data.fileByList ? JSON.parse(data.fileByList).rkd || [] : [], //入库单
             };
             this.$refs.vFormRef.setFormData(newData);
             this.$refs.vFormRef.setReadMode(true);
@@ -205,6 +214,7 @@ export default {
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_im || [] : [], //退货附件
+              rkd: x.fileByList ? JSON.parse(x.fileByList).rkd || [] : [], //入库单
             }));
             this.tableData = detail;
           });
