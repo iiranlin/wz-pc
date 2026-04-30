@@ -329,6 +329,7 @@ export default {
           pageNum: 1,
           pageSize: -1,
           categoriesCode: categoriesCode,
+          speciesCode: this.form.speciesCode,
         };
 
         const res = await DetailApi.itemList(params);
