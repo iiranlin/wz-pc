@@ -111,7 +111,7 @@
 
             <el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
             <el-table-column prop="planAmount" label="需求数量" width="120" align="center"></el-table-column>
-            <el-table-column prop="putSum" label="累计收货" width="120" align="center"></el-table-column>
+            <el-table-column prop="putSum" label="累计收货(不含本次)" width="150" align="center"></el-table-column>
             <el-table-column prop="sendTotal" label="本次发货数量" width="120" align="center"></el-table-column>
             <el-table-column prop="packagingFm" label="包装形式" width="160" align="center"></el-table-column>
             <el-table-column prop="manufactureDate" label="生产日期" width="150" align="center"></el-table-column>

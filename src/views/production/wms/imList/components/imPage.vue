@@ -61,7 +61,7 @@
 							<el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
 							<el-table-column prop="planAmount" label="需求数量" width="120"
 								align="center"></el-table-column>
-							<el-table-column prop="storeSum" label="累计入库" width="120" align="center"></el-table-column>
+							<el-table-column prop="storeSum" label="累计入库(不含本次)" width="150" align="center"></el-table-column>
 							<el-table-column prop="putTotal" label="本次实收数量" width="120"
 								align="center"></el-table-column>
 							<el-table-column prop="packagingFm" label="包装形式" width="160"
