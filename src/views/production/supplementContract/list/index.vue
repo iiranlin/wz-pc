@@ -170,14 +170,15 @@ export default {
        * 已启用只能变更
        */
       if (btn.buttonCode === 'update') {
-        return currentRow?.contractStatus == 2
+        return currentRow?.contractStatus == 2 || currentRow?.contractStatus == '3'
       }
       if (btn.buttonCode === 'contractStatus') {
+        if (currentRow?.contractStatus == 3) return true
         return this.isEnabledContract(currentRow) && !this.canDeactivateContract(currentRow)
       }
       // 变更 - 非启用不能变更
       if (btn.buttonCode === 'change') {
-        return currentRow?.contractStatus == 1
+        return currentRow?.contractStatus == 1 
       }
       // 已启用允许新增保函
       if (btn.buttonCode === 'add') {
