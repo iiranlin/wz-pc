@@ -884,6 +884,7 @@ h3 {
                             white-space: nowrap;
                             text-overflow: ellipsis;
                             overflow: hidden;
+                            margin-bottom: 14px;
                         }
 
                         .notice-date {
@@ -892,6 +893,7 @@ h3 {
                             color: #4e5969;
                             padding-right: 20px;
                             text-align: right;
+                            margin:12px 0;
                         }
 
                         &:hover {
