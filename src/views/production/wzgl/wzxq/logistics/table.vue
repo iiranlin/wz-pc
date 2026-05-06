@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%" max-height="500">
       <!-- 序号 -->
       <el-table-column type="index" label="序号" align="center" width="80px">
       </el-table-column>

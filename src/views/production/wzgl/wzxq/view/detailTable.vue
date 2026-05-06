@@ -9,7 +9,7 @@
     </div>
 
     <!-- 表格 -->
-    <el-table ref="tableRef" :data="tableData" style="width: 100%" border>
+    <el-table ref="tableRef" :data="tableData" style="width: 100%" border max-height="500">
       <el-table-column type="index" align="center" label="序号" width="60" fixed></el-table-column>
       <el-table-column prop="sellerName" label="供应商" align="center" width="150" fixed></el-table-column>
       <el-table-column prop="materialName" label="物资名称" align="center" width="150" fixed></el-table-column>

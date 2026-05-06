@@ -1,6 +1,6 @@
 <template>
     <!-- 表格 -->
-    <el-table ref="tableRef" height="350" :data="tableData" style="width: 100%" border>
+    <el-table ref="tableRef" max-height="500" :data="tableData" style="width: 100%" border>
       <el-table-column
         type="index"
         align="center"
