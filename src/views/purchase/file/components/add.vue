@@ -193,8 +193,8 @@
 
 				<template #bidDocumentSolt="scope">
 					<el-form-item prop="bidDocument" label-width="190px"
-						:rules="[{ required: true, message: '请上传招标文件(含技术规格书)', trigger: 'change' }]"
-						label="招标文件(含技术规格书)" class="label-right-align">
+						:rules="[{ required: true, message: '请上传采购文件(含技术规格书)', trigger: 'change' }]"
+						label="采购文件(含技术规格书)" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
 							:preview="type === 'view' || checked" />
@@ -203,7 +203,7 @@
 
 				<template #schemeSolt="scope">
 					<el-form-item prop="scheme" label-width="170px"
-						:rules="[{ required: false, message: '请上传采购方案或招标计划', trigger: 'change' }]" label="采购方案或招标计划"
+						:rules="[{ required: false, message: '请上传采购方案或采购计划', trigger: 'change' }]" label="采购方案或采购计划"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="9999" :fileSize="500"
 							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
@@ -222,7 +222,7 @@
 				</template>
 
 				<template #tenderAnnouncementSolt="scope">
-					<el-form-item prop="tenderAnnouncement" label-width="170px" label="招标公告网页版"
+					<el-form-item prop="tenderAnnouncement" label-width="170px" label="采购公告网页版"
 						class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.tenderAnnouncement" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
@@ -230,7 +230,7 @@
 					</el-form-item>
 				</template>
 				<template #bidAddendumSolt="scope">
-					<el-form-item prop="bidAddendum" label-width="190px" label="招标文件答疑、补遗" class="label-right-align">
+					<el-form-item prop="bidAddendum" label-width="190px" label="采购文件答疑、补遗" class="label-right-align">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
 							:preview="type === 'view'" />
