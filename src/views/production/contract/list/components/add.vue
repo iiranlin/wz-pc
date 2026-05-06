@@ -69,7 +69,7 @@
 
         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item prop="fileList" label="合同附件" class="label-right-align">
+          <el-form-item prop="contractFiles" label="合同扫描件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
             <fileUpload v-model="scope.formModel.contractFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'"
               />
