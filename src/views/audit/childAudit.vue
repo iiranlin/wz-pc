@@ -115,10 +115,13 @@ export default {
     /** 查询菜单列表 */
     getList() {
       this.loading = true;
+      this.$emit("loading-change", true);
       auditList(Object.assign({}, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list;
         this.total = data.total;
+      }).finally(() => {
         this.loading = false;
+        this.$emit("loading-change", false);
       });
     },
     handleButton(buttonCode, idArr, rowArr, { buttonData }) {

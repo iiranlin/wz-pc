@@ -81,14 +81,18 @@
                                 <span>{{ activeComponentTitle }}</span>
                             </div>
                         </div> -->
-                        <div :style="{
+                        <div v-loading="waitLoading" :style="{
                             width: sideTheme === 'theme-top' ? '57.6vw' : '51.9vw',
                             height: 'calc(100% - 60px)'
                         }" :key="key">
-                            <ChildAudit v-if="activeComponent === 'ChildAudit'"></ChildAudit>
-                            <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"></ChildToBeDeal>
-                            <ChildHandle v-if="activeComponent === 'ChildHandle'"></ChildHandle>
-                            <ChildTodoList v-if="activeComponent === 'ChildTodoList'"></ChildTodoList>
+                            <ChildAudit v-if="activeComponent === 'ChildAudit'"
+                                @loading-change="handleWaitLoadingChange"></ChildAudit>
+                            <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"
+                                @loading-change="handleWaitLoadingChange"></ChildToBeDeal>
+                            <ChildHandle v-if="activeComponent === 'ChildHandle'"
+                                @loading-change="handleWaitLoadingChange"></ChildHandle>
+                            <ChildTodoList v-if="activeComponent === 'ChildTodoList'"
+                                @loading-change="handleWaitLoadingChange"></ChildTodoList>
                         </div>
                     </div>
             </div>
@@ -133,7 +137,7 @@
                             <span>查看更多</span>
                         </div>
                     </div>
-                    <div class="notice-content" v-if="noticeOptions.length > 0">
+                    <div class="notice-content" v-loading="noticeLoading" v-if="noticeOptions.length > 0">
                         <ul style="min-height: 205px;">
                             <li v-for="(item, index) in noticeOptions" :key="item.id" @click="handlerViewDetails(item)">
                                 <el-tooltip class="item" effect="dark" :content="item.content" placement="top">
@@ -150,7 +154,7 @@
                                 layout="total, prev, pager, next" :total="total" @current-change="getMessageList" />
                         </div>
                     </div>
-                    <div v-else class="notice-empty">
+                    <div v-else class="notice-empty" v-loading="noticeLoading">
                         <img src="/static/icon-notice-empty.webp" />
                         <span>暂无信息</span>
                     </div>
@@ -234,6 +238,8 @@ export default {
             needSummaryLoading:false,
             needProjectLoading:false,
             projectLoading: false,
+            waitLoading: false,
+            noticeLoading: false,
             projectId: '',
             activeComponent: 'ChildAudit',
             activeWaitType: 'audit',
@@ -465,6 +471,7 @@ export default {
         //获取系统提醒
         getMessageList() {
             // const loading = this.$loading(this.$c.loadingCommonOptions);
+            this.noticeLoading = true;
 
             let params = {
                 flag: 1,
@@ -479,7 +486,7 @@ export default {
             }).catch((err) => {
                 // Handle error if needed
             }).finally(() => {
-                loading?.close();
+                this.noticeLoading = false;
             })
         },
         //获取数据概况数据
@@ -530,6 +537,10 @@ export default {
             this.recentList = chunkedArray;
         },
         handleWaitClick(name) {
+            if (this.activeWaitType === name) {
+                return;
+            }
+            this.waitLoading = true;
             this.activeWaitType = name;
             if (name === 'audit') {
                 this.activeComponent = 'ChildAudit';
@@ -540,6 +551,10 @@ export default {
             } else if (name === 'toBeDeal') {
                 this.activeComponent = 'ChildToBeDeal';
             }
+            this.key += 1;
+        },
+        handleWaitLoadingChange(loading) {
+            this.waitLoading = loading;
         },
 
         //系统提醒点击更多

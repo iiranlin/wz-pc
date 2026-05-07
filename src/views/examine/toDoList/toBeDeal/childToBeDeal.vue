@@ -147,13 +147,13 @@ export default {
         // 获取流程列表数据
         getList() {
             this.loading = true
+            this.$emit("loading-change", true)
             auditList({
                 ...this.listQuery,
                 ...this.formData,
                 status: '3'
             })
                 .then((res) => {
-                    this.loading = false
                     if (res.success && Array.isArray(res.data.list)) {
                         let { list, total } = res.data
                         this.dataList = list
@@ -164,6 +164,10 @@ export default {
                         this.total = 0
                         // this.disableFields = { export: true }
                     }
+                })
+                .finally(() => {
+                    this.loading = false
+                    this.$emit("loading-change", false)
                 })
         },
         clickLink(row) {
