@@ -3,7 +3,7 @@
         <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single"
             @newButton="newButton"></button-top>
         <form-data ref="formData" :showSearch="showSearch" :formData="formData" @handleResetField="handleResetField"
-            :searchArr="property.search || []" @handleQuery="handleQuery" />
+            :searchArr="property.search || []" @handleQuery="handleQuery" labelWidth="120px" />
         <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
             :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
             @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
