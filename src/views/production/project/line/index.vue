@@ -22,6 +22,13 @@
             <el-option v-for="(item) in ['在建', '完工']" :key="item" :label="item" :value="item" />
           </el-select>
         </template>
+
+              <template #projectName="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择建设项目'
+          " clearable filterable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in lineOptions" :key="key" :label="item.label" :value="item.label" />
+        </el-select>
+      </template>
   </form-data>
     <el-row type="flex" class="container_h">
       <!--用户数据-->
@@ -151,6 +158,7 @@ export default {
   },
   data () {
     return {
+      lineOptions: [],
       treeCurrentKey: "",
       // 遮罩层
       loading: false,
@@ -195,6 +203,7 @@ export default {
       this.property = data;
     });
     this.setQuery();
+    this.getLineOptions();
   },
   watch: {
     filterText (val) {
@@ -202,6 +211,14 @@ export default {
     },
   },
   methods: {
+    getLineOptions() {
+      Api.itemList({ pageNum: 1, pageSize: -1 }).then(({ data }) => {
+        this.lineOptions = data.list.map(x => ({
+          label: x.projectName,
+          value: x.projectName
+        }))
+      })
+    },
       // 将Url参数赋值到搜索内（使用 $set 保证响应式）
      setQuery(){
       if(this.deptId){
