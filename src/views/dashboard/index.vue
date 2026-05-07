@@ -876,7 +876,7 @@ h3 {
                         }
 
                         .notice-text {
-                            margin-top: 0;
+                            margin-top: 14px;
                             font-size: 14px;
                             color: #4e5969;
                             width: calc(100% - 100px);
@@ -888,12 +888,13 @@ h3 {
                         }
 
                         .notice-date {
+                            margin-top: 14px;
                             width: 130px;
-                            font-size: 12px;
+                            font-size: 14px;
                             color: #4e5969;
                             padding-right: 20px;
                             text-align: right;
-                            margin:12px 0;
+                            margin-bottom:14px ;
                         }
 
                         &:hover {
