@@ -51,7 +51,7 @@
             </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #signDate="scoped">
               {{ scoped.row.signDate | formatDate }}
@@ -70,7 +70,7 @@
             </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #submitTime="scoped">
               {{ scoped.row.submitTime | formatDate }}
@@ -89,7 +89,7 @@
             </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #shippingDate="scoped">
               {{ scoped.row.shippingDate | formatDate }}
@@ -111,7 +111,7 @@
             </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #takeDate="scoped">
               {{ scoped.row.takeDate | formatDate }}
@@ -138,7 +138,7 @@
             </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #storeDate="scoped">
               {{ scoped.row.storeDate | formatDate }}
@@ -160,7 +160,7 @@
             </template>
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #pickDate="scoped">
               {{ scoped.row.pickDate | formatDate }}
@@ -192,7 +192,7 @@
 
             <template #attachment="scoped">
               <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
-                :preview="'view'" />
+                :preview="true" />
             </template>
             <template #backDate="scoped">
               {{ scoped.row.backDate | formatDate }}
@@ -201,6 +201,39 @@
               {{ scoped.row.shippingDate | formatDate }}
             </template>
           </contract-attachment-table>
+        </template>
+        <template #zgwjhbSlot>
+           <div v-show="false" data-anchor="zgwjhb">自购文件核备</div>
+          <contract-attachment-table :fetch-api="ArchiveQueryApi.purchaseFile" :request-params="relatedQueryParams"
+            :default-page-size="10" :columns="purchaseFileColumns"
+            :tooltipConfig="{ input: '支持单据ID/标段项目/物资名称/物资种类搜索' }">
+            <template #purchaseNumber="scoped">
+             <el-button type="text" @click="toDetail(scoped.row, 'zgwjhb')">
+                {{ scoped.row.purchaseNumber }}
+              </el-button>
+            </template>
+              <template #attachment="scoped">
+                <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
+                  :preview="true" />
+              </template>
+            </contract-attachment-table>
+        </template>
+        <template #zghthbSlot>
+          <div v-show="false" data-anchor="zghthb">自购合同核备</div>
+            <contract-attachment-table :fetch-api="ArchiveQueryApi.purchaseContractFile"
+              :request-params="relatedQueryParams" :default-page-size="10" :columns="purchaseContractColumns"
+              :tooltipConfig="{ input: '支持单据ID/标段项目/合同名称/物资种类/供应商名称搜索' }">
+              
+               <template #purchaseNumber="scoped">
+              <el-button type="text" @click="toDetail(scoped.row, 'zghthb')">
+                {{ scoped.row.purchaseNumber }}
+              </el-button>
+            </template>
+              <template #attachment="scoped">
+                <fileUpload :value="[{ ...scoped.row }]" :limit="9999" :fileSize="500" :fileType="['pdf']"
+                  :preview="true" />
+              </template>
+            </contract-attachment-table>
         </template>
       </VFormRender>
     </div>
@@ -273,7 +306,9 @@ export default {
         { label: '初验收货附件', value: 'receipt' },
         { label: '质检入库附件', value: 'inspection' },
         { label: '出库附件', value: 'outbound' },
-        { label: '退货附件', value: 'return' }
+        { label: '退货附件', value: 'return' },
+        { label: '自购文件核备', value: 'zgwjhb' },
+        { label: '自购合同核备', value: 'zghthb' },
       ],
       //   fileList type
       // type: 'create', //update , view ,create
@@ -370,6 +405,21 @@ export default {
       { label: '操作人', prop: 'backOperator', minWidth: 150, align: 'center' },
       { label: '附件类型', prop: 'fileType', minWidth: 140, align: 'center', },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
+      purchaseFileColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '单据ID', prop: 'purchaseNumber', minWidth: 160, align: 'center', slot: 'purchaseNumber' },
+      { label: '标段项目', prop: 'sectionShortName', minWidth: 200, align: 'center' },
+      { label: '物资名称', prop: 'purchaseFileName', minWidth: 200, align: 'center' },
+      { label: '物资种类', prop: 'purchaseTypeName', minWidth: 160, align: 'center' },
+      { label: '预算金额(万元)', prop: 'amount', minWidth: 160, align: 'center' },
+      { label: '附件', prop: 'attachment', width: 200, slot: 'attachment', align: 'center' },],
+      purchaseContractColumns: [{ label: '序号', prop: '__index', width: 80, align: 'center' },
+      { label: '单据ID', prop: 'purchaseNumber', minWidth: 160, align: 'center', slot: 'purchaseNumber' },
+      { label: '标段项目', prop: 'sectionShortName', minWidth: 160, align: 'center' },
+      { label: '合同名称', prop: 'contractName', minWidth: 200, align: 'center' },
+      { label: '物资种类', prop: 'purchaseTypeName', minWidth: 160, align: 'center' },
+      { label: '合同金额', prop: 'amount', minWidth: 140, align: 'center' },
+      { label: '供应商名称', prop: 'supplierName', minWidth: 180, align: 'center' },
+      { label: '附件', prop: 'attachment', width: 200, slot: 'attachment', align: 'center' },],
       sectionShortName: '',
     }
   },
@@ -536,6 +586,24 @@ export default {
               },
             });
           }
+          break
+        case 'zghthb':
+          this.$router.push({
+            name: 'detailPurchaseContract',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
+          break
+        case 'zgwjhb':
+          this.$router.push({
+            name: 'detailPurchase',
+            query: {
+              id: row.id,
+              type: 'view',
+            }
+          })
           break
       }
     },

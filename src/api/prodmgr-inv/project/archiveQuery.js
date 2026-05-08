@@ -65,3 +65,29 @@ export const supplierOutFileFile = (params) => {
         params
     })
 }
+
+/**
+ * 自购合同附件
+ * @param {type} params 
+ * @returns 
+ */
+export const purchaseContractFile = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialFile/purchaseContractFile`,
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 自购文件附件
+ * @param {type} params 
+ * @returns 
+ */
+export const purchaseFile = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialFile/purchaseFile`,
+        method: 'get',
+        params
+    })
+}
