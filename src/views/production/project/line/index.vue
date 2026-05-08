@@ -15,6 +15,13 @@
       @handleResetField="onResetField"
       :formData="formData"
     >
+    <!-- 建设单位 -->
+          <template #constructionUnit="data">
+        <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择枢纽指挥部'
+          " clearable style="width: 100%" size="small">
+          <el-option v-for="(item, key) in constructionUnitOptions" :key="key" :label="item.label" :value="item.value" />
+        </el-select>
+      </template>
            <!-- 项目状态 -->
         <template #projectStatus="data">
           <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择项目状态'" clearable
@@ -124,6 +131,7 @@ import Add from './components/add.vue'
 import SectionDialog from './components/sectionDialog.vue'
 import ConstrctDialog from './components/constrctDialog.vue'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import { newListByDeptCode } from '@/api/system/dept.js'
 export default {
   // 建设项目
   name: "line",
@@ -158,6 +166,7 @@ export default {
   },
   data () {
     return {
+      constructionUnitOptions:[],
       lineOptions: [],
       treeCurrentKey: "",
       // 遮罩层
@@ -204,6 +213,10 @@ export default {
     });
     this.setQuery();
     this.getLineOptions();
+
+    this.getDeptTree('SN').then(data => {
+      this.constructionUnitOptions = data
+    })
   },
   watch: {
     filterText (val) {
@@ -211,6 +224,20 @@ export default {
     },
   },
   methods: {
+    // 加载建设单位
+    async getDeptTree (deptCodePrefix ,status = '') {
+      const res = await newListByDeptCode({
+        deptCodePrefix,
+        status
+      })
+      const data = res.data.map(item => {
+        return {
+          value: item.deptName,
+          label: item.deptName
+        }
+      })
+      return Promise.resolve(data)
+    },
     getLineOptions() {
       Api.itemList({ pageNum: 1, pageSize: -1 }).then(({ data }) => {
         this.lineOptions = data.list.map(x => ({
