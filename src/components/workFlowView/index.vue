@@ -3,7 +3,7 @@
         <Dialog title="审批历史" :visible.sync="visible" :close-on-click-modal="false" append-to-body width="1200px"
             height="80%" >
             <div class="work-flow-view-content">
-                <el-table class="work-flow-view-history-table" ref="workFlowViewTableRef" height="200"
+                <el-table class="work-flow-view-history-table" ref="workFlowViewTableRef" max-height="500"
                     :data="workFlowViewTableData" border>
                     <el-table-column label="节点" align="left" prop="actName" />
                     <el-table-column label="单位" align="left" show-overflow-tooltip prop="orgName" />
