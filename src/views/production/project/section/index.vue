@@ -3,7 +3,7 @@
     <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
       :buttonDisable="buttonDisable"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
-      :formData="formData" @handleResetField="onResetField">
+      :formData="formData" @handleResetField="onResetField" label-width="120px">
         <!-- 项目状态 -->
         <template #sectionStatus="data">
           <el-select class="select-box" v-model="formData[data.data.fieldCode]" :placeholder="'请选择项目状态'" clearable

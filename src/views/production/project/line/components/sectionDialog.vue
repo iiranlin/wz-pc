@@ -19,7 +19,7 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="name" label="名称" align="center"> </el-table-column>
+      <el-table-column prop="name" label="标段名称" align="center"> </el-table-column>
     </el-table>
 
     <div slot="footer" class="dialog-footer">

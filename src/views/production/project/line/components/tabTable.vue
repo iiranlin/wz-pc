@@ -3,24 +3,24 @@
 
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane label="建设项目" name="total"></el-tab-pane>
-      <el-tab-pane v-for="section in sectionList" :key="section.id" :label="section.sectionName"
+      <el-tab-pane v-for="section in sectionList" :key="section.id" :label="section.projectShortName"
         :name="section.id"></el-tab-pane>
     </el-tabs>
 
     <el-table :data="list" border style="width: 100%" :max-height="600" v-loading="loading"
       :row-key="getRowKey" @selection-change="handleSelectionChange" ref="dataTable">
       <el-table-column type="index" :index="indexMethod" label="序号" width="55" align="center" fixed="left" />
-      <el-table-column prop="projectShortName" label="项目简称" width="120" align="center"></el-table-column>
+      <el-table-column prop="projectShortName" label="项目简称" min-width="200" align="center"></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
-      <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="200" align="center">
+      <el-table-column v-if="activeTab === 'total'" prop="projectShortName" label="标段项目名称" width="200" align="center">
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId" placeholder="请选择标段项目名称"
             size="mini" style="width: 100%" filterable @change="handleFieldChange('sectionId', scope.row)">
             <el-option v-for="item of options['setcionOptions']" :key="item.value" :label="item.label"
               :value="item.value"></el-option>
           </el-select>
-          <span v-else>{{ scope.row.sectionName }}</span>
+          <span v-else>{{ scope.row.projectShortName }}</span>
         </template>
       </el-table-column>
 
@@ -47,7 +47,7 @@
       </el-table-column>
 
       <!-- 可编辑amount -->
-      <el-table-column prop="amount" label="数量" width="180" align="center">
+      <el-table-column prop="amount" label="合同数量" width="180" align="center">
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view'" v-model="scope.row.amount" :min="0" :precision="4" size="mini"
             @change="handleFieldChange('amount', scope.row)" style="width: 100%"></el-input-number>
