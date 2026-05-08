@@ -1,10 +1,9 @@
 <template>
   <div>
     <virtual-scroll
-      :dynamic="false"
+      :dynamic="true"
       ref="virtualScroll"
       :data="tableData"
-      :item-size="62"
       key-prop="id"
       @change="(renderData) => (virtualList = renderData)"
     >

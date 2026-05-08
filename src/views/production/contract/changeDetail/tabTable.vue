@@ -17,7 +17,7 @@
     </el-tabs>
 
     <div style="max-height: 450px">
-      <virtual-scroll :dynamic="false" v-show="show" ref="virtualScroll" :data="filteredTableData" :item-size="62"
+      <virtual-scroll :dynamic="true" v-show="show" ref="virtualScroll" :data="filteredTableData" 
         key-prop="id" @change="(renderData) => (virtualList = renderData)">
         <el-table :data="virtualList" border style="width: 100%" max-height="450" v-loading="loading"
           @selection-change="handleSelectionChange" ref="dataTable">
