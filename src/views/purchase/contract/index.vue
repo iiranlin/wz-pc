@@ -60,6 +60,11 @@
 						<!-- 跳转详情 -->
 						<el-button type="text" @click.stop="handleClick(scope.data)">{{ scope.value }}</el-button>
 					</template>
+					<!-- 采购文件ID -->
+					<template #purchaseFileNumber="scope">
+						<!-- 跳转详情 -->
+						<el-button type="text" @click.stop="handlePurchaseFile(scope.data)">{{ scope.value }}</el-button>
+					</template>
 				</table-index>
 				<pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum"
 					:limit.sync="listQuery.pageSize" @pagination="getList" />
@@ -320,6 +325,15 @@ export default {
 				query: {
 					id: row.id,
 					type: 'view'
+				}
+			})
+		},
+		handlePurchaseFile(row){
+			this.$router.push({
+				name:'detailPurchase',
+				query:{
+					id:row.purchaseFileId,
+					type:'view'
 				}
 			})
 		},

@@ -124,7 +124,7 @@
 
         <!-- 附件 -->
         <template #htfbsmjSlot="{ formModel }">
-          <el-form-item prop="htfbsmj" label-width="130px" :rules="[
+          <el-form-item prop="htfbsmj" label-width="160px" :rules="[
             {
               required: true,
               message: '请上传合同副本扫描件',
@@ -171,6 +171,29 @@
           </el-form-item>
         </template>
 
+        <!-- 文件弹窗选择 -->
+        <template #fileListSlot="{ formModel }">
+          <el-form-item prop="purchaseFileNumber" label="采购文件" class="label-right-align" label-width="175px" :rules="[
+            {
+              required: true,
+              message: '请选择采购文件',
+              trigger: 'change',
+            },
+          ]">
+            <template v-if="type !== 'view'">
+              <el-input
+                v-model="formModel.purchaseFileNumber"
+                readonly
+                placeholder="请选择"
+                @click.native="openPurchaseFileDialog(formModel)"
+              />
+            </template>
+            <template v-else>
+              <span>{{ formModel.purchaseFileNumber }}</span>
+            </template>
+          </el-form-item>
+        </template>
+
 
 
         <template #contentSlot="{ formModel }">
@@ -180,6 +203,50 @@
     </div>
     <toBeReviewed ref="toBereview" />
     <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
+    <el-dialog
+      title="选择采购文件"
+      :visible.sync="purchaseFileDialogVisible"
+      width="900px"
+      append-to-body
+      @close="handlePurchaseFileDialogClose"
+    >
+      <el-table
+        v-loading="purchaseFileLoading"
+        :data="purchaseFileList"
+        row-key="id"
+        border
+        height="420"
+        @row-click="handlePurchaseFileRowClick"
+      >
+        <el-table-column label="" width="55" align="center">
+          <template slot-scope="scope">
+            <el-radio v-model="selectedPurchaseFileId" :label="String(scope.row.id)">
+              <span />
+            </el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column prop="purchaseNumber" label="单据ID" width="180" show-overflow-tooltip align="center" />
+        <el-table-column prop="purchaseFileName" label="物资名称" min-width="220" show-overflow-tooltip align="center" />
+        <el-table-column prop="purchaseTypeName" label="物资种类" min-width="180" show-overflow-tooltip align="center" />
+        <el-table-column prop="amount" label="预算金额(万元)" min-width="150" show-overflow-tooltip align="center" />
+      </el-table>
+      <div class="purchase-file-pagination">
+        <el-pagination
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          :current-page="purchaseFileQuery.pageNum"
+          :page-size="purchaseFileQuery.pageSize"
+          :page-sizes="[10, 30, 50, 100]"
+          :total="purchaseFileTotal"
+          @size-change="handlePurchaseFileSizeChange"
+          @current-change="handlePurchaseFileCurrentChange"
+        />
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="purchaseFileDialogVisible = false">取消</el-button>
+        <el-button style="margin-left: 20px;" type="primary" @click="confirmPurchaseFile">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -191,6 +258,7 @@ import VFormRender from "@/components/form-render/index";
 import { purchaseItemFindAllList } from "@/api/purchase/item.js";
 import { purchaseTypeFindAllList } from "@/api/purchase/type.js";
 import { purchaseDetailFindAllList } from "@/api/purchase/detail.js";
+import { page as purchaseFilePage } from "@/api/purchase/file.js";
 import { formFillInPage } from "@/api/form/form";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
@@ -269,7 +337,18 @@ export default {
       backData: null,
       detail: {},
       sellerName: "", // 添加sellerName数据属性
-      contractNoDuplicate: false // 合同编号重复状态
+      contractNoDuplicate: false, // 合同编号重复状态
+      purchaseFileDialogVisible: false,
+      purchaseFileLoading: false,
+      purchaseFileList: [],
+      purchaseFileTotal: 0,
+      purchaseFileQuery: {
+        pageNum: 1,
+        pageSize: 30,
+      },
+      selectedPurchaseFileId: null,
+      selectedPurchaseFile: null,
+      currentPurchaseFileFormModel: null
 
     };
   },
@@ -320,6 +399,95 @@ export default {
     },
     formValueChange(e) {
       this.currentFormData = e;
+    },
+    async ensureCurrentSection() {
+      if (this.projectData?.id) {
+        return this.projectData;
+      }
+      const res = await getCurrentSection();
+      this.projectData = res.data || {};
+      return this.projectData;
+    },
+    async openPurchaseFileDialog(formModel) {
+      this.currentPurchaseFileFormModel = formModel;
+      this.selectedPurchaseFileId = formModel.purchaseFileId ? String(formModel.purchaseFileId) : null;
+      this.selectedPurchaseFile = null;
+      this.purchaseFileQuery.pageNum = 1;
+      await this.ensureCurrentSection();
+      if (!this.projectData?.id) {
+        this.$message.warning("未获取到当前标段");
+        return;
+      }
+      this.purchaseFileDialogVisible = true;
+      this.getPurchaseFileList();
+    },
+    async getPurchaseFileList() {
+      this.purchaseFileLoading = true;
+      try {
+        await this.ensureCurrentSection();
+        if (!this.projectData?.id) {
+          this.purchaseFileList = [];
+          this.purchaseFileTotal = 0;
+          return;
+        }
+        const res = await purchaseFilePage({
+          pageNum: this.purchaseFileQuery.pageNum,
+          pageSize: this.purchaseFileQuery.pageSize,
+          isAsc: "",
+          orderByColumn: "",
+          status: 3,
+          sectionId: this.projectData.id,
+        });
+        const data = res?.data || {};
+        this.purchaseFileList = data.list || data.rows || data.records || [];
+        this.purchaseFileTotal = data.total || this.purchaseFileList.length;
+        if (this.selectedPurchaseFileId) {
+          this.selectedPurchaseFile = this.purchaseFileList.find(
+            (item) => String(item.id) === this.selectedPurchaseFileId
+          ) || this.selectedPurchaseFile;
+        }
+      } finally {
+        this.purchaseFileLoading = false;
+      }
+    },
+    handlePurchaseFileRowClick(row) {
+      this.selectedPurchaseFileId = String(row.id);
+      this.selectedPurchaseFile = row;
+    },
+    handlePurchaseFileSizeChange(pageSize) {
+      this.purchaseFileQuery.pageSize = pageSize;
+      this.purchaseFileQuery.pageNum = 1;
+      this.getPurchaseFileList();
+    },
+    handlePurchaseFileCurrentChange(pageNum) {
+      this.purchaseFileQuery.pageNum = pageNum;
+      this.getPurchaseFileList();
+    },
+    handlePurchaseFileDialogClose() {
+      this.selectedPurchaseFile = null;
+    },
+    confirmPurchaseFile() {
+      const row = this.purchaseFileList.find(
+        (item) => item.id === this.selectedPurchaseFileId
+      ) || this.selectedPurchaseFile;
+      if (!row) {
+        this.$message.warning("请选择采购文件");
+        return;
+      }
+      const purchaseFileData = {
+        // purchaseFileName: row.purchaseFileName,
+        purchaseFileId: row.id,
+        purchaseFileNumber: row.purchaseNumber,
+      };
+      if (this.currentPurchaseFileFormModel) {
+        Object.assign(this.currentPurchaseFileFormModel, purchaseFileData);
+      }
+      this.$refs.vFormRef.setFormData(purchaseFileData);
+      this.currentFormData = {
+        ...this.currentFormData,
+        ...purchaseFileData,
+      };
+      this.purchaseFileDialogVisible = false;
     },
     // 动态修改表单配置，并重置表单结构
     async onRailwayChange(e) {
@@ -539,6 +707,8 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
+          formData.purchaseFileId = formData.purchaseFileId || this.selectedPurchaseFile?.id || this.currentFormData.purchaseFileId || this.backData?.purchaseFileId;
+          formData.purchaseFileNumber = formData.purchaseFileNumber || this.selectedPurchaseFile?.purchaseNumber || this.currentFormData.purchaseFileNumber || this.backData?.purchaseFileNumber;
           formData.projefctName = this.projectData.projectName;
           formData.projectName = this.projectData.projectName;
           formData.sectionShortName = this.projectData.projectShortName;
@@ -769,5 +939,10 @@ export default {
   /* 隐藏溢出的内容 */
   text-overflow: ellipsis;
   /* 显示省略符号来代表被修剪的文本 */
+}
+
+.purchase-file-pagination {
+  text-align: right;
+  margin-top: 15px;
 }
 </style>

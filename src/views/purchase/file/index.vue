@@ -83,12 +83,35 @@
 							归档资料
 						</el-link>
 					</template>
+
+					          <!-- 合同数量 -->
+          <template #contracts="scoped">
+            <el-button
+              type="text"
+              @click="
+                () => {
+                  if (scoped.data.contracts.length)
+                    $refs.constrctDialogRef.open(
+                      scoped.data.contracts.map((x) => ({
+                        contractName: x.contractName,
+						contractNumber: x.contractNumber,
+						purchaseNumber: x.purchaseNumber,
+						id: x.id,
+                      }))
+                    );
+                }
+              "
+            >
+              {{ scoped.data.contracts.length }}
+            </el-button>
+          </template>
 				</table-index>
 				<pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum"
 					:limit.sync="listQuery.pageSize" @pagination="getList" />
 			</el-col>
 		</el-row>
 		<workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
+    <ConstrctDialog ref="constrctDialogRef" />
 	</div>
 </template>
 
@@ -107,6 +130,7 @@ import workFlowView from '@/components/workFlowView'
 import dayjs from 'dayjs'
 import * as FileApi from '@/api/prodmgr-inv/project/file.js'
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import ConstrctDialog from './components/constrctDialog.vue'
 export default {
 	// 自购物资文件核备
 	name: "/nuclear/file",
@@ -114,7 +138,8 @@ export default {
 	components: {
 		Add,
 		fileUpload,
-		workFlowView
+		workFlowView,
+    	ConstrctDialog
 	},
 	mixins: [indexMixin],
 
