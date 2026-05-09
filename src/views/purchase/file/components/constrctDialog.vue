@@ -2,9 +2,9 @@
   <Dialog :title="title" :visible.sync="visible" v-if="visible" :show-close="true" :close-on-click-modal="false"
     :close-on-press-escape="false" append-to-body :destroy-on-close="true" class="dialog-route" width="60%">
     <el-table :data="tableData" style="width: 100%;margin-top: 16px;" max-height="500" border>
-      <el-table-column type="index" label="序号" width="120px" align="center">
+      <el-table-column type="index" label="序号" width="80px" align="center">
       </el-table-column>
-      <el-table-column prop="purchaseNumber" label="合同ID" align="center">
+      <el-table-column prop="purchaseNumber" label="合同ID" align="center" show-overflow-tooltip min-width="180">
         <template slot-scope="scope">
           <!-- 点击跳转详情 -->
           <el-button type="text" @click.stop="handleClick(scope.row)">
@@ -12,8 +12,11 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="contractNumber" label="合同编号" align="center"> </el-table-column>
-      <el-table-column prop="contractName" label="合同名称" align="center"> </el-table-column>
+      <el-table-column prop="contractNumber" label="合同编号" align="center" show-overflow-tooltip min-width="160"> </el-table-column>
+      <el-table-column prop="contractName" label="合同名称" align="center" show-overflow-tooltip min-width="150"> </el-table-column>
+      <el-table-column prop="purchaseTypeName" label="物资种类" align="center" show-overflow-tooltip min-width="160"> </el-table-column>
+      <el-table-column prop="supplierName" label="供应商" align="center" show-overflow-tooltip min-width="160"> </el-table-column>
+      <el-table-column prop="amount" label="合同金额(万元)" align="center" show-overflow-tooltip min-width="160"> </el-table-column>
 
 
     </el-table>

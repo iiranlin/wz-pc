@@ -97,6 +97,9 @@
 						contractNumber: x.contractNumber,
 						purchaseNumber: x.purchaseNumber,
 						id: x.id,
+						purchaseTypeName: x.purchaseTypeName,
+						supplierName:x.supplierName,
+						amount:x.amount
                       }))
                     );
                 }
