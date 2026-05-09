@@ -570,7 +570,7 @@ export default {
           contractDetailsList: [{
             materialName: "",
             specModel: "",
-            unit: 0,
+            unit: "",
             amount: 0,
             price: 0,
             vatRate: 0,

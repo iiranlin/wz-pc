@@ -48,10 +48,13 @@
 
           <el-col :span="8">
             <el-form-item label="计量单位" :prop="`contractDetailsList.${index}.unit`" class="label-right-align" :rules="[
-              { required: true, message: '请输入计量单位', trigger: 'blur' },
+              { required: true, message: '请选择计量单位', trigger: 'change' },
             ]">
               <template v-if="!isView">
-                <el-input v-model="item.unit" placeholder="请输入计量单位" />
+                <el-select v-model="item.unit" filterable style="width: 100%" placeholder="请选择计量单位">
+                  <el-option v-for="dictItem in dict.type.MeasureUnit" :key="dictItem.value" :label="dictItem.label"
+                    :value="dictItem.label" />
+                </el-select>
               </template>
               <template v-else>
                 <span>{{ item.unit }}</span>
@@ -243,6 +246,7 @@ import dayjs from "dayjs";
 import BatchDialog from "./batchDialog.vue";
 
 export default {
+  dicts: ['MeasureUnit'],
   props: {
     value: {
       type: Object,
