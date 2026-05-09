@@ -45,7 +45,7 @@
           </el-form-item>
         </template>
         <template #codeSolt="{ formModel }">
-          <el-form-item prop="code" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label-width="175px"
+          <el-form-item prop="code" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label-width="160px"
             label="物资大类" class="label-right-align">
             <template v-if="type !== 'view'">
               <el-select v-model="formModel.code" filterable required style="width: 100%" placeholder="请选择" @change="
@@ -64,7 +64,7 @@
         </template>
 
         <template #purchaseCodeSolt="{ formModel }">
-          <el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label="类别"
+          <el-form-item prop="purchaseCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label="类别" label-width="130px"
             class="label-right-align">
             <template v-if="type !== 'view'">
               <el-select v-model="formModel.purchaseCode" filterable required style="width: 100%" placeholder="请选择"
@@ -84,7 +84,7 @@
 
         <template #purchaseTypeCodeSolt="{ formModel }">
           <el-form-item prop="purchaseTypeCode" :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
-            label-width="130px" label="物资种类" class="label-right-align">
+            label-width="175px" label="物资种类" class="label-right-align">
             <template v-if="type !== 'view'">
               <el-select v-model="formModel.purchaseTypeCode" filterable required style="width: 100%" placeholder="请选择"
                 @change="
@@ -173,7 +173,7 @@
 
         <!-- 文件弹窗选择 -->
         <template #fileListSlot="{ formModel }">
-          <el-form-item prop="purchaseFileNumber" label="采购文件" class="label-right-align" label-width="175px" :rules="[
+          <el-form-item prop="purchaseFileNumber" label="关联采购文件核备" class="label-right-align" label-width="175px" :rules="[
             {
               required: true,
               message: '请选择采购文件',

@@ -7,13 +7,13 @@
         :name="section.id"></el-tab-pane>
     </el-tabs>
 
-    <el-table :data="list" border style="width: 100%" :max-height="600" v-loading="loading"
+    <el-table :data="list" border style="width: 100%" :max-height="350" v-loading="loading"
       :row-key="getRowKey" @selection-change="handleSelectionChange" ref="dataTable">
       <el-table-column type="index" :index="indexMethod" label="序号" width="55" align="center" fixed="left" />
-      <el-table-column prop="projectShortName" label="项目简称" min-width="200" align="center"></el-table-column>
+      <el-table-column prop="projectShortName" label="项目简称" min-width="200" align="center" show-overflow-tooltip></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
-      <el-table-column v-if="activeTab === 'total'" prop="projectShortName" label="标段项目名称" width="200" align="center">
+      <el-table-column v-if="activeTab === 'total'" prop="projectShortName" label="标段项目名称" width="200" align="center" fixed="left" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId" placeholder="请选择标段项目名称"
             size="mini" style="width: 100%" filterable @change="handleFieldChange('sectionId', scope.row)">
@@ -25,8 +25,8 @@
       </el-table-column>
 
       <!-- 其他列 -->
-      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center"></el-table-column>
-      <el-table-column prop="materialName" label="物资名称" width="250" align="center">
+      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" width="250" align="center" fixed="left" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.materialId" placeholder="请选择物资名称"
             size="mini" style="width: 100%" filterable @change="handleFieldChange('materialId', scope.row)">
@@ -36,7 +36,7 @@
           <span v-else>{{ scope.row.materialName }} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200" align="center">
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center" fixed="left" show-overflow-tooltip>
       </el-table-column>
 
       <!-- 可选择计量单位 -->
@@ -110,7 +110,7 @@
           <span v-else>{{ scope.row.deliveryTerms }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryDate" label="交货期" width="150" align="center">
+      <el-table-column prop="deliveryDate" label="交货期" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryDate" size="mini" style="width: 100%"></el-input>
