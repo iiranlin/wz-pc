@@ -20,18 +20,18 @@
       max-height="450"
       v-loading="loading"
     >
-      <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="sectionName" label="标段名称" width="200" align="center"></el-table-column>
-      <el-table-column prop="contractName" label="补充合同名称" min-width="250" align="center"></el-table-column>
-      <el-table-column prop="amount" label="合同数量" width="150" align="center">
+      <el-table-column type="index" label="序号" width="60" align="center" fixed show-overflow-tooltip></el-table-column>
+      <el-table-column prop="sectionName" label="标段名称" width="200" align="center" show-overflow-tooltip fixed></el-table-column>
+      <el-table-column prop="contractName" label="补充合同名称" min-width="250" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="amount" label="合同数量" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span :style="{ color: scope.row.amount < 0 ? '#F56C6C' : '' }">
             {{ scope.row.amount }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="materialName" label="物资名称" width="200" align="center"></el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" width="200" align="center" show-overflow-tooltip fixed></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center" show-overflow-tooltip></el-table-column>
     </el-table>
 
     <!-- 底部按钮 -->

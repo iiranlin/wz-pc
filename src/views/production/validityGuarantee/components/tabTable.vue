@@ -2,11 +2,11 @@
   <div class="tab-table-container">
 
 
-    <el-table :data="filteredTableData" border style="width: 100%" :max-height="600" v-loading="loading"
+    <el-table :data="filteredTableData" border style="width: 100%" max-height="350" v-loading="loading"
       :row-key="getRowKey" @selection-change="handleSelectionChange" ref="dataTable">
-      <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
+      <el-table-column type="index" label="序号" width="55" align="center" fixed="left"  show-overflow-tooltip/>
 
-      <el-table-column prop="materialName" label="物资名称" width="250" fixed="left">
+      <el-table-column prop="materialName" label="物资名称" width="250" fixed="left" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.materialId" placeholder="请选择物资名称"
             size="mini" style="width: 100%" filterable @change="handleFieldChange('materialId', scope.row)">
@@ -16,22 +16,22 @@
           <span v-else>{{ scope.row.materialName }} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="项目简称" width="120"></el-table-column>
+      <el-table-column prop="projectShortName" label="项目简称" width="120" show-overflow-tooltip></el-table-column>
 
       <!-- 其他列 -->
-      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center"></el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200">
+      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200" show-overflow-tooltip>
       </el-table-column>
 
       <!-- 可选择计量单位 -->
-      <el-table-column prop="unit" label="计量单位" width="150" align="center">
+      <el-table-column prop="unit" label="计量单位" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.unit }}</span>
         </template>
       </el-table-column>
 
       <!-- 可编辑amount -->
-      <el-table-column prop="amount" label="数量" width="180" align="center">
+      <el-table-column prop="amount" label="数量" width="180" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view'" v-model="scope.row.amount" :min="0" :precision="4" size="mini"
             @change="handleFieldChange('amount', scope.row)" style="width: 100%"></el-input-number>
@@ -39,16 +39,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="cumulativeAmount" label="累计计划量" width="120" align="center"></el-table-column>
+      <el-table-column prop="cumulativeAmount" label="累计计划量" width="120" align="center" show-overflow-tooltip></el-table-column>
 
-      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center">
+      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view'" v-model="scope.row.price" :min="0" :precision="2" size="mini"
             @change="handleFieldChange('price', scope.row)" style="width: 100%"></el-input-number>
           <span v-else>{{ scope.row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center">
+      <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.vatRate" :min="0" :precision="2" size="mini" style="width: 100%"
@@ -56,45 +56,45 @@
           <span v-else>{{ scope.row.vatRate }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
+      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
         </template>
       </el-table-column>
-      <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center">
+      <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : '' }}
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center">
+      <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryLocation" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryLocation }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="receiver" label="收货人" width="150" align="center">
+      <el-table-column prop="receiver" label="收货人" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.receiver" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.receiver }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center">
+      <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryStatus" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center">
+      <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryTerms" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryTerms }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryDate" label="交货期" width="150" align="center">
+      <el-table-column prop="deliveryDate" label="交货期" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryDate" size="mini" style="width: 100%"></el-input>

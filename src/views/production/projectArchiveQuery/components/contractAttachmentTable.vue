@@ -41,7 +41,7 @@
       border
       size="small"
       style="width: 100%"
-    >
+     max-height="350">
       <el-table-column
         v-for="col in mergedColumns"
         :key="col.prop"
@@ -50,7 +50,7 @@
         :min-width="col.minWidth || 120"
         :width="col.width"
         :align="col.align || 'left'"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
            <slot
             v-if="col.slot"

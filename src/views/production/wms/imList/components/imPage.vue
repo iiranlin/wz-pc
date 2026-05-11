@@ -51,57 +51,57 @@
 						</el-form-item>
 					</template>
 					<template #detailSlot>
-						<el-table :data="tableData" border style="width: 100%" :max-height="600" ref="dataTable"
+						<el-table :data="tableData" border style="width: 100%" max-height="350" ref="dataTable"
 							:row-class-name="tableRowClassName">
-							<el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
-							<el-table-column prop="sellerName" label="供应商" width="200"></el-table-column>
-							<el-table-column prop="materialName" label="物资名称" width="200">
+							<el-table-column type="index" label="序号" width="55" align="center" fixed="left"  show-overflow-tooltip/>
+							<el-table-column prop="sellerName" label="供应商" width="200" show-overflow-tooltip fixed></el-table-column>
+							<el-table-column prop="materialName" label="物资名称" width="200" show-overflow-tooltip fixed>
 							</el-table-column>
-							<el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
-							<el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
-							<el-table-column prop="planAmount" label="需求数量" width="120"
+							<el-table-column prop="specModel" label="规格型号" width="200" align="center" show-overflow-tooltip fixed></el-table-column>
+							<el-table-column prop="unit" label="计量单位" width="100" align="center" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="planAmount" label="需求数量" width="120" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="storeSum" label="累计入库(不含本次)" width="150" align="center"></el-table-column>
-							<el-table-column prop="putTotal" label="本次实收数量" width="120"
+							<el-table-column prop="storeSum" label="累计入库(不含本次)" width="150" align="center" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="putTotal" label="本次实收数量" width="120" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="packagingFm" label="包装形式" width="160"
+							<el-table-column prop="packagingFm" label="包装形式" width="160" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="manufactureDate" label="生产日期" width="150"
+							<el-table-column prop="manufactureDate" label="生产日期" width="150" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="expirationDate" label="有效期截止日期" width="150"
+							<el-table-column prop="expirationDate" label="有效期截止日期" width="150" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="addr" label="使用地点" width="200" align="center"></el-table-column>
-							<el-table-column prop="field2" label="收货地址" width="200" align="center"></el-table-column>
-							<el-table-column prop="supplyDate" label="供应时间" width="160"
+							<el-table-column prop="addr" label="使用地点" width="200" align="center" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="field2" label="收货地址" width="200" align="center" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="supplyDate" label="供应时间" width="160" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="receiver" label="收货人及联系方式" width="180"
+							<el-table-column prop="receiver" label="收货人及联系方式" width="180" show-overflow-tooltip
 								align="center"></el-table-column>
-							<el-table-column prop="field0" label="投资方" width="150" align="center"></el-table-column>
-							<el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
-							<el-table-column prop="projectShortName" label="合格证附件" width="200">
+							<el-table-column prop="field0" label="投资方" width="150" align="center" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="field1" label="投资比例" width="150" align="center" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="projectShortName" label="合格证附件" width="200" show-overflow-tooltip>
 								<template slot-scope="scope">
 									<fileUpload :value="scope.row.fileList01" :preview="true" :isShowTip="false"
 										:limit="9999" />
 								</template>
 							</el-table-column>
-							<el-table-column prop="projectShortName" label="厂检报告附件" width="200">
+							<el-table-column prop="projectShortName" label="厂检报告附件" width="200" show-overflow-tooltip>
 								<template slot-scope="scope">
 									<fileUpload :value="scope.row.fileList02" :preview="true" :isShowTip="false"
 										:limit="9999" />
 								</template>
 							</el-table-column>
-							<el-table-column prop="remark" label="备注" width="200"></el-table-column>
-							<el-table-column prop="storeTotal" label="报检通过" width="100" fixed="right" align="center">
+							<el-table-column prop="remark" label="备注" width="200" show-overflow-tooltip></el-table-column>
+							<el-table-column prop="storeTotal" label="报检通过" width="100" fixed="right" align="center" show-overflow-tooltip>
 								<template slot-scope="scope">
 									<span>{{ scope.row.storeTotal }}</span>
 								</template>
 							</el-table-column>
-							<el-table-column prop="refundZjTotal" label="报检退货" width="100" fixed="right" align="center">
+							<el-table-column prop="refundZjTotal" label="报检退货" width="100" fixed="right" align="center" show-overflow-tooltip>
 								<template slot-scope="scope">
 									<span>{{ scope.row.refundZjTotal }}</span>
 								</template>
 							</el-table-column>
-							<el-table-column prop="projectShortName" label="退货附件" width="180" fixed="right">
+							<el-table-column prop="projectShortName" label="退货附件" width="180" fixed="right" show-overflow-tooltip>
 								<template slot-scope="scope">
 									<fileUpload v-if="Number(scope.row.refundZjTotal) > 0"
 										v-model="scope.row.fileList03" :preview="type == 'view'" :isShowTip="false"
@@ -109,7 +109,7 @@
 								</template>
 							</el-table-column>
 							<!-- 新增操作列 -->
-							<el-table-column label="操作" width="150" fixed="right" align="center" v-if="type != 'view'">
+							<el-table-column label="操作" width="150" fixed="right" align="center" v-if="type != 'view'" show-overflow-tooltip>
 								<template slot-scope="scope">
 									<el-button size="mini" type="primary" @click="handleRowInbound(scope.row)"
 										:disabled="scope.row.storeTotal > 0">通过</el-button>

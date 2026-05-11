@@ -1,28 +1,28 @@
 <template>
   <div class="material-search-table">
-    <el-table :data="tableData" border style="width: 100%" max-height="500">
+    <el-table :data="tableData" border style="width: 100%" max-height="350">
       <!-- 序号 -->
-      <el-table-column type="index" label="序号" align="center" width="80px">
+      <el-table-column type="index" label="序号" align="center" width="80px" fixed show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="sellerName" label="供应商" align="center" width="200">
+      <el-table-column prop="sellerName" label="供应商" align="center" width="200" show-overflow-tooltip fixed>
       </el-table-column>
-      <el-table-column prop="materialName" label="物资名称" align="center" width="200">
+      <el-table-column prop="materialName" label="物资名称" align="center" width="200" show-overflow-tooltip fixed>
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" align="center" width="200">
+      <el-table-column prop="specModel" label="规格型号" align="center" width="200" show-overflow-tooltip fixed>
       </el-table-column>
-      <el-table-column prop="unit" label="计量单位" align="center">
+      <el-table-column prop="unit" label="计量单位" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="amount" label="合同数量" align="center">
+      <el-table-column prop="amount" label="合同数量" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="cumulativeAmount" label="累计计划量（含本次）" align="center" width="200px">
+      <el-table-column prop="cumulativeAmount" label="累计计划量（含本次）" align="center" width="200px" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="planAmount" label="本次计划数量" align="center" width="200">
+      <el-table-column prop="planAmount" label="本次计划数量" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="taxPrice" label="价格" align="center" width="200">
+      <el-table-column prop="taxPrice" label="价格" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="planAmountTotalPrice" label="本次计划金额" align="center" width="200">
+      <el-table-column prop="planAmountTotalPrice" label="本次计划金额" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="sendTotal" label="已发货" align="center">
+      <el-table-column prop="sendTotal" label="已发货" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.sendTotal, 'sendList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.sendTotal }}
@@ -30,9 +30,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="sendTotalTotalPrice" label="已发货金额" align="center" width="200">
+      <el-table-column prop="sendTotalTotalPrice" label="已发货金额" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="putTotal" label="已收货" align="center">
+      <el-table-column prop="putTotal" label="已收货" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.putTotal, 'receiveList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.putTotal }}
@@ -40,25 +40,25 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="putTotalTotalPrice" label="已收货金额" align="center" width="200">
+      <el-table-column prop="putTotalTotalPrice" label="已收货金额" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="storeTotal" label="已入库" align="center">
+      <el-table-column prop="storeTotal" label="已入库" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.storeTotal, 'imList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.storeTotal }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="storeTotalTotalPrice" label="已入库金额" align="center" width="200">
+      <el-table-column prop="storeTotalTotalPrice" label="已入库金额" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="outCkTotal" label="已出库" align="center">
+      <el-table-column prop="outCkTotal" label="已出库" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="link" @click="goDetail(scope.row.outCkTotal, 'omList')" style="color:#409EFF;cursor:pointer;">
             {{ scope.row.outCkTotal }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="outCkTotalTotalPrice" label="已出库金额" align="center" width="200">
+      <el-table-column prop="outCkTotalTotalPrice" label="已出库金额" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
     </el-table>
 

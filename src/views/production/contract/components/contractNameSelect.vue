@@ -47,7 +47,7 @@
         v-loading="loading"
         row-key="id"
       >
-        <el-table-column align="center" width="50" fixed="left">
+        <el-table-column align="center" width="50" fixed="left" show-overflow-tooltip>
           <template v-slot="{ row }">
             <el-radio
               v-model="selectedContractId"
@@ -56,7 +56,7 @@
             ></el-radio>
           </template>
         </el-table-column>
-        <el-table-column label="序号" align="center" type="index" width="60" />
+        <el-table-column label="序号" align="center" type="index" width="60" fixed  show-overflow-tooltip/>
 
         <el-table-column
           prop="scontCode"

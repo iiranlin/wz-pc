@@ -1,12 +1,12 @@
 <template>
   <div>
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%" max-height="350">
       <el-table-column
         prop="contractVersion"
         label="版本"
         align="center"
         width="80px"
-      >
+       show-overflow-tooltip>
         <template #default="{ row }">
           {{ row.contractVersion | numberToVersion }}
         </template>
@@ -16,30 +16,30 @@
         label="合同名称"
         align="center"
         width="150px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="contractNo"
         label="合同编号"
         align="center"
         width="150px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="complementName"
         label="补充合同名称"
         align="center"
         width="200px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateReason" label="变更原因" align="center">
+      <el-table-column prop="updateReason" label="变更原因" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="updateDetails"
         label="变更内容"
         align="center"
         width="120px"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           <template v-if="scope.row.contractVersion == 1"> 新增 </template>
           <template v-else>
@@ -57,7 +57,7 @@
         label="补充合同附件"
         align="center"
         width="200px"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload
             v-if="scope.row.fileList[0]"
@@ -74,14 +74,14 @@
         label="操作人"
         align="center"
         width="120px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="updateDate"
         label="操作时间"
         align="center"
         width="200px"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.updateDate | formatDate }}
         </template>

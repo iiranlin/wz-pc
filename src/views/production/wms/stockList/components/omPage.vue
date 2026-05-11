@@ -54,8 +54,7 @@
           <el-table
             :data="tableData"
             border
-            style="width: 100%"
-            :max-height="400"
+            style="width: 100%" max-height="350"
             ref="dataTable"
             :lazy="true"
             :load="load"
@@ -69,29 +68,29 @@
               width="55"
               align="center"
               fixed="left"
-            />
-            <el-table-column prop="sellerName" label="供应商" width="250" fixed>
+             show-overflow-tooltip/>
+            <el-table-column prop="sellerName" label="供应商" width="250" fixed show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" width="200" fixed>
+            <el-table-column prop="materialName" label="物资名称" width="200" fixed show-overflow-tooltip>
             </el-table-column>
             <el-table-column
               prop="specModel"
               label="规格型号"
               width="200"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="unit"
               label="计量单位"
               width="100"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
               align="center"
-            >
+             show-overflow-tooltip>
               <template slot-scope="scope">
                 <span v-if="isParentRow(scope.row)">
                   {{ scope.row.planAmount || "" }}
@@ -103,32 +102,32 @@
               label="当前库存数量"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="storeNumber"
               label="入库单号"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="outTotal"
               label="出库数量"
               width="150"
               align="center"
               fixed="right"
-            >
+             show-overflow-tooltip>
               <template slot-scope="scope">
                 <div v-if="isParentRow(scope.row)" style="display: flex; justify-content: center; align-items: center;">
                   <el-button 
@@ -155,7 +154,7 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200" fixed="right">
+            <el-table-column prop="remark" label="备注" width="200" fixed="right" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.remark"

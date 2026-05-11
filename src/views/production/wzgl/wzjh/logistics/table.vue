@@ -1,15 +1,15 @@
 <template>
   <div class="material-search-table">
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%" max-height="350">
       <!-- 序号 -->
-      <el-table-column type="index" label="序号" align="center" width="80px">
+      <el-table-column type="index" label="序号" align="center" width="80px" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="updateContent"
         label="填写时间"
         align="center"
         width="200px"
-      >
+       show-overflow-tooltip>
       {{ row.updateTime | formatDate }}
       </el-table-column>
       <el-table-column
@@ -17,9 +17,9 @@
         label="货运位置"
         align="center"
         min-width="250px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateBefore" label="操作人" align="center">
+      <el-table-column prop="updateBefore" label="操作人" align="center" show-overflow-tooltip>
       </el-table-column>
     </el-table>
   </div>

@@ -1,15 +1,15 @@
 <template>
   <div class="">
-    <el-table :data="tableData" border style="width: 100%" max-height="500">
+    <el-table :data="tableData" border style="width: 100%" max-height="350">
       <!-- 序号 -->
-      <el-table-column type="index" label="序号" align="center" width="80px">
+      <el-table-column type="index" label="序号" align="center" width="80px" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="createDate"
         label="填写时间"
         align="center"
         width="200px"
-      >
+       show-overflow-tooltip>
        <template slot-scope="scope">
           <span>{{ scope.row.createDate | formatDate }}</span>
         </template>
@@ -19,9 +19,9 @@
         label="货运位置"
         align="center"
         min-width="250px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="createUserName" label="操作人" align="center">
+      <el-table-column prop="createUserName" label="操作人" align="center" show-overflow-tooltip>
       </el-table-column>
     </el-table>
   </div>

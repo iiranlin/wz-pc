@@ -18,10 +18,10 @@
     </div>
 
     <el-table :data="fileList" border style="width: 100%; margin-top: 20px">
-      <el-table-column prop="fileName" label="文件名" />
-      <el-table-column prop="number" label="物资条数" />
-      <el-table-column prop="fileSize" label="文件大小" :formatter="formatFileSize" />
-      <el-table-column prop="status" label="状态" />
+      <el-table-column prop="fileName" label="文件名"  show-overflow-tooltip/>
+      <el-table-column prop="number" label="物资条数"  show-overflow-tooltip/>
+      <el-table-column prop="fileSize" label="文件大小" :formatter="formatFileSize"  show-overflow-tooltip/>
+      <el-table-column prop="status" label="状态"  show-overflow-tooltip/>
     </el-table>
 
     <el-alert v-if="fileList.length > 0 && fileList[0].reason.length > 0" title="提示" type="warning" :closable="false"

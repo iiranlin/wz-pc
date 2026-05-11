@@ -18,8 +18,7 @@
           <el-table
             :data="tableData"
             border
-            style="width: 100%"
-            :max-height="600"
+            style="width: 100%" max-height="350"
             ref="dataTable"
           >
             <el-table-column
@@ -28,48 +27,48 @@
               width="55"
               align="center"
               fixed="left"
-            />
-            <el-table-column prop="sellerName" label="供应商名称" min-width="200">
+             show-overflow-tooltip/>
+            <el-table-column prop="sellerName" label="供应商名称" min-width="200" show-overflow-tooltip fixed>
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" min-width="200">
+            <el-table-column prop="materialName" label="物资名称" min-width="200" show-overflow-tooltip fixed>
             </el-table-column>
             <el-table-column
               prop="specModel"
               label="规格型号"
               width="200"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
 
             <el-table-column
               prop="unit"
               label="计量单位"
               width="100"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="planAmount"
               label="本次计划数量"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="storeTotal"
               label="累计入库数量"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
               <el-table-column
               prop="outCkTotal"
               label="累计出库数量"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="stockStatus"
               label="当前库存"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
           </el-table>
         </template>
           <!-- 附件 -->

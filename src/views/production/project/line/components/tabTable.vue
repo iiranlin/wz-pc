@@ -1,19 +1,24 @@
 <template>
   <div class="tab-table-container">
 
-    <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane label="建设项目" name="total"></el-tab-pane>
-      <el-tab-pane v-for="section in sectionList" :key="section.id" :label="section.projectShortName"
-        :name="section.id"></el-tab-pane>
-    </el-tabs>
+    <div style="margin-left: auto; width: 266px;">
+      <el-input v-model="searchKeyword" class="table-search" size="small" clearable placeholder="请输入关键词搜索" /></div>
+    <div>
+      <el-tabs class="table-tabs" v-model="activeTab" @tab-click="handleTabClick">
+        <el-tab-pane label="建设项目" name="total"></el-tab-pane>
+        <el-tab-pane v-for="section in sectionList" :key="section.id" :label="section.projectShortName"
+          :name="section.id"></el-tab-pane>
+      </el-tabs>
+    </div>
 
-    <el-table :data="list" border style="width: 100%" :max-height="350" v-loading="loading"
+    <el-table :data="filteredTableData" border style="width: 100%" max-height="350" v-loading="loading"
       :row-key="getRowKey" @selection-change="handleSelectionChange" ref="dataTable">
-      <el-table-column type="index" :index="indexMethod" label="序号" width="55" align="center" fixed="left" />
-      <el-table-column prop="projectShortName" label="项目简称" min-width="200" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column type="index" :index="indexMethod" label="序号" width="55" align="center" fixed="left"  show-overflow-tooltip/>
+      <el-table-column prop="projectShortName" label="标段项目名称" min-width="200" align="center"
+        show-overflow-tooltip fixed></el-table-column>
 
       <!-- 条件渲染：仅在总表中显示 -->
-      <el-table-column v-if="activeTab === 'total'" prop="projectShortName" label="标段项目名称" width="200" align="center" fixed="left" show-overflow-tooltip>
+      <!-- <el-table-column v-if="activeTab === 'total'" prop="projectShortName" label="标段项目名称" width="200" align="center" fixed="left" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId" placeholder="请选择标段项目名称"
             size="mini" style="width: 100%" filterable @change="handleFieldChange('sectionId', scope.row)">
@@ -22,10 +27,11 @@
           </el-select>
           <span v-else>{{ scope.row.projectShortName }}</span>
         </template>
-      </el-table-column>
+</el-table-column> -->
 
       <!-- 其他列 -->
-      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="sellerName" label="卖方名称" width="120" align="center"
+        show-overflow-tooltip></el-table-column>
       <el-table-column prop="materialName" label="物资名称" width="250" align="center" fixed="left" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.materialId" placeholder="请选择物资名称"
@@ -40,14 +46,14 @@
       </el-table-column>
 
       <!-- 可选择计量单位 -->
-      <el-table-column prop="unit" label="计量单位" width="150" align="center">
+      <el-table-column prop="unit" label="计量单位" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.unit }}</span>
         </template>
       </el-table-column>
 
       <!-- 可编辑amount -->
-      <el-table-column prop="amount" label="合同数量" width="180" align="center">
+      <el-table-column prop="amount" label="合同数量" width="180" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view'" v-model="scope.row.amount" :min="0" :precision="4" size="mini"
             @change="handleFieldChange('amount', scope.row)" style="width: 100%"></el-input-number>
@@ -55,16 +61,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="cumulativeAmount" label="累计计划量" width="120" align="center"></el-table-column>
+      <el-table-column prop="cumulativeAmount" label="累计计划量" width="120" align="center" show-overflow-tooltip></el-table-column>
 
-      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center">
+      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view'" v-model="scope.row.price" :min="0" :precision="2" size="mini"
             @change="handleFieldChange('price', scope.row)" style="width: 100%"></el-input-number>
           <span v-else>{{ scope.row.price }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center">
+      <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.vatRate" :min="0" :precision="2" size="mini" style="width: 100%"
@@ -72,38 +78,38 @@
           <span v-else>{{ scope.row.vatRate }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
+      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
         </template>
       </el-table-column>
-      <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center">
+      <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : '' }}
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center">
+      <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryLocation" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryLocation }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="receiver" label="收货人" width="150" align="center">
+      <el-table-column prop="receiver" label="收货人" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.receiver" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.receiver }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center">
+      <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryStatus" size="mini" style="width: 100%"></el-input>
           <span v-else>{{ scope.row.deliveryStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center">
+      <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="type !== 'view' && scope.row.id.split('-').length != 1 || scope.row.type == 'add'"
             v-model="scope.row.deliveryTerms" size="mini" style="width: 100%"></el-input>
@@ -117,46 +123,38 @@
           <span v-else>{{ scope.row.deliveryDate }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="cumulativeRatio" label="计划金额比例" width="150" align="center">
+      <el-table-column prop="cumulativeRatio" label="计划金额比例" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.cumulativeRatio }}%</span>
         </template>
       </el-table-column>
 
-      <el-table-column prop="cumulativeAmount" label="累计下达数量" width="150" align="center">
+      <el-table-column prop="cumulativeAmount" label="累计下达数量" width="150" align="center" show-overflow-tooltip>
       </el-table-column>
 
-      <el-table-column  prop="sendTotal" label="发货数量" width="150" align="center">
+      <el-table-column prop="sendTotal" label="发货数量" width="150" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="sendRatio" label="发货比例" width="150" align="center">
+      <el-table-column prop="sendRatio" label="发货比例" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.sendRatio }}%
         </template>
       </el-table-column>
-      <el-table-column prop="storeTotalRates" label="已收货金额" width="150" align="center">
+      <el-table-column prop="storeTotalRates" label="已收货金额" width="150" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column  prop="storeTotal" label="累计入库量" width="150" align="center">
-      </el-table-column>
-
-      <el-table-column prop="outTotal" label="累计出库量" width="150" align="center">
+      <el-table-column prop="storeTotal" label="累计入库量" width="150" align="center" show-overflow-tooltip>
       </el-table-column>
 
-      <el-table-column  prop="outTotalRates" label="出库金额" width="150" align="center">
+      <el-table-column prop="outTotal" label="累计出库量" width="150" align="center" show-overflow-tooltip>
+      </el-table-column>
+
+      <el-table-column prop="outTotalRates" label="出库金额" width="150" align="center" show-overflow-tooltip>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination
-      v-if="total > 0"
-      :current-page="pageNum"
-      :page-size="pageSize"
-      :page-sizes="[50, 100, 200, 500]"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handlePageChange"
-      style="margin-top: 12px; text-align: right;"
-    />
+    <el-pagination v-if="total > 0" :current-page="pageNum" :page-size="pageSize" :page-sizes="[50, 100, 200, 500]"
+      layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+      @current-change="handlePageChange" style="margin-top: 12px; text-align: right;" />
 
     <!-- 统计信息 -->
     <div class="summary-info" v-if="list.length > 0">
@@ -244,12 +242,18 @@ export default {
       total: 0,
       summaryData: {},    // 存储接口返回的汇总统计数据
       options: {},
+      searchKeyword: '',
     }
   },
   computed: {
     // 保持 filteredTableData 命名，供部分可能存在的逻辑引用
     filteredTableData() {
-      return this.list;
+      const keyword = this.searchKeyword.trim().toLowerCase()
+      if (!keyword) {
+        return this.list
+      }
+
+      return this.list.filter(item => this.isRowMatched(item, keyword))
     },
     type() {
       return this.$route.query.type
@@ -339,6 +343,15 @@ export default {
     // 处理表格的勾选变化
     handleSelectionChange(selection) {
       // view 模式下无需处理
+    },
+
+    isRowMatched(row, keyword) {
+      return Object.values(row || {}).some(value => {
+        if (value === null || value === undefined) {
+          return false
+        }
+        return String(value).toLowerCase().includes(keyword)
+      })
     },
 
     // ==================== 字段计算（编辑模式保留）====================
@@ -467,7 +480,16 @@ export default {
 
 
 <style scoped>
-/* 自定义Tab样式 */
+.table-tabs {
+  flex: 1;
+  min-width: 0;
+}
+
+.table-search {
+  width: 260px;
+  flex-shrink: 0;
+}
+
 ::v-deep .el-tabs__header {
   margin-bottom: 20px;
 }
@@ -550,6 +572,14 @@ export default {
 @media (max-width: 768px) {
   .tab-table-container {
     padding: 10px;
+  }
+
+  .table-toolbar {
+    flex-direction: column;
+  }
+
+  .table-search {
+    width: 100%;
   }
 
   .summary-info {

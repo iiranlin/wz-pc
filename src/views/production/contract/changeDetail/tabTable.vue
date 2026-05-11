@@ -19,11 +19,11 @@
     <div style="max-height: 450px">
       <virtual-scroll :dynamic="true" v-show="show" ref="virtualScroll" :data="filteredTableData" 
         key-prop="id" @change="(renderData) => (virtualList = renderData)">
-        <el-table :data="virtualList" border style="width: 100%" max-height="450" v-loading="loading"
+        <el-table :data="virtualList" border style="width: 100%" max-height="350" v-loading="loading"
           @selection-change="handleSelectionChange" ref="dataTable">
           <virtual-column label="序号" width="88" align="center" type="index" fixed></virtual-column>
 
-          <el-table-column prop="materialName" label="物资名称" width="250" fixed align="center">
+          <el-table-column prop="materialName" label="物资名称" width="250" fixed align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.materialId"
                 placeholder="请选择物资名称" size="mini" @change="handleFieldChange('materialId', scope.row)"
@@ -34,10 +34,10 @@
               <span v-else>{{ scope.row.materialName }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="projectShortName" label="项目简称" width="120" align="center"></el-table-column>
+          <el-table-column prop="projectShortName" label="项目简称" width="120" align="center" show-overflow-tooltip></el-table-column>
 
           <!-- 条件渲染：仅在总表中显示 -->
-          <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center">
+          <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center" show-overflow-tooltip fixed>
             <template slot-scope="scope">
               <el-select v-if="scope.row.isManual && type !== 'view'" v-model="scope.row.sectionId"
                 placeholder="请选择标段项目名称" size="mini" @change="handleFieldChange('sectionId', scope.row)"
@@ -50,19 +50,19 @@
           </el-table-column>
 
           <!-- 其他列 -->
-          <el-table-column prop="sellerName" label="卖方名称" width="120" align="center"></el-table-column>
-          <el-table-column prop="specModel" label="规格型号" width="200" align="center">
+          <el-table-column prop="sellerName" label="卖方名称" width="120" align="center" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="specModel" label="规格型号" width="200" align="center" show-overflow-tooltip>
           </el-table-column>
 
           <!-- 可选择计量单位 -->
-          <el-table-column prop="unit" label="计量单位" width="150" align="center">
+          <el-table-column prop="unit" label="计量单位" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.unit }}</span>
             </template>
           </el-table-column>
 
           <!-- 可编辑amount -->
-          <el-table-column prop="amount" label="数量" width="180" align="center">
+          <el-table-column prop="amount" label="数量" width="180" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input-number v-if="type !== 'view'" v-model="scope.row.amount" :min="0" :precision="4" size="mini"
                 @change="handleFieldChange('amount', scope.row)" style="width: 100%"></el-input-number>
@@ -70,63 +70,63 @@
             </template>
           </el-table-column>
           <el-table-column prop="cumulativeAmount" label="累计计划量" width="120" align="center"
-            :formatter="(a, b, value) => value || 0"></el-table-column>
+            :formatter="(a, b, value) => value || 0" show-overflow-tooltip></el-table-column>
 
-          <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center">
+          <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input-number v-if="type !== 'view'" v-model="scope.row.price" :min="0" :precision="2" size="mini"
                 @change="handleFieldChange('price', scope.row)" style="width: 100%"></el-input-number>
               <span v-else>{{ scope.row.price }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center">
+          <el-table-column prop="vatRate" label="物资增值税率（%）" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input-number v-if="type !== 'view'" v-model="scope.row.vatRate" :min="0" :precision="2" size="mini"
                 @change="handleFieldChange('vatRate', scope.row)" style="width: 100%"></el-input-number>
               <span v-else>{{ scope.row.vatRate }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
+          <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
             </template>
           </el-table-column>
-          <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center">
+          <el-table-column prop="totalAmount" label="到站合价含税(元)" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               {{
                 scope.row.totalAmount ? scope.row.totalAmount.toFixed(2) : ''
               }}
             </template>
           </el-table-column>
-          <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center">
+          <el-table-column prop="deliveryLocation" label="交货地点" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input v-if="type !== 'view'" v-model="scope.row.deliveryLocation" size="mini"
                 @change="handleFieldChange('deliveryLocation', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryLocation }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="receiver" label="收货人" width="150" align="center">
+          <el-table-column prop="receiver" label="收货人" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input v-if="type !== 'view'" v-model="scope.row.receiver" size="mini"
                 @change="handleFieldChange('receiver', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.receiver }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center">
+          <el-table-column prop="deliveryStatus" label="交货状态" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input v-if="type !== 'view'" v-model="scope.row.deliveryStatus" size="mini"
                 @change="handleFieldChange('deliveryStatus', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryStatus }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center">
+          <el-table-column prop="deliveryTerms" label="交货条件" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input v-if="type !== 'view'" v-model="scope.row.deliveryTerms" size="mini"
                 @change="handleFieldChange('deliveryTerms', scope.row)" style="width: 100%"></el-input>
               <span v-else>{{ scope.row.deliveryTerms }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="deliveryDate" label="交货期" width="150" align="center">
+          <el-table-column prop="deliveryDate" label="交货期" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-input v-if="type !== 'view'" v-model="scope.row.deliveryDate" size="mini"
                 @change="handleFieldChange('deliveryDate', scope.row)" style="width: 100%"></el-input>

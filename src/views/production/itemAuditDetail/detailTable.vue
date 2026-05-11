@@ -13,14 +13,14 @@
       style="width: 100%"
       border
       :loading="loading"
-    >
+     max-height="350">
       <!-- 序号 -->
       <el-table-column
         align="center"
         label="序号"
         width="60"
         fixed
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           {{ (listQuery.pageNum - 1) * listQuery.pageSize + scope.$index + 1 }}
         </template>
@@ -31,34 +31,34 @@
         align="center"
         width="180"
         fixed
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="categoriesName"
         label="物资种类"
         align="center"
         width="150"
         fixed
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="providedDetailName"
         label="细目"
         align="center"
         min-width="200"
         fixed
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
         min-width="200"
-      ></el-table-column>
+       show-overflow-tooltip fixed></el-table-column>
       <el-table-column
         prop="specModel"
         label="规格型号"
         align="center"
         width="200"
-      ></el-table-column>
-      <el-table-column prop="unit" label="计量单位" align="center" width="180">
+       show-overflow-tooltip></el-table-column>
+      <el-table-column prop="unit" label="计量单位" align="center" width="180" show-overflow-tooltip>
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->

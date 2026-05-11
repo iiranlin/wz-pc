@@ -36,8 +36,7 @@
           <el-table
             :data="tableData"
             border
-            style="width: 100%"
-            :max-height="600"
+            style="width: 100%" max-height="350"
             ref="dataTable"
           >
             <el-table-column
@@ -46,83 +45,83 @@
               width="55"
               align="center"
               fixed="left"
-            />
-            <el-table-column prop="materialName" label="物资名称" width="200">
+             show-overflow-tooltip/>
+            <el-table-column prop="materialName" label="物资名称" width="200" show-overflow-tooltip fixed>
             </el-table-column>
             <el-table-column
               prop="specModel"
               label="规格型号"
               width="200"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="unit"
               label="计量单位"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="planAmount"
               label="需求数量"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="putTotal"
               label="本次实收数量"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="packagingFm"
               label="包装形式"
               width="160"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="addr"
               label="使用地点"
               width="200"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="field2"
               label="收货地址"
               width="200"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="supplyDate"
               label="供应时间"
               width="160"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
 
             <el-table-column
               prop="receiver"
               label="收货人及联系方式"
               width="180"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="field0"
               label="投资方"
               width="150"
               align="center"
-            ></el-table-column>
-            <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
-            <el-table-column prop="projectShortName" label="合格证附件" width="200">
+             show-overflow-tooltip></el-table-column>
+            <el-table-column prop="field1" label="投资比例" width="150" align="center" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="projectShortName" label="合格证附件" width="200" show-overflow-tooltip>
               <template slot-scope="scope">
                 <fileUpload
                   :value="scope.row.fileList01"
@@ -132,7 +131,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="projectShortName" label="厂检报告附件" width="200">
+            <el-table-column prop="projectShortName" label="厂检报告附件" width="200" show-overflow-tooltip>
               <template slot-scope="scope">
                 <fileUpload
                   :value="scope.row.fileList02"
@@ -147,8 +146,8 @@
               label="退货数量"
               width="120"
               align="center"
-            ></el-table-column>
-            <el-table-column prop="projectShortName" label="退货附件" width="200">
+             show-overflow-tooltip></el-table-column>
+            <el-table-column prop="projectShortName" label="退货附件" width="200" show-overflow-tooltip>
               <template slot-scope="scope">
                 <fileUpload
                   :value="scope.row.fileList03"
@@ -158,7 +157,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column prop="remark" label="备注" width="200" show-overflow-tooltip></el-table-column>
           </el-table>
         </template>
       </VFormRender>

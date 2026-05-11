@@ -24,47 +24,47 @@
       border
       @selection-change="noop"
       @select="handleSelect"
-      @select-all="handleSelectAll"
-      max-height="500"
+      @select-all="handleSelectAll" max-height="350"
     >
       <el-table-column
         align="center"
         type="selection"
         width="55"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         type="index"
         align="center"
         label="序号"
         width="60"
-      ></el-table-column>
+        fixed
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="sellerName"
         align="center"
         label="供应商"
-      ></el-table-column>
+       show-overflow-tooltip fixed></el-table-column>
       <el-table-column
         prop="materialName"
         align="center"
         label="物资名称"
-      ></el-table-column>
+       show-overflow-tooltip fixed></el-table-column>
       <el-table-column
         prop="specModel"
         align="center"
         label="规格型号"
-      ></el-table-column>
+       show-overflow-tooltip fixed></el-table-column>
       <el-table-column
         prop="unit"
         label="计量单位"
         align="center"
         width="120"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="amount"
         label="合同数量"
         align="center"
         width="120"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
     </el-table>
   </div>
 </template>

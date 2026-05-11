@@ -27,15 +27,14 @@
     <el-table
       :data="tableData"
       border
-      style="width: 100%"
-      :max-height="600"
+      style="width: 100%" max-height="350"
       v-loading="loading"
       @selection-change="noop"
       @select="handleSelect"
       @select-all="handleSelectAll"
       ref="tableRef"
     >
-      <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
+      <el-table-column type="index" label="序号" width="55" align="center" fixed="left"  show-overflow-tooltip/>
       <!-- ✅ 多选框列 -->
       <el-table-column
         type="selection"
@@ -43,76 +42,76 @@
         fixed="left"
         align="center"
         :selectable="selectable"
-      ></el-table-column>
-      <el-table-column prop="materialName" label="物资名称" width="200" fixed="left">
+       show-overflow-tooltip></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" width="200" fixed="left" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="specModel"
         label="规格型号"
         width="200"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="unit"
         label="计量单位"
         width="100"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="amount"
         label="合同数量"
         width="120"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="cumulativeAmount"
         label="累计计划量（含本次）"
         width="120"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="planAmount"
         label="本次计划数量"
         width="120"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="supplyDate"
         label="供应时间"
         width="140"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="addr"
         label="使用地点"
         width="200"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="receiver"
         label="收货人及联系方式"
         width="180"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="field0"
         label="投资方"
         width="160"
         align="center"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="field1"
         label="投资比例"
         width="150"
         align="center"
-      ></el-table-column>
-      <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+       show-overflow-tooltip></el-table-column>
+      <el-table-column prop="remark" label="备注" width="200" show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="ssendTotal"
         label="本次需求未发货数量"
         width="120"
         align="center"
         fixed="right"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
     </el-table>
   </div>
 </template>

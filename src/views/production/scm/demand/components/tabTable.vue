@@ -8,21 +8,21 @@
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="selectItem"
         v-if="type != 'view'">选择发货物资</el-button>
     </div>
-    <el-table :data="tableData" border style="width: 100%" :max-height="600" v-loading="loading" ref="tableRef">
-      <el-table-column type="index" label="序号" width="55" align="center" fixed="left" />
+    <el-table :data="tableData" border style="width: 100%" max-height="350" v-loading="loading" ref="tableRef">
+      <el-table-column type="index" label="序号" width="55" align="center" fixed="left"  show-overflow-tooltip/>
       <!-- <el-table-column prop="sectionName" label="标段项目名称" width="250" fixed="left">
       </el-table-column> -->
-      <el-table-column prop="sellerName" label="供应商" width="200" fixed="left"></el-table-column>
-      <el-table-column prop="materialName" label="物资名称" width="200">
+      <el-table-column prop="sellerName" label="供应商" width="200" fixed="left" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" width="200" fixed show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center" fixed show-overflow-tooltip></el-table-column>
 
-      <el-table-column prop="unit" label="计量单位" width="100" align="center"></el-table-column>
-      <el-table-column prop="planAmount" label="本次计划数量" width="120" align="center"></el-table-column>
-      <el-table-column prop="shippedTotal" label="累计发货数量(不含本次)" width="120" align="center"></el-table-column>
+      <el-table-column prop="unit" label="计量单位" width="100" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="planAmount" label="本次计划数量" width="120" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="shippedTotal" label="累计发货数量(不含本次)" width="120" align="center" show-overflow-tooltip></el-table-column>
       <el-table-column v-if="type != 'view'" prop="ssendTotal" label="本次需求未发货数量" width="120"
-        align="center"></el-table-column>
-      <el-table-column prop="sendTotal" label="发货数量" width="160" align="center" :render-header="renderHeader">
+        align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="sendTotal" label="发货数量" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.sendTotal" :min="0" :max="+scope.row.ssendTotal" size="mini"
             style="width: 100%" v-if="type != 'view'"></el-input-number>
@@ -31,7 +31,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="packagingFm" label="包装形式" width="160" align="center" :render-header="renderHeader">
+      <el-table-column prop="packagingFm" label="包装形式" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-model="scope.row.packagingFm" size="mini" style="width: 100%" v-if="type != 'view'"></el-input>
           <span v-else>
@@ -39,7 +39,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="manufactureDate" label="生产日期" width="160" align="center" :render-header="renderHeader">
+      <el-table-column prop="manufactureDate" label="生产日期" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-date-picker v-model="scope.row.manufactureDate" type="date" size="mini" style="width: 100%"
             value-format="yyyy-MM-dd" v-if="type != 'view'" :picker-options="pickerOptions"></el-date-picker>
@@ -48,7 +48,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="expirationDate" label="有效期截止日期" width="200" align="center" :render-header="renderHeader">
+      <el-table-column prop="expirationDate" label="有效期截止日期" width="200" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-date-picker v-model="scope.row.expirationDate" type="date" size="mini" style="width: 100%"
             value-format="yyyy-MM-dd" v-if="type != 'view'"></el-date-picker>
@@ -57,8 +57,8 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="addr" label="使用地点" width="200" align="center"></el-table-column>
-      <el-table-column prop="field2" label="收货地址" width="160" align="center" :render-header="renderHeader">
+      <el-table-column prop="addr" label="使用地点" width="200" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="field2" label="收货地址" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-model="scope.row.field2" size="mini" style="width: 100%" v-if="type != 'view'"></el-input>
           <span v-else>
@@ -66,7 +66,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center" :render-header="renderHeader">
+      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-date-picker v-model="scope.row.supplyDate" type="date" size="mini" style="width: 100%"
             value-format="yyyy-MM-dd" v-if="type != 'view'"></el-date-picker>
@@ -75,7 +75,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="receiver" label="收货人及联系方式" width="250" :render-header="renderHeader">
+      <el-table-column prop="receiver" label="收货人及联系方式" width="250" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-model="scope.row.receiver" size="mini" style="width: 100%" v-if="type != 'view'"></el-input>
           <span v-else>
@@ -83,21 +83,21 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="field0" label="投资方" width="150" align="center"></el-table-column>
-      <el-table-column prop="field1" label="投资比例" width="150" align="center"></el-table-column>
-      <el-table-column prop="projectShortName" label="合格证附件" width="200" :render-header="renderHeader">
+      <el-table-column prop="field0" label="投资方" width="150" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="field1" label="投资比例" width="150" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="projectShortName" label="合格证附件" width="200" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload v-model="scope.row.fileList01" :value="scope.row.fileList01" :limit="9999"
             :preview="type == 'view' && status != 2" :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
         </template>
       </el-table-column>
-      <el-table-column prop="projectShortName" label="厂检报告附件" width="200" :render-header="renderHeader">
+      <el-table-column prop="projectShortName" label="厂检报告附件" width="200" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload v-model="scope.row.fileList02" :value="scope.row.fileList02" :limit="9999"
             :preview="type == 'view' && status != 2" :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" width="200">
+      <el-table-column prop="remark" label="备注" width="200" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-model="scope.row.remark" size="mini" style="width: 100%" v-if="type != 'view'"></el-input>
           <span v-else>

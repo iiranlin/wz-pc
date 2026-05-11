@@ -1,44 +1,44 @@
 <template>
   <div class="material-search-table">
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%" max-height="350">
       <!-- 序号 -->
-      <el-table-column type="index" label="序号" align="center" width="80px">
+      <el-table-column type="index" label="序号" align="center" width="80px" fixed show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="updateContent"
         label="供应商"
         align="center"
         width="150px"
-      >
+       show-overflow-tooltip fixed>
       </el-table-column>
       <el-table-column
         prop="updateType"
         label="物资名称"
         align="center"
         width="150px"
-      >
+       show-overflow-tooltip fixed>
       </el-table-column>
-      <el-table-column prop="updateBefore" label="规格型号" align="center">
+      <el-table-column prop="updateBefore" label="规格型号" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="计量单位" align="center">
+      <el-table-column prop="updateAfter" label="计量单位" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="合同数量" align="center">
+      <el-table-column prop="updateAfter" label="合同数量" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="updateAfter"
         label="累计计划量（含本次）"
         align="center"
-      >
+       show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="本次计划数量" align="center">
+      <el-table-column prop="updateAfter" label="本次计划数量" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已发货" align="center">
+      <el-table-column prop="updateAfter" label="已发货" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已验收" align="center">
+      <el-table-column prop="updateAfter" label="已验收" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已报检入库" align="center">
+      <el-table-column prop="updateAfter" label="已报检入库" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="updateAfter" label="已出库" align="center">
+      <el-table-column prop="updateAfter" label="已出库" align="center" show-overflow-tooltip>
       </el-table-column>
     </el-table>
   </div>

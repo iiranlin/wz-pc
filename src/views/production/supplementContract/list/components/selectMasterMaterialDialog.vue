@@ -35,26 +35,26 @@
       v-loading="loading"
     >
       <!-- 单选列 -->
-      <el-table-column label="选择" width="80" align="center" fixed>
+      <el-table-column label="选择" width="80" align="center" fixed show-overflow-tooltip>
         <template slot-scope="scope">
           <el-radio v-model="selectedId" :label="scope.row.id" @change="handleRadioChange(scope.row)">
             <span></span>
           </el-radio>
         </template>
       </el-table-column>
-      <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="materialName" label="物资名称" minWidth="200" align="center"></el-table-column>
-      <el-table-column prop="sectionName" label="标段项目名称" minWidth="150" align="center"></el-table-column>
-      <el-table-column prop="specModel" label="规格型号" width="200" align="center"></el-table-column>
-      <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
-      <el-table-column prop="amount" label="数量" width="120" align="center"></el-table-column>
-      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center"></el-table-column>
-      <el-table-column prop="vatRate" label="物资增值税率(%)" width="150" align="center">
+      <el-table-column type="index" label="序号" width="60" align="center" fixed show-overflow-tooltip></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" minWidth="200" align="center" show-overflow-tooltip fixed></el-table-column>
+      <el-table-column prop="sectionName" label="标段项目名称" minWidth="150" align="center" show-overflow-tooltip fixed></el-table-column>
+      <el-table-column prop="specModel" label="规格型号" width="200" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="unit" label="计量单位" width="120" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="amount" label="数量" width="120" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="price" label="到站不含税单价(元)" width="160" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="vatRate" label="物资增值税率(%)" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.vatRate }}
         </template>
       </el-table-column>
-      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center">
+      <el-table-column prop="taxPrice" label="到站含税单价(元)" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.taxPrice ? scope.row.taxPrice.toFixed(2) : '' }}
         </template>

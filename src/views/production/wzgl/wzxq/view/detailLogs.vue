@@ -1,36 +1,36 @@
 <template>
     <!-- 表格 -->
-    <el-table ref="tableRef" max-height="500" :data="tableData" style="width: 100%" border>
+    <el-table ref="tableRef" max-height="350" :data="tableData" style="width: 100%" border>
       <el-table-column
         type="index"
         align="center"
         label="序号"
         width="60"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="logName"
         label="事件"
         align="center"
         min-width="150"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="deptName"
         label="事件组织"
         align="center"
         min-width="300"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="createUserName"
         label="操作人"
         align="center"
         width="150"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="createDate"
         label="时间"
         align="center"
         width="200"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.createDate | formatDate }}
         </template>
@@ -40,7 +40,7 @@
         label="备注"
         align="center"
         width="200"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
     </el-table>
 </template>
 

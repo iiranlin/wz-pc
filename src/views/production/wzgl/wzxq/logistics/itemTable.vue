@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <el-table :data="tableData" border style="width: 100%" max-height="500">
+    <el-table :data="tableData" border style="width: 100%" max-height="350">
       <!-- 序号 -->
       <el-table-column
         type="index"
@@ -8,6 +8,7 @@
         align="center"
         width="80px"
         fixed
+        show-overflow-tooltip
       >
       </el-table-column>
 
@@ -17,6 +18,7 @@
         align="center"
         min-width="250px"
         fixed
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -25,6 +27,7 @@
         align="center"
         width="200px"
         fixed
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -32,6 +35,7 @@
         label="计量单位"
         align="center"
         width="120px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -39,6 +43,7 @@
         label="本次计划数量"
         align="center"
         width="120px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -46,13 +51,14 @@
         label="发货数量"
         align="center"
         width="120px"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="packagingFm"
         label="包装形式"
         align="center"
         width="150px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -60,6 +66,7 @@
         label="生产日期"
         align="center"
         width="150px"
+        show-overflow-tooltip
       >
         <template slot-scope="scope">
           {{ scope.row.manufactureDate | formatDate }}
@@ -70,6 +77,7 @@
         label="有效期截止日期"
         align="center"
         width="150"
+        show-overflow-tooltip
       >
         <template slot-scope="scope">
           {{ scope.row.expirationDate | formatDate }}
@@ -80,6 +88,7 @@
         label="使用地点"
         align="center"
         width="150px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -87,6 +96,7 @@
         label="供应时间"
         align="center"
         width="150px"
+        show-overflow-tooltip
       >
         <template slot-scope="scope">
           {{ scope.row.supplyDate | formatDate }}
@@ -97,6 +107,7 @@
         label="收货地址"
         align="center"
         width="200px"
+        show-overflow-tooltip
       >
       </el-table-column>
 
@@ -105,6 +116,7 @@
         label="收货人及联系方式"
         align="center"
         width="200px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -112,6 +124,7 @@
         label="投资方"
         align="center"
         width="200px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -119,6 +132,7 @@
         label="投资比例"
         align="center"
         width="200px"
+        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -126,6 +140,7 @@
         label="合格证附件"
         align="center"
         width="200px"
+        show-overflow-tooltip
       >
         <template slot-scope="scope">
           <fileUpload
@@ -140,7 +155,7 @@
         label="厂检报告附件"
         align="center"
         width="200px"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload
             :value="scope.row.fileByList | filterFiles('cjbg')"
@@ -149,7 +164,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" align="center" width="200px">
+      <el-table-column prop="remark" label="备注" align="center" width="200px" show-overflow-tooltip>
       </el-table-column>
     </el-table>
   </div>

@@ -17,9 +17,10 @@
         label="序号"
         width="120px"
         align="center"
-      >
+        fixed
+       show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="name" label="标段名称" align="center"> </el-table-column>
+      <el-table-column prop="name" label="标段名称" align="center" show-overflow-tooltip fixed> </el-table-column>
     </el-table>
 
     <div slot="footer" class="dialog-footer">

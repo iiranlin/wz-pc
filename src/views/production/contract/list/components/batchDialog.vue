@@ -43,15 +43,15 @@
     </div>
 
     <el-table :data="fileList" border style="width: 100%; margin-top: 20px">
-      <el-table-column prop="fileName" label="文件名" />
-      <el-table-column prop="number" label="物资条数" />
-      <el-table-column prop="totalAmount" label="到站合价总金额" />
+      <el-table-column prop="fileName" label="文件名"  show-overflow-tooltip/>
+      <el-table-column prop="number" label="物资条数"  show-overflow-tooltip/>
+      <el-table-column prop="totalAmount" label="到站合价总金额"  show-overflow-tooltip/>
       <el-table-column
         prop="fileSize"
         label="文件大小"
         :formatter="formatFileSize"
-      />
-      <el-table-column prop="status" label="状态" />
+       show-overflow-tooltip/>
+      <el-table-column prop="status" label="状态"  show-overflow-tooltip/>
     </el-table>
 
     <el-alert

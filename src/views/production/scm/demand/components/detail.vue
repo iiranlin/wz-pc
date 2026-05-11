@@ -18,8 +18,7 @@
           <el-table
             :data="tableData"
             border
-            style="width: 100%"
-            :max-height="600"
+            style="width: 100%" max-height="350"
             ref="dataTable"
           >
             <el-table-column
@@ -28,12 +27,14 @@
               width="55"
               align="center"
               fixed="left"
-            />
+             show-overflow-tooltip/>
             <el-table-column
               prop="materialName"
               label="物资名称"
               width="250"
               fixed="left"
+              show-overflow-tooltip
+              align="center"
             >
             </el-table-column>
             <el-table-column
@@ -41,42 +42,44 @@
               label="规格型号"
               width="200"
               align="center"
+              show-overflow-tooltip
+              fixed
             ></el-table-column>
 
-            <el-table-column prop="unit" label="计量单位" width="120" align="center"></el-table-column>
-            <el-table-column prop="amount" label="合同数量" width="150" align="center"></el-table-column>
+            <el-table-column prop="unit" label="计量单位" width="120" align="center" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="amount" label="合同数量" width="150" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="cumulativeAmount"
               label="累计计划量（含本次）"
               width="180"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="planAmount"
               label="本次计划数量"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="sendTotal"
               label="已发货"
               width="150"
               align="center"
-            ></el-table-column>
-            <el-table-column prop="putTotal" label="已收货" width="150" align="center"></el-table-column>
+             show-overflow-tooltip></el-table-column>
+            <el-table-column prop="putTotal" label="已收货" width="150" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="storeTotal"
               label="已报检入库"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="refundAllTotle"
               label="已退回"
               width="150"
               align="center"
-            ></el-table-column>
-            <el-table-column prop="ssendTotal" label="剩余待发货" width="150" align="center"></el-table-column>
+             show-overflow-tooltip></el-table-column>
+            <el-table-column prop="ssendTotal" label="剩余待发货" width="150" align="center" show-overflow-tooltip></el-table-column>
           </el-table>
         </template>
              <!-- 附件 -->

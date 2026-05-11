@@ -14,71 +14,72 @@
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
-    >
+     max-height="350">
       <!-- 增加多选 -->
       <el-table-column
         type="selection"
         width="55"
         align="center"
         fixed="left"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <!-- 序号 -->
       <el-table-column
         type="index"
         align="center"
         label="序号"
         width="60"
-      ></el-table-column>
+        fixed
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="sellerName"
         label="供应商"
         align="center"
         width="120"
-      ></el-table-column>
+       show-overflow-tooltip fixed></el-table-column>
       <el-table-column
         prop="materialName"
         label="物资名称"
         align="center"
         width="120"
-      ></el-table-column>
+       show-overflow-tooltip fixed></el-table-column>
       <el-table-column
         prop="specModel"
         label="规格型号"
         align="center"
         width="150"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="unit"
         label="计量单位"
         align="center"
         width="120"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="amount"
         label="合同数量"
         align="center"
         width="120"
-      ></el-table-column>
+       show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="cumulativeAmount"
         label="累计计划量（含本次）"
         align="center"
         width="200"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="planAmount"
         label="本次计划数量"
         align="center"
         width="120"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         align="center"
         prop="supplyDate"
         label="供应时间"
         min-width="200"
-      >
+       show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.supplyDate | formatDate }}
         </template>
@@ -88,14 +89,14 @@
         label="使用地点"
         align="center"
         min-width="200"
-      >
+       show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="receiver"
         label="收货人及联系方式"
         align="center"
         min-width="250"
-      >
+       show-overflow-tooltip>
       </el-table-column>
     </el-table>
   </div>

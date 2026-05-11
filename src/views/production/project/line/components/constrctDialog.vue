@@ -17,9 +17,9 @@
         label="序号"
         width="120px"
         align="center"
-      >
+       show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="name" label="合同名称" align="center"> </el-table-column>
+      <el-table-column prop="name" label="合同名称" align="center" show-overflow-tooltip> </el-table-column>
     </el-table>
 
     <div slot="footer" class="dialog-footer">

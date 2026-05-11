@@ -7,7 +7,7 @@
       key-prop="id"
       @change="(renderData) => (virtualList = renderData)"
     >
-      <el-table :data="virtualList" border style="width: 100%" max-height="400">
+      <el-table :data="virtualList" border style="width: 100%" max-height="350">
         <!-- 序号 -->
         <virtual-column
           label="序号"
@@ -21,49 +21,49 @@
           label="变更内容"
           align="center"
           width="150px"
-        >
+         show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="updateType"
           label="变更类型"
           align="center"
           width="150px"
-        >
+         show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="materialName"
           label="物资名称"
           align="center"
           width="200"
-        >
+         show-overflow-tooltip fixed>
         </el-table-column>
         <el-table-column
           prop="specModel"
           label="规格型号"
           align="center"
           width="180"
-        >
+         show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="unit"
           label="计量单位"
           align="center"
           width="120"
-        >
+         show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="updateBefore"
           label="变更前(数量/单价)"
           align="center"
           min-width="180"
-        >
+         show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="updateAfter"
           label="变更后(数量/单价)"
           align="center"
           min-width="180"
-        >
+         show-overflow-tooltip>
         </el-table-column>
       </el-table>
     </virtual-scroll>

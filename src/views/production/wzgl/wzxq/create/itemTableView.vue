@@ -12,14 +12,14 @@
 
     <!-- 表格 -->
     <el-table ref="tableRef" :data="filteredData" style="width: 100%" border @selection-change="noop"
-      @select="handleSelect" @select-all="handleSelectAll" max-height="500">
-      <el-table-column align="center" type="selection" width="55" fixed :selectable="selectable"></el-table-column>
-      <el-table-column type="index" align="center" label="序号" width="60" fixed></el-table-column>
-      <el-table-column prop="materialName" align="center" label="物资名称" width="250" fixed></el-table-column>
-      <el-table-column prop="specModel" align="center" label="规格型号" width="250" fixed></el-table-column>
+      @select="handleSelect" @select-all="handleSelectAll" max-height="350">
+      <el-table-column align="center" type="selection" width="55" fixed :selectable="selectable" show-overflow-tooltip></el-table-column>
+      <el-table-column type="index" align="center" label="序号" width="60" fixed show-overflow-tooltip></el-table-column>
+      <el-table-column prop="materialName" align="center" label="物资名称" width="250" fixed show-overflow-tooltip></el-table-column>
+      <el-table-column prop="specModel" align="center" label="规格型号" width="250" fixed show-overflow-tooltip></el-table-column>
 
-      <el-table-column prop="unit" label="计量单位" align="center" width="120"></el-table-column>
-      <el-table-column prop="amount" label="合同数量" align="center" width="120">
+      <el-table-column prop="unit" label="计量单位" align="center" width="120" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="amount" label="合同数量" align="center" width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.amount }}
           <el-tooltip
@@ -34,10 +34,10 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="cumulativeAmount" label="已累计计划数量" align="center" width="150"></el-table-column>
-      <el-table-column prop="deliveryDate" label="供应时间" align="center" width="200"></el-table-column>
-      <el-table-column prop="deliveryLocation" label="交货地点" align="center" width="200"></el-table-column>
-      <el-table-column prop="receiver" label="收货人及联系方式" align="center" min-width="200"></el-table-column>
+      <el-table-column prop="cumulativeAmount" label="已累计计划数量" align="center" width="150" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="deliveryDate" label="供应时间" align="center" width="200" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="deliveryLocation" label="交货地点" align="center" width="200" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="receiver" label="收货人及联系方式" align="center" min-width="200" show-overflow-tooltip></el-table-column>
     </el-table>
     <ViewNegativeContractsDialog ref="viewNegativeContractsDialogRef" />
 

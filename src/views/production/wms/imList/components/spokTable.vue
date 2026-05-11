@@ -4,46 +4,46 @@
       <el-input v-model="searchKey" placeholder="请输入规格型号搜索" clearable size="mini"
         style="width: 250px;" prefix-icon="el-icon-search" />
     </div>
-    <el-table :data="filteredList" border style="width: 100%" max-height="450" v-loading="loading" ref="itemTable"
+    <el-table :data="filteredList" border style="width: 100%" max-height="350" v-loading="loading" ref="itemTable"
       row-key="id">
 
-      <el-table-column label="序号" width="88" align="center" type="index" fixed="left"></el-table-column>
-      <el-table-column label="物资名称" width="150" prop="materialName" align="center" fixed="left"></el-table-column>
-      <el-table-column label="规格型号" width="150" prop="specModel" align="center" fixed="left"></el-table-column>
-      <el-table-column label="计量单位" width="150" prop="unit" align="center"></el-table-column>
-      <el-table-column label="发货数量" width="150" prop="sendTotal" align="center"></el-table-column>
-      <el-table-column label="可抽检数量" width="150" prop="storeTotal" align="center">
+      <el-table-column label="序号" width="88" align="center" type="index" fixed="left" show-overflow-tooltip></el-table-column>
+      <el-table-column label="物资名称" width="150" prop="materialName" align="center" fixed="left" show-overflow-tooltip></el-table-column>
+      <el-table-column label="规格型号" width="150" prop="specModel" align="center" fixed="left" show-overflow-tooltip></el-table-column>
+      <el-table-column label="计量单位" width="150" prop="unit" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column label="发货数量" width="150" prop="sendTotal" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column label="可抽检数量" width="150" prop="storeTotal" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if="scope.row.samplingFlag === '0' && type === 'create'">0</span>
           <span v-else>{{ scope.row.storeTotal }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="包装形式" prop="packagingFm" align="center"></el-table-column>
-      <el-table-column label="生产日期" width="150" prop="manufactureDate" align="center">
+      <el-table-column label="包装形式" prop="packagingFm" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column label="生产日期" width="150" prop="manufactureDate" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.manufactureDate | formatDate }}
         </template>
       </el-table-column>
-      <el-table-column label="有效期截止日期" width="150" prop="expirationDate" align="center">
+      <el-table-column label="有效期截止日期" width="150" prop="expirationDate" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.expirationDate | formatDate }}
         </template>
       </el-table-column>
-      <el-table-column label="合格证附件" width="200" prop="hgzfj" align="center">
+      <el-table-column label="合格证附件" width="200" prop="hgzfj" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload v-model="scope.row.hgzfj" :limit="9999" :fileSize="500"
             :fileType="['jpg', 'jpeg', 'png', 'pdf']" :preview="true" />
         </template>
       </el-table-column>
-      <el-table-column label="厂检报告附件" width="200" prop="cjbgfj" align="center">
+      <el-table-column label="厂检报告附件" width="200" prop="cjbgfj" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload v-model="scope.row.cjbgfj" :limit="9999" :fileSize="500"
             :fileType="['jpg', 'jpeg', 'png', 'pdf']" :preview="true" />
         </template>
       </el-table-column>
-      <el-table-column label="当前库存数量" width="150" prop="remainingStock" align="center"></el-table-column>
+      <el-table-column label="当前库存数量" width="150" prop="remainingStock" align="center" show-overflow-tooltip></el-table-column>
 
-      <el-table-column label="抽检结果" align="center" width="150">
+      <el-table-column label="抽检结果" align="center" width="150" show-overflow-tooltip>
         <template slot-scope="scope">
           <template v-if="type != 'view'">
             <el-tooltip v-if="isSamplingDisabled(scope.row)" :content="getSamplingDisabledReason(scope.row)" placement="top">
@@ -63,7 +63,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="结果处理" align="center" width="200">
+      <el-table-column label="结果处理" align="center" width="200" show-overflow-tooltip>
         <template slot-scope="scope">
           <template v-if="type != 'view'">
             <el-select v-if="scope.row.detailStatus === '2'" v-model="scope.row.status" size="mini"
@@ -75,19 +75,19 @@
           <span v-else>{{ scope.row.status | dealResultFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退换货数量" width="150"  align="center">
+      <el-table-column label="退换货数量" width="150"  align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.returnAmount || 0 }}
           </template>
       </el-table-column>
-      <el-table-column label="抽检材料附件" prop="fileList" align="center" width="200">
+      <el-table-column label="抽检材料附件" prop="fileList" align="center" width="200" show-overflow-tooltip>
         <template slot-scope="scope">
           <fileUpload v-if="scope.row.detailStatus === '2'" v-model="scope.row.fileList" :limit="9999" :fileSize="500"
             :fileType="['jpg', 'jpeg', 'png', 'pdf']" :preview="type ==='view'" />
           <span v-else>—</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" prop="remark" align="center" width="200">
+      <el-table-column label="备注" prop="remark" align="center" width="200" show-overflow-tooltip>
         <template slot-scope="scope">
           <template v-if="type !== 'view'">
             <el-input v-model="scope.row.remark" placeholder="请输入" />

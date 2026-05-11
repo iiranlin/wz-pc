@@ -17,9 +17,9 @@
     </div>
 
     <!-- 动态table项 -->
-    <el-table :data="materialTenderInfoDOList" style="margin-top: 20px;" size="small">
-      <el-table-column label="序号" type="index" width="50" align="center" />
-      <el-table-column width="260" align="center">
+    <el-table :data="materialTenderInfoDOList" style="margin-top: 20px;" size="small" max-height="350">
+      <el-table-column label="序号" type="index" width="50" align="center" fixed  show-overflow-tooltip/>
+      <el-table-column width="260" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标项目名称
         </template>
@@ -30,7 +30,7 @@
           <span v-else>{{ scope.row.tenderProjectName }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center">
+      <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标人名称
         </template>
@@ -41,7 +41,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="year" width="130" align="center">
+      <el-table-column prop="year" width="130" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标年度
         </template>
@@ -50,7 +50,7 @@
           <span v-else>{{ formatTimestamp(scope.row.tenderYear) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center">
+      <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标交易场所
         </template>
@@ -61,7 +61,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center">
+      <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 项目类别
         </template>
@@ -70,7 +70,7 @@
           <span v-else>{{ scope.row.projectCategory }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center">
+      <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 物资类别
         </template>
@@ -81,7 +81,7 @@
           <span v-else>{{ getMaterialCategoryLabel(scope.row.materialCategory) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center">
+      <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标编号
         </template>
@@ -90,7 +90,7 @@
           <span v-else>{{ scope.row.tenderNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center">
+      <el-table-column width="180" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 包件号
         </template>
@@ -99,7 +99,7 @@
           <span v-else>{{ scope.row.packageNo }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center">
+      <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 物资种类
         </template>
@@ -111,7 +111,7 @@
           <span v-else>{{ getMaterialTypeLabel(scope.row.materialCategory, scope.row.materialType) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center">
+      <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 细目
         </template>
@@ -122,7 +122,7 @@
           <span v-else>{{ getItemDetailLabel(scope.row.materialType, scope.row.itemDetail) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center">
+      <el-table-column width="120" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 计量单位
         </template>
@@ -144,7 +144,7 @@
           <span v-else>{{ scope.row.measureUnit }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="130" align="center">
+      <el-table-column width="130" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标数量
         </template>
@@ -153,7 +153,7 @@
           <span v-else>{{ scope.row.tenderQuantity }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="170" align="center">
+      <el-table-column width="170" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标发布公告时间
         </template>
@@ -162,7 +162,7 @@
           <span v-else>{{ formatTimestamp(scope.row.tenderNoticePubTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center">
+      <el-table-column width="160" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 开标时间
         </template>
@@ -171,7 +171,7 @@
           <span v-else>{{ formatTimestamp(scope.row.bidOpenTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center">
+      <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 推荐中标候选人公示时间
         </template>
@@ -180,7 +180,7 @@
           <span v-else>{{ formatTimestamp(scope.row.candidatePubTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center">
+      <el-table-column width="160" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 中标通知书时间
         </template>
@@ -189,7 +189,7 @@
           <span v-else>{{ formatTimestamp(scope.row.bidNoticeTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center">
+      <el-table-column width="150" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 中标单位
         </template>
@@ -198,7 +198,7 @@
           <span v-else>{{ scope.row.winningBidder }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center">
+      <el-table-column width="150" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 中标金额（万元）
         </template>
@@ -208,7 +208,7 @@
           <span v-else>{{ scope.row.bidAmount }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center">
+      <el-table-column width="160" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 合同签订时间
         </template>
@@ -217,7 +217,7 @@
           <span v-else>{{ formatTimestamp(scope.row.contractSignTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center">
+      <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 投标人名称
         </template>
@@ -226,13 +226,13 @@
           <span v-else>{{ scope.row.bidderName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" width="150" align="center">
+      <el-table-column label="备注" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.remark" placeholder="请输入" style="width: 100%" maxlength="1000"/>
           <span v-else>{{ scope.row.remark }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="!isView" label="操作" width="120" align="center" fixed="right">
+      <el-table-column v-if="!isView" label="操作" width="120" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <!-- <el-button type="text" size="mini" style="margin-right: 20px;" @click="editItem(scope.$index)">修改</el-button> -->
           <el-button type="text" size="mini" @click="removeItem(scope.$index)">删除</el-button>

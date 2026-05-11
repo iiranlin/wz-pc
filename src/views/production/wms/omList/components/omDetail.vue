@@ -31,8 +31,7 @@
           <el-table
             :data="tableData"
             border
-            style="width: 100%"
-            :max-height="600"
+            style="width: 100%" max-height="350"
             ref="dataTable"
           >
             <el-table-column
@@ -41,45 +40,45 @@
               width="55"
               align="center"
               fixed="left"
-            />
-            <el-table-column prop="sellerName" label="供应商" min-width="200">
+             show-overflow-tooltip/>
+            <el-table-column prop="sellerName" label="供应商" min-width="200" show-overflow-tooltip fixed>
             </el-table-column>
-            <el-table-column prop="materialName" label="物资名称" min-width="200">
+            <el-table-column prop="materialName" label="物资名称" min-width="200" show-overflow-tooltip fixed>
             </el-table-column>
             <el-table-column
               prop="specModel"
               label="规格型号"
               width="200"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip fixed></el-table-column>
 
             <el-table-column
               prop="unit"
               label="计量单位"
               width="120"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="manufactureDate"
               label="生产日期"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="expirationDate"
               label="有效期截止日期"
               width="150"
               align="center"
-            ></el-table-column>
+             show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="outTotal"
               label="本次出库数量"
               width="120"
               align="center"
-            >
+             show-overflow-tooltip>
             </el-table-column>
             <!-- 合格证 -->
-            <el-table-column prop="_"  label="合格证" width="250">
+            <el-table-column prop="_"  label="合格证" width="250" show-overflow-tooltip>
               <template #default="scope">
                  <fileUpload v-if="filterFile(scope.row.fileByCirDetails, 'hgz').length" :value="filterFile(scope.row.fileByCirDetails, 'hgz')" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="'view'" />
@@ -87,14 +86,14 @@
             </el-table-column>
 
             <!-- 厂检报告 -->
-            <el-table-column prop="_" label="厂检报告" width="250">
+            <el-table-column prop="_" label="厂检报告" width="250" show-overflow-tooltip>
               <template #default="scope">
                  <fileUpload v-if="filterFile(scope.row.fileByCirDetails, 'cjbg').length" :value="filterFile(scope.row.fileByCirDetails, 'cjbg')" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="'view'" />
               </template>
             </el-table-column>
 
-            <el-table-column prop="remark" label="备注" width="200"></el-table-column>
+            <el-table-column prop="remark" label="备注" width="200" show-overflow-tooltip></el-table-column>
           </el-table>
         </template>
       </VFormRender>
