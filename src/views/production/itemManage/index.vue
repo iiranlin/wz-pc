@@ -1,65 +1,31 @@
 <template>
   <div class="app-container container_flex">
-    <button-top
-      :buttonTopData="property.buttonTop"
-      :multiple="multiple"
-      :single="single"
-      @newButton="newButton"
-      :button-disable="handleTopButtonDisabled"
-    ></button-top>
-    <form-data
-      ref="formData"
-      :showSearch="showSearch"
-      :searchArr="property.search || []"
-      :formData="formData"
-      @handleQuery="handleQuery"
-      @handleResetField="handleResetField"
-    >
+    <button-top :buttonTopData="property.buttonTop" :multiple="multiple" :single="single" @newButton="newButton"
+      :button-disable="handleTopButtonDisabled"></button-top>
+    <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" :formData="formData"
+      @handleQuery="handleQuery" @handleResetField="handleResetField">
     </form-data>
 
     <el-row type="flex" class="container_h">
       <!--用户数据-->
       <el-col :span="18" :xs="24" class="container_flex">
-        <right-toolbar
-          ref="rightToolbar"
-          :formData="formDataClick"
-          :searchArr="property.search || []"
-          :showSearch.sync="showSearch"
-          :columns="property.fields"
-          @queryTable="handleQuery"
-          @handleCheckAllChange="handleCheckAllChange"
-          @clickReset="clickReset"
-          @numberChange="numberChange"
-          @cleanClick="cleanClick"
-        ></right-toolbar>
+        <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
+          :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
+          @handleCheckAllChange="handleCheckAllChange" @clickReset="clickReset" @numberChange="numberChange"
+          @cleanClick="cleanClick"></right-toolbar>
 
-        <table-index
-          ref="tableIndex"
-          :loading="loading"
-          :tableIndexs="tableIndex"
-          :tableData="list"
-          :buttonDisable="handleButtonDisable"
-          :property="property"
-          :numberShow="numberShow"
-          @handleSelectionChange="handleSelectionChange"
-          @handleButton="handleButton"
-          @selectChange="selectChange"
-          @emitAblFilter="emitAblFilter"
-        >
+        <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
+          :buttonDisable="handleButtonDisable" :property="property" :numberShow="numberShow"
+          @handleSelectionChange="handleSelectionChange" @handleButton="handleButton" @selectChange="selectChange"
+          @emitAblFilter="emitAblFilter">
           <template slot="status" slot-scope="scope">
-            <icon-svg
-              :class="iconClassSize({ 0: 3, 1: 0 }[scope.value])"
-              :icon-class="iconEnableStautsClass({ 0: 3, 1: 0 }[scope.value])"
-            />{{ scope.value | fieldFormat(scope.fieldFormatArr) }}
+            <icon-svg :class="iconClassSize({ 0: 3, 1: 0 }[scope.value])"
+              :icon-class="iconEnableStautsClass({ 0: 3, 1: 0 }[scope.value])" />{{ scope.value |
+                fieldFormat(scope.fieldFormatArr) }}
           </template>
         </table-index>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="listQuery.pageNum"
-          :limit.sync="listQuery.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
+          @pagination="getList" />
       </el-col>
     </el-row>
 
@@ -74,6 +40,7 @@ import indexMixin from "@/views/mixins";
 import * as Api from "@/api/prodmgr-inv/project/item.js";
 import Add from "./components/add.vue";
 import BatchDialog from "./components/batchDialog.vue";
+import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 export default {
   // 物资列表
   name: "item",
@@ -205,7 +172,7 @@ export default {
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleResetField() {},
+    handleResetField() { },
     goAudit() {
       // 跳转到待审核页面
       this.$router.push({
@@ -225,6 +192,18 @@ export default {
         this.handleDelete(idArr);
       } else if (buttonCode === "batch") {
         this.$refs.batchDialogRef.open();
+      } else if (buttonCode === 'export') {
+        this.export()
+      }
+    },
+    async export() {
+      try {
+        this.loading = true;
+        await FileApi.customDownload({ businessType: 16, businessData: JSON.stringify({...this.formData}) });
+      } catch (error) {
+        this.$modal.msgError("下载失败，请重试");
+      } finally {
+        this.loading = false;
       }
     },
     handleDelete(ids) {
