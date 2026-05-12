@@ -47,6 +47,7 @@
               label="规格型号"
               width="150"
               align="center"
+              fixed
              show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="unit"

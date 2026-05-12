@@ -43,8 +43,8 @@
         </template>
       </el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center" fixed show-overflow-tooltip></el-table-column>
-      <el-table-column prop="materialName" label="物资名称" minWidth="200" align="center" show-overflow-tooltip fixed></el-table-column>
       <el-table-column prop="sectionName" label="标段项目名称" minWidth="150" align="center" show-overflow-tooltip fixed></el-table-column>
+      <el-table-column prop="materialName" label="物资名称" minWidth="200" align="center" show-overflow-tooltip fixed></el-table-column>
       <el-table-column prop="specModel" label="规格型号" width="200" align="center" show-overflow-tooltip></el-table-column>
       <el-table-column prop="unit" label="计量单位" width="120" align="center" show-overflow-tooltip></el-table-column>
       <el-table-column prop="amount" label="数量" width="120" align="center" show-overflow-tooltip></el-table-column>

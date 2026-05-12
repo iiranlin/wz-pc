@@ -37,6 +37,18 @@
           fixed
           align="center"
         ></el-table-column> -->
+                  <!-- 条件渲染：仅在总表中显示 -->
+          <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center" show-overflow-tooltip fixed="left">
+            <template slot-scope="scope">
+              <el-select v-if="scope.row.isManual && !scope.row.readonlyItem && type !== 'view'" v-model="scope.row.sectionId"
+                placeholder="请选择标段项目名称" size="mini" @change="handleFieldChange('sectionId', scope.row)"
+                style="width: 100%" filterable>
+                <el-option v-for="item of options['setcionOptions']" :key="item.value" :label="item.label"
+                  :value="item.value"></el-option>
+              </el-select>
+              <span v-else>{{ scope.row.sectionName }}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="materialName" label="物资名称" width="180"  align="center" show-overflow-tooltip  fixed="left">
             <template slot-scope="scope">
               <el-select v-if="scope.row.isManual && !scope.row.readonlyItem && type !== 'view'" v-model="scope.row.materialId"
@@ -55,18 +67,7 @@
             align="center"
           ></el-table-column> -->
 
-          <!-- 条件渲染：仅在总表中显示 -->
-          <el-table-column v-if="activeTab === 'total'" prop="sectionName" label="标段项目名称" width="150" align="center" show-overflow-tooltip fixed="left">
-            <template slot-scope="scope">
-              <el-select v-if="scope.row.isManual && !scope.row.readonlyItem && type !== 'view'" v-model="scope.row.sectionId"
-                placeholder="请选择标段项目名称" size="mini" @change="handleFieldChange('sectionId', scope.row)"
-                style="width: 100%" filterable>
-                <el-option v-for="item of options['setcionOptions']" :key="item.value" :label="item.label"
-                  :value="item.value"></el-option>
-              </el-select>
-              <span v-else>{{ scope.row.sectionName }}</span>
-            </template>
-          </el-table-column>
+
 
           <!-- 其他列 -->
           <el-table-column prop="sellerName" label="卖方名称" width="120" align="center" show-overflow-tooltip></el-table-column>

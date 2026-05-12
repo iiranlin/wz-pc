@@ -53,6 +53,7 @@
               label="规格型号"
               width="200"
               align="center"
+              fixed
              show-overflow-tooltip></el-table-column>
             <el-table-column
               prop="unit"
