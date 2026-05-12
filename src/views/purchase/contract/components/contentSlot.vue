@@ -243,6 +243,7 @@
 
 <script>
 import dayjs from "dayjs";
+import Decimal from "decimal.js";
 import BatchDialog from "./batchDialog.vue";
 
 export default {
@@ -308,8 +309,8 @@ export default {
     onAmountChange(e) {
       // 将totalAmount 求和
       this.value.amount = this.contractDetailsList.reduce((sum, item) => {
-        return sum + Number(item.totalAmount || 0);
-      }, 0)
+        return sum.plus(new Decimal(item.totalAmount || 0));
+      }, new Decimal(0)).toString()
       // 转换万元且保留2位小数
       this.formRef.setFormData({ amount: this.value.amount });
     },
