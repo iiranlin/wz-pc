@@ -11,6 +11,16 @@ let downloadLoadingInstance;
 // 是否显示重新登录
 let isReloginShow;
 
+const isCloudLoginScene = () => {
+    return window.location.pathname === '/cloudLogin' ||
+        sessionStorage.getItem('loginType') === 'cloud' ||
+        sessionStorage.getItem('cloudLoginFlag')
+}
+
+const isCloudLoginPage = () => {
+    return window.location.pathname === '/cloudLogin'
+}
+
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
 const service = axios.create({
@@ -80,6 +90,12 @@ service.interceptors.response.use(res => {
     }
 
     if (code === 401 || code === -10006) {
+        if (isCloudLoginScene()) {
+            if (!isCloudLoginPage()) {
+                store.dispatch('LogOut')
+            }
+            return Promise.reject('无效的会话，请重新登录。')
+        }
         if (!isReloginShow) {
             isReloginShow = true;
             MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {

@@ -63,6 +63,11 @@ export const constantRoutes = [
         hidden: true
     },
     {
+        path: '/cloudLogin',
+        component: () => import('@/views/cloudLogin/index'),
+        hidden: true
+    },
+    {
         path: '/portal',
         component: () => import('@/views/portal'),
         hidden: true

@@ -22,6 +22,15 @@ export function autoLogin (params) {
   })
 }
 
+// 第三方凭证登录
+export function loginByTicketCloud(params) {
+    return request({
+        url: `${VUE_APP_BASE_PREFIX}/auth/loginByTicket`,
+        method: 'get',
+        params
+    })
+}
+
 // 用户信息
 export function info() {
   return request({

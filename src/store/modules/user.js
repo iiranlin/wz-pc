@@ -136,6 +136,8 @@ const user = {
           
           // 获取登录方式
           const loginType = sessionStorage.getItem('loginType')
+          const cloudLoginFlag = sessionStorage.getItem('cloudLoginFlag')
+          const cloudLogoutUrl = sessionStorage.getItem('cloudLogoutUrl') 
           
           clearStorage()
           
@@ -153,6 +155,12 @@ const user = {
               sessionStorage.removeItem('userkey')
               location.href = 'http://10.128.239.85:80/login'
             })
+            return
+          } else if (loginType === 'cloud' || cloudLoginFlag) {
+            sessionStorage.removeItem('loginType')
+            sessionStorage.removeItem('cloudLoginFlag')
+            sessionStorage.removeItem('cloudLogoutUrl')
+            location.href = cloudLogoutUrl
             return
           } else {
             // 普通登录的，按原逻辑处理
