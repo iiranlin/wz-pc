@@ -477,7 +477,7 @@ export default {
         } else {
           width = fontSize * buttonNamesSize + q
         }
-        return width
+        return Math.max(width, 120)
 
       }
     },
