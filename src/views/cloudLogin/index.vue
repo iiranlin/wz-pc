@@ -24,6 +24,7 @@ import { setToken, removeToken } from '@/utils/auth'
 
 const CLOUD_LOGOUT_URL = process.env.VUE_APP_CLOUD_URL 
 const CLOUD_SSO_URL = process.env.VUE_APP_CLOUD_SSO
+const CLOUD_REDIRECT_KEY = 'cloudLoginRedirect'
 
 export default {
   name: 'CloudLogin',
@@ -50,10 +51,57 @@ export default {
       removeToken()
       this.$store.commit('SET_TOKEN', '')
     },
+    cacheRedirectTarget() {
+      const { redirect, ticket } = this.$route.query
+      if (!redirect && !ticket) {
+        sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
+        return
+      }
+      if (!redirect) {
+        return
+      }
+      sessionStorage.setItem(CLOUD_REDIRECT_KEY, redirect)
+    },
+    getRedirectRoute() {
+      const redirect = sessionStorage.getItem(CLOUD_REDIRECT_KEY)
+      if (!redirect) {
+        return null
+      }
+
+      const [name, search = ''] = redirect.split('?')
+      if (!name) {
+        return null
+      }
+
+      const query = {}
+      const searchParams = new URLSearchParams(search)
+      searchParams.forEach((value, key) => {
+        query[key] = value
+      })
+
+      return {
+        name,
+        query
+      }
+    },
+    async redirectAfterLogin() {
+      debugger
+      const redirectRoute = this.getRedirectRoute()
+      
+
+      if (!redirectRoute) {
+        await this.$router.replace('/portal')
+        return
+      }
+
+      await this.$router.replace(redirectRoute)
+      sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
+    },
     clearCloudStorage() {
       sessionStorage.removeItem('cloudLoginFlag')
       sessionStorage.removeItem('cloudLogoutUrl')
       sessionStorage.removeItem('loginType')
+      sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
     },
     redirectToLogin() {
       setTimeout(() => {
@@ -67,6 +115,7 @@ export default {
     },
     async handleCloudLogin() {
       const ticket = this.$route.query.ticket
+      this.cacheRedirectTarget()
 
       if (!ticket) {
         if (CLOUD_SSO_URL) {
@@ -89,7 +138,7 @@ export default {
           setToken(res.data.token)
           this.$store.commit('SET_TOKEN', res.data.token)
           sessionStorage.setItem('loginType', 'cloud')
-          this.$router.replace('/portal')
+          await this.redirectAfterLogin()
           return
         }
 
