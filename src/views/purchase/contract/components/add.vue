@@ -173,13 +173,7 @@
 
         <!-- 文件弹窗选择 -->
         <template #fileListSlot="{ formModel }">
-          <el-form-item prop="purchaseFileNumber" label="关联采购文件核备" class="label-right-align" label-width="175px" :rules="[
-            {
-              required: true,
-              message: '请选择采购文件',
-              trigger: 'change',
-            },
-          ]">
+          <el-form-item prop="purchaseFileNumber" label="关联采购文件核备" class="label-right-align" label-width="175px" :rules="getPurchaseFileRules(formModel)">
             <template v-if="type !== 'view'">
               <el-input
                 v-model="formModel.purchaseFileNumber"
@@ -220,7 +214,11 @@
       >
         <el-table-column label="" width="55" align="center">
           <template slot-scope="scope">
-            <el-radio v-model="selectedPurchaseFileId" :label="String(scope.row.id)">
+            <el-radio
+              v-model="selectedPurchaseFileId"
+              :label="String(scope.row.id)"
+              @click.native.stop="togglePurchaseFileSelection(scope.row)"
+            >
               <span />
             </el-radio>
           </template>
@@ -451,8 +449,7 @@ export default {
       }
     },
     handlePurchaseFileRowClick(row) {
-      this.selectedPurchaseFileId = String(row.id);
-      this.selectedPurchaseFile = row;
+      this.togglePurchaseFileSelection(row);
     },
     handlePurchaseFileSizeChange(pageSize) {
       this.purchaseFileQuery.pageSize = pageSize;
@@ -466,12 +463,41 @@ export default {
     handlePurchaseFileDialogClose() {
       this.selectedPurchaseFile = null;
     },
+    togglePurchaseFileSelection(row) {
+      const rowId = String(row.id);
+      if (this.selectedPurchaseFileId === rowId) {
+        this.selectedPurchaseFileId = null;
+        this.selectedPurchaseFile = null;
+        return;
+      }
+      this.selectedPurchaseFileId = rowId;
+      this.selectedPurchaseFile = row;
+    },
     confirmPurchaseFile() {
       const row = this.purchaseFileList.find(
-        (item) => item.id === this.selectedPurchaseFileId
+        (item) => String(item.id) === this.selectedPurchaseFileId
       ) || this.selectedPurchaseFile;
+      const isRequired = this.isAClassMaterial(
+        this.currentPurchaseFileFormModel || this.currentFormData
+      );
       if (!row) {
-        this.$message.warning("请选择采购文件");
+        if (isRequired) {
+          this.$message.warning("请选择采购文件");
+          return;
+        }
+        const purchaseFileData = {
+          purchaseFileId: null,
+          purchaseFileNumber: null,
+        };
+        if (this.currentPurchaseFileFormModel) {
+          Object.assign(this.currentPurchaseFileFormModel, purchaseFileData);
+        }
+        this.$refs.vFormRef.setFormData(purchaseFileData);
+        this.currentFormData = {
+          ...this.currentFormData,
+          ...purchaseFileData,
+        };
+        this.purchaseFileDialogVisible = false;
         return;
       }
       const purchaseFileData = {
@@ -707,8 +733,8 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
-          formData.purchaseFileId = formData.purchaseFileId || this.selectedPurchaseFile?.id || this.currentFormData.purchaseFileId || this.backData?.purchaseFileId;
-          formData.purchaseFileNumber = formData.purchaseFileNumber || this.selectedPurchaseFile?.purchaseNumber || this.currentFormData.purchaseFileNumber || this.backData?.purchaseFileNumber;
+          formData.purchaseFileId = formData.purchaseFileId || ''
+          formData.purchaseFileNumber = formData.purchaseFileNumber || '' 
           formData.projefctName = this.projectData.projectName;
           formData.projectName = this.projectData.projectName;
           formData.sectionShortName = this.projectData.projectShortName;
@@ -825,6 +851,9 @@ export default {
           purchaseDetailCode: null,
           purchaseDetailName: null,
         });
+        this.$nextTick(() => {
+          this.$refs?.vFormRef?.clearValidate?.('purchaseFileNumber');
+        });
         this.getItemList(val);
       } else if (key == 'purchaseCode') {
         this.purchaseCode = val;
@@ -861,6 +890,21 @@ export default {
       this.$refs.vFormRef.setFormData({
         [key]: options.find((item) => item.value === val)?.label,
       });
+    },
+    isAClassMaterial(formModel) {
+      return ['A类'].includes(formModel?.code) || ['A类'].includes(formModel?.name);
+    },
+    getPurchaseFileRules(formModel) {
+      if (!this.isAClassMaterial(formModel)) {
+        return [];
+      }
+      return [
+        {
+          required: true,
+          message: '请选择采购文件',
+          trigger: 'change',
+        },
+      ];
     },
     beforeUpload(file) {
       console.log(file, "beforeUpload");
