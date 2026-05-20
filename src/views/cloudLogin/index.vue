@@ -52,7 +52,7 @@ export default {
       this.$store.commit('SET_TOKEN', '')
     },
     cacheRedirectTarget() {
-      const { redirect, ticket } = this.$route.query
+      const { pcurl:redirect, ticket } = this.$route.query
       if (!redirect && !ticket) {
         sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
         return
