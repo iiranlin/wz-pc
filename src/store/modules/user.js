@@ -1,4 +1,4 @@
-import { login, logout, info, getLoginSelectUser } from '@/api/login'
+import { login, logout, info, getLoginSelectUser, loginByPhone } from '@/api/login'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { systemConfig } from '@/api/system'
@@ -11,10 +11,17 @@ const clearStorage =() => {
   sessionStorage.removeItem('user_info')
   sessionStorage.removeItem('sessionObj')
   sessionStorage.removeItem('username')
+  sessionStorage.removeItem('rank')
   // 保留loginType，用于退出时判断登录方式
   // sessionStorage.removeItem('loginType')
   localStorage.removeItem('UNIT_ID')
   localStorage.removeItem('UNIT_NAME')
+}
+
+const clearUserState = (commit) => {
+  commit('SET_USER_INFO', {})
+  commit('SET_ROLES', false)
+  clearStorage()
 }
 
 const user = {
@@ -59,9 +66,27 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       const password = userInfo.password
+      clearUserState(commit)
       return new Promise((resolve, reject) => {
         login({ username, password, checkCode: userInfo.checkCode, checkKey: userInfo.checkKey }).then(res => {
           if (res.success){
+            setToken(res.data.token)
+            commit('SET_TOKEN', res.data.token)
+          }
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 手机短信登录
+    LoginByPhone({ commit }, userInfo) {
+      const phone = userInfo.phone.trim()
+      const code = userInfo.code.trim()
+      clearUserState(commit)
+      return new Promise((resolve, reject) => {
+        loginByPhone({ phone, code }).then(res => {
+          if ((res.success || res.code === 0)) {
             setToken(res.data.token)
             commit('SET_TOKEN', res.data.token)
           }
@@ -131,6 +156,7 @@ const user = {
       return new Promise(async(resolve, reject) => {
         logout().then(() => {
           commit('SET_TOKEN', '')
+          commit('SET_USER_INFO', {})
           commit('SET_ROLES', null)
           removeToken()
           

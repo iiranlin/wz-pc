@@ -16,7 +16,15 @@
                 </el-image>
                 <!-- <h3>请输入账号信息</h3> -->
             </header>
-            <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="hz-form" inline>
+            <div class="login-tabs">
+                <button :class="{ active: loginMode === 'account' }" type="button" @click="switchLoginMode('account')">
+                    账号登录
+                </button>
+                <button :class="{ active: loginMode === 'phone' }" type="button" @click="switchLoginMode('phone')">
+                    手机登录
+                </button>
+            </div>
+            <el-form v-if="loginMode === 'account'" ref="loginForm" :model="loginForm" :rules="loginRules" class="hz-form" inline>
                 <el-form-item prop="username" label="用户名：">
                     <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
                         <template slot="prefix">
@@ -46,10 +54,39 @@
                     <img class="imgVerification" :src="verificationCode" @click="getVerificationCode" alt="" />
                 </el-form-item>
             </el-form>
+            <el-form v-else ref="smsLoginForm" :model="smsLoginForm" :rules="smsLoginRules" class="hz-form" inline>
+                <el-form-item prop="phone" label="手机号：">
+                    <el-input v-model="smsLoginForm.phone" type="text" auto-complete="off" placeholder="请输入手机号">
+                        <template slot="prefix">
+                            <i class="el-icon-mobile-phone sms-prefix-icon"></i>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="code" label="短信验证码：">
+                    <div class="sms-code-row">
+                        <el-input v-model="smsLoginForm.code" type="text" auto-complete="off" placeholder="请输入验证码"
+                            @keyup.enter.native="handleSmsLogin">
+                            <template slot="prefix">
+                                <img src="../assets/login/Icon-code@2x.webp"
+                                    style="height: 20px; margin-right: 5px; margin-left: 7px;line-height:40px;">
+                            </template>
+                        </el-input>
+                        <el-button class="sms-code-btn" :disabled="smsCountdown > 0" :loading="smsSending"
+                            @click="sendSmsCode">
+                            {{ smsCountdown > 0 ? `${smsCountdown}s` : '获取验证码' }}
+                        </el-button>
+                    </div>
+                </el-form-item>
+            </el-form>
             <div class="btn">
-                <el-button type="primary" @click.native.prevent="handleLogin" @keyup.enter.native.prevent="handleLogin"
+                <el-button v-if="loginMode === 'account'" type="primary" @click.native.prevent="handleLogin" @keyup.enter.native.prevent="handleLogin"
                     :loading="loading">
                     <span v-if="!loading">登 录</span>
+                    <span v-else>登 录 中...</span>
+                </el-button>
+                <el-button v-else type="primary" @click.native.prevent="handleSmsLogin" @keyup.enter.native.prevent="handleSmsLogin"
+                    :loading="smsLoading">
+                    <span v-if="!smsLoading">登 录</span>
                     <span v-else>登 录 中...</span>
                 </el-button>
             </div>
@@ -62,24 +99,32 @@
 <script>
 //门户登录
 import logoBg from '../assets/login/menhuBG.png';
-import { getCookie, setCookie, removeCookie } from "@/utils/auth";
-import { getVerificationCode, autoLogin } from "@/api/login";
+import { setCookie, removeCookie } from "@/utils/auth";
+import { getVerificationCode, sendPhoneCaptcha } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
-import logo from "@/assets/logo/logo.png";
 import loginTitle from '../assets/login/Login Title@2x.png';
-import { setToken } from "@/utils/auth";
 export default {
     name: "Login",
     components: {
         UpdatePassword,
     },
     data() {
+        const phoneValidator = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error('请输入手机号'));
+            } else if (!/^\d{11}$/.test(value)) {
+                callback(new Error('请输入 11 位手机号'));
+            } else {
+                callback();
+            }
+        };
         return {
             testFlag: process.env.VUE_APP_TEST_FLAG,
             logoBg,
             loginTitle,
             dialogVisible: false,
+            loginMode: "account",
             loginForm: {
                 username: "",
                 // password: '',
@@ -98,9 +143,25 @@ export default {
                     { required: true, trigger: "blur", message: "请输入验证码" },
                 ],
             },
+            smsLoginForm: {
+                phone: "",
+                code: "",
+            },
+            smsLoginRules: {
+                phone: [
+                    { required: true, validator: phoneValidator, trigger: "blur" },
+                ],
+                code: [
+                    { required: true, trigger: "blur", message: "请输入短信验证码" },
+                ],
+            },
             passwordType: "password",
             verificationCode: "",
             loading: false,
+            smsLoading: false,
+            smsSending: false,
+            smsCountdown: 0,
+            smsCountdownTimer: null,
         };
     },
     computed: {
@@ -124,6 +185,30 @@ export default {
         handleClose() {
             this.dialogVisible = false
         },
+        switchLoginMode(mode) {
+            this.loginMode = mode;
+            this.$nextTick(() => {
+                const formRef = mode === "account" ? "loginForm" : "smsLoginForm";
+                if (this.$refs[formRef]) {
+                    this.$refs[formRef].clearValidate();
+                }
+            });
+        },
+        redirectAfterLogin() {
+            let route = { path: '/portal' }
+            if (this.redirect) {
+                const query = this.redirect.search ? Object.fromEntries(
+                    new URLSearchParams(this.redirect.search)
+                ) : {}
+                route = {
+                    path: this.redirect.pathname,
+                    query: query
+                }
+            }
+            this.$router
+                .push(route)
+                .catch(() => { });
+        },
         handleLogin() {
 
             localStorage.removeItem('UNIT_ID')
@@ -144,20 +229,7 @@ export default {
                                 // 标记为普通登录
                                 sessionStorage.setItem('loginType', 'normal');
 
-                                let route = { path: '/portal' }
-                                // let route = { path: '/' }
-                                if (this.redirect) {
-                                    const query = this.redirect.search ? Object.fromEntries(
-                                        new URLSearchParams(this.redirect.search)
-                                    ) : {}
-                                    route = {
-                                        path: this.redirect.pathname,
-                                        query: query
-                                    }
-                                }
-                                this.$router
-                                    .push(route)
-                                    .catch(() => { });
+                                this.redirectAfterLogin();
                             } else {
                                 if (res.code == 10001 || res.code == 10002) {
                                     this.$modal.msgError(res.message)
@@ -177,6 +249,77 @@ export default {
                         .catch(() => {
                             this.getVerificationCode();
                             this.loading = false;
+                        });
+                }
+            });
+        },
+        validateSmsPhone() {
+            return new Promise((resolve) => {
+                this.$refs.smsLoginForm.validateField('phone', (message) => {
+                    resolve(!message);
+                });
+            });
+        },
+        sendSmsCode() {
+            if (this.smsCountdown > 0 || this.smsSending) {
+                return;
+            }
+            this.validateSmsPhone().then((valid) => {
+                if (!valid) {
+                    return;
+                }
+                this.smsSending = true;
+                sendPhoneCaptcha(this.smsLoginForm.phone.trim())
+                    .then((res) => {
+                        if (res.success || res.code === 0) {
+                            this.$modal.msgSuccess(res.message || '验证码已发送');
+                            this.startSmsCountdown();
+                        } else {
+                            this.$modal.msgError(res.message || '验证码发送失败');
+                        }
+                    })
+                    .catch(() => {
+                    })
+                    .finally(() => {
+                        this.smsSending = false;
+                    });
+            });
+        },
+        startSmsCountdown() {
+            this.smsCountdown = 60;
+            if (this.smsCountdownTimer) {
+                clearInterval(this.smsCountdownTimer);
+            }
+            this.smsCountdownTimer = setInterval(() => {
+                this.smsCountdown -= 1;
+                if (this.smsCountdown <= 0) {
+                    clearInterval(this.smsCountdownTimer);
+                    this.smsCountdownTimer = null;
+                }
+            }, 1000);
+        },
+        handleSmsLogin() {
+            localStorage.removeItem('UNIT_ID')
+            localStorage.removeItem('UNIT_NAME')
+            this.$refs.smsLoginForm.validate((valid) => {
+                if (valid) {
+                    this.smsLoading = true;
+                    this.$store
+                        .dispatch("LoginByPhone", this.smsLoginForm)
+                        .then((res) => {
+                            this.smsLoading = false;
+                            if (res.success || res.code === 0) {
+                                sessionStorage.setItem('loginType', 'normal');
+                                if (res.data && res.data.username) {
+                                    sessionStorage.setItem("username", res.data.username);
+                                }
+                                this.redirectAfterLogin();
+                            } else {
+                                this.$modal.msgError(res.message || '登录失败');
+                            }
+                        })
+                        .catch(() => {
+                            this.smsLoading = false;
                         });
                 }
             });
@@ -204,7 +347,9 @@ export default {
         },
     },
     beforeDestroy() {
-
+        if (this.smsCountdownTimer) {
+            clearInterval(this.smsCountdownTimer);
+        }
     }
 };
 </script>
@@ -280,6 +425,31 @@ export default {
             padding: 0;
         }
 
+        .login-tabs {
+            display: flex;
+            align-items: center;
+            margin: 26px 0 22px;
+            border-bottom: 1px solid #edf0f5;
+
+            button {
+                flex: 1;
+                height: 38px;
+                padding: 0;
+                border: 0;
+                border-bottom: 2px solid transparent;
+                background: transparent;
+                color: #7a8491;
+                font-size: 15px;
+                cursor: pointer;
+
+                &.active {
+                    color: #1c75fd;
+                    border-bottom-color: #1c75fd;
+                    font-weight: 600;
+                }
+            }
+        }
+
         .btn {
             margin-top: 30px;
             padding: 0;
@@ -313,6 +483,46 @@ export default {
                 height: 36px;
                 float: right;
                 cursor: pointer;
+            }
+        }
+
+        .sms-prefix-icon {
+            margin-left: 7px;
+            color: #9aa4b2;
+            font-size: 18px;
+            line-height: 30px;
+        }
+
+        .sms-code-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            .el-input {
+                flex: 1;
+            }
+
+            .sms-code-btn {
+                width: 112px;
+                height: 36px;
+                padding: 0;
+                flex-shrink: 0;
+                color: #1c75fd;
+                border-color: #1c75fd;
+                background: #fff;
+                font-size: 14px;
+
+                &:hover {
+                    color: #fff;
+                    background: #1c75fd;
+                }
+
+                &.is-disabled,
+                &.is-disabled:hover {
+                    color: #a8b0bb;
+                    border-color: #dcdfe6;
+                    background: #f5f7fa;
+                }
             }
         }
 

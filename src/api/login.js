@@ -1,12 +1,17 @@
 import request from '@/utils/request'
 let VUE_APP_BASE_PREFIX = process.env.VUE_APP_BASE_SERVER;
+let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV || '/prodmgr-inv';
 
-import { encrypt } from '../utils/sm2'
+import { encrypt as sm2Encrypt } from '../utils/sm2'
 import constant from '../utils/constant';
+
+function encryptLoginData(data) {
+    return { data: sm2Encrypt(data, constant.API_PUBLIC_KEY) }
+}
 
 // 登录方法
 export function login(data) {
-    data = { data: encrypt(data, constant.API_PUBLIC_KEY) }
+    data = encryptLoginData(data)
     return request({
         url: `${VUE_APP_BASE_PREFIX}/auth/login`,
         method: 'post',
@@ -61,7 +66,7 @@ export function getVerificationCode(randomKey) {
  * @returns {*}
  */
 export function changePassword(data) {
-    data = { data: encrypt(data, constant.API_PUBLIC_KEY) }
+    data = encryptLoginData(data)
     return request({
         url: `${VUE_APP_BASE_PREFIX}/auth/changePassword`,
         method: 'post',
@@ -137,5 +142,23 @@ export function getLoginSelectUser() {
   return request({
     url: `${VUE_APP_BASE_PREFIX}/loginSelect/selectUser`,
     method: 'GET'
+  })
+}
+
+// 发送手机短信验证码
+export function sendPhoneCaptcha(phone) {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/auth/sendCaptcha`,
+    method: 'post',
+    data: { phone }
+  })
+}
+
+// 手机短信登录
+export function loginByPhone(data) {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/auth/loginByPhone`,
+    method: 'post',
+    data: data
   })
 }
