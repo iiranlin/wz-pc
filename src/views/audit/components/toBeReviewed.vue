@@ -134,13 +134,7 @@ export default {
       passWorkFlow(params).then(res => {
         if (res.success) {
           this.$modal.msgSuccess(res.message)
-          this.visible = false
-          if (this.queryName) {
-            // 关闭当前tabs
-            this.$tab.closeOpenPage({ name: this.queryName });
-          } else {
-            this.$parent.handleQuery()
-          }
+          this.handleApproveSuccess()
         } else {
           this.$modal.msgError(res.message)
         }
@@ -160,13 +154,7 @@ export default {
       passEditWorkFlow(params).then(res => {
         if (res.success) {
           this.$modal.msgSuccess(res.message)
-          this.visible = false
-          if (this.queryName) {
-            // 关闭当前tabs
-            this.$tab.closeOpenPage({ name: this.queryName });
-          } else {
-            this.$parent.handleQuery()
-          }
+          this.handleApproveSuccess()
         } else {
           this.$modal.msgError(res.message)
         }
@@ -187,13 +175,7 @@ export default {
           rejectWorkFlow(params).then(res => {
             if (res.success) {
               this.$modal.msgSuccess(res.message)
-              this.visible = false
-              if (this.queryName) {
-                // 关闭当前tabs
-                this.$tab.closeOpenPage({ name: this.queryName });
-              } else {
-                this.$parent.handleQuery()
-              }
+              this.handleApproveSuccess()
             } else {
               this.$modal.msgError(res.message)
             }
@@ -203,6 +185,23 @@ export default {
     },
     cancel () {
       this.visible = false
+    },
+    isCloudLogin () {
+      return sessionStorage.getItem('loginType') === 'cloud' || !!sessionStorage.getItem('cloudLoginFlag')
+    },
+    handleApproveSuccess () {
+      this.visible = false
+      if (this.isCloudLogin()) {
+        this.$router.replace('/index')
+        return
+      }
+
+      if (this.queryName) {
+        // 关闭当前tabs
+        this.$tab.closeOpenPage({ name: this.queryName })
+      } else {
+        this.$parent.handleQuery()
+      }
     },
     //选择审批人后回调
     activitiAssigneeSelected (assignee) {
