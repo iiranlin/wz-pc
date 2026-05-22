@@ -223,7 +223,7 @@
               </template>
 
               <template v-else>
-                <span>{{ item.validityGuarantee[0] | formatDate }} -
+                <span>{{ item.validityGuarantee[0] | formatDate }} 至
                   {{ item.validityGuarantee[1] | formatDate }}</span>
               </template>
             </el-form-item>

@@ -136,7 +136,7 @@
           </el-form-item>
         </template>
         <template #attachmentFileSolt="{ formModel }">
-          <el-form-item prop="hthbfj" label-width="160px" label="核备附件(支持多个)" class="label-right-align" :rules="[
+          <el-form-item prop="hthbfj" label-width="175px" label="核备附件(支持多个)" class="label-right-align" :rules="[
 
           ]">
             <fileUpload :isShowTip="false" v-model="formModel.hthbfj" :limit="9999" :fileSize="500"
