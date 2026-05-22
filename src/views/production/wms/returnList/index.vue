@@ -111,10 +111,10 @@ export default {
         3: "抽检不通过",
       },
       options: [
-        {
-          code: "1",
-          name: "收货不通过",
-        },
+        // {
+        //   code: "1",
+        //   name: "收货不通过",
+        // },
         {
           code: "2",
           name: "质检不通过",
