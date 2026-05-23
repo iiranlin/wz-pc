@@ -70,7 +70,7 @@
     </el-alert>
 
     <div slot="footer" class="dialog-footer">
-      <el-button round type="primary" @click="onConfirm">确认</el-button>
+      <el-button round type="primary" :loading="confirming" :disabled="loading || confirming" @click="onConfirm">确认</el-button>
       <el-button round @click="visible = false">关闭</el-button>
     </div>
   </Dialog>
@@ -86,6 +86,7 @@ export default {
       loading: false,
       title: '导入招标信息明细',
       visible: false,
+      confirming: false,
       tableData: [],
       fileList: [],
       tenderYear: ''
@@ -105,6 +106,7 @@ export default {
     open (tenderYear) {
       this.visible = true;
       this.fileList = []
+      this.confirming = false
       this.tenderYear = tenderYear
     },
     //取消
@@ -112,10 +114,12 @@ export default {
       this.visible = false;
     },
     onConfirm () {
+      if (this.confirming) return
       if (!this.fileList[0]?.list?.length) {
         this.$message.warning('请先上传文件')
         return
       }
+      this.confirming = true
       this.$emit('onOk', this.fileList[0].list)
       this.visible = false;
     },
@@ -132,7 +136,6 @@ export default {
       return isExcel && isLt100M
     },
     handleUpload ({ file }) {
-      console.log(this.tenderYear)
       if (!this.tenderYear) {
         this.$message.warning('请先选择招标年份')
         return

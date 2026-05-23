@@ -17,8 +17,15 @@
     </div>
 
     <!-- 动态table项 -->
-    <el-table :data="materialTenderInfoDOList" style="margin-top: 20px;" size="small" max-height="350">
-      <el-table-column label="序号" type="index" width="50" align="center" fixed  show-overflow-tooltip/>
+    <virtual-scroll
+      :dynamic="true"
+      ref="virtualScroll"
+      :data="materialTenderInfoDOList"
+      key-prop="__rowKey"
+      @change="handleVirtualChange"
+    >
+    <el-table :data="virtualList" style="margin-top: 20px;" size="small" max-height="350" row-key="__rowKey">
+      <virtual-column label="序号" type="index" width="50" align="center" fixed  show-overflow-tooltip/>
       <el-table-column width="260" align="center" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red;">*</span> 招标项目名称
@@ -117,9 +124,9 @@
         </template>
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.itemDetail" placeholder="请选择" filterable style="width: 100%">
-            <el-option v-for="item in detailOptions[scope.row.materialType] || []" :key="item.value" :label="item.label" :value="item.value" />
+            <el-option v-for="item in detailOptions[getDetailOptionsKey(scope.row.materialType, scope.row.materialCategory)] || []" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <span v-else>{{ getItemDetailLabel(scope.row.materialType, scope.row.itemDetail) }}</span>
+          <span v-else>{{ getItemDetailLabel(scope.row.materialCategory, scope.row.materialType, scope.row.itemDetail) }}</span>
         </template>
       </el-table-column>
       <el-table-column width="120" align="center" show-overflow-tooltip>
@@ -235,10 +242,11 @@
       <el-table-column v-if="!isView" label="操作" width="120" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <!-- <el-button type="text" size="mini" style="margin-right: 20px;" @click="editItem(scope.$index)">修改</el-button> -->
-          <el-button type="text" size="mini" @click="removeItem(scope.$index)">删除</el-button>
+          <el-button type="text" size="mini" @click="removeItem(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    </virtual-scroll>
 
     <!-- 填写说明弹窗 -->
     <el-dialog
@@ -269,18 +277,26 @@ import * as TypeApi from "@/api/prodmgr-inv/project/itemType.js";
 import * as DetailApi from "@/api/prodmgr-inv/project/itemDetail.js";
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 import BatchDialog from './batchDialog.vue'
+import VirtualScroll, { VirtualColumn } from 'el-table-virtual-scroll'
 
 export default {
   name: 'itemsTable',
   dicts: ['MeasureUnit', 'WZDL'],
-  components: {BatchDialog},
+  components: {BatchDialog, VirtualScroll, VirtualColumn},
   data() {
     return {
       lineOptions: [], // 项目名称选项
       dialogVisible: false, // 填写说明弹窗显示状态
       isInitializing: true, // 添加初始化标记
+      skipWatch: false, // 导入数据时跳过 watcher 的 loadExistingData
+      importing: false,
+      virtualList: [],
+      batchDialogOkHandler: null,
+      rowKeySeed: 0,
       typeOptions: {}, // 物资种类选项，按物资类别分类
       detailOptions: {}, // 物资细目选项，按物资种类分类
+      typeOptionRequests: {},
+      detailOptionRequests: {},
        // 查询参数
       formData: {
         parentId: null,
@@ -329,7 +345,13 @@ export default {
     },
   },
   mounted(){
-    this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
+    this.batchDialogOkHandler = this.onDialogOk;
+    this.$refs.batchDialogRef.$on('onOk', this.batchDialogOkHandler) // ✅
+  },
+  beforeDestroy() {
+    if (this.$refs.batchDialogRef && this.batchDialogOkHandler) {
+      this.$refs.batchDialogRef.$off('onOk', this.batchDialogOkHandler);
+    }
   },
   created () {
     this.getLineOptions()
@@ -339,42 +361,69 @@ export default {
     });
   },
   watch: {
-    value: {
-      handler(newValue) {
-        if (newValue && newValue.materialTenderInfoDOList) {
-          this.loadExistingData(newValue.materialTenderInfoDOList);
+    'value.materialTenderInfoDOList': {
+      handler(newList) {
+        if (this.skipWatch) return;
+        if (newList && newList.length) {
+          this.ensureRowKeys(newList);
         }
       },
       immediate: true,
-      deep: true
     }
   },
   methods: {
-    // 加载已有的数据，为编辑和查看详情做准备
+    ensureRowKeys(items = []) {
+      items.forEach(item => {
+        this.ensureRowKey(item);
+      });
+    },
+    ensureRowKey(item) {
+      if (!item) return item;
+      if (item.__rowKey) return item;
+      Object.defineProperty(item, '__rowKey', {
+        value: item.id || `tender-item-${Date.now()}-${this.rowKeySeed++}`,
+        enumerable: false,
+        configurable: true,
+      });
+      return item;
+    },
+    handleVirtualChange(renderData) {
+      this.virtualList = renderData || [];
+      this.loadExistingData(this.virtualList);
+    },
+    getDetailOptionsKey(categoriesCode, speciesCode) {
+      return `${speciesCode || ''}_${categoriesCode || ''}`;
+    },
+    // 加载已有的数据，为编辑和查看详情做准备（带去重）
     async loadExistingData(items) {
+      const loadedCategories = new Set();
+      const loadedTypes = new Map();
       for (const item of items) {
-        // 加载物资种类数据
-        if (item.materialCategory) {
-          await this.getTypeOptions(item.materialCategory);
-          // 加载细目数据
-          if (item.materialType) {
-            await this.getDetailOptions(item.materialType, item.materialCategory);
-          }
+        // 加载物资种类数据（去重）
+        if (item.materialCategory && !loadedCategories.has(item.materialCategory)) {
+          loadedCategories.add(item.materialCategory);
+        }
+        // 加载细目数据（去重）
+        const typeKey = this.getDetailOptionsKey(item.materialType, item.materialCategory);
+        if (item.materialCategory && item.materialType && !loadedTypes.has(typeKey)) {
+          loadedTypes.set(typeKey, {
+            materialType: item.materialType,
+            materialCategory: item.materialCategory,
+          });
         }
       }
+      await Promise.all(Array.from(loadedCategories).map(materialCategory => this.getTypeOptions(materialCategory)));
+      await Promise.all(Array.from(loadedTypes.values()).map(item => this.getDetailOptions(item.materialType, item.materialCategory)));
     },
     // 处理物资类别变化
     async handleMaterialCategoryChange(row, materialCategory) {
-      console.log('handleMaterialCategoryChange触发', { row, materialCategory });
       // 清空物资种类和细目
       row.materialType = '';
       row.itemDetail = '';
       
-      // 如果选择了物资类别，获取对应的物资种类
+      // 如果选择了物资类别，获取对应的物资种类（用户手动切换需强制刷新）
       if (materialCategory) {
-        await this.getTypeOptions(materialCategory);
-      } else {
-        console.log('物资类别为空');
+        await this.getTypeOptions(materialCategory, true);
       }
     },
     
@@ -383,25 +432,24 @@ export default {
       // 清空细目
       row.itemDetail = '';
       
-      // 如果选择了物资种类，获取对应的细目
+      // 如果选择了物资种类，获取对应的细目（用户手动切换需强制刷新）
       if (materialType) {
-        // 传递物资类别的code作为speciesCode参数
-        await this.getDetailOptions(materialType, row.materialCategory);
-      } else {
-        console.log('物资种类为空');
+        await this.getDetailOptions(materialType, row.materialCategory, true);
       }
     },
     
-    // 获取物资种类选项（依赖物资大类）
-    async getTypeOptions(speciesCode = "") {
-      try {
-        const params = {
-          pageNum: 1,
-          pageSize: -1,
-          speciesCode: speciesCode,
-        };
+    // 获取物资种类选项（依赖物资大类），带缓存
+    async getTypeOptions(speciesCode = "", force = false) {
+      // 已加载过且非强制刷新时直接返回，避免重复请求
+      if (!force && this.typeOptions[speciesCode]) return;
+      if (!force && this.typeOptionRequests[speciesCode]) return this.typeOptionRequests[speciesCode];
+      const params = {
+        pageNum: 1,
+        pageSize: -1,
+        speciesCode: speciesCode,
+      };
 
-        const res = await TypeApi.itemList(params);
+      const request = TypeApi.itemList(params).then(res => {
         if (res.data && res.data.list) {
           const options = res.data.list.map((x) => ({
             ...x,
@@ -413,41 +461,50 @@ export default {
         } else {
           this.$set(this.typeOptions, speciesCode, []);
         }
-      } catch (error) {
+      }).catch(error => {
         console.error("获取物资种类失败", error);
         this.$set(this.typeOptions, speciesCode, []);
-      }
+      }).finally(() => {
+        this.$delete(this.typeOptionRequests, speciesCode);
+      });
+      this.$set(this.typeOptionRequests, speciesCode, request);
+      return request;
     },
-    // 获取物资细目选项（依赖物资种类）
-    async getDetailOptions(categoriesCode, speciesCode) {
-      try {
-        console.log('调用DetailApi.itemList', { categoriesCode, speciesCode });
-        const params = {
-          pageNum: 1,
-          pageSize: -1,
-          categoriesCode: categoriesCode,
-          speciesCode: speciesCode,
-        };
+    // 获取物资细目选项（依赖物资种类），带缓存
+    async getDetailOptions(categoriesCode, speciesCode, force = false) {
+      const cacheKey = this.getDetailOptionsKey(categoriesCode, speciesCode);
+      // 已加载过且非强制刷新时直接返回，避免重复请求
+      if (!force && this.detailOptions[cacheKey]) return;
+      if (!force && this.detailOptionRequests[cacheKey]) return this.detailOptionRequests[cacheKey];
+      const params = {
+        pageNum: 1,
+        pageSize: -1,
+        categoriesCode: categoriesCode,
+        speciesCode: speciesCode,
+      };
 
-        const res = await DetailApi.itemList(params);
-        console.log('DetailApi.itemList返回', res);
+      const request = DetailApi.itemList(params).then(res => {
         if (res.data && res.data.list) {
           const options = res.data.list.map((x) => ({
             ...x,
             label: x.detailName,
             value: x.detailCode,
           }));
-          this.$set(this.detailOptions, categoriesCode, options);
+          this.$set(this.detailOptions, cacheKey, options);
         } else {
-          this.$set(this.detailOptions, categoriesCode, []);
+          this.$set(this.detailOptions, cacheKey, []);
         }
-      } catch (error) {
-        this.$set(this.detailOptions, categoriesCode, []);
-      }
+      }).catch(() => {
+        this.$set(this.detailOptions, cacheKey, []);
+      }).finally(() => {
+        this.$delete(this.detailOptionRequests, cacheKey);
+      });
+      this.$set(this.detailOptionRequests, cacheKey, request);
+      return request;
     },
 
     addItem() {
-      this.materialTenderInfoDOList.push({
+      const row = this.ensureRowKey({
         tenderProjectId: "",            //项目id
         tenderProjectName: "",            //招标项目名称
         tendererName: this.tenderUnit, //招标人名称
@@ -471,8 +528,11 @@ export default {
         bidderName: "", //投标人名称
         remark: "" //备注
       });
+      this.materialTenderInfoDOList.push(row);
     },
-    removeItem(index) {
+    removeItem(row) {
+      const index = this.materialTenderInfoDOList.findIndex(item => item === row || item.__rowKey === row.__rowKey);
+      if (index === -1) return;
       this.materialTenderInfoDOList.splice(index, 1);
     },
     showTooltip() {
@@ -556,10 +616,10 @@ export default {
       const item = options.find(item => item.value === materialType);
       return item ? item.label : materialType;
     },
-    getItemDetailLabel(materialType, itemDetail) {
+    getItemDetailLabel(materialCategory, materialType, itemDetail) {
       // 从detailOptions中查找细目对应的标签
       if (!materialType || !itemDetail) return '';
-      const options = this.detailOptions[materialType] || [];
+      const options = this.detailOptions[this.getDetailOptionsKey(materialType, materialCategory)] || [];
       const item = options.find(item => item.value === itemDetail);
       return item ? item.label : itemDetail;
     },
@@ -578,13 +638,23 @@ export default {
     onBatchUpload() {
       this.$refs.batchDialogRef.open(this.tenderYear);
     },
-    onDialogOk(data) {
-      // 将批量上传的文件，导入到总的数据中
-      const newData = data.map(item => ({
-        ...item,
-        tenderYear: this.tenderYear
-      }))
-      this.materialTenderInfoDOList.push(...newData)
+    async onDialogOk(data) {
+      if (this.importing) return;
+      this.importing = true;
+      // 标记跳过 watcher，避免 push 后 watcher 对全部数据重新调用 loadExistingData
+      this.skipWatch = true;
+      try {
+        // 将批量上传的文件，导入到总的数据中
+        const newData = data.map(item => this.ensureRowKey({
+          ...item,
+          tenderYear: this.tenderYear
+        }))
+        this.materialTenderInfoDOList.push(...newData)
+        await this.$nextTick();
+      } finally {
+        this.skipWatch = false;
+        this.importing = false;
+      }
     },
   },
 };
