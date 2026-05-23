@@ -311,7 +311,14 @@ export default {
 		},
 		cancel() {
 			this.$store.dispatch('setProjectId', '')
+			if (this.isCloudLogin()) {
+				this.$router.replace('/index')
+				return
+			}
 			this.$router.go(-1)
+		},
+		isCloudLogin() {
+			return sessionStorage.getItem('loginType') === 'cloud' || !!sessionStorage.getItem('cloudLoginFlag')
 		},
 
 		buttonShow(item) {

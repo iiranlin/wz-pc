@@ -702,7 +702,14 @@ export default {
       }
     },
     cancel() {
+      if (this.isCloudLogin()) {
+        this.$router.replace('/index')
+        return
+      }
       this.$tab.closeOpenPage(true)
+    },
+    isCloudLogin() {
+      return sessionStorage.getItem('loginType') === 'cloud' || !!sessionStorage.getItem('cloudLoginFlag')
     },
 
     buttonShow(item) {
