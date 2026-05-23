@@ -49,6 +49,27 @@
               {{ scope.value }}
             </el-button>
           </template>
+        <!-- 入库单号 -->
+          <template #storeNumber="scope">
+            <el-button type="text" @click="toRkd(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
+            <!-- 抽检单号 -->
+          <template #samplingNumber="scope">
+            <el-button type="text" @click="toCjd(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
+
+                  <!-- 需求ID -->
+          <template #planNumber="scope">
+            <el-button type="text" @click="toXqid(scope.data)">
+              {{ scope.value }}
+            </el-button>
+          </template>
+    
+
           <!-- 收货单号 -->
           <template #takeNumber="scope">
             <el-button type="text" @click="toShd(scope.data)">
@@ -331,6 +352,35 @@ export default {
         query: { id: row.id, type: "view" },
       });
     }
+    },
+    toRkd(row){
+      this.$router.push({
+            name: 'imPage',
+            query: {
+              id: row.cirId,
+              storeStatus: row.storeStatus,
+              type: 'view',
+            }
+          })
+    },
+    toCjd(row){
+        this.$router.push({
+          name:'addSpok',
+          query:{
+            id:row.id,
+            type:'view',
+            from:'THXQ'
+          }
+        })
+    },
+    toXqid(row){
+      this.$router.push({
+            name: 'requestDetail',
+            query: {
+              id: row.planId,
+              type: 'view',
+            }
+          })
     },
     //跳转货运详情
     toFhd(row) {
