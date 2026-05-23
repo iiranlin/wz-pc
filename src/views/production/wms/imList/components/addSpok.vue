@@ -221,7 +221,7 @@ export default {
     /** 顶部按钮点击 */
     handleButtonClick(buttonCode) {
       const actions = {
-        cancel: () => this.$router.go(-1),
+        cancel: () => this.cancel(),
         save: () => this.handleSubmit(),
         pass: () => {
           this.$refs.toBereview.init("pass", this.queryAuditArr, this.name);
@@ -235,6 +235,16 @@ export default {
         },
       };
       actions[buttonCode]?.();
+    },
+    cancel() {
+      if (this.isCloudLogin()) {
+        this.$router.replace('/index');
+        return;
+      }
+      this.$router.go(-1);
+    },
+    isCloudLogin() {
+      return sessionStorage.getItem('loginType') === 'cloud' || !!sessionStorage.getItem('cloudLoginFlag');
     },
 
     /** 按钮显示控制 */
