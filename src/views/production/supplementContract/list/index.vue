@@ -9,7 +9,8 @@
           <el-option v-for="item in [
             { label: '启用', value: '2' },
             { label: '未启用', value: '1' },
-            { label: '已完成',value: '3' }
+            { label: '已完成',value: '3' },
+            { label: '已结算', value:'4'}
           ]" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -40,8 +41,8 @@
                 1: "State-Waiting", //未提交
                 2: "State-Audit", //审核中
                 3: "State-Success" //审核通过 -->
-            <icon-svg :class="iconClassSize({ '1': 0, '2': 3,'3':3 }[scope.value])" :icon-class="iconEnableStautsClass({ '1': 0, '2': 3,'3':3 }[scope.value])
-              " />{{ scope.value == 2 ? '启用' : scope.value==3 ?'已完成': '未启用' }}
+            <icon-svg :class="iconClassSize({ '1': 0, '2': 3,'3':3,'4':3 }[scope.value])" :icon-class="iconEnableStautsClass({ '1': 0, '2': 3,'3':3,'4':3 }[scope.value])
+              " />{{ scope.value == 2 ? '启用' : scope.value == 3 ? '已完成' : scope.value == 4 ? '已结算' : '未启用' }}
           </template>
 
           <template #materialUsedRatio="scope"> {{ scope.value }}% </template>
