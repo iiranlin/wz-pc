@@ -61,7 +61,7 @@
         <template #jhfjSlot>
           <div v-show="false" data-anchor="requirement">需求计划附件锚点</div>
           <contract-attachment-table :fetch-api="ArchiveQueryApi.planFile" :request-params="relatedQueryParams"
-            :default-page-size="10" :columns="planColumns" :tooltipConfig="{ input: '支持需求计划ID/标段项目/需求名称搜索/提报人搜索' }"
+            :default-page-size="10" :columns="planColumns" :tooltipConfig="{ input: '支持需求计划ID/标段项目/需求名称搜索/供应商名称搜索/提报人搜索' }"
             :show-date-range="true">
             <template #planNumber="scoped">
               <el-button type="text" @click="toDetail(scoped.row, 'requirement')">
@@ -350,6 +350,7 @@ export default {
       { label: '需求计划ID', prop: 'planNumber', minWidth: 130, align: 'center', slot: 'planNumber' },
       { label: '标段项目', prop: 'sectionShortName', minWidth: 150, align: 'center' },
       { label: '需求名称', prop: 'planName', minWidth: 200, align: 'center' },
+      { label: '供应商名称', prop: 'sellerName', minWidth: 200, align: 'center' },
       { label: '提交时间', prop: 'submitTime', minWidth: 120, align: 'center', slot: 'submitTime' },
       { label: '提报人', prop: 'createUserName', minWidth: 120, align: 'center' },
       { label: '附件', prop: 'attachment', width: 200, slot: 'attachment' },],
