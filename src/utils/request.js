@@ -6,6 +6,7 @@ import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from "@/utils/publicMethods";
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
+import { shouldRejectRepeatSubmit } from './repeatSubmit'
 
 let downloadLoadingInstance;
 // 是否显示重新登录
@@ -49,28 +50,8 @@ service.interceptors.request.use(config => {
         config.params = {};
         config.url = url;
     }
-    if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
-        const requestObj = {
-            url: config.url,
-            data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
-            time: new Date().getTime()
-        }
-        const sessionObj = cache.session.getJSON('sessionObj')
-        if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
-            cache.session.setJSON('sessionObj', requestObj)
-        } else {
-            const s_url = sessionObj.url;                  // 请求地址
-            const s_data = sessionObj.data;                // 请求数据
-            const s_time = sessionObj.time;                // 请求时间
-            const interval = 1000;                         // 间隔时间(ms)，小于此时间视为重复提交
-            if (s_data === requestObj.data && requestObj.time - s_time < interval && s_url === requestObj.url) {
-                const message = '数据正在处理，请勿重复提交';
-                console.warn(`[${s_url}]: ` + message)
-                return Promise.reject({message: message})
-            } else {
-                cache.session.setJSON('sessionObj', requestObj)
-            }
-        }
+    if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put') && shouldRejectRepeatSubmit(config)) {
+        return Promise.reject({ isRepeatSubmit: true })
     }
     return config
 }, error => {
@@ -164,6 +145,10 @@ service.interceptors.response.use(res => {
     }
 },
     error => {
+        if (error && error.isRepeatSubmit) {
+            return Promise.reject(error)
+        }
+
         let { message } = error;
         if (message == "Network Error") {
             message = "后端接口连接异常";
@@ -171,18 +156,15 @@ service.interceptors.response.use(res => {
             message = "系统接口请求超时";
         } else if (message.includes("Request failed with status code")) {
             message = "系统异常，请稍后再试"
-        } else if(message.includes("数据正在处理")) {
-
         }else {
             message = "系统异常，请稍后再试"
         }
-        if(!message.includes("数据正在处理")) {
-            Message({
-                message: message,
-                type: 'error',
-                duration: 5 * 1000
-            })
-        }
+
+        Message({
+            message: message,
+            type: 'error',
+            duration: 5 * 1000
+        })
        
         return Promise.reject(error)
     }
