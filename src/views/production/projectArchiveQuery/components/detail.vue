@@ -762,16 +762,17 @@ export default {
 .left-anchor-container {
   position: fixed;
   top: 150px;
+  bottom: 16px;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  /* 垂直居中（如果需要） */
+  justify-content: flex-start;
   align-items: center;
-  /* 内部项水平居中 */
   margin: 0 auto;
   gap: 8px;
   padding: 20px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .left-anchor-placeholder {
@@ -781,6 +782,7 @@ export default {
 
 .anchor-item {
   position: relative;
+  box-sizing: border-box;
   width: 100%;
   padding: 8px 16px;
   text-align: center;
