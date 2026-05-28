@@ -100,10 +100,11 @@
 //门户登录
 import logoBg from '../assets/login/menhuBG.png';
 import { setCookie, removeCookie } from "@/utils/auth";
-import { getVerificationCode, sendPhoneCaptcha } from "@/api/login";
+import { getVerificationCode, sendPhoneCaptcha, autoLogin } from "@/api/login";
 import { generateUUID } from "@/utils";
 import UpdatePassword from "@/components/UpdatePassword";
 import loginTitle from '../assets/login/Login Title@2x.png';
+import { setToken } from "@/utils/auth";
 export default {
     name: "Login",
     components: {
