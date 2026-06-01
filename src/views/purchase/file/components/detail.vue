@@ -1,9 +1,9 @@
 <template>
 	<div class="app-container container_flex">
 		<button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton"></button-top>
-		<div :class="{ container_flex_form: type === 'view' || type === 'update' }">
+		<div :class="{ container_flex_form: readonlyMode || type === 'update' }">
 			<VFormRender :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef"
-				:global-dsv="globalDsv" :class="{ formRender_view: type === 'view' || type === 'update' }">
+				:global-dsv="globalDsv" :class="{ formRender_view: readonlyMode || type === 'update' }">
 				<template #projefctNameSolt="{ formModel }">
 					<el-form-item prop="projefctName" label-width="155px" label="标段项目" class="label-right-align">
 						<template v-if="type === 'create'">
@@ -49,7 +49,7 @@
 					<el-form-item prop="code" :rules="[{ required: false, message: '请选择物资大类', trigger: 'change' }]"
 						label-width="140px" label="物资大类" class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-select :disabled="checked" v-model="formModel.code" filterable required
+							<el-select :disabled="formDisabled" v-model="formModel.code" filterable required
 								style="width: 100%" placeholder="请选择"
 								@change="(val) => selectDataChange(dict.type.purchase_code, val, 'code')">
 								<el-option v-for="item in dict.type.purchase_code" :key="item.value" :label="item.label"
@@ -68,7 +68,7 @@
 						:rules="[{ required: false, message: '请选择类别', trigger: 'change' }]" label-width="155px"
 						label="类别" class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-select :disabled="checked" v-model="formModel.purchaseCode" filterable required
+							<el-select :disabled="formDisabled" v-model="formModel.purchaseCode" filterable required
 								style="width: 100%" placeholder="请选择"
 								@change="(val) => selectDataChange(purchaseItem, val, 'purchaseCode')">
 								<el-option v-for="item in purchaseItem" :key="item.purchaseCode"
@@ -87,7 +87,7 @@
 						:rules="[{ required: false, message: '请选择物资种类', trigger: 'change' }]" label="物资种类"
 						class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-select :disabled="checked" v-model="formModel.purchaseTypeCode" filterable required
+							<el-select :disabled="formDisabled" v-model="formModel.purchaseTypeCode" filterable required
 								style="width: 100%" placeholder="请选择"
 								@change="(val) => selectDataChange(purchaseType, val, 'purchaseTypeCode')">
 								<el-option v-for="item in purchaseType" :key="item.purchaseTypeCode"
@@ -106,7 +106,7 @@
 						:rules="[{ required: false, message: '请选择物资细目', trigger: 'change' }]" label-width="140px"
 						label="物资细目" class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-select :disabled="checked" v-model="formModel.purchaseDetailCode" filterable required
+							<el-select :disabled="formDisabled" v-model="formModel.purchaseDetailCode" filterable required
 								style="width: 100%" placeholder="请选择"
 								@change="(val) => selectDataChange(purcahseDetail, val, 'purchaseDetailCode')">
 								<el-option v-for="item in purcahseDetail" :key="item.purchaseDetailCode"
@@ -125,7 +125,7 @@
 						:rules="[{ required: false, message: '请输入物资名称', trigger: 'change' }]" label="物资名称"
 						label-width="140px" class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-input v-model="formModel.purchaseFileName" :disabled="checked" />
+							<el-input v-model="formModel.purchaseFileName" :disabled="formDisabled" />
 						</template>
 						<template v-else>
 							{{ formModel.purchaseFileName }}
@@ -136,7 +136,7 @@
 					<el-form-item prop="quantity" :rules="[{ required: false, message: '请输入数量', trigger: 'change' }]"
 						label="数量" class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-input type="text" min="0" v-model="formModel.quantity" :disabled="checked" />
+							<el-input type="text" min="0" v-model="formModel.quantity" :disabled="formDisabled" />
 						</template>
 						<template v-else>
 							{{ formModel.quantity }}
@@ -148,7 +148,7 @@
 						:rules="[{ required: false, message: '请输入预估采购金额', trigger: 'change' }]" label=" 预估采购金额(万元)"
 						class="label-right-align">
 						<template v-if="type !== 'update'">
-							<el-input type="number" min="0" v-model="formModel.amount" :disabled="checked" />
+							<el-input type="number" min="0" v-model="formModel.amount" :disabled="formDisabled" />
 						</template>
 						<template v-else>
 							{{ formModel.amount }}
@@ -160,7 +160,7 @@
 						:rules="[{ required: false, message: '请选择', trigger: 'change' }]" class="label-right-align">
 						<template v-if="type !== 'update'">
 							<el-date-picker v-model="formModel.registrationDate" :value-format="timestamp"
-								:disabled="checked" style="width:100%" type="date" placeholder="选择日期">
+								:disabled="formDisabled" style="width:100%" type="date" placeholder="选择日期">
 							</el-date-picker>
 						</template>
 						<template v-else>
@@ -171,7 +171,7 @@
 				<template #remakSolt="{ formModel }">
 					<el-form-item prop="remak" label="备注" class="label-right-align" label-width="140px">
 						<template v-if="type !== 'update'">
-							<el-input type="text" v-model="formModel.remak" />
+							<el-input type="text" v-model="formModel.remak" :disabled="formDisabled" />
 						</template>
 						<template v-else>
 							<el-tooltip :content="formModel.remak" placement="bottom" effect="light">
@@ -193,7 +193,7 @@
 						:rules="[{ required: false, message: '请上传采购文件审查登记表', trigger: 'change' }]" label="采购文件审查登记表"
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="formModel.registration" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="readonlyMode" />
 					</el-form-item>
 				</template>
 
@@ -202,7 +202,8 @@
 						:rules="[{ required: false, message: '请上传采购文件(含技术规格书)', trigger: 'change' }]"
 						label="采购文件(含技术规格书)" class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidDocument" :limit="9999"
-							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 
@@ -211,7 +212,7 @@
 						:rules="[{ required: false, message: '请上传采购方案或采购计划', trigger: 'change' }]" label="采购方案或采购计划"
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.scheme" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="readonlyMode" />
 					</el-form-item>
 				</template>
 
@@ -220,7 +221,8 @@
 						:rules="[{ required: false, message: '请上传采购方案（批复）文件', trigger: 'change' }]" label="采购方案（批复）"
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.schemeApproval" :limit="9999"
-							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" />
+							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 
@@ -229,7 +231,7 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.tenderAnnouncement" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #bidAddendumSolt="scope">
@@ -237,7 +239,7 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidAddendum" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #bidEvaluationReportSolt="scope">
@@ -245,7 +247,7 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidEvaluationReport" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #bidCandidateWebSolt="scope">
@@ -253,7 +255,7 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCandidateWeb" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #acceptanceSolt="scope">
@@ -261,14 +263,14 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.acceptance" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #bidCopySolt="scope">
 					<el-form-item prop="bidCopy" label-width="170px" label="中标人的投标副本"
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.bidCopy" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #contractCopySolt="scope">
@@ -276,7 +278,7 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.contractCopy" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #commitmentSolt="scope">
@@ -284,14 +286,14 @@
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.commitment" :limit="9999"
 							:fileSize="500" :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']"
-							:preview="type === 'view'" />
+							:preview="readonlyMode" />
 					</el-form-item>
 				</template>
 				<template #otherSolt="scope">
 					<el-form-item prop="other" label-width="170px" label="其他文件"
 						class="label-right-align no-border-item">
 						<fileUpload :isShowTip="false" v-model="scope.formModel.other" :limit="9999" :fileSize="500"
-							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="type === 'view'" />
+							:fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx']" :preview="readonlyMode" />
 					</el-form-item>
 				</template>
 			</VFormRender>
@@ -342,6 +344,7 @@ export default {
 	data() {
 		const userInfo = getUserInfo()
 		return {
+			userInfo,
 			purchaseItem: [],
 			code: null,
 			purchaseCode: null,
@@ -394,6 +397,18 @@ export default {
 		},
 		id() {
 			return this.$route.query?.id || ''
+		},
+		deptCode() {
+			return this.userInfo?.deptCode || ''
+		},
+		isConstructionUnit() {
+			return ['ZB', 'FB'].some(prefix => String(this.deptCode).startsWith(prefix))
+		},
+		readonlyMode() {
+			return this.type === 'view' || !this.isConstructionUnit
+		},
+		formDisabled() {
+			return this.checked || this.readonlyMode
 		}
 	},
 	async created() {
@@ -440,7 +455,7 @@ export default {
 			this.$nextTick(async () => {
 				this.title = "新建";
 				await this.formFillInPage()
-				this.$refs.vFormRef.setReadMode(true);
+				this.$refs.vFormRef.setReadMode(this.readonlyMode);
 			});
 		},
 		// 编辑初始化
@@ -475,7 +490,7 @@ export default {
 
 					this.$refs.vFormRef.setFormData(newData);
 
-					this.$refs.vFormRef.setReadMode(this.type === 'update')
+					this.$refs.vFormRef.setReadMode(this.readonlyMode)
 				});
 			});
 		},
@@ -495,7 +510,7 @@ export default {
 
 		buttonShow(item) {
 			if (item.buttonCode === 'save') {
-				return this.type !== 'view'
+				return !this.readonlyMode
 			}
 			return true
 		},
