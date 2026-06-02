@@ -161,10 +161,10 @@
         </el-col>
       </el-row>
     </div>-->
-    <div class="summary-info" v-if="currentTableData.length > 0">
+    <div class="summary-info" v-if="filteredTableData.length > 0">
       <div class="summary-item">
         <span class="summary-label">总条数：</span>
-        <span class="summary-value amount-text">{{ currentTableData.length }} 条</span>
+        <span class="summary-value amount-text">{{ filteredTableData.length }} 条</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">到站合价含税合计：</span>
