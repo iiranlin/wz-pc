@@ -28,7 +28,7 @@
       <virtual-column label="序号" type="index" width="50" align="center" fixed  show-overflow-tooltip/>
       <el-table-column width="260" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标项目名称
+          招标项目名称
         </template>
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.tenderProjectId" placeholder="请选择" style="width: 100%" @change="handleProjectChange(scope.row, $event)">
@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标人名称
+          招标人名称
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tendererName" placeholder="请输入填报单位" />
@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column prop="year" width="130" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标年度
+          招标年度
         </template>
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.tenderYear" disabled placeholder="请选择" type="year" style="width: 100%" />
@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标交易场所
+          招标交易场所
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tenderTradePlace" placeholder="请输入" style="width: 100%" />
@@ -70,7 +70,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 项目类别
+          项目类别
         </template>
         <template slot-scope="scope"> 
           <el-input v-if="!isView" v-model="scope.row.projectCategory" placeholder="请输入" style="width: 100%" />
@@ -79,7 +79,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 物资类别
+          物资类别
         </template>
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.materialCategory" placeholder="请选择" style="width: 100%" @change="handleMaterialCategoryChange(scope.row, $event)">
@@ -90,7 +90,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标编号
+          招标编号
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tenderNo" placeholder="请输入" style="width: 100%" />
@@ -99,7 +99,7 @@
       </el-table-column>
       <el-table-column width="180" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 包件号
+          包件号
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.packageNo" placeholder="请输入" style="width: 100%" />
@@ -108,7 +108,7 @@
       </el-table-column>
       <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 物资种类
+          物资种类
         </template>
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.materialType" placeholder="请选择"
@@ -120,7 +120,7 @@
       </el-table-column>
       <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 细目
+          细目
         </template>
         <template slot-scope="scope">
           <el-select v-if="!isView" v-model="scope.row.itemDetail" placeholder="请选择" filterable style="width: 100%">
@@ -131,7 +131,7 @@
       </el-table-column>
       <el-table-column width="120" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 计量单位
+          计量单位
         </template>
         <template slot-scope="scope">
           <el-select 
@@ -153,7 +153,7 @@
       </el-table-column>
       <el-table-column width="130" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标数量
+          招标数量
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.tenderQuantity" placeholder="请输入" style="width: 100%" @input="handleTenderQuantityInput(scope.row, $event)" />
@@ -162,7 +162,7 @@
       </el-table-column>
       <el-table-column width="170" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 招标发布公告时间
+          招标发布公告时间
         </template>
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.tenderNoticePubTime" placeholder="请选择" type="date" style="width: 100%" />
@@ -171,7 +171,7 @@
       </el-table-column>
       <el-table-column width="160" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 开标时间
+          开标时间
         </template>
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.bidOpenTime" placeholder="请选择" type="date" style="width: 100%" />
@@ -180,7 +180,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 推荐中标候选人公示时间
+          推荐中标候选人公示时间
         </template>
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.candidatePubTime" placeholder="请选择" type="date" style="width: 100%" />
@@ -189,7 +189,7 @@
       </el-table-column>
       <el-table-column width="160" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 中标通知书时间
+          中标通知书时间
         </template>
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.bidNoticeTime" placeholder="请选择" type="date" style="width: 100%" />
@@ -198,7 +198,7 @@
       </el-table-column>
       <el-table-column width="150" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 中标单位
+          中标单位
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.winningBidder" placeholder="请输入" style="width: 100%" />
@@ -207,7 +207,7 @@
       </el-table-column>
       <el-table-column width="150" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 中标金额（万元）
+          中标金额（万元）
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.bidAmount" placeholder="请输入" style="width: 100%" 
@@ -217,7 +217,7 @@
       </el-table-column>
       <el-table-column width="160" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 合同签订时间
+          合同签订时间
         </template>
         <template slot-scope="scope">
           <el-date-picker v-if="!isView" v-model="scope.row.contractSignTime" placeholder="请选择" type="date" style="width: 100%" />
@@ -226,7 +226,7 @@
       </el-table-column>
       <el-table-column width="300" align="center" show-overflow-tooltip>
         <template slot="header">
-          <span style="color: red;">*</span> 投标人名称
+          投标人名称
         </template>
         <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.bidderName" placeholder="请输入" style="width: 100%" />
