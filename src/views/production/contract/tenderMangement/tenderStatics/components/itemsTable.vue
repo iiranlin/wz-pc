@@ -718,18 +718,21 @@ export default {
     async exportItems() {
       try {
         this.loading = true;
+        const selectedRowKeySet = this.selectedRowKeySet;
+        const allRowKeys = this.materialTenderInfoDOList.map(item => item && item.__rowKey).filter(Boolean);
+        const isFullDataSelected = allRowKeys.length > 0 && allRowKeys.every(rowKey => selectedRowKeySet.has(rowKey));
         const selectedIdList = this.materialTenderInfoDOList
-          .filter(item => item && this.selectedRowKeySet.has(item.__rowKey))
+          .filter(item => item && selectedRowKeySet.has(item.__rowKey))
           .map(item => item.id)
           .filter(Boolean);
         if (this.selectedRowKeys.length && !selectedIdList.length) {
           this.$modal.msgError("请选择已保存的数据后导出");
           return;
         }
-        await FileApi.customDownload({businessType:137, businessData: JSON.stringify({...this.formData,idList:selectedIdList.length ? selectedIdList : null,tenderId:this.id})});
+        await FileApi.customDownload({businessType:137, businessData: JSON.stringify({...this.formData,idList:isFullDataSelected ? [] : selectedIdList,tenderId:this.id})});
 
       } catch (error) {
-        this.$modal.msgError("导出失败，请重试");
+        this.$modal.msgError("导出数据过多，请重试");
         console.error('导出统计信息失败:', error);
       } finally {
         this.loading = false;
