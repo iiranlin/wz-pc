@@ -5,11 +5,20 @@
         <span>操作</span>
         <i class="el-icon-warning-outline tooltip-icon" @click="showTooltip" v-if="!isView"></i>
       </div>
-      <div>
+      <div class="header-actions">
         <template v-if="!isView">
           <el-button type="success" icon="el-icon-upload" size="mini" @click="onBatchUpload">批量导入</el-button>
           <el-button style="margin-left: 20px;" type="primary" size="mini" icon="el-icon-plus" @click="addItem">新增</el-button>
         </template>
+        <el-input
+          v-if="isView"
+          v-model="searchKeyword"
+          class="table-search"
+          size="mini"
+          clearable
+          prefix-icon="el-icon-search"
+          placeholder="搜索全部字段"
+        />
         <el-button v-if="isView" type="primary" size="mini" icon="el-icon-download" @click="exportItems">
           导出明细
         </el-button>
@@ -20,11 +29,26 @@
     <virtual-scroll
       :dynamic="true"
       ref="virtualScroll"
-      :data="materialTenderInfoDOList"
+      :data="filteredMaterialTenderInfoDOList"
       key-prop="__rowKey"
       @change="handleVirtualChange"
     >
-    <el-table :data="virtualList" style="margin-top: 20px;" size="small" max-height="350" row-key="__rowKey">
+    <el-table :data="virtualList" border style="margin-top: 20px;" size="small" max-height="350" row-key="__rowKey">
+      <el-table-column v-if="isView" width="55" align="center" fixed>
+        <template slot="header">
+          <el-checkbox
+            :value="isAllFilteredSelected"
+            :indeterminate="selectedIndeterminate"
+            @change="handleToggleAllFilteredSelection"
+          />
+        </template>
+        <template slot-scope="scope">
+          <el-checkbox
+            :value="selectedRowKeySet.has(scope.row.__rowKey)"
+            @change="handleToggleRowSelection(scope.row, $event)"
+          />
+        </template>
+      </el-table-column>
       <virtual-column label="序号" type="index" width="50" align="center" fixed  show-overflow-tooltip/>
       <el-table-column width="260" align="center" show-overflow-tooltip>
         <template slot="header">
@@ -72,7 +96,7 @@
         <template slot="header">
           项目类别
         </template>
-        <template slot-scope="scope"> 
+        <template slot-scope="scope">
           <el-input v-if="!isView" v-model="scope.row.projectCategory" placeholder="请输入" style="width: 100%" />
           <span v-else>{{ scope.row.projectCategory }}</span>
         </template>
@@ -134,7 +158,7 @@
           计量单位
         </template>
         <template slot-scope="scope">
-          <el-select 
+          <el-select
             v-model="scope.row.measureUnit"
             placeholder="请选择"
             style="width: 100%"
@@ -210,7 +234,7 @@
           中标金额（万元）
         </template>
         <template slot-scope="scope">
-          <el-input v-if="!isView" v-model="scope.row.bidAmount" placeholder="请输入" style="width: 100%" 
+          <el-input v-if="!isView" v-model="scope.row.bidAmount" placeholder="请输入" style="width: 100%"
           @input="handleBidAmountInput(scope.row, $event)"/>
           <span v-else>{{ scope.row.bidAmount }}</span>
         </template>
@@ -291,6 +315,8 @@ export default {
       skipWatch: false, // 导入数据时跳过 watcher 的 loadExistingData
       importing: false,
       virtualList: [],
+      searchKeyword: '',
+      selectedRowKeys: [],
       batchDialogOkHandler: null,
       rowKeySeed: 0,
       typeOptions: {}, // 物资种类选项，按物资类别分类
@@ -343,6 +369,25 @@ export default {
         this.$emit("input", newdata);
       },
     },
+    filteredMaterialTenderInfoDOList() {
+      const keyword = String(this.searchKeyword || '').trim().toLowerCase();
+      if (!keyword) return this.materialTenderInfoDOList;
+      return this.materialTenderInfoDOList.filter(item => this.getRowSearchText(item).includes(keyword));
+    },
+    selectedRowKeySet() {
+      return new Set(this.selectedRowKeys);
+    },
+    isAllFilteredSelected() {
+      const selectableRows = this.filteredMaterialTenderInfoDOList.filter(item => item && item.__rowKey);
+      if (!selectableRows.length) return false;
+      return selectableRows.every(item => this.selectedRowKeySet.has(item.__rowKey));
+    },
+    selectedIndeterminate() {
+      const selectableRows = this.filteredMaterialTenderInfoDOList.filter(item => item && item.__rowKey);
+      if (!selectableRows.length) return false;
+      const selectedCount = selectableRows.filter(item => this.selectedRowKeySet.has(item.__rowKey)).length;
+      return selectedCount > 0 && selectedCount < selectableRows.length;
+    },
   },
   mounted(){
     this.batchDialogOkHandler = this.onDialogOk;
@@ -367,6 +412,7 @@ export default {
         if (newList && newList.length) {
           this.ensureRowKeys(newList);
         }
+        this.syncSelectedRows();
       },
       immediate: true,
     }
@@ -386,6 +432,51 @@ export default {
         configurable: true,
       });
       return item;
+    },
+    syncSelectedRows() {
+      const rowKeys = new Set(this.materialTenderInfoDOList.map(item => item && item.__rowKey).filter(Boolean));
+      this.selectedRowKeys = this.selectedRowKeys.filter(rowKey => rowKeys.has(rowKey));
+    },
+    normalizeSearchValue(value) {
+      if (value === null || value === undefined) return '';
+      return String(value).toLowerCase();
+    },
+    getRowSearchText(row) {
+      if (!row) return '';
+      const rawValues = Object.keys(row)
+        .filter(key => key !== '__rowKey')
+        .map(key => this.normalizeSearchValue(row[key]));
+      const displayValues = [
+        this.formatTimestamp(row.tenderYear),
+        this.formatTimestamp(row.tenderNoticePubTime),
+        this.formatTimestamp(row.bidOpenTime),
+        this.formatTimestamp(row.candidatePubTime),
+        this.formatTimestamp(row.bidNoticeTime),
+        this.formatTimestamp(row.contractSignTime),
+        this.getMaterialCategoryLabel(row.materialCategory),
+        this.getMaterialTypeLabel(row.materialCategory, row.materialType),
+        this.getItemDetailLabel(row.materialCategory, row.materialType, row.itemDetail),
+      ].map(value => this.normalizeSearchValue(value));
+      return rawValues.concat(displayValues).join(' ');
+    },
+    handleToggleRowSelection(row, checked) {
+      if (!row || !row.__rowKey) return;
+      if (checked) {
+        if (!this.selectedRowKeySet.has(row.__rowKey)) {
+          this.selectedRowKeys = this.selectedRowKeys.concat(row.__rowKey);
+        }
+        return;
+      }
+      this.selectedRowKeys = this.selectedRowKeys.filter(rowKey => rowKey !== row.__rowKey);
+    },
+    handleToggleAllFilteredSelection(checked) {
+      const filteredRowKeys = this.filteredMaterialTenderInfoDOList.map(item => item && item.__rowKey).filter(Boolean);
+      if (checked) {
+        this.selectedRowKeys = Array.from(new Set(this.selectedRowKeys.concat(filteredRowKeys)));
+        return;
+      }
+      const filteredRowKeySet = new Set(filteredRowKeys);
+      this.selectedRowKeys = this.selectedRowKeys.filter(rowKey => !filteredRowKeySet.has(rowKey));
     },
     handleVirtualChange(renderData) {
       this.virtualList = renderData || [];
@@ -420,24 +511,24 @@ export default {
       // 清空物资种类和细目
       row.materialType = '';
       row.itemDetail = '';
-      
+
       // 如果选择了物资类别，获取对应的物资种类（用户手动切换需强制刷新）
       if (materialCategory) {
         await this.getTypeOptions(materialCategory, true);
       }
     },
-    
+
     // 处理物资种类变化
     async handleMaterialTypeChange(row, materialType) {
       // 清空细目
       row.itemDetail = '';
-      
+
       // 如果选择了物资种类，获取对应的细目（用户手动切换需强制刷新）
       if (materialType) {
         await this.getDetailOptions(materialType, row.materialCategory, true);
       }
     },
-    
+
     // 获取物资种类选项（依赖物资大类），带缓存
     async getTypeOptions(speciesCode = "", force = false) {
       // 已加载过且非强制刷新时直接返回，避免重复请求
@@ -534,6 +625,7 @@ export default {
       const index = this.materialTenderInfoDOList.findIndex(item => item === row || item.__rowKey === row.__rowKey);
       if (index === -1) return;
       this.materialTenderInfoDOList.splice(index, 1);
+      this.syncSelectedRows();
     },
     showTooltip() {
       this.dialogVisible = true;
@@ -562,36 +654,36 @@ export default {
     handleBidAmountInput(row, value) {
       // 只允许输入数字和小数点
       let formattedValue = value.replace(/[^\d.]/g, '');
-      
+
       // 确保只有一个小数点
       const parts = formattedValue.split('.');
       if (parts.length > 2) {
         formattedValue = parts[0] + '.' + parts.slice(1).join('');
       }
-      
+
       // 限制小数点后六位
       if (parts.length === 2 && parts[1].length > 6) {
         formattedValue = parts[0] + '.' + parts[1].substring(0, 6);
       }
-      
+
       // 更新值
       row.bidAmount = formattedValue;
     },
     handleTenderQuantityInput(row, value) {
       // 只允许输入数字和小数点
       let formattedValue = value.replace(/[^\d.]/g, '');
-      
+
       // 确保只有一个小数点
       const parts = formattedValue.split('.');
       if (parts.length > 2) {
         formattedValue = parts[0] + '.' + parts.slice(1).join('');
       }
-      
+
       // 限制小数点后两位
       if (parts.length === 2 && parts[1].length > 2) {
         formattedValue = parts[0] + '.' + parts[1].substring(0, 2);
       }
-      
+
       // 更新值
       row.tenderQuantity = formattedValue;
     },
@@ -626,7 +718,15 @@ export default {
     async exportItems() {
       try {
         this.loading = true;
-        await FileApi.customDownload({businessType:137, businessData: JSON.stringify({...this.formData,idList:null,tenderId:this.id})});
+        const selectedIdList = this.materialTenderInfoDOList
+          .filter(item => item && this.selectedRowKeySet.has(item.__rowKey))
+          .map(item => item.id)
+          .filter(Boolean);
+        if (this.selectedRowKeys.length && !selectedIdList.length) {
+          this.$modal.msgError("请选择已保存的数据后导出");
+          return;
+        }
+        await FileApi.customDownload({businessType:137, businessData: JSON.stringify({...this.formData,idList:selectedIdList.length ? selectedIdList : null,tenderId:this.id})});
 
       } catch (error) {
         this.$modal.msgError("导出失败，请重试");
@@ -685,6 +785,16 @@ export default {
   font-weight: 600;
   font-size: 14px;
   color: #333;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.table-search {
+  width: 220px;
+  margin-right: 10px;
 }
 
 .panel-table-header {

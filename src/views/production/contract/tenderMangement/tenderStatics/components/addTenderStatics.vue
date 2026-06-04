@@ -17,12 +17,12 @@
         <template #unitNameSlot="{ formModel }">
           <el-form-item prop="tenderUnit" label="填报单位：" class="label-right-align"
           :rules=" [{ required: true, message: '请输入填报单位', trigger: 'blur' }, { max: 100, message: '填报单位长度不能超过50个字符', trigger: 'blur' }]">
-            <!-- <el-tooltip :content="formModel.tenderUnit" placement="top" effect="dark">
-              <span class="ellipsis-text" style="width: 100%;"> -->
-                <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位"/>
-                <span v-else>{{ formModel.tenderUnit }}</span>
-              <!-- </span>
-            </el-tooltip> -->
+          <el-input v-if="type !== 'view'" v-model="formModel.tenderUnit" placeholder="请输入填报单位"/>
+            <el-tooltip v-else :content="formModel.tenderUnit" placement="top" effect="dark">
+              <span class="ellipsis-text" style="width: 100%;">
+                <span >{{ formModel.tenderUnit }}</span>
+               </span>
+            </el-tooltip>
           </el-form-item>
          </template>
          <template #tenderYearSlot="{ formModel }">
@@ -38,7 +38,7 @@
                <el-date-picker v-if="type !== 'view'" v-model="formModel.fillReportTime" type="date" placeholder="请选择填报日期" style="width: 100%;"/>
                 <span v-else>{{ formatTimestamp(formModel.fillReportTime) }}</span>
               </el-form-item>
-             
+
          </template>
          <template #personNameSlot="{ formModel }">
            <el-form-item  prop="fillPerson" label="填表人：" class="label-right-align"
@@ -46,7 +46,7 @@
              <el-input v-if="type !== 'view'" v-model="formModel.fillPerson" placeholder="请输入填表人"/>
              <span v-else>{{ formModel.fillPerson }}</span>
            </el-form-item>
-           
+
          </template>
          <template #relatePersonlSlot="{ formModel }">
            <el-form-item  prop="contactPerson" label="联系人：" class="label-right-align"
@@ -55,7 +55,7 @@
               <span v-else>{{ formModel.contactPerson }}</span>
            </el-form-item>
          </template>
-       
+
          <!-- 甲供物资列表 -->
          <template #tableSlot="{formModel}">
           <ItemsTable v-model="formData" ref="tableRef" :isView="type === 'view'" :tenderUnit="formModel.tenderUnit" :tenderYear="formModel.tenderYear ? (typeof formModel.tenderYear === 'object' ? formModel.tenderYear.getFullYear().toString() : formModel.tenderYear.toString()) : ''" :id="id" @input="handleTableInput" />
@@ -167,12 +167,12 @@ export default {
       try {
         const response = await Api.getTendererNames();
         console.log(response)
-        
+
         const tenderUnit = response.data[0].name || '';
-        
+
         // 更新 formData
         this.formData.tenderUnit = tenderUnit;
-        
+
         // 更新VFormRender中的表单数据
         if (this.$refs.vFormRef) {
           // 确保同时设置所有默认值，避免覆盖
@@ -290,7 +290,7 @@ export default {
             this.$modal.msgError('备注长度不能超过1000个字符');
             return;
           }
-          
+
           // 验证表格中的长度限制
           const materialTenderInfoDOList = formData.materialTenderInfoDOList || [];
           for (let i = 0; i < materialTenderInfoDOList.length; i++) {
@@ -314,7 +314,7 @@ export default {
           }
 
           let submitData = {...formData,...vFormRefData};
-          
+
           // 将日期字段转换为时间戳
           if (submitData.materialTenderInfoDOList) {
             submitData.materialTenderInfoDOList.forEach(item => {
@@ -349,7 +349,7 @@ export default {
           if (submitData.fillReportTime) {
             submitData.fillReportTime = new Date(submitData.fillReportTime).getTime();
           }
-          
+
           // 确保 submitData.tenderYear 是数字格式的 yyyy 格式
           if (submitData.tenderYear) {
             if (typeof submitData.tenderYear === 'object') {
@@ -358,7 +358,7 @@ export default {
               submitData.tenderYear = parseInt(submitData.tenderYear);
             }
           }
-          
+
           await Api[`tenderStatisticsAdd`](Object.assign({ id: this.type === 'update' ? this.id : null }, submitData))
             .then(({ message }) => {
               this.loading = false;
@@ -379,7 +379,7 @@ export default {
         })
       })
     },
-    
+
     // 处理表格数据变化
     handleTableInput(newData) {
       console.log('handleTableInput called with:', newData);
