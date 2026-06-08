@@ -168,6 +168,7 @@
                 v-model="formModel.materialAgentLeaderId"
                 filterable
                 required
+                multiple
                 style="width: 100%"
                 placeholder="请选择"
                 @change="
@@ -305,6 +306,9 @@ export default {
           if(data.projectType && typeof data.projectType === 'string'){
             data.projectType = data.projectType.split(',')
           }
+          if(data.materialAgentLeaderId && typeof data.materialAgentLeaderId === 'string'){
+            data.materialAgentLeaderId = data.materialAgentLeaderId.split(',')
+          }
           
           this.$refs.vFormRef.setFormData(data)
           this.$refs.vFormRef.setReadMode(this.type === 'view')
@@ -383,6 +387,9 @@ export default {
           if (Array.isArray(formData.projectType)) {
             formData.projectType = formData.projectType.join(',')
           }
+          if (Array.isArray(formData.materialAgentLeaderId)) {
+            formData.materialAgentLeaderId = formData.materialAgentLeaderId.join(',')
+          }
           
           await Api[
             this.type === 'update' ? `edit` : `save`
@@ -396,6 +403,7 @@ export default {
                const formData = await this.$refs.vFormRef.getFormData();
                formData.supervisionUnitId = formData.supervisionUnitId.split(',')
               formData.projectType = formData.projectType.split(',')
+              formData.materialAgentLeaderId = formData.materialAgentLeaderId.split(',')
             })
             .finally((err) => {
               this.loading = false;
