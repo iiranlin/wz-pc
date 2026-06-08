@@ -120,9 +120,10 @@
                 v-model="formModel.commandPostLeader"
                 filterable
                 required
+                multiple
                 style="width: 100%"
                 placeholder="请选择"
-                @change="selectChange"
+                @change="(val) => selectChange(commandPostLeaderOptions, val, 'commandPostLeaderName')"
               >
                 <el-option
                   v-for="item in commandPostLeaderOptions"
@@ -231,11 +232,20 @@ export default {
         })) 
       }
     },
-    selectChange (val) {
-      const selectItem = this.commandPostLeaderOptions.find(item => item.value === val)
-      this.$refs.vFormRef.setFormData({
-        commandPostLeaderName: selectItem?.label || ''
-      })
+    selectChange (options, val, key) {
+      if (Array.isArray(val)) {
+        // 多选
+        const selectItem = val.map(v => options.find(item => item.value === v)?.label).filter(Boolean)
+        this.$refs.vFormRef.setFormData({
+          [key]: selectItem.join(',')
+        })
+      } else {
+        // 单选
+        const selectItem = options.find(item => item.value === val)
+        this.$refs.vFormRef.setFormData({
+          [key]: selectItem?.label || ''
+        })
+      }
     },
     onUnitChange (val) {
       this.$refs.vFormRef.setFormData({
@@ -257,6 +267,11 @@ export default {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
+          // 处理指挥部负责人数据：将逗号分隔的字符串转换为数组
+          if (data.commandPostLeader && typeof data.commandPostLeader === 'string') {
+            data.commandPostLeader = data.commandPostLeader.split(',')
+          }
+
           this.$refs.vFormRef.setFormData(data)
 
           //   form action
@@ -292,9 +307,16 @@ export default {
         if (valid) {
           this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
+
+          // 浅拷贝，防止接口报错导致表单多选数据丢失
+          const newFormData = { ...formData };
+          // 处理指挥部负责人多选数据，将数组转换为逗号分隔字符串
+          if (Array.isArray(newFormData.commandPostLeader)) {
+            newFormData.commandPostLeader = newFormData.commandPostLeader.join(',')
+          }
           await Api[
             this.type === 'update' ? `edit` : `save`
-          ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData))
+          ](Object.assign({ id: this.type === 'update' ? this.id : null }, newFormData))
             .then(({ message }) => {
               this.loading = false;
               this.$modal.msgSuccess(message);
