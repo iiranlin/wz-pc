@@ -16,6 +16,8 @@
       <el-table-column prop="specModel" label="规格型号" align="center" width="150" fixed show-overflow-tooltip></el-table-column>
       <el-table-column prop="unit" label="计量单位" align="center" width="120" show-overflow-tooltip></el-table-column>
       <el-table-column prop="amount" label="合同数量" align="center" width="120" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="sendTotal" label="累计发货量（本次计划前）" align="center" width="200" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="putTotal" label="累计收货量（本次计划前）" align="center" width="200" show-overflow-tooltip></el-table-column>
       <el-table-column prop="cumulativeAmount" label="累计计划量（含本次）" align="center" width="200" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="planAmount" label="本次计划数量" align="center" width="120" show-overflow-tooltip>
