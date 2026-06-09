@@ -109,7 +109,8 @@ const SAMPLING_RESULT = [
 ]
 const DEAL_RESULT = [
   { value: '2', label: '只退换库存数量' },
-  { value: '3', label: '退换入库质检通过数量' }
+  { value: '3', label: '退换入库质检通过数量' },
+  { value: '4', label: '不退换' }
 ]
 
 export default {
