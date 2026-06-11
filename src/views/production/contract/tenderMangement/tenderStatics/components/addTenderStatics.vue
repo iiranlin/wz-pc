@@ -293,6 +293,11 @@ export default {
 
           // 验证表格中的长度限制
           const materialTenderInfoDOList = formData.materialTenderInfoDOList || [];
+          if (!Array.isArray(materialTenderInfoDOList) || materialTenderInfoDOList.length === 0) {
+            this.loading = false;
+            this.$modal.msgError('请至少添加一条数据');
+            return;
+          }
           for (let i = 0; i < materialTenderInfoDOList.length; i++) {
             const item = materialTenderInfoDOList[i];
             if (item.tendererName && item.tendererName.length > 100) {
