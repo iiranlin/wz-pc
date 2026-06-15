@@ -48,7 +48,9 @@
             {{ scope.value }}%
           </template>
           <template #validityGuarantee="scope">
-            {{ scope.data.validityGuarantee | formatDate }} 至 {{ scope.data.validityGuaranteeEnd | formatDate }}
+            <span v-show="scope.data.validityGuarantee && scope.data.validityGuaranteeEnd">
+              {{ scope.data.validityGuarantee | formatDate }} 至 {{ scope.data.validityGuaranteeEnd | formatDate }}
+            </span>
           </template>
           <!-- 合同状态 -->
           <template #contractStatus="scope">
