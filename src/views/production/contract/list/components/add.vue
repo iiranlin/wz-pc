@@ -69,7 +69,7 @@
 
         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item prop="contractFiles" label="合同扫描件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+          <el-form-item prop="contractFiles" label="合同扫描件" class="label-right-align" :rules="[{ required: false, message: '请上传', trigger: 'change' }]">
             <fileUpload v-model="scope.formModel.contractFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'"
               />
@@ -86,7 +86,7 @@
         </template>
         <!-- 保函扫描件 -->
         <template #fileListBHSMJSlot="scope">
-          <el-form-item prop="files" label="保函扫描件" class="label-right-align" :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+          <el-form-item prop="files" label="保函扫描件" class="label-right-align" :rules="[{ required: false, message: '请上传', trigger: 'change' }]">
             <fileUpload v-model="scope.formModel.files" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
