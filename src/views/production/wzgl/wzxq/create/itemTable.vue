@@ -7,8 +7,8 @@
         <i style="color: red">{{ tableData.length }}</i> 项）
       </div>
       <div style="display: flex; gap: 10px;">
-        <el-button type="primary" @click="onImport"> 导入需求物资 </el-button>
-        <el-button @click="onGoView"> 选择需求物资 </el-button>
+        <el-button class="custom_button" small type="primary" @click="onImport"> 导入需求物资 </el-button>
+        <el-button class="custom_button" small @click="onGoView"> 选择需求物资 </el-button>
       </div>
     </div>
 
@@ -254,6 +254,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.custom_button {
+    transform: translateY(-1px);
+    border-radius: 50px;
+    font-size: 14px;
+    text-align: center;
+    height: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 5px 15px 5px 15px;
+    position: relative;
+    margin-right: 6px;
+    box-sizing: border-box;
+    line-height: 22px;
+}
 .material-search-table {
   .search-container {
     margin-bottom: 15px;

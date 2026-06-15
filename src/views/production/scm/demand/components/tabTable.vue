@@ -3,7 +3,7 @@
     <!-- Action Button -->
     <div class="flex">
       <span class="title">
-        发运物资明细 （共计<span style="color: red">{{ tableData.length }}</span>条）
+        发运物资明细 （共计 <i style="color: red">{{ tableData.length }}</i> 条）
       </span>
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="selectItem"
         v-if="type != 'view'">选择发货物资</el-button>
@@ -270,6 +270,8 @@ export default {
   font-weight: 600;
   color: #000;
   padding-left: 12px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 /* 表格样式优化 */
