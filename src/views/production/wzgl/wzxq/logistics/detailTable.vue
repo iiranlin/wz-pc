@@ -186,15 +186,17 @@ export default {
 .my-label {
   background: #f2f2f2 !important;
   min-height: 38px !important;
-  width: 100px !important;
+  width: 110px !important;
   font-size: 14px !important;
-  color: #1b1e22 !important;
+  color: #303133 !important;
   display: block;
-  padding-right: 0 !important;
+  text-align: right !important;
 }
 
 .my-content {
   background: #fff;
   width: calc(100% / 3) !important;
+  font-size: 14px !important;
+  color: #303133 !important;
 }
 </style>
