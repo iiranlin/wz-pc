@@ -13,6 +13,15 @@
                     </el-option>
                 </el-select>
             </template>
+            <!-- constructionUnitId 枢纽指挥部使用下拉 -->
+
+            <template #constructionUnitId>
+                <el-select v-model="formData.constructionUnitId" :clearable="true" filterable style="width: 100%" placeholder="请选择">
+                    <el-option v-for="(item, key) in constructionUnitOptions" :key="key" :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                </el-select>
+            </template>
         </form-data>
         <right-toolbar ref="rightToolbar" :formData="formDataClick" :searchArr="property.search || []"
             :showSearch.sync="showSearch" :columns="property.fields" @queryTable="handleQuery"
@@ -24,6 +33,9 @@
 
             <template #billType="scoped">
                 {{ billTypeLabel(scoped.data.billType) }}
+            </template>
+            <template #constructionUnitId="scoped">
+                {{ constructionUnitIdLabel(scoped.data.constructionUnitId) }}
             </template>
         </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
@@ -54,6 +66,7 @@ import ProcessDesigner from '@/components/ProcessDesigner'
 import ProcessViewer from '@/components/ProcessViewer'
 import versionRecord from './components/versionRecord.vue'
 import { saveModel } from "@/api/workflow/model";
+import { newListByDeptCode } from '@/api/system/dept.js'
 import { listCategory, delCategory, changeStatus, categoryBpmnXmlModel, categoryBpmnXmlVersion } from "@/api/workflow/category"
 import indexMixin from '@/views/mixins';
 import operate from './components/operate'
@@ -127,12 +140,34 @@ export default {
                 unfinishedTaskSet: [],
                 rejectedTaskSet: []
             },
+            constructionUnitOptions: []
         }
     },
-    created() {
+    async created() {
+        this.constructionUnitOptions = await this.getDeptTree('SN')
         this.menuProperty();
     },
     methods: {
+        // 加载枢纽
+        async getDeptTree(deptCodePrefix, status = '') {
+            const res = await newListByDeptCode({
+                deptCodePrefix,
+                status
+            })
+            const data = res.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.deptName
+                }
+            })
+            return Promise.resolve(data)
+        },
+        /** 根据 constructionUnitId 值获取对应的中文文本 */
+        constructionUnitIdLabel(value) {
+            if (!value || this.constructionUnitOptions?.length == 0) return value
+            const item = this.constructionUnitOptions.find(d => d.value === value)
+            return item ? item.label : value
+        },
         /** 根据 billType 值获取字典对应的中文文本 */
         billTypeLabel(value) {
             if (!value || !this.dict?.type?.flowBusinessType) return value

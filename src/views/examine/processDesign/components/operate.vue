@@ -1,8 +1,8 @@
 <template>
     <!--  添加或修改流程信息对话框  -->
     <Dialog class="flex-dialog max-height-dialog" v-loading="editLoading" :title="title"
-        :visible.sync="editformDataFlag" width="1300px" append-to-body :close-on-click-modal="false" >
-        <el-form ref="elForm" :inline="true" :model="formData" :rules="rules" label-suffix="：" label-width="85px"
+        :visible.sync="editformDataFlag" width="1310px" append-to-body :close-on-click-modal="false" >
+        <el-form ref="elForm" :inline="true" :model="formData" :rules="rules" label-suffix="：" label-width="95px"
             style="overflow-y: auto">
             <el-form-item label="流程名称" prop="processName" class="border-radius50">
                 <el-input v-model="formData.processName" maxlength="50" placeholder="请输入流程名称" clearable />
@@ -26,6 +26,20 @@
                     collapse-tags :normalizer="normalizer" noChildrenText="无子数据" noResultsText="无匹配数据"
                     noOptionsText="无数据" :flat="true" :show-count="true" :value-consists-of="valueConsistsOf"
                     @input="handleTreeSelectInputEvent" placeholder="请选择适用单位" />
+            </el-form-item>
+            <el-form-item label="枢纽指挥部" prop="constructionUnitId" class="border-radius50">
+                      <el-select
+                        v-model="formData.constructionUnitId"
+                        clearable
+                        placeholder="请选择枢纽指挥部"
+                        style="width: 1154px"
+                        >
+                        <el-option v-for="(item, key) in constructionUnitOptions"
+                        :key="key"
+                        :label="item.label"
+                        :value="item.value"
+                        />
+                    </el-select>
             </el-form-item>
             <el-form-item label="建设项目" prop="projectId" class="border-radius50">
                       <el-select
@@ -95,6 +109,7 @@
 </template>
 <script>
 import { addCategory, updateCategory } from "@/api/workflow/category"
+import { newListByDeptCode } from '@/api/system/dept.js'
 import { deptTreeAll } from '@/api/system/dept'
 import { commonTree } from '@/api/system/dict'
 import { getAllProject } from '@/api/prodmgr-inv/project/line.js'
@@ -126,7 +141,8 @@ export default {
                 // 流程描述
                 remark: '',
                 formItems: [],
-                billCode: ''
+                billCode: '',
+                constructionUnitId: '',
             },
             // 表单校验
             rules: {
@@ -150,6 +166,9 @@ export default {
                 useOrgId: [
                     { required: true, message: "请选择适用单位", trigger: "change" }
                 ],
+                constructionUnitId: [
+                    { required: true, message: "请选择枢纽指挥部", trigger: "change" }
+                ],
                 enableStatus: [
                     { required: true, message: '请选择状态', trigger: 'change' },
                 ],
@@ -160,15 +179,31 @@ export default {
             commonTreeList: [],
             id: null,
             command: '',
-            dictObj: {}
+            dictObj: {},
+            constructionUnitOptions: []
         }
     },
-    created() {
+    async created() {
+        this.constructionUnitOptions = await this.getDeptTree('SN')
         this.deptTreeAll();
         this.commonTree();
         this.searchProject();
     },
     methods: {
+        // 加载枢纽
+        async getDeptTree(deptCodePrefix, status = '') {
+            const res = await newListByDeptCode({
+                deptCodePrefix,
+                status
+            })
+            const data = res.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.deptName
+                }
+            })
+            return Promise.resolve(data)
+        },
         init(row, buttonCode) {
             for(let i=0; i< this.dict.type.flowBusinessType.length; i++) {
                 const dict = this.dict.type.flowBusinessType[i]
@@ -198,7 +233,8 @@ export default {
                         enableStatus: data.enableStatus,
                         remark: data.remark,
                         formItems: data.formItems && JSON.parse(data.formItems) || [],
-                        billCode: data.billCode
+                        billCode: data.billCode,
+                        constructionUnitId: data.constructionUnitId
                     }
                 } else {
                     this.formData.formItems = [];
