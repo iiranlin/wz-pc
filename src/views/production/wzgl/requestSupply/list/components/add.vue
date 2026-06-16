@@ -16,7 +16,7 @@
         ref="elform"
         class="process-form"
         label-position="right"
-        labelWidth="120px"
+        labelWidth="135px"
         size="medium"
         :showMessage="true"
         :rules="rules"
@@ -28,10 +28,11 @@
               {{ form.planName }}
             </el-form-item>
           </el-col>
-          <el-col :span="24"> </el-col>
+          <el-col :span="24"> 
           <el-form-item :label="'供应商名称'" prop="sellerName">
             {{ form.sellerName }}
           </el-form-item>
+          </el-col>
           <el-col :span="24"> </el-col>
           <el-col :span="24">
             <el-form-item :label="'需求计划表附件'" prop="xqjhbfj">
@@ -137,3 +138,21 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .process-form {
+    .el-form-item__label{
+      min-height: 38px;
+      padding: 2px 12px 2px 10px;
+      background: #F2F2F2;
+      border: 1px solid #e6ebf5;
+      border-right: none;
+    }
+    .el-form-item__content{
+      min-height: 38px;
+      padding-left: 10px;
+      border: 1px solid #e6ebf5;
+      border-left: none;
+    }
+  }
+</style>
