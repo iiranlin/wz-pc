@@ -152,7 +152,6 @@ export default {
       min-height: 38px;
       padding-left: 10px;
       border: 1px solid #e6ebf5;
-      border-left: none;
     }
   }
 </style>
