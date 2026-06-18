@@ -4,6 +4,15 @@
       :buttonDisable="buttonDisable"></button-top>
     <form-data ref="formData" :showSearch="showSearch" :searchArr="property.search || []" @handleQuery="handleQuery"
       :formData="formData" @handleResetField="onResetField">
+     <!-- buyer 买方使用下拉 -->
+
+      <template #buyer>
+        <el-select v-model="formData.buyId" :clearable="true" filterable style="width: 100%"
+          placeholder="请选择">
+          <el-option v-for="(item, key) in constructionUnitOptions" :key="key" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+      </template>
       <template #contractStatus>
         <el-select v-model="formData.contractStatus" filterable required style="width: 100%" placeholder="请选择">
           <el-option v-for="item in [
@@ -80,6 +89,7 @@ import indexMixin from "@/views/mixins";
 import Add from './components/add.vue'
 import dayjs from 'dayjs'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import { newListByDeptCode } from '@/api/system/dept.js'
 export default {
   // 建设项目
   name: "contractList",
@@ -162,13 +172,14 @@ export default {
       total: 0,
       selection: [],
       hasOwn: true,
-
+      constructionUnitOptions: []
     };
   },
   activated() {
     this.getList();
   },
   async created() {
+    this.constructionUnitOptions = await this.getDeptTree('SN')
     let id = this.$route.meta.id;
     this.$store.dispatch("menuProperty", id).then((data) => {
       this.property = data;
@@ -184,6 +195,20 @@ export default {
     }
   },
   methods: {
+    // 加载枢纽
+    async getDeptTree(deptCodePrefix, status = '') {
+      const res = await newListByDeptCode({
+        deptCodePrefix,
+        status
+      })
+      const data = res.data.map(item => {
+        return {
+          value: item.id,
+          label: item.deptName
+        }
+      })
+      return Promise.resolve(data)
+    },
     isEnabledContract(row) {
       return String(row?.contractStatus) === '2'
     },
