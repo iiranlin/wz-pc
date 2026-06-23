@@ -69,7 +69,7 @@
 
         <!-- 附件 -->
         <template #fileListSlot="scope">
-          <el-form-item prop="contractFiles" label="合同扫描件" class="label-right-align" :rules="[{ required: false, message: '请上传', trigger: 'change' }]">
+          <el-form-item prop="contractFiles" label="合同扫描件" class="label-right-align required-blue" :rules="[{ required: false, message: '请上传', trigger: 'change' }]">
             <fileUpload v-model="scope.formModel.contractFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'"
               />
@@ -78,7 +78,7 @@
         </template>
 
         <template #fileListGgSlot="scope">
-          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
+          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align required-blue">
             <fileUpload v-model="scope.formModel.technicalFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
@@ -86,7 +86,7 @@
         </template>
         <!-- 保函扫描件 -->
         <template #fileListBHSMJSlot="scope">
-          <el-form-item prop="files" label="保函扫描件" class="label-right-align" :rules="[{ required: false, message: '请上传', trigger: 'change' }]">
+          <el-form-item prop="files" label="保函扫描件" class="label-right-align required-blue" :rules="[{ required: false, message: '请上传', trigger: 'change' }]">
             <fileUpload v-model="scope.formModel.files" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
@@ -490,5 +490,11 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+::v-deep .required-blue > .el-form-item__label::before {
+  content: '*';
+  color: #1890ff;
+  margin-right: 4px;
 }
 </style>
