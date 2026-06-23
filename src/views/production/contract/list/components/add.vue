@@ -297,7 +297,10 @@ export default {
           newData.contractFiles = JSON.parse(JSON.stringify(newData.contractFiles || []))
           newData.technicalFiles = JSON.parse(JSON.stringify(newData.technicalFiles || []))
           // validityGuarantee 重新组合为数组
-          newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
+          newData.validityGuarantee = this.normalizeValidityGuaranteeRange([
+            newData.validityGuarantee,
+            newData.validityGuaranteeEnd
+          ])
           this.$refs.vFormRef.setFormData(newData)
           // 更新重新赋值
           this.sellerName = data.seller
@@ -359,9 +362,9 @@ export default {
           const fileList1 = formData.fileList1
           // formData.fileList = [{ fileList }]
           // validityGuarantee 保函有效期日期范围拆分两个字段: validityGuarantee,validityGuaranteeEnd
-          const validityGuarantee = formData.validityGuarantee
-          formData.validityGuarantee = validityGuarantee ? validityGuarantee[0] : ''
-          formData.validityGuaranteeEnd = validityGuarantee ? validityGuarantee[1] : ''
+          const validityGuarantee = this.normalizeValidityGuaranteeRange(formData.validityGuarantee)
+          formData.validityGuarantee = validityGuarantee[0] || null
+          formData.validityGuaranteeEnd = validityGuarantee[1] || null
 
           await Api[
             this.type === 'update' ? `edit` : `save`
@@ -393,6 +396,15 @@ export default {
       } else {
         this.$refs.vFormRef.showWidgets(widgets)
       }
+    },
+    normalizeValidityGuaranteeRange(range) {
+      if (!Array.isArray(range) || range.length < 2) {
+        return []
+      }
+
+      const isValidDateValue = value => value !== null && value !== undefined && value !== '' && value !== 0 && value !== '0'
+      const [start, end] = range
+      return isValidDateValue(start) && isValidDateValue(end) ? [start, end] : []
     },
     formFillInPage() {
       return new Promise((resolve) => {

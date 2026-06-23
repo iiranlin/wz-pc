@@ -309,7 +309,10 @@ export default {
             technicalFiles: JSON.parse(data.technicalFiles || '[]'),
           }
           // validityGuarantee 重新组合为数组
-          newData.validityGuarantee = [newData.validityGuarantee, newData.validityGuaranteeEnd]
+          newData.validityGuarantee = this.normalizeValidityGuaranteeRange([
+            newData.validityGuarantee,
+            newData.validityGuaranteeEnd
+          ])
           this.$refs.vFormRef.setFormData(newData)
           //   form action
           this.$refs.vFormRef.setReadMode(this.type === 'view')
@@ -367,6 +370,9 @@ export default {
           // 后端存入嵌套数组
           const fileList = formData.fileList
           const fileList1 = formData.fileList1
+          const validityGuarantee = this.normalizeValidityGuaranteeRange(formData.validityGuarantee)
+          formData.validityGuarantee = validityGuarantee[0] || null
+          formData.validityGuaranteeEnd = validityGuarantee[1] || null
           await Api[
             this.type === 'update' ? `edit` : `save`
           ](Object.assign({ id: this.type === 'update' ? this.id : null }, formData, {
@@ -397,6 +403,15 @@ export default {
       } else {
         this.$refs.vFormRef.showWidgets(widgets)
       }
+    },
+    normalizeValidityGuaranteeRange (range) {
+      if (!Array.isArray(range) || range.length < 2) {
+        return []
+      }
+
+      const isValidDateValue = value => value !== null && value !== undefined && value !== '' && value !== 0 && value !== '0'
+      const [start, end] = range
+      return isValidDateValue(start) && isValidDateValue(end) ? [start, end] : []
     },
     formFillInPage () {
       return new Promise((resolve) => {
