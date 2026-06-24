@@ -78,7 +78,7 @@
         </template>
 
         <template #fileListGgSlot="scope">
-          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align required-blue">
+          <el-form-item prop="fileList1" label="技术规格书" class="label-right-align">
             <fileUpload v-model="scope.formModel.technicalFiles" :limit="9999" :fileSize="500" :fileType="['pdf']"
               :preview="type === 'view'" />
           </el-form-item>
