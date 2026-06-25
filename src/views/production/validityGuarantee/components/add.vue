@@ -92,7 +92,7 @@
         <template #fileListSlot="scope">
           <el-form-item
             prop="fileList"
-            label="合同附件"
+            label="保函扫描件"
             class="label-right-align"
           >
             <fileUpload
