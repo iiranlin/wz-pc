@@ -8,7 +8,7 @@ import { menuRecordFunc } from '@/api/system/menu'
 import { IDB } from '@/utils'
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/cloudLogin']
+const whiteList = ['/login', '/cloudLogin', '/suppliesLogin']
 
 function loginAuth(snapTicket) {
     return new Promise((resolve) => {
