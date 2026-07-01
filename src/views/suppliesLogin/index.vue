@@ -34,8 +34,7 @@ export default {
     return {
       status: 'loading',
       message: '登录处理中，请稍候...',
-      userName: '',
-      businessId: ''
+      userName: ''
     }
   },
   computed: {
@@ -53,12 +52,11 @@ export default {
   methods: {
     clearCurrentToken() {
       this.userName = '';
-      this.businessId = '';
       removeToken()
       this.$store.commit('SET_TOKEN', '')
     },
     cacheRedirectTarget() {
-      const { pcurl: redirect, ticket, businessId } = this.$route.query
+      const { pcurl: redirect, ticket } = this.$route.query
       if (!redirect && !ticket) {
         sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
         return
@@ -66,16 +64,17 @@ export default {
       if (!redirect) {
         return
       }
-      this.businessId = businessId;
       sessionStorage.setItem(CLOUD_REDIRECT_KEY, redirect)
     },
     async redirectAfterLogin() {
       try {
+        const businessId = sessionStorage.getItem(CLOUD_REDIRECT_KEY)
+
         // 加密用户编号
         const res = await loginByCode({ userName: this.userName })
-        if (this.businessId) {
+        if (businessId) {
           // 加密待办业务ID
-          const res2 = await loginByCode({ userName: this.businessId })
+          const res2 = await loginByCode({ userName: businessId })
 
           // 跳转物资平台
           await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${res.data}&businessId=${res2.data}`)
