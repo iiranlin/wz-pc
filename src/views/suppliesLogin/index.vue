@@ -23,8 +23,8 @@ import { loginByTicketCloud } from '@/api/login'
 import { setToken, removeToken } from '@/utils/auth'
 import { loginByCode } from '@/api/system/CloudSSO.js'
 
-const CLOUD_LOGOUT_URL = process.env.VUE_APP_CLOUD_URL
-const CLOUD_SSO_URL = process.env.VUE_APP_CLOUD_SSO
+const CLOUD_LOGOUT_URL = process.env.VUE_APP_SUPPLIES_CLOUD_URL
+const CLOUD_SSO_URL = process.env.VUE_APP_SUPPLIES_CLOUD_SSO
 const MATERIAL_SSO_URL = process.env.VUE_APP_MATERIAL_URL
 const CLOUD_REDIRECT_KEY = 'cloudLoginRedirect'
 
