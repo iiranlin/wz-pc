@@ -77,10 +77,10 @@ export default {
           const res2 = await loginByCode({ userName: businessId })
 
           // 跳转物资平台
-          await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${res.data}&businessId=${res2.data}`)
+          await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${encodeURIComponent(res.data)}&businessId=${encodeURIComponent(res2.data)}`)
         } else {
           // 跳转物资平台
-          await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${res.data}`)
+          await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${encodeURIComponent(res.data)}`)
         }
 
         sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
