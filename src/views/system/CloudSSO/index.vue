@@ -33,6 +33,7 @@
         </el-table-column>
         <el-table-column prop="loginid" label="用户编号" align="center" />
         <el-table-column prop="lastname" label="用户名称" align="center" />
+        <el-table-column prop="bindUser" label="绑定用户" align="center" />
         <!-- <el-table-column label="状态" align="center">
           <template slot-scope="{ row }">
             {{ row.bindStatus == 0 ? "未绑定" : "已绑定" }}
@@ -87,6 +88,7 @@
         </el-table-column>
         <el-table-column prop="userCode" label="用户编号" align="center" />
         <el-table-column prop="userName" label="用户名称" align="center" />
+        <el-table-column prop="bindUser" label="绑定用户" align="center" />
         <!-- <el-table-column label="状态" align="center">
           <template slot-scope="{ row }">
             {{ row.bindStatus == 0 ? "未绑定" : "已绑定" }}
@@ -216,7 +218,9 @@ export default {
 
       this.currentRow = { ...row };
 
-      this.$refs.bindingDialog.init();
+      this.$nextTick(() => {
+        this.$refs.bindingDialog.init();
+      });
     },
     // 解绑
     unbind(row, num) {

@@ -4,10 +4,15 @@
     <div class="form-render-wrapper" style="margin-top: 16px">
       <el-row :gutter="10">
         <el-col :span="24" v-if="clickNum == 1" class="container_table_div" v-loading="loading">
-          <!-- <div class="filter-container">
+          <div class="filter-container">
             <div>
               <el-input v-model="userName" placeholder="请输入用户名称" clearable
                 style="margin-right: 10px; width: 240px;"></el-input>
+              <el-select v-model="dateRange" placeholder="请选择" clearable>
+                <el-option v-for="item in userTypeOptions" :key="item.value" :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </div>
 
             <div>
@@ -16,7 +21,7 @@
                 查询
               </el-button>
             </div>
-          </div> -->
+          </div>
 
           <el-table ref="multipleTable" :data="tableData" style="width: 100%; margin-top: 20px;"
             height="calc(100vh - 320px)" border fit highlight-current-row @selection-change="handleSelectionChange">
@@ -29,15 +34,26 @@
             </el-table-column>
             <el-table-column prop="loginid" label="用户编号" align="center" />
             <el-table-column prop="lastname" label="用户名称" align="center" />
+            <el-table-column prop="bindUser" label="绑定用户" align="center" />
+            <el-table-column label="状态" align="center">
+              <template slot-scope="{ row }">
+                {{ row.bindStatus == 0 ? "未绑定" : "已绑定" }}
+              </template>
+            </el-table-column>
           </el-table>
           <pagination v-show="total > 0" :total="total" :page.sync="pageNum" :limit.sync="pageSize"
             @pagination="fetchDataTwo" />
         </el-col>
         <el-col :span="24" v-else class="container_table_div" v-loading="loading">
-          <!-- <div class="filter-container">
+          <div class="filter-container">
             <div>
               <el-input v-model="userNameTwo" placeholder="请输入用户名称" style="margin-right: 10px; width: 240px;"
                 clearable></el-input>
+              <el-select v-model="appDateRange" placeholder="请选择" clearable>
+                <el-option v-for="item in userTypeOptions" :key="item.value" :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </div>
 
             <div>
@@ -46,7 +62,7 @@
                 查询
               </el-button>
             </div>
-          </div> -->
+          </div>
 
           <el-table ref="multipleTable" v-loading="loading" :data="appTableData" height="calc(100vh - 320px)"
             style="width: 100%; margin-top: 20px;" border fit highlight-current-row
@@ -60,6 +76,12 @@
             </el-table-column>
             <el-table-column prop="userCode" label="用户编号" align="center" />
             <el-table-column prop="userName" label="用户名称" align="center" />
+            <el-table-column prop="bindUser" label="绑定用户" align="center" />
+            <el-table-column label="状态" align="center">
+              <template slot-scope="{ row }">
+                {{ row.bindStatus == 0 ? "未绑定" : "已绑定" }}
+              </template>
+            </el-table-column>
           </el-table>
           <pagination v-show="totalTwo > 0" :total="totalTwo" :page.sync="pageNumTwo" :limit.sync="pageSizeTwo"
             @pagination="fetchAppDataTwo" />
@@ -101,12 +123,25 @@ export default {
       totalTwo: 0,
       pageNumTwo: 1,
       pageSizeTwo: 10,
+      userTypeOptions: [
+        {
+          value: '0',
+          label: '未绑定'
+        },
+        {
+          value: '1',
+          label: '已绑定'
+        }
+      ],
       userName: '',
       userNameTwo: '',
+      dateRange: '',
+      appDateRange: '',
       loading: false,
       tableData: [],
       appTableData: [],
       multipleSelection: [],
+      adjustingSelection: false,
     }
   },
   methods: {
@@ -115,13 +150,17 @@ export default {
       this.visible = true;
       if (this.clickNum == 1) {
         this.userName = '';
+        this.dateRange = '';
         this.pageNum = 1;
         this.pageSize = 10;
       } else {
         this.userNameTwo = '';
+        this.appDateRange = '';
         this.pageNumTwo = 1;
         this.pageSizeTwo = 10;
       }
+      this.multipleSelection = [];
+      this.adjustingSelection = false;
 
       this.clickNum == 0 ? this.fetchAppDataTwo() : this.fetchDataTwo();
       this.$nextTick(() => {
@@ -139,8 +178,7 @@ export default {
       try {
         const res = await getSystemPersonList({
           lastname: this.userName,
-          bindStatus: 0,
-          userCode: this.currentRow?.userCode,
+          bindStatus: this.dateRange,
           pageNum: this.pageNum,
           pageSize: this.pageSize
         })
@@ -157,7 +195,7 @@ export default {
     // 物资平台查询
     handleQueryTwo() {
       this.pageNumTwo = 1
-      this.fetchAppData();
+      this.fetchAppDataTwo();
     },
     async fetchAppDataTwo() {
       this.loading = true
@@ -165,8 +203,7 @@ export default {
 
         const res = await getExternalPersonList({
           userName: this.userNameTwo,
-          bindStatus: 0,
-          userCode: this.currentRow?.loginid,
+          bindStatus: this.appDateRange,
           pageNum: this.pageNumTwo,
           pageSize: this.pageSizeTwo
         })
@@ -182,13 +219,23 @@ export default {
     },
 
     handleSelectionChange(val) {
+      if (this.adjustingSelection) {
+        this.multipleSelection = val;
+        return;
+      }
       if (val.length > 1) {
         // 找到新勾选的那条（当前数组最后一项）
         const newRow = val[val.length - 1]
+        this.adjustingSelection = true;
         // 清空所有选中
         this.$refs.multipleTable.clearSelection()
         // 只勾选最新点击的这一行
         this.$refs.multipleTable.toggleRowSelection(newRow, true)
+        this.multipleSelection = [newRow];
+        this.$nextTick(() => {
+          this.adjustingSelection = false;
+        });
+        return;
       }
       this.multipleSelection = val;
     },
