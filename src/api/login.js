@@ -36,6 +36,15 @@ export function loginByTicketCloud(params) {
     })
 }
 
+// 
+export function loginWzByTicket(params){
+  return request({
+        url: `${VUE_APP_BASE_PREFIX}/auth/loginWzByTicket`,
+        method: 'get',
+        params  
+    })
+}
+
 // 用户信息
 export function info() {
   return request({

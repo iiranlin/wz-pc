@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { loginByTicketCloud } from '@/api/login'
+import { loginWzByTicket } from '@/api/login'
 import { setToken, removeToken } from '@/utils/auth'
 import { loginByCode } from '@/api/system/CloudSSO.js'
 
@@ -125,10 +125,10 @@ export default {
       sessionStorage.setItem('cloudLogoutUrl', CLOUD_LOGOUT_URL)
 
       try {
-        const res = await loginByTicketCloud({ ticket })
+        const res = await loginWzByTicket({ ticket })
         if (res.success && res.data && res.data.token) {
-          setToken(res.data.token)
-          this.$store.commit('SET_TOKEN', res.data.token)
+          // setToken(res.data.token)
+          // this.$store.commit('SET_TOKEN', res.data.token)
 
           this.userName = res.data?.username || '';
           sessionStorage.setItem('loginType', 'cloud')
