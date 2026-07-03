@@ -77,16 +77,16 @@ export default {
           const res2 = await loginByCode({ userName: businessId })
 
           // 跳转物资平台
-          await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${encodeURIComponent(res.data)}&businessId=${encodeURIComponent(res2.data)}`)
+          await window.location.replace(`${MATERIAL_SSO_URL}?userCode=${encodeURIComponent(res.data)}&businessId=${encodeURIComponent(res2.data)}`)
         } else {
           // 跳转物资平台
-          await this.$router.replace(`${MATERIAL_SSO_URL}?userCode=${encodeURIComponent(res.data)}`)
+          await window.location.replace(`${MATERIAL_SSO_URL}?userCode=${encodeURIComponent(res.data)}`)
         }
 
         sessionStorage.removeItem(CLOUD_REDIRECT_KEY)
         return
       } catch (error) {
-
+        console.log(error)
       }
     },
     clearCloudStorage() {
@@ -126,7 +126,7 @@ export default {
 
       try {
         const res = await loginWzByTicket({ ticket })
-        if (res.success && res.data && res.data.token) {
+        if (res.data) {
           // setToken(res.data.token)
           // this.$store.commit('SET_TOKEN', res.data.token)
 
