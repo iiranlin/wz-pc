@@ -55,3 +55,11 @@ export function loginByCode(data) {
     params:data,
   });
 }
+
+// 注册接收推送
+export function casRegister() {
+  return request({
+    url: `${VUE_APP_BASE_PREFIX}/auth/casRegister`,
+    method: "get",
+  });
+}

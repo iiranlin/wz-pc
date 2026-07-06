@@ -22,6 +22,9 @@
           <el-button size="small" icon="el-icon-sort" :loading="syncLoading" @click="syncUser()">
             同步用户
           </el-button>
+          <el-button size="small" icon="el-icon-bell" :loading="registerLoading" @click="handleCasRegister()">
+            注册接收推送
+          </el-button>
         </div>
       </div>
 
@@ -116,7 +119,7 @@
 
 <script>
 import binding from '@/views/system/CloudSSO/binding.vue'
-import { getSystemPersonList, getExternalPersonList, updStaffTypeOutList, insStaffTypeOutList, getCasUserByDepartmentId } from '@/api/system/CloudSSO.js'
+import { getSystemPersonList, getExternalPersonList, updStaffTypeOutList, insStaffTypeOutList, getCasUserByDepartmentId, casRegister } from '@/api/system/CloudSSO.js'
 
 export default {
   name: 'CloudSSO',
@@ -129,6 +132,7 @@ export default {
     return {
       syncLoading: false,
       syncLoadingTwo: false,
+      registerLoading: false,
       clickNum: 0,
       currentRow: null,
       total: 0,
@@ -296,6 +300,36 @@ export default {
         });
       }).finally(() => {
         this.syncLoading = false;
+      })
+    },
+    // 注册接收推送
+    async handleCasRegister() {
+      this.$confirm('确定注册接收推送吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.registerLoading = true;
+        try {
+          const res = await casRegister();
+          if (res.code === 0) {
+            this.$message.success('注册成功');
+          } else {
+            this.$message.error(res.msg);
+          }
+        } catch (error) {
+          console.error('注册接收推送失败', error)
+          this.$message.error('注册失败');
+        } finally {
+          this.registerLoading = false;
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消注册'
+        });
+      }).finally(() => {
+        this.registerLoading = false;
       })
     },
     // 同步物资平台用户
