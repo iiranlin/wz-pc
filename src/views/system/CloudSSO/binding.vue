@@ -252,13 +252,16 @@ export default {
         type: 'warning'
       }).then(async () => {
         this.loading = true;
+        const casUser = this.clickNum == 0 ? this.currentRow : this.multipleSelection[0];
         const wzBindUser = this.clickNum == 0 ? this.multipleSelection[0]?.userCode : this.currentRow?.userCode;
-        const casBindUser = this.clickNum == 0 ? this.currentRow?.loginid : this.multipleSelection[0]?.loginid;
+        const casBindUser = casUser?.loginid;
+        const casUserId = casUser?.id 
 
         try {
           const res = await updStaffTypeOutList({
             wzBindUser,
             casBindUser,
+            casUserId,
             clickNum: this.clickNum
           })
           if (res.code === 0) {
