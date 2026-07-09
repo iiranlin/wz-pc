@@ -42,6 +42,19 @@ export const lineSelectOptions = (params) => {
 }
 
 /**
+ * 获取建设项目全部权限下拉
+ * @param {*} params 
+ * @returns 
+ */
+export const getAllProjectBySnUser = (params) => {
+    return request({
+        url: `${VUE_APP_PRODMGR_INV}/materialProject/getAllProjectBySnUser`,
+        method: 'get',
+        params
+    })
+}
+
+/**
  * 详情
  * @param {*} params 
  * @returns 

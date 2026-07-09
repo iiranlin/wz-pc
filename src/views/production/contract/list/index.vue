@@ -262,7 +262,7 @@ export default {
       this.clearUrlQueryFields();
     },
     getLineOptions() {
-      LineApi.lineSelectOptions().then(({ data }) => {
+      LineApi.getAllProjectBySnUser().then(({ data }) => {
         this.lineOptions = data.map(x => ({
           label: x.projectName,
           value: x.projectName

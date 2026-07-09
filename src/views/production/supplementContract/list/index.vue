@@ -147,7 +147,7 @@ export default {
       return this.isEnabledContract(row) ? 'deactivate' : 'enable'
     },
     getLineOptions() {
-      LineApi.lineSelectOptions().then(({ data }) => {
+      LineApi.getAllProjectBySnUser().then(({ data }) => {
         this.lineOptions = data.map(x => ({
           label: x.projectName,
           value: x.projectName
