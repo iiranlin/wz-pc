@@ -41,10 +41,14 @@
         </template> -->
         <template #shippingNumberSlot="scope">
           <el-form-item prop="contractName" label="合同名称" class="label-right-align" v-if="type != 'view'">
-            <el-input v-model="scope.formModel.contractName" readonly></el-input>
+            <el-tooltip :content="scope.formModel.contractName || ''" effect="light" placement="top">
+              <span class="readonly-mode-field">{{ scope.formModel.contractName }}</span>
+            </el-tooltip>
           </el-form-item>
           <el-form-item prop="shipmentBatchNumber" label="发货单号" class="label-right-align" v-else>
-            {{ scope.formModel.shipmentBatchNumber }}
+            <el-tooltip :content="scope.formModel.shipmentBatchNumber || ''" effect="light" placement="top">
+              <span class="readonly-mode-field">{{ scope.formModel.shipmentBatchNumber }}</span>
+            </el-tooltip>
           </el-form-item>
         </template>
         <template #detailSlot>
@@ -70,6 +74,7 @@ import { mapState } from "vuex";
 import workFlowView from '@/components/workFlowView'
 import dayjs from "dayjs";
 import toBeReviewed from "@/views/audit/components/toBeReviewed";
+import { setReadonlyTextFields } from "@/utils/form-render";
 export default {
   name: "addSend",
   components: {
@@ -456,7 +461,10 @@ export default {
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("addSend").then((res) => {
-          this.$refs["vFormRef"].setFormJson(res.data);
+          const formJson = this.type === "create"
+            ? setReadonlyTextFields(res.data, ["planName", "sectionName", "contractName"])
+            : res.data;
+          this.$refs["vFormRef"].setFormJson(formJson);
           resolve(true);
         });
       });
@@ -484,5 +492,31 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+::v-deep .readonly-mode-field {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #606266;
+  line-height: 32px;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+::v-deep .fixed-readonly-field .el-input__inner {
+  overflow: hidden;
+  padding: 0;
+  color: #606266;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  cursor: default;
+  text-overflow: ellipsis;
+}
+
+::v-deep .fixed-readonly-field .el-input__inner:focus {
+  border-color: transparent;
 }
 </style>
