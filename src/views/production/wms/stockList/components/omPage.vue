@@ -180,6 +180,7 @@ import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import * as Lzmx from "@/api/prodmgr-inv/project/lzmx.js";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
+import { setReadonlyTextFields } from "@/utils/form-render";
 import { getToken } from "@/utils/auth";
 import fileUpload from "@/components/upload";
 import { getUserInfo } from "@/utils/user-info";
@@ -409,7 +410,12 @@ export default {
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("om").then((res) => {
-          this.$refs["vFormRef"].setFormJson(res.data);
+          const formJson = setReadonlyTextFields(res.data, [
+            "planName",
+            "sectionName",
+            "deptName",
+          ]);
+          this.$refs["vFormRef"].setFormJson(formJson);
           resolve(true);
         });
       });
@@ -642,5 +648,31 @@ export default {
 
 ::v-deep .el-table__expand-icon {
   display: none !important;
+}
+
+::v-deep .readonly-mode-field {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #606266;
+  line-height: 32px;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+::v-deep .fixed-readonly-field .el-input__inner {
+  overflow: hidden;
+  padding: 0;
+  color: #606266;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  cursor: default;
+  text-overflow: ellipsis;
+}
+
+::v-deep .fixed-readonly-field .el-input__inner:focus {
+  border-color: transparent;
 }
 </style>

@@ -7,20 +7,27 @@
         <!-- 供货商/操作人 -->
         <template #supplierNameSlot="scope">
           <el-form-item prop="sellerName" label="供货商" class="label-right-align" v-if="type != 'view'">
-            <el-input v-model="scope.formModel.sellerName" readonly></el-input>
+            <el-tooltip :content="scope.formModel.sellerName || ''" effect="light" placement="top">
+              <span class="readonly-mode-field">{{ scope.formModel.sellerName }}</span>
+            </el-tooltip>
           </el-form-item>
           <el-form-item prop="createUserName" label="操作人" class="label-right-align" v-else>
-            {{ scope.formModel.createUserName }}
+            <el-tooltip :content="scope.formModel.createUserName || ''" effect="light" placement="top">
+              <span class="readonly-mode-field">{{ scope.formModel.createUserName }}</span>
+            </el-tooltip>
           </el-form-item>
         </template>
         <!-- 发货日期/收货日期 -->
         <template #shippingDateSlot="scope">
           <el-form-item prop="shippingDate" label="发货日期" class="label-right-align" v-if="type != 'view'">
-            <el-date-picker v-model="scope.formModel.shippingDate" type="date" style="width: 100%" v-if="type != 'view'"
-              value-format="yyyy-MM-dd" format="yyyy-MM-dd" readonly></el-date-picker>
+            <el-tooltip :content="scope.formModel.shippingDate || ''" effect="light" placement="top">
+              <span class="readonly-mode-field">{{ scope.formModel.shippingDate }}</span>
+            </el-tooltip>
           </el-form-item>
           <el-form-item prop="takeDate" label="收货时间" class="label-right-align" v-else>
-            {{ scope.formModel.takeDate }}
+            <el-tooltip :content="scope.formModel.takeDate || ''" effect="light" placement="top">
+              <span class="readonly-mode-field">{{ scope.formModel.takeDate }}</span>
+            </el-tooltip>
           </el-form-item>
         </template>
         <template #file3Slot="scope">
@@ -178,6 +185,7 @@ import { getUserInfo } from "@/utils/user-info";
 import dayjs from "dayjs";
 import toBeReviewed from "@/views/audit/components/toBeReviewed";
 import workFlowView from '@/components/workFlowView'
+import { setReadonlyTextFields } from "@/utils/form-render";
 export default {
   name: "receivePage",
   components: {
@@ -529,7 +537,10 @@ export default {
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("receive").then((res) => {
-          this.$refs["vFormRef"].setFormJson(res.data);
+          const formJson = this.type === "create"
+            ? setReadonlyTextFields(res.data, ["planName", "sectionName", "deptName"])
+            : res.data;
+          this.$refs["vFormRef"].setFormJson(formJson);
 
           this.$refs["vFormRef"].setFormData({
             buyer: this.buyer,
@@ -614,6 +625,32 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+::v-deep .readonly-mode-field {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #606266;
+  line-height: 32px;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+::v-deep .fixed-readonly-field .el-input__inner {
+  overflow: hidden;
+  padding: 0;
+  color: #606266;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  cursor: default;
+  text-overflow: ellipsis;
+}
+
+::v-deep .fixed-readonly-field .el-input__inner:focus {
+  border-color: transparent;
 }
 </style>
 <style>
