@@ -137,7 +137,7 @@ export default {
     },
     // 编辑初始化
     async updateInit(id) {
-      await Api.detail(id).then(({ data }) => {
+      await Api.detail(id,{type:2}).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
