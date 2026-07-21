@@ -27,6 +27,8 @@ const CLOUD_LOGOUT_URL = process.env.VUE_APP_SUPPLIES_CLOUD_URL
 const CLOUD_SSO_URL = process.env.VUE_APP_SUPPLIES_CLOUD_SSO
 const MATERIAL_SSO_URL = process.env.VUE_APP_MATERIAL_URL
 const CLOUD_REDIRECT_KEY = 'cloudLoginRedirect'
+// 物资平台登录地址
+const FALLBACK_LOGIN_URL = 'http://10.3.144.73:8000'
 
 export default {
   name: 'suppliesLogin',
@@ -136,13 +138,11 @@ export default {
           return
         }
 
-        this.showError(res.message || '登录失败')
         this.clearCloudStorage()
-        // this.redirectToLogin()
+        window.location.replace(FALLBACK_LOGIN_URL)
       } catch (error) {
-        this.showError('登录失败')
         this.clearCloudStorage()
-        // this.redirectToLogin()
+        window.location.replace(FALLBACK_LOGIN_URL)
       }
     }
   }
