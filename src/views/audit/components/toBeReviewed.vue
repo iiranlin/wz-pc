@@ -99,7 +99,7 @@ export default {
       if (this.type === 'pass') {
         this.getActivitiAssigneeList('pass');
       } else if (this.type === 'passEdit') {
-        this.getActivitiAssigneeList('passEdit');
+        this.activitiCompleteWithEdit();
       } else {
         this.handleReject()
       }
