@@ -188,7 +188,8 @@ export default {
         name: 'requestDetail',
         query: {
           type: 'view',
-          id: row.id
+          id: row.id,
+          from:'gyxqList'
         }
       })
     },
