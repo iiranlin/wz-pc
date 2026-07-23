@@ -137,7 +137,8 @@ export default {
     },
     // 编辑初始化
     async updateInit(id) {
-      await Api.detail(id,{type:2}).then(({ data }) => {
+      // 必须需求供应管理菜单跳转才需要
+      await Api.detail(id, this.$route.query?.from == 'gyxqList' ? {type:2} : {}).then(({ data }) => {
         this.$nextTick(async () => {
           this.title = "编辑";
           await this.formFillInPage()
