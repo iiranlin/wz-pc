@@ -154,7 +154,7 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="remark" label="备注" width="200" fixed="right" show-overflow-tooltip>
+            <el-table-column prop="remark" label="备注" min-width="200" fixed="right" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.remark"
