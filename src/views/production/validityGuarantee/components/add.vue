@@ -276,20 +276,25 @@ export default {
     handleCreate() {
       this.$refs.vFormRef.validateForm(async (valid) => {
         if (valid) {
-          this.loading = true;
           const formData = await this.$refs.vFormRef.getFormData();
+          const validityGuarantee = formData.validityGuarantee;
+
+          if (
+            !Array.isArray(validityGuarantee) ||
+            !validityGuarantee[0] ||
+            !validityGuarantee[1]
+          ) {
+            this.$modal.msgError("请选择保函有效期");
+            return;
+          }
 
           // validityGuarantee 保函有效期日期范围拆分两个字段: validityGuarantee,validityGuaranteeEnd
-          const validityGuarantee = formData.validityGuarantee;
-          formData.validityGuarantee = validityGuarantee
-            ? validityGuarantee[0]
-            : "";
-          formData.validityGuaranteeEnd = validityGuarantee
-            ? validityGuarantee[1]
-            : "";
+          formData.validityGuarantee = validityGuarantee[0];
+          formData.validityGuaranteeEnd = validityGuarantee[1];
           // 保函合同附件
           const validityGuaranteeFile = formData.validityGuaranteeFile;
 
+          this.loading = true;
           await Api[this.type === "update" ? `edit` : `save`](
             Object.assign(
               { id: this.type === "update" ? this.id : null },
