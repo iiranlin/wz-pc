@@ -6,7 +6,8 @@
                 <el-col :span="24">
                     <el-form-item label="下一级审批人:" prop="code"
                         :rules="{ required: true, message: '请选择下一级审批人', trigger: ['blur', 'change'] }">
-                        <el-select :multiple="multiple" v-model="form.code" placeholder="请选择下一级审批人" style="width:100%;">
+                        <el-select :multiple="multiple" v-model="form.code" placeholder="请选择下一级审批人"
+                            filterable style="width:100%;">
                             <el-option v-for="item in assigneeList" :key="item.id" :label="item.nickName"
                                 :value="item.id">
                             </el-option>
