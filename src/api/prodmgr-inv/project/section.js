@@ -106,6 +106,14 @@ export function getCurrentSection() {
   })
 }
 
+// 校验当前日期是否允许新增或提交计划
+export function isCreate() {
+  return request({
+    url: `${VUE_APP_PRODMGR_INV}/materialSectionProject/isCreate`,
+    method: 'get'
+  })
+}
+
 // 获取当前标段所有物料
 export function getCurrentSectionMaterial(params) {
   return request({

@@ -122,6 +122,7 @@
 
 import * as Api from '@/api/prodmgr-inv/project/planRest.js'
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
+import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
 import indexMixin from "@/views/mixins";
 import workFlowView from '@/components/workFlowView'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
@@ -401,10 +402,13 @@ export default {
       this.multiple = multiple;
       this.selection = selection;
     },
-    handleButton (buttonCode, idArr, rowArr, { buttonData }) {
+    async handleButton (buttonCode, idArr, rowArr, { buttonData }) {
       this.proxyPrint(buttonCode, rowArr, buttonData)
       switch (buttonCode) {
         case "create":
+          if (!await this.checkPlanSubmitDate()) {
+            break
+          }
           this.$router.push({ name: 'selectContract', query: { type: 'create' } })
           break;
         case "update":
@@ -418,6 +422,9 @@ export default {
           this.$router.push({ name: 'logisticsView', query: { id: idArr[0], type: 'view' } })
           break;
         case 'examine':
+          if (!await this.checkPlanSubmitDate()) {
+            break
+          }
           this.handleExamine(idArr, rowArr[0].planType,rowArr[0].planStatus)
           break;
         // 撤回
@@ -445,6 +452,19 @@ export default {
         case "download":
           this.download(idArr[0]);
         break;
+      }
+    },
+    // 校验当前日期是否允许新增或提交计划
+    async checkPlanSubmitDate () {
+      try {
+        const { data } = await SectionApi.isCreate()
+        if (data === false) {
+          this.$modal.alertWarning('当前日期不在指挥部允许的提交计划范围内，紧急提交计划请联系指挥部')
+          return false
+        }
+        return data === true
+      } catch (error) {
+        return false
       }
     },
       async download() {

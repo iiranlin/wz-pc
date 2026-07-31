@@ -211,6 +211,27 @@
             </template>
           </el-form-item>
         </template>
+        <template #submitDateConfigSlot="{ formModel }">
+          <el-form-item
+            prop="submitDateConfig"
+            label="计划提交日期"
+            class="label-right-align"
+          >
+            <div class="submit-date-calendar">
+              <span
+                v-for="day in submitDateOptions"
+                :key="day"
+                class="submit-date-calendar__day"
+                :class="{ 'is-selected': isSubmitDateSelected(formModel, day) }"
+              >
+                {{ day }}号
+              </span>
+            </div>
+            <div class="submit-date-calendar__tip">
+              {{ getSubmitDateConfig(formModel).length ? '高亮日期为允许提交日期' : '无限制' }}
+            </div>
+          </el-form-item>
+        </template>
         <template #table>
           <TabTable
             ref="tabTableRef"
@@ -263,6 +284,7 @@ export default {
       constructionCompanyOptions: [],
       supervisionUnitOptions: [],
       materialAgentCompanyOptions: [],
+      submitDateOptions: Array.from({ length: 31 }, (_, index) => String(index + 1)),
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
@@ -328,6 +350,7 @@ export default {
           if(data.projectType && typeof data.projectType === 'string'){
             data.projectType = data.projectType
           }
+          data.submitDateConfig = this.parseSubmitDateConfig(data.submitDateConfig)
           await this.formFillInPage()
           this.$refs.vFormRef.setFormData(data)
 
@@ -434,6 +457,31 @@ export default {
       this.$refs.vFormRef.setFormData({
         [key]: options.find(item => item.value === val)?.label
       })
+    },
+    // 将后端日期配置转换为详情日历使用的字符串数组
+    parseSubmitDateConfig (value) {
+      if (Array.isArray(value)) {
+        return value.map(String)
+      }
+      if (!value) {
+        return []
+      }
+      try {
+        const parsedValue = JSON.parse(value)
+        return Array.isArray(parsedValue) ? parsedValue.map(String) : []
+      } catch (error) {
+        return []
+      }
+    },
+    // 获取详情中配置的计划提交日期
+    getSubmitDateConfig (formModel) {
+      return Array.isArray(formModel.submitDateConfig)
+        ? formModel.submitDateConfig
+        : this.parseSubmitDateConfig(formModel.submitDateConfig)
+    },
+    // 判断指定日期是否需要高亮展示
+    isSubmitDateSelected (formModel, day) {
+      return this.getSubmitDateConfig(formModel).includes(day)
     }
 
   },
@@ -459,5 +507,36 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+.submit-date-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(44px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.submit-date-calendar__day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  color: #c0c4cc;
+  background: #f5f7fa;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+}
+
+.submit-date-calendar__day.is-selected {
+  color: #fff;
+  background: #409eff;
+  border-color: #409eff;
+}
+
+.submit-date-calendar__tip {
+  margin-top: 8px;
+  color: #909399;
+  font-size: 12px;
+  line-height: 18px;
 }
 </style>

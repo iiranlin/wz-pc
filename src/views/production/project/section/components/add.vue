@@ -194,6 +194,76 @@
             </template>
           </el-form-item>
         </template>
+        <template #submitDateConfigSlot="{ formModel }">
+          <el-form-item
+            prop="submitDateConfig"
+            label="计划提交日期"
+            class="label-right-align"
+          >
+            <el-popover
+              v-if="type !== 'view'"
+              v-model="submitDatePopoverVisible"
+              placement="bottom-start"
+              trigger="click"
+              width="420"
+              class="submit-date-popover"
+            >
+              <div class="submit-date-calendar">
+                <button
+                  v-for="day in submitDateOptions"
+                  :key="day"
+                  type="button"
+                  class="submit-date-calendar__day"
+                  :class="{ 'is-selected': isSubmitDateSelected(formModel, day) }"
+                  @click="handleSubmitDateClick($event, formModel, day)"
+                >
+                  {{ day }}号
+                </button>
+              </div>
+               <div class="submit-date-calendar__tip">
+                选中的日期为允许计划提交日期，不选择表示无限制;
+              </div>
+              <div class="submit-date-calendar__tip">
+                可多选，按住 Shift 可连续选择日期；
+              </div>
+              <div class="submit-date-calendar__actions">
+                <el-button
+                  size="mini"
+                  @click="clearSubmitDateConfig(formModel)"
+                >
+                  清空
+                </el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="submitDatePopoverVisible = false"
+                  style="margin-left: 8px"
+                >
+                  确定
+                </el-button>
+              </div>
+              <el-button
+                slot="reference"
+                class="submit-date-trigger"
+              >
+                {{ getSubmitDateButtonText(formModel) }}
+              </el-button>
+            </el-popover>
+            <div v-else class="submit-date-calendar">
+              <span
+                v-for="day in submitDateOptions"
+                :key="day"
+                class="submit-date-calendar__day is-readonly"
+                :class="{ 'is-selected': isSubmitDateSelected(formModel, day) }"
+              >
+                {{ day }}号
+              </span>
+            </div>
+            <div v-if="type === 'view'" class="submit-date-calendar__tip">
+              {{ getSubmitDateConfig(formModel).length ? '高亮日期为允许提交日期' : '无限制' }}
+            </div>
+          </el-form-item>
+        </template>
       </VFormRender>
     </div>
   </div>
@@ -239,6 +309,9 @@ export default {
       supervisionUnitOptions: [],
       materialAgentCompanyOptions: [],
       materialAgentLeaderOptions: [],
+      submitDateOptions: Array.from({ length: 31 }, (_, index) => String(index + 1)),
+      submitDateAnchor: null,
+      submitDatePopoverVisible: false,
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '取消', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
@@ -309,6 +382,7 @@ export default {
           if(data.materialAgentLeaderId && typeof data.materialAgentLeaderId === 'string'){
             data.materialAgentLeaderId = data.materialAgentLeaderId.split(',')
           }
+          data.submitDateConfig = this.parseSubmitDateConfig(data.submitDateConfig)
           
           this.$refs.vFormRef.setFormData(data)
           this.$refs.vFormRef.setReadMode(this.type === 'view')
@@ -390,6 +464,9 @@ export default {
           if (Array.isArray(formData.materialAgentLeaderId)) {
             formData.materialAgentLeaderId = formData.materialAgentLeaderId.join(',')
           }
+          formData.submitDateConfig = Array.isArray(formData.submitDateConfig) && formData.submitDateConfig.length
+            ? JSON.stringify(this.sortSubmitDates(formData.submitDateConfig).map(Number))
+            : ''
           
           await Api[
             this.type === 'update' ? `edit` : `save`
@@ -401,9 +478,10 @@ export default {
             })
             .catch(async ()=>{
                const formData = await this.$refs.vFormRef.getFormData();
-               formData.supervisionUnitId = formData.supervisionUnitId.split(',')
+              formData.supervisionUnitId = formData.supervisionUnitId.split(',')
               formData.projectType = formData.projectType.split(',')
               formData.materialAgentLeaderId = formData.materialAgentLeaderId.split(',')
+              formData.submitDateConfig = this.parseSubmitDateConfig(formData.submitDateConfig)
             })
             .finally((err) => {
               this.loading = false;
@@ -476,6 +554,66 @@ export default {
           }
         });
       })
+    },
+    // 将后端日期配置转换为日历组件使用的字符串数组
+    parseSubmitDateConfig (value) {
+      if (Array.isArray(value)) {
+        return this.sortSubmitDates(value)
+      }
+      if (!value) {
+        return []
+      }
+      try {
+        const parsedValue = JSON.parse(value)
+        return Array.isArray(parsedValue) ? this.sortSubmitDates(parsedValue) : []
+      } catch (error) {
+        return []
+      }
+    },
+    // 去重、过滤并按日期先后顺序排列
+    sortSubmitDates (dates) {
+      return [...new Set(dates.map(String))]
+        .filter(day => this.submitDateOptions.includes(day))
+        .sort((a, b) => Number(a) - Number(b))
+    },
+    // 获取当前表单中已选择的日期
+    getSubmitDateConfig (formModel) {
+      return Array.isArray(formModel.submitDateConfig)
+        ? formModel.submitDateConfig
+        : this.parseSubmitDateConfig(formModel.submitDateConfig)
+    },
+    // 判断指定日期是否已选中
+    isSubmitDateSelected (formModel, day) {
+      return this.getSubmitDateConfig(formModel).includes(day)
+    },
+    // 根据已选日期数量生成选择按钮文字
+    getSubmitDateButtonText (formModel) {
+      const selectedCount = this.getSubmitDateConfig(formModel).length
+      return selectedCount ? `已选择 ${selectedCount} 个日期` : '请选择计划提交日期'
+    },
+    // 清空全部计划提交日期
+    clearSubmitDateConfig (formModel) {
+      this.$set(formModel, 'submitDateConfig', [])
+      this.submitDateAnchor = null
+    },
+    // 处理单个日期切换及 Shift 连续选择
+    handleSubmitDateClick (event, formModel, day) {
+      const selectedDates = this.getSubmitDateConfig(formModel)
+      let nextDates = [...selectedDates]
+
+      if (event.shiftKey && this.submitDateAnchor) {
+        const start = Math.min(Number(this.submitDateAnchor), Number(day))
+        const end = Math.max(Number(this.submitDateAnchor), Number(day))
+        const range = Array.from({ length: end - start + 1 }, (_, index) => String(start + index))
+        nextDates = this.sortSubmitDates([...nextDates, ...range])
+      } else if (nextDates.includes(day)) {
+        nextDates = nextDates.filter(item => item !== day)
+      } else {
+        nextDates.push(day)
+      }
+
+      this.$set(formModel, 'submitDateConfig', this.sortSubmitDates(nextDates))
+      this.submitDateAnchor = day
     }
   },
 }
@@ -500,5 +638,72 @@ export default {
 
 ::v-deep .label-right-align .el-form-item__label {
   text-align: right;
+}
+
+.submit-date-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(44px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.submit-date-calendar__day {
+  height: 34px;
+  padding: 0;
+  color: #606266;
+  background: #fff;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-date-calendar__day:hover {
+  color: #409eff;
+  border-color: #409eff;
+}
+
+.submit-date-calendar__day.is-selected {
+  color: #fff;
+  background: #409eff;
+  border-color: #409eff;
+}
+
+.submit-date-calendar__day.is-readonly {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.submit-date-calendar__day.is-readonly:not(.is-selected) {
+  color: #c0c4cc;
+  background: #f5f7fa;
+}
+
+.submit-date-calendar__tip {
+  margin-top: 8px;
+  color: #909399;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.submit-date-calendar__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.submit-date-trigger {
+  width: 100%;
+  overflow: hidden;
+  color: #606266;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.submit-date-popover {
+  display: block;
+  width: 100%;
 }
 </style>
