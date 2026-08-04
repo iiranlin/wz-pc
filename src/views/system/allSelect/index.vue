@@ -53,6 +53,19 @@
         <el-button type="primary" icon="el-icon-download" @click="handleDownload" style="float: right;">下载</el-button>
       </div>
       <div class="filter-container">
+        <el-select
+          v-model="constructionUnitId"
+          placeholder="请选择枢纽指挥部"
+          clearable
+          style="width: 220px; margin-right: 10px;"
+        >
+          <el-option
+            v-for="item in constructionUnitOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <el-date-picker
           v-model="appDateRange"
           type="daterange"
@@ -99,6 +112,7 @@
 
 <script>
 import {loginSelect,getSectionProjectReport} from '@/api/system/allSelect.js'
+import { newListByDeptCode } from '@/api/system/dept.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
 
 export default {
@@ -116,10 +130,30 @@ export default {
       appDateRange: [],
       appStartDate: '',
       appEndDate: '',
-      appTableData: []
+      appTableData: [],
+      constructionUnitId: '',
+      constructionUnitOptions: []
     }
   },
+  created() {
+    this.getConstructionUnitOptions()
+  },
   methods: {
+    async getConstructionUnitOptions() {
+      try {
+        const res = await newListByDeptCode({
+          deptCodePrefix: 'SN',
+          status: ''
+        })
+        this.constructionUnitOptions = (res.data || []).map(item => ({
+          value: item.id,
+          label: item.deptName
+        }))
+      } catch (error) {
+        console.error('获取枢纽指挥部失败', error)
+        this.$message.error('获取枢纽指挥部失败')
+      }
+    },
     handleDateChange(val) {
       if (val && val.length === 2) {
         this.startDate = val[0]
@@ -170,7 +204,8 @@ export default {
         }
         const res = await getSectionProjectReport({
           startDateStr: this.appStartDate,
-          endDateStr: this.appEndDate
+          endDateStr: this.appEndDate,
+          constructionUnitId: this.constructionUnitId
         })
         if (res.code === 0) {
           this.appTableData = res.data
@@ -200,7 +235,8 @@ export default {
           businessType: 0,
           businessData: JSON.stringify({
             startDateStr: this.appStartDate,
-            endDateStr: this.appEndDate
+            endDateStr: this.appEndDate,
+            constructionUnitId: this.constructionUnitId
           })
         });
       } catch (error) {
