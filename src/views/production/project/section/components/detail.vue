@@ -217,18 +217,30 @@
             label="计划提交日期"
             class="label-right-align"
           >
-            <div class="submit-date-calendar">
-              <span
-                v-for="day in submitDateOptions"
-                :key="day"
-                class="submit-date-calendar__day"
-                :class="{ 'is-selected': isSubmitDateSelected(formModel, day) }"
+            <div class="submit-date-calendar-wrap">
+              <div
+                class="submit-date-calendar"
+                :class="{ 'is-expanded': submitDateExpanded }"
               >
-                {{ day }}号
-              </span>
-            </div>
-            <div class="submit-date-calendar__tip">
-              {{ getSubmitDateConfig(formModel).length ? '高亮日期为允许提交日期' : '无限制' }}
+                <span
+                  v-for="day in submitDateOptions"
+                  :key="day"
+                  class="submit-date-calendar__day"
+                  :class="{ 'is-selected': isSubmitDateSelected(formModel, day) }"
+                >
+                  {{ day }}号
+                </span>
+              </div>
+              <button
+                type="button"
+                class="submit-date-calendar__toggle"
+                @click="submitDateExpanded = !submitDateExpanded"
+              >
+                {{ submitDateExpanded ? '收起日期' : '展开日期' }}
+                <i
+                  :class="submitDateExpanded ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+                ></i>
+              </button>
             </div>
           </el-form-item>
         </template>
@@ -285,6 +297,7 @@ export default {
       supervisionUnitOptions: [],
       materialAgentCompanyOptions: [],
       submitDateOptions: Array.from({ length: 31 }, (_, index) => String(index + 1)),
+      submitDateExpanded: false,
       // 菜单按钮、字段等数据
       buttonTop: [
         { buttonName: '返回', buttonCode: 'cancel', buttonIcon: 'Blue-Cancel', type: 'create, update' },
@@ -475,9 +488,7 @@ export default {
     },
     // 获取详情中配置的计划提交日期
     getSubmitDateConfig (formModel) {
-      return Array.isArray(formModel.submitDateConfig)
-        ? formModel.submitDateConfig
-        : this.parseSubmitDateConfig(formModel.submitDateConfig)
+      return this.parseSubmitDateConfig(formModel.submitDateConfig)
     },
     // 判断指定日期是否需要高亮展示
     isSubmitDateSelected (formModel, day) {
@@ -509,22 +520,53 @@ export default {
   text-align: right;
 }
 
+.submit-date-calendar-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
 .submit-date-calendar {
   display: grid;
-  grid-template-columns: repeat(7, minmax(44px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(7, minmax(36px, 1fr));
+  gap: 4px;
   width: 100%;
+  max-height: 26px;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.submit-date-calendar.is-expanded {
+  max-height: 200px;
+}
+
+.submit-date-calendar__toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  margin-top: 5px;
+  margin-right: auto;
+  margin-left: auto;
+  color: #409eff;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .submit-date-calendar__day {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 34px;
+  height: 26px;
   color: #c0c4cc;
-  background: #f5f7fa;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
+  background: #fafafa;
+  border: 1px solid #ebeef5;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .submit-date-calendar__day.is-selected {
@@ -533,10 +575,4 @@ export default {
   border-color: #409eff;
 }
 
-.submit-date-calendar__tip {
-  margin-top: 8px;
-  color: #909399;
-  font-size: 12px;
-  line-height: 18px;
-}
 </style>

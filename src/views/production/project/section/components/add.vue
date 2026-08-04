@@ -220,11 +220,11 @@
                   {{ day }}号
                 </button>
               </div>
-               <div class="submit-date-calendar__tip">
-                选中的日期为允许计划提交日期，不选择表示无限制;
+              <div class="submit-date-calendar__tip">
+                选中的日期为允许提交计划的日期；
               </div>
               <div class="submit-date-calendar__tip">
-                可多选，按住 Shift 可连续选择日期；
+                长按shift可连续选择日期。
               </div>
               <div class="submit-date-calendar__actions">
                 <el-button
@@ -359,6 +359,10 @@ export default {
       this.$nextTick(async () => {
         this.title = "新建";
         await this.formFillInPage()
+        // 新增时默认选中每月 1 至 31 号
+        this.$refs.vFormRef.setFormData({
+          submitDateConfig: [...this.submitDateOptions]
+        })
         this.getLineOptions()
 
       });
