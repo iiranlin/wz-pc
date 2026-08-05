@@ -21,7 +21,7 @@
             label="归属建设项目"
             class="label-right-align"
           >
-            <template v-if="type !== 'view' && !projectId">
+            <template v-if="canEditProject(formModel)">
               <el-select
                 v-model="formModel.projectId"
                 filterable
@@ -354,6 +354,13 @@ export default {
 
   },
   methods: {
+    // 编辑时存在关联合同则不允许修改归属建设项目
+    canEditProject (formModel) {
+      if (this.type === 'view' || this.projectId) {
+        return false
+      }
+      return this.type !== 'update' || !Array.isArray(formModel.contractIdList) || !formModel.contractIdList.length
+    },
     //初始化
     init () {
       this.$nextTick(async () => {
