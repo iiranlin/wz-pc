@@ -277,7 +277,7 @@ export default {
         'zjrkfj': '质检入库附件',
         'ckfj': '出库附件',
 
-        'qtzl': '其他资料',
+        'qtzl': '到货确认照片',
         'zjd': '验收单',
         'jhd': '交货单',
 
