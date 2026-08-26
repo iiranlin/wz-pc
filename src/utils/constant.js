@@ -101,6 +101,7 @@ export const FLOW_ROUTE = {
     WZCJ: 'addSpok',
     ZGCGJH:'addAnnualProcurementPlan', // 自购物资采购计划
     ZGCGJHXG:'detailPlanQulity', // 自购物资调整计划量详情
+    ZLWZ:'addGoodsReceipt' //战略采购收货
 }
 
 // 生产变更日志
