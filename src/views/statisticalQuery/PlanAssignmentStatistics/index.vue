@@ -23,7 +23,6 @@
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-        :default-value="dateRange"
       />
     </template>
           <!-- 建设物资 -->
@@ -97,8 +96,6 @@ export default {
       showSearch: true,
       // 表格数据
       list: [],
-      // 日期范围
-      dateRange: [],
       // 表格序号是否展示
       numberShow: true,
       // 页面属性
