@@ -72,7 +72,7 @@
 								align="center"></el-table-column>
 							<el-table-column prop="addr" label="使用地点" width="200" align="center" show-overflow-tooltip></el-table-column>
 							<el-table-column prop="field2" label="收货地址" width="200" align="center" show-overflow-tooltip></el-table-column>
-							<el-table-column prop="supplyDate" label="供应时间" width="160" show-overflow-tooltip
+							<el-table-column prop="supplyDate" label="计划使用时间" width="160" show-overflow-tooltip
 								align="center"></el-table-column>
 							<el-table-column prop="receiver" label="收货人及联系方式" width="180" show-overflow-tooltip
 								align="center"></el-table-column>

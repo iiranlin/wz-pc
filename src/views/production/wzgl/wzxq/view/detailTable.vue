@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column prop="planAmount" label="本次计划数量" align="center" width="120" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column align="center" prop="supplyDate" label="供应时间" min-width="200" show-overflow-tooltip>
+      <el-table-column align="center" prop="supplyDate" label="计划使用时间" min-width="200" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.supplyDate | formatDate }}
         </template>

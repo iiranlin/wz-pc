@@ -77,7 +77,7 @@
        show-overflow-tooltip></el-table-column>
       <el-table-column
         prop="supplyDate"
-        label="供应时间"
+        label="计划使用时间"
         width="140"
         align="center"
        show-overflow-tooltip></el-table-column>

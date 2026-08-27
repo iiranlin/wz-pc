@@ -50,10 +50,10 @@
             style="width: 100%"></el-input-number>
         </template>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" min-width="200" show-overflow-tooltip>
+      <el-table-column prop="supplyDate" label="计划使用时间" min-width="200" show-overflow-tooltip>
         <template slot="header">
           <span style="color: red; margin-right: 5px">*</span>
-          <span>供应时间</span>
+          <span>计划使用时间</span>
           <el-button type="text" icon="el-icon-document-copy" @click="copyLast('supplyDate')"
             style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>

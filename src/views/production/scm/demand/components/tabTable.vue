@@ -66,7 +66,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
+      <el-table-column prop="supplyDate" label="计划使用时间" width="160" align="center" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-date-picker v-model="scope.row.supplyDate" type="date" size="mini" style="width: 100%"
             value-format="yyyy-MM-dd" v-if="type != 'view'"></el-date-picker>

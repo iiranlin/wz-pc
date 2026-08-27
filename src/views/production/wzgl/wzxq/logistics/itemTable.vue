@@ -93,7 +93,7 @@
       </el-table-column>
       <el-table-column
         prop="supplyDate"
-        label="供应时间"
+        label="计划使用时间"
         align="center"
         width="150px"
         show-overflow-tooltip

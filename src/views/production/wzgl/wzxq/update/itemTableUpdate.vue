@@ -50,7 +50,7 @@
             size="mini" style="width: 100%"></el-input-number>
         </template>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" min-width="200" :render-header="renderHeader" show-overflow-tooltip>
+      <el-table-column prop="supplyDate" label="计划使用时间" min-width="200" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-date-picker v-model="scope.row.supplyDate" type="date" size="mini" style="width: 100%"
             value-format="yyyy-MM-dd" :clearable="false"></el-date-picker>

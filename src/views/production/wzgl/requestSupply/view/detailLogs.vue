@@ -56,7 +56,7 @@
         width="120"
        show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="supplyDate" label="供应时间" min-width="200" show-overflow-tooltip>
+      <el-table-column prop="supplyDate" label="计划使用时间" min-width="200" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.value | formatDate }}
         </template>

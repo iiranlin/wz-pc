@@ -35,7 +35,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="cumulativeAmount" label="已累计计划数量" align="center" width="150" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="deliveryDate" label="供应时间" align="center" width="200" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="deliveryDate" label="计划使用时间" align="center" width="200" show-overflow-tooltip></el-table-column>
       <el-table-column prop="deliveryLocation" label="交货地点" align="center" width="200" show-overflow-tooltip></el-table-column>
       <el-table-column prop="receiver" label="收货人及联系方式" align="center" min-width="200" show-overflow-tooltip></el-table-column>
     </el-table>

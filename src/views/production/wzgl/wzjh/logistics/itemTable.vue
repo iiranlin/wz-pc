@@ -33,7 +33,7 @@
       </el-table-column>
          <el-table-column prop="updateBefore" label="本批次发货数量" align="center" width="150px" show-overflow-tooltip>
       </el-table-column>
-         <el-table-column prop="updateBefore" label="供应时间" align="center" width="200px" show-overflow-tooltip>
+         <el-table-column prop="updateBefore" label="计划使用时间" align="center" width="200px" show-overflow-tooltip>
       </el-table-column>
          <el-table-column prop="updateBefore" label="使用地点" align="center" width="200px" show-overflow-tooltip>
       </el-table-column>

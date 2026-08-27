@@ -125,7 +125,7 @@
             <el-table-column prop="expirationDate" label="有效期截止日期" width="150" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column prop="addr" label="使用地点" width="200" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column prop="field2" label="收货地址" width="200" align="center" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="supplyDate" label="供应时间" width="160" align="center" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="supplyDate" label="计划使用时间" width="160" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column prop="receiver" label="收货人及联系方式" width="180" show-overflow-tooltip></el-table-column>
             <el-table-column prop="field0" label="投资方" width="150" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column prop="field1" label="投资比例" width="150" align="center" show-overflow-tooltip></el-table-column>

@@ -127,7 +127,7 @@ export default {
         }
 
         if (!row.supplyDate) {
-          errors.push(`第${rowNum}行，供应时间未填写 `);
+          errors.push(`第${rowNum}行，计划使用时间未填写 `);
         }
 
         if (!row.addr || row.addr.trim() === '') {

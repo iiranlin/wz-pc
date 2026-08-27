@@ -64,7 +64,7 @@
       <el-table-column
         align="center"
         prop="supplyDate"
-        label="供应时间"
+        label="计划使用时间"
         min-width="200"
        show-overflow-tooltip>
         <template slot-scope="scope">
