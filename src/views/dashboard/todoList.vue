@@ -11,6 +11,9 @@
     <table-index ref="tableIndex" :loading="loading" idName="businessId" :tableData="dataList" :property="property"
       :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton"
       @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink">
+      <template #auditStatus="scope" >
+        {{ auditStatusMap[scope.value] || '--' }}
+      </template>
     </table-index>
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
       @pagination="getList" />
@@ -65,6 +68,11 @@ export default {
       // 勾选的id
       ids: [],
       statusMap: {},
+      auditStatusMap: {
+        1: '审核中',
+        2: '通过',
+        3: '驳回'
+      },
       workFlowViewVisible: false,
       selectedRow: null
     }
