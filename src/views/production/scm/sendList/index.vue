@@ -84,6 +84,7 @@ import fileUpload from "@/components/upload";
 import workFlowView from '@/components/workFlowView'
 import * as WzglApi from '@/api/prodmgr-inv/project/wzgl.js'
 import * as FileApi from "@/api/prodmgr-inv/project/file.js";
+import { flowStop } from '@/api/workflow/stop.js'
 export default {
   // 建设项目
   name: "sendList",
@@ -336,6 +337,9 @@ export default {
         case "delete":
           this.handleDelete(idArr, rowArr);
           break;
+        case "withdraw":
+          this.handleRecall(idArr[0]);
+          break;
         case "addAdress":
           this.shipmentBatchNumber = rowArr[0].shipmentBatchNumber;
           this.$nextTick(() => {
@@ -398,6 +402,16 @@ export default {
           this.getList();
         });
     },
+    // 撤回发货审核
+    handleRecall(id) {
+      this.$modal
+        .confirm("是否确认撤回?")
+        .then(() => flowStop({ businessId: id, businessType: "FHLC" }))
+        .then(() => {
+          this.$modal.msgSuccess("撤回成功");
+          this.getList();
+        });
+    },
     clickReset() {
       this.handleQuery();
     },
@@ -446,6 +460,7 @@ export default {
       if (button.buttonCode == 'flowSee') {
         return row.status == 1;
       }
+     
     },
     //上方按钮控制
     buttonDisabledTop(button) {
@@ -460,6 +475,9 @@ export default {
       }
       if(button.buttonCode == 'delete'){
         return this.selection[0].status != 1;
+      }
+       if (button.buttonCode == 'withdraw') {
+        return this.selection[0].status != 8;
       }
       return false
     },
