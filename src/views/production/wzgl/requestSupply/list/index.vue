@@ -131,7 +131,7 @@ export default {
 
   methods: {
     getLineOptions() {
-      WzglApi.lineSelectOptions({ pageStatus: '1' }).then(({ data }) => {
+      WzglApi.lineSelectOptions({ pageStatus: '0' }).then(({ data }) => {
         this.lineOptions = data.map(x => ({
           label: x.projectName,
           value: x.projectName
