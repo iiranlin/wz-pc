@@ -68,7 +68,8 @@ export default {
       auditStatusMap: {
         1: '审核中',
         2: '通过',
-        3: '驳回'
+        3: '驳回',
+        6: '已撤回',
       },
       workFlowViewVisible: false,
       selectedRow: null
