@@ -14,8 +14,13 @@
 
         <template #supplierNameSlot="{ formModel }">
           <el-form-item prop="supplierName" label="生产厂家" class="label-right-align"
-            :rules="[{ required: true, message: '请输入生产厂家', trigger: 'blur' }]">
-            <el-input v-if="!isView" v-model="formModel.supplierName" placeholder="请输入生产厂家" />
+            :rules="[{ required: true, message: '请选择生产厂家', trigger: 'change' }]">
+            <el-select v-if="!isView" v-model="formModel.supplierName" filterable clearable
+              :disabled="!formModel.materialName" :loading="factoryLoading" placeholder="请选择生产厂家"
+              style="width: 100%" @change="value => handleFactoryChange(value, formModel)">
+              <el-option v-for="item in factoryOptions" :key="item.id" :label="item.factoryName"
+                :value="item.factoryName" />
+            </el-select>
             <span v-else class="readonly-mode-field">{{ formModel.supplierName }}</span>
           </el-form-item>
         </template>
@@ -129,7 +134,8 @@
         </template>
 
         <template #materialListSlot>
-          <material-list v-model="materialList" :readonly="isView" />
+          <material-list ref="materialList" v-model="materialList"
+            :material-type="currentMaterialType" :readonly="isView" />
         </template>
       </VFormRender>
     </div>
@@ -145,6 +151,7 @@ import MaterialList from './materialList.vue'
 import { formFillInPage } from '@/api/form/form'
 import { getCurrentSection } from '@/api/prodmgr-inv/project/section.js'
 import * as Api from '@/api/prodmgr-inv/project/strategicProcurementGoodsReceipt.js'
+import * as ProductFactoryApi from '@/api/prodmgr-inv/project/productFactory.js'
 import { getToken } from '@/utils/auth'
 import toBeReviewed from '@/views/audit/components/toBeReviewed'
 
@@ -159,6 +166,8 @@ export default {
       optionData: {},
       materialList: [],
       materialOptions: ['钢材', '水泥', '粉煤灰', '外加剂'],
+      factoryOptions: [],
+      factoryLoading: false,
       proofFiles: {
         jhd: [],
         dhzp: [],
@@ -191,7 +200,10 @@ export default {
       }
     },
     isView() { return this.type === 'view' },
-    isAudit() { return this.isView && this.name === 'audit' }
+    isAudit() { return this.isView && this.name === 'audit' },
+    currentMaterialType() {
+      return this.formData.materialName || ''
+    }
   },
   mounted() {
     this.initPage()
@@ -237,6 +249,7 @@ export default {
       this.materialList = (data.materialFirstReceiptDetailsDTOList || []).map(item => ({ ...item }))
       this.formData = detail
       this.$refs.vFormRef.setFormData(detail)
+      await this.loadFactoryOptions(detail.materialName)
     },
     parseProofFiles(value) {
       const emptyFiles = { jhd: [], dhzp: [], qt: [] }
@@ -257,6 +270,52 @@ export default {
     formatDate(value) { return value ? dayjs(value).format('YYYY-MM-DD') : '' },
     catalogSupplierText(value) {
       return { '1': '是', '0': '否' }[String(value)] || ''
+    },
+    async handleMaterialChange(value, formModel) {
+      const previousValue = this.formData.materialName || ''
+      if (previousValue && previousValue !== value && this.materialList.length) {
+        try {
+          await this.$confirm('切换物资类型将清空已添加的物资明细，是否继续？', '提示', { type: 'warning' })
+          this.materialList = []
+        } catch (error) {
+          formModel.materialName = previousValue
+          return
+        }
+      }
+      formModel.materialName = value
+      if (previousValue !== value) {
+        formModel.supplierId = ''
+        formModel.supplierName = ''
+      }
+      this.formData = {
+        ...this.formData,
+        materialName: value,
+        ...(previousValue !== value ? { supplierId: '', supplierName: '' } : {})
+      }
+      await this.loadFactoryOptions(value)
+    },
+    async loadFactoryOptions(factoryType) {
+      if (!factoryType) {
+        this.factoryOptions = []
+        return
+      }
+      this.factoryOptions = []
+      this.factoryLoading = true
+      try {
+        const { data } = await ProductFactoryApi.list({ pageNum: 1, pageSize: -1, factoryType })
+        this.factoryOptions = data.list || []
+      } finally {
+        this.factoryLoading = false
+      }
+    },
+    handleFactoryChange(value, formModel) {
+      const factory = this.factoryOptions.find(item => item.factoryName === value)
+      formModel.supplierId = factory ? factory.id : ''
+      this.formData = {
+        ...this.formData,
+        supplierId: formModel.supplierId,
+        supplierName: value || ''
+      }
     },
     buttonShow(button) {
       if (['pass', 'reject'].includes(button.buttonCode)) return this.isAudit
@@ -292,6 +351,7 @@ export default {
             this.$message.warning('至少添加一条物资')
             return
           }
+          if (!this.$refs.materialList.validateList()) return
           if (!this.proofFiles.jhd.length) {
             this.$message.warning('请上传交货单附件')
             return
@@ -303,13 +363,13 @@ export default {
           const data = {
             ...formData,
             ...(this.id ? { id: this.id } : {}),
-            status: formData.status == null || formData.status === '' ? '0' : String(formData.status),
             supplierId: formData.supplierId || formData.supplierName || '',
             receiptDate: formData.receiptDate ? dayjs(formData.receiptDate).toISOString() : null,
             proofFileList: JSON.stringify(this.proofFiles),
             materialFirstReceiptDetailsModifyParamList: this.materialList.map(item => ({
               ...item,
-              receiptQty: Number(item.receiptQty)
+              receiptQty: Number(item.receiptQty),
+              fileList: typeof item.fileList === 'string' ? item.fileList : JSON.stringify(item.fileList || {})
             }))
           }
           const response = await (this.type === 'update' ? Api.edit(data) : Api.save(data))
