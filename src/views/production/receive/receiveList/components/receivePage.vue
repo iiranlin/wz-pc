@@ -43,6 +43,13 @@
               :isShowTip="false" />
           </el-form-item>
         </template>
+        <!-- 质量证明文件 -->
+        <template #zlzmwjSlot="scope">
+          <el-form-item prop="zlzmwj" label="质量证明文件" class="label-right-align">
+            <fileUpload v-model="scope.formModel.zlzmwj" :preview="true" :fileSize="500" :limit="9999"
+              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
+          </el-form-item>
+        </template>
         <!-- 附件 -->
         <template #file1Slot="scope">
           <el-form-item prop="fileList01" label="验收单" class="label-right-align"
@@ -332,6 +339,7 @@ export default {
             const newData = {
               ...data,
               zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
+              zlzmwj: data.fileByList ? JSON.parse(data.fileByList).zlzmwj || [] : [], //质量证明文件
               fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //验收单
               fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
               fileList03: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单

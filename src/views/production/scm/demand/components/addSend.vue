@@ -20,6 +20,14 @@
               :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isImgToPdf="true" />
           </el-form-item>
         </template>
+        <!-- 质量证明文件 -->
+        <template #zlzmwjSlot="scope">
+          <el-form-item prop="zlzmwj" label="质量证明文件" class="label-right-align"
+            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
+            <fileUpload v-model="scope.formModel.zlzmwj" :limit="9999" :preview="type === 'view' && status != 2"
+              :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
+          </el-form-item>
+        </template>
         <!-- 供应需求ID和需求项目切换 -->
         <!-- <template #slot2="scope">
           <el-form-item
@@ -294,6 +302,7 @@ export default {
             ...data,
             fileList: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
             zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
+            zlzmwj: data.fileByList ? JSON.parse(data.fileByList).zlzmwj || [] : [], //质量证明文件
             arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
             shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
           };
@@ -406,6 +415,10 @@ export default {
           //装车照片
           if (formData.zczp.length > 0) {
             this.$set(fileByList, "zczp", formData.zczp);
+          }
+          //质量证明文件
+          if (formData.zlzmwj.length > 0) {
+            this.$set(fileByList, "zlzmwj", formData.zlzmwj);
           }
           formData.fileByList = JSON.stringify(fileByList);
           for (var i in this.tableData) {
