@@ -25,14 +25,11 @@
           </el-form-item>
         </template>
 
-        <template #catalogSupplierSlot="{ formModel }">
-          <el-form-item prop="catalogSupplier" label="目录内厂家" class="label-right-align"
-            :rules="[{ required: true, message: '请选择是否为目录内厂家', trigger: 'change' }]">
-            <el-radio-group v-if="!isView" v-model="formModel.catalogSupplier">
-              <el-radio label="1">是</el-radio>
-              <el-radio label="0">否</el-radio>
-            </el-radio-group>
-            <span v-else class="readonly-mode-field">{{ catalogSupplierText(formModel.catalogSupplier) }}</span>
+        <template #sellerNameSlot="{ formModel }">
+          <el-form-item prop="sellerName" label="供应商" class="label-right-align"
+            :rules="[{ required: true, message: '请输入供应商', trigger: 'blur' }]">
+            <el-input v-if="!isView" v-model.trim="formModel.sellerName" placeholder="请输入供应商" />
+            <span v-else class="readonly-mode-field">{{ formModel.sellerName }}</span>
           </el-form-item>
         </template>
 
@@ -226,10 +223,6 @@ export default {
       this.$refs.vFormRef.setFormJson(data)
     },
     async loadCurrentSection() {
-      this.$refs.vFormRef.setFormData({
-        status: '1',
-        catalogSupplier: '1'
-      })
       const { data } = await getCurrentSection()
       if (!data) return
       this.$refs.vFormRef.setFormData({
@@ -268,9 +261,6 @@ export default {
       }
     },
     formatDate(value) { return value ? dayjs(value).format('YYYY-MM-DD') : '' },
-    catalogSupplierText(value) {
-      return { '1': '是', '0': '否' }[String(value)] || ''
-    },
     async handleMaterialChange(value, formModel) {
       const previousValue = this.formData.materialName || ''
       if (previousValue && previousValue !== value && this.materialList.length) {
