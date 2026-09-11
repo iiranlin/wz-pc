@@ -13,6 +13,8 @@
       <el-table-column prop="specModel" label="规格型号" min-width="180" align="center" show-overflow-tooltip />
       <el-table-column prop="unit" label="计量单位" min-width="120" align="center" show-overflow-tooltip />
       <el-table-column prop="receiptQty" label="数量" min-width="120" align="center" show-overflow-tooltip />
+      <el-table-column v-if="materialType" prop="batchNo" :label="batchNoLabel" min-width="140"
+        align="center" show-overflow-tooltip />
       <template v-if="isSteel">
         <el-table-column label="质量证明书" min-width="180" align="center">
           <template #default="scope"><file-upload :value="getFiles(scope.row, 'zlzms')" preview /></template>
@@ -22,7 +24,6 @@
         </el-table-column>
       </template>
       <template v-else-if="materialType">
-        <el-table-column prop="batchNo" label="批号" min-width="140" align="center" show-overflow-tooltip />
         <el-table-column label="出厂合格证" min-width="180" align="center">
           <template #default="scope"><file-upload :value="getFiles(scope.row, 'cchgz')" preview /></template>
         </el-table-column>
@@ -65,6 +66,11 @@
           <el-input-number v-model="materialForm.receiptQty" :min="0.01" :precision="4"
             :controls="false" placeholder="请输入数量" style="width: 100%" />
         </el-form-item>
+        <el-form-item v-if="materialType" :label="batchNoLabel" prop="batchNo"
+          :rules="[{ required: true, message: `请输入${batchNoLabel}`, trigger: 'blur' }]">
+          <el-input v-model.trim="materialForm.batchNo" maxlength="100"
+            :placeholder="`请输入${batchNoLabel}`" />
+        </el-form-item>
         <template v-if="isSteel">
           <el-form-item label="质量证明书" class="attachment-required">
             <file-upload v-model="materialFiles.zlzms" :limit="9999" :fileSize="500"
@@ -76,9 +82,6 @@
           </el-form-item>
         </template>
         <template v-else-if="materialType">
-          <el-form-item label="批号" prop="batchNo">
-            <el-input v-model.trim="materialForm.batchNo" maxlength="100" placeholder="请输入批号" />
-          </el-form-item>
           <el-form-item label="出厂合格证" class="attachment-required">
             <file-upload v-model="materialFiles.cchgz" :limit="9999" :fileSize="500"
               :fileType="attachmentFileTypes" :isShowTip="false" />
@@ -167,14 +170,16 @@ export default {
         materialName: [{ required: true, message: '请输入物资名称', trigger: 'blur' }],
         specModel: [{ required: true, message: '请输入规格型号', trigger: 'blur' }],
         unit: [{ required: true, message: '请选择计量单位', trigger: 'change' }],
-        receiptQty: [{ required: true, validator: validateReceiptQty, trigger: 'blur' }],
-        batchNo: [{ required: true, message: '请输入批号', trigger: 'blur' }]
+        receiptQty: [{ required: true, validator: validateReceiptQty, trigger: 'blur' }]
       }
     }
   },
   computed: {
     isSteel() {
       return this.materialType === '钢材'
+    },
+    batchNoLabel() {
+      return this.isSteel ? '炉批号' : '批号'
     },
     dialogTitle() {
       return this.editIndex === -1 ? '新增物资' : '修改物资'
@@ -257,7 +262,7 @@ export default {
     validateList() {
       const invalidIndex = this.value.findIndex(item => {
         const files = this.parseFileList(item.fileList)
-        if (this.isSteel) return !files.zlzms.length || !files.mp.length
+        if (this.isSteel) return !item.batchNo || !files.zlzms.length || !files.mp.length
         return !item.batchNo || !files.cchgz.length || !files.ccjcbg.length
       })
       if (invalidIndex === -1) return true
