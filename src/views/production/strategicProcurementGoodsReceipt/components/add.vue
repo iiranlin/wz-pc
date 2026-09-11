@@ -1,9 +1,9 @@
 <template>
   <div class="app-container container_flex" v-loading="loading">
     <button-top :buttonTopData="buttonTop" :buttonShow="buttonShow" @newButton="newButton" />
-    <div :class="{ container_flex_form: isView }">
+    <div :class="{ container_flex_form: isFormReadonly }">
       <VFormRender ref="vFormRef" :form-json="formJson" :form-data="formData"
-        :option-data="optionData" :global-dsv="globalDsv" :class="{ formRender_view: isView }">
+        :option-data="optionData" :global-dsv="globalDsv" :class="{ formRender_view: isFormReadonly }">
         <template #sectionNameSlot="{ formModel }">
           <el-form-item prop="sectionName" label="标段项目" class="label-right-align">
             <el-tooltip :content="formModel.sectionName || ''" effect="light" placement="top">
@@ -15,7 +15,7 @@
         <template #supplierNameSlot="{ formModel }">
           <el-form-item prop="supplierName" label="生产厂家" class="label-right-align"
             :rules="[{ required: true, message: '请选择生产厂家', trigger: 'change' }]">
-            <el-select v-if="!isView" v-model="formModel.supplierName" filterable clearable
+            <el-select v-if="!isFormReadonly" v-model="formModel.supplierName" filterable clearable
               :disabled="!formModel.materialName" :loading="factoryLoading" placeholder="请选择生产厂家"
               style="width: 100%" @change="value => handleFactoryChange(value, formModel)">
               <el-option v-for="item in factoryOptions" :key="item.id" :label="item.factoryName"
@@ -28,7 +28,7 @@
         <template #sellerNameSlot="{ formModel }">
           <el-form-item prop="sellerName" label="供应商" class="label-right-align"
             :rules="[{ required: true, message: '请输入供应商', trigger: 'blur' }]">
-            <el-input v-if="!isView" v-model.trim="formModel.sellerName" placeholder="请输入供应商" />
+            <el-input v-if="!isFormReadonly" v-model.trim="formModel.sellerName" placeholder="请输入供应商" />
             <span v-else class="readonly-mode-field">{{ formModel.sellerName }}</span>
           </el-form-item>
         </template>
@@ -36,7 +36,7 @@
         <template #materialNameSlot="{ formModel }">
           <el-form-item prop="materialName" label="物资类型" class="label-right-align"
             :rules="[{ required: true, message: '请选择物资类型', trigger: 'change' }]">
-            <el-select v-if="!isView" v-model="formModel.materialName" clearable placeholder="请选择物资类型"
+            <el-select v-if="!isFormReadonly" v-model="formModel.materialName" clearable placeholder="请选择物资类型"
               style="width: 100%" @change="value => handleMaterialChange(value, formModel)">
               <el-option v-for="item in materialOptions" :key="item" :label="item" :value="item" />
             </el-select>
@@ -47,7 +47,7 @@
         <template #carNumSlot="{ formModel }">
           <el-form-item prop="carNum" label="车牌号" class="label-right-align"
             :rules="[{ required: true, message: '请输入车牌号', trigger: 'blur' }]">
-            <el-input v-if="!isView" v-model.trim="formModel.carNum" maxlength="30" placeholder="请输入车牌号" />
+            <el-input v-if="!isFormReadonly" v-model.trim="formModel.carNum" maxlength="30" placeholder="请输入车牌号" />
             <span v-else class="readonly-mode-field">{{ formModel.carNum }}</span>
           </el-form-item>
         </template>
@@ -55,7 +55,7 @@
         <template #specModelSlot="{ formModel }">
           <el-form-item prop="specModel" label="规格型号" class="label-right-align"
             :rules="[{ required: true, message: '请输入规格型号', trigger: 'blur' }]">
-            <el-input v-if="!isView" v-model="formModel.specModel" placeholder="请输入规格型号" />
+            <el-input v-if="!isFormReadonly" v-model="formModel.specModel" placeholder="请输入规格型号" />
             <span v-else class="readonly-mode-field">{{ formModel.specModel }}</span>
           </el-form-item>
         </template>
@@ -63,7 +63,7 @@
         <template #unitSlot="{ formModel }">
           <el-form-item prop="unit" label="计量单位" class="label-right-align"
             :rules="[{ required: true, message: '请选择计量单位', trigger: 'change' }]">
-            <el-select v-if="!isView" v-model="formModel.unit" filterable allow-create clearable
+            <el-select v-if="!isFormReadonly" v-model="formModel.unit" filterable allow-create clearable
               placeholder="请选择" style="width: 100%">
               <el-option v-for="item in dict.type.MeasureUnit" :key="item.value"
                 :label="item.label" :value="item.label" />
@@ -75,7 +75,7 @@
         <template #receiptQtySlot="{ formModel }">
           <el-form-item prop="receiptQty" label="收货数量" class="label-right-align"
             :rules="[{ required: true, message: '请输入收货数量', trigger: 'blur' }]">
-            <el-input-number v-if="!isView" v-model="formModel.receiptQty" :min="0.00"
+            <el-input-number v-if="!isFormReadonly" v-model="formModel.receiptQty" :min="0.00"
               :precision="4" :controls="false" placeholder="请输入收货数量" style="width: 100%" />
             <span v-else class="readonly-mode-field">{{ formModel.receiptQty }}</span>
           </el-form-item>
@@ -84,7 +84,7 @@
         <template #receiptDateSlot="{ formModel }">
           <el-form-item prop="receiptDate" label="收货日期" class="label-right-align"
             :rules="[{ required: true, message: '请选择收货日期', trigger: 'change' }]">
-            <el-date-picker v-if="!isView" v-model="formModel.receiptDate" type="date"
+            <el-date-picker v-if="!isFormReadonly" v-model="formModel.receiptDate" type="date"
               value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd" placeholder="请选择"
               style="width: 100%" />
             <span v-else class="readonly-mode-field">{{ formatDate(formModel.receiptDate) }}</span>
@@ -94,7 +94,7 @@
         <template #receiverSlot="{ formModel }">
           <el-form-item prop="receiver" label="收货人" class="label-right-align"
             :rules="[{ required: true, message: '请输入收货人', trigger: 'blur' }]">
-            <el-input v-if="!isView" v-model="formModel.receiver" placeholder="请输入收货人" />
+            <el-input v-if="!isFormReadonly" v-model="formModel.receiver" placeholder="请输入收货人" />
             <span v-else class="readonly-mode-field">{{ formModel.receiver }}</span>
           </el-form-item>
         </template>
@@ -103,14 +103,14 @@
           <el-form-item label="交货单附件" class="label-right-align no-border-item" required>
             <file-upload v-model="proofFiles.jhd" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx', 'xls', 'xlsx']"
-              :preview="isView" :isShowTip="false" />
+              :preview="isFormReadonly" :isShowTip="false" />
           </el-form-item>
         </template>
 
         <template #dhzpSlot>
           <el-form-item label="到货照片" class="label-right-align no-border-item" required>
             <file-upload v-model="proofFiles.dhzp" :limit="9999" :fileSize="500"
-              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :preview="isView" :isShowTip="false" />
+              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :preview="isFormReadonly" :isShowTip="false" />
           </el-form-item>
         </template>
 
@@ -118,13 +118,13 @@
           <el-form-item label="其他材料" class="label-right-align no-border-item">
             <file-upload v-model="proofFiles.qt" :limit="9999" :fileSize="500"
               :fileType="['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx', 'xls', 'xlsx']"
-              :preview="isView" :isShowTip="false" />
+              :preview="isFormReadonly" :isShowTip="false" />
           </el-form-item>
         </template>
 
         <template #remarkSlot="{ formModel }">
           <el-form-item prop="remark" label="备注" class="label-right-align">
-            <el-input v-if="!isView" v-model="formModel.remark" type="textarea" :rows="3"
+            <el-input v-if="!isFormReadonly" v-model="formModel.remark" type="textarea" :rows="3"
               maxlength="500" show-word-limit placeholder="请输入备注" />
             <span v-else class="readonly-mode-field readonly-mode-field--wrap">{{ formModel.remark }}</span>
           </el-form-item>
@@ -132,7 +132,8 @@
 
         <template #materialListSlot>
           <material-list ref="materialList" v-model="materialList"
-            :material-type="currentMaterialType" :readonly="isView" />
+            :material-type="currentMaterialType" :readonly="isView || isUpdateBlocked"
+            :supplement-mode="isAttachmentSupplement" />
         </template>
       </VFormRender>
     </div>
@@ -197,6 +198,18 @@ export default {
       }
     },
     isView() { return this.type === 'view' },
+    isListEntry() { return this.$route.query.from === 'list' },
+    isAttachmentSupplement() {
+      return this.type === 'update' && this.isListEntry &&
+        ['0', '2', '3'].includes(String(this.$route.query.status))
+    },
+    isNormalUpdate() {
+      return this.type === 'update' && this.isListEntry && String(this.$route.query.status) === '1'
+    },
+    isUpdateBlocked() {
+      return this.type === 'update' && !this.isNormalUpdate && !this.isAttachmentSupplement
+    },
+    isFormReadonly() { return this.isView || this.isAttachmentSupplement || this.isUpdateBlocked },
     isAudit() { return this.isView && this.name === 'audit' },
     currentMaterialType() {
       return this.formData.materialName || ''
@@ -212,7 +225,7 @@ export default {
         await this.loadFormJson()
         if (this.id) await this.loadDetail()
         else await this.loadCurrentSection()
-        if (this.isView) this.$refs.vFormRef.setReadMode(true)
+        if (this.isFormReadonly) this.$refs.vFormRef.setReadMode(true)
       } finally {
         this.loading = false
       }
@@ -309,8 +322,9 @@ export default {
     },
     buttonShow(button) {
       if (['pass', 'reject'].includes(button.buttonCode)) return this.isAudit
-      if (button.buttonCode === 'edit') return this.isView && this.name === 'handle'
-      return button.buttonCode !== 'save' || !this.isView
+      if (button.buttonCode === 'edit') return false
+      if (button.buttonCode === 'save') return !this.isView && !this.isUpdateBlocked
+      return true
     },
     newButton(buttonCode) {
       if (buttonCode === 'cancel') this.cancel()
@@ -332,44 +346,48 @@ export default {
       })
     },
     submitForm() {
-      this.$refs.vFormRef.validateForm(async valid => {
+      if (this.isAttachmentSupplement) return this.saveForm()
+      this.$refs.vFormRef.validateForm(valid => {
         if (!valid) return this.$message.warning('请完善必填信息')
-        this.loading = true
-        try {
-          const formData = await this.$refs.vFormRef.getFormData()
-          if (!this.materialList.length) {
-            this.$message.warning('至少添加一条物资')
-            return
-          }
-          if (!this.$refs.materialList.validateList()) return
-          if (!this.proofFiles.jhd.length) {
-            this.$message.warning('请上传交货单附件')
-            return
-          }
-          if (!this.proofFiles.dhzp.length) {
-            this.$message.warning('请上传到货照片')
-            return
-          }
-          const data = {
-            ...formData,
-            ...(this.id ? { id: this.id } : {}),
-            supplierId: formData.supplierId || formData.supplierName || '',
-            receiptDate: formData.receiptDate ? dayjs(formData.receiptDate).toISOString() : null,
-            proofFileList: JSON.stringify(this.proofFiles),
-            materialFirstReceiptDetailsModifyParamList: this.materialList.map(item => ({
-              ...item,
-              receiptQty: Number(item.receiptQty),
-              fileList: typeof item.fileList === 'string' ? item.fileList : JSON.stringify(item.fileList || {})
-            }))
-          }
-          const response = await (this.type === 'update' ? Api.edit(data) : Api.save(data))
-          this.$modal.msgSuccess(response.message || '保存成功')
-          if (this.type === 'update') await this.returnToList()
-          else this.cancel()
-        } finally {
-          this.loading = false
-        }
+        this.saveForm()
       })
+    },
+    async saveForm() {
+      this.loading = true
+      try {
+        const formData = await this.$refs.vFormRef.getFormData()
+        if (!this.materialList.length) {
+          this.$message.warning('至少添加一条物资')
+          return
+        }
+        if (!this.isAttachmentSupplement && !this.$refs.materialList.validateList()) return
+        if (!this.isAttachmentSupplement && !this.proofFiles.jhd.length) {
+          this.$message.warning('请上传交货单附件')
+          return
+        }
+        if (!this.isAttachmentSupplement && !this.proofFiles.dhzp.length) {
+          this.$message.warning('请上传到货照片')
+          return
+        }
+        const data = {
+          ...formData,
+          ...(this.id ? { id: this.id } : {}),
+          supplierId: formData.supplierId || formData.supplierName || '',
+          receiptDate: formData.receiptDate ? dayjs(formData.receiptDate).toISOString() : null,
+          proofFileList: JSON.stringify(this.proofFiles),
+          materialFirstReceiptDetailsModifyParamList: this.materialList.map(item => ({
+            ...item,
+            receiptQty: Number(item.receiptQty),
+            fileList: typeof item.fileList === 'string' ? item.fileList : JSON.stringify(item.fileList || {})
+          }))
+        }
+        const response = await (this.type === 'update' ? Api.edit(data) : Api.save(data))
+        this.$modal.msgSuccess(response.message || '保存成功')
+        if (this.type === 'update') await this.returnToList()
+        else this.cancel()
+      } finally {
+        this.loading = false
+      }
     },
     returnToList() {
       return this.$tab.closePage(this.$route).then(() => {

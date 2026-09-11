@@ -2,7 +2,7 @@
   <div class="material-list">
     <div class="material-list__header">
       <span class="material-list__title">物资明细</span>
-      <el-button v-if="!readonly" type="primary" size="small" icon="el-icon-plus" @click="openCreate">
+      <el-button v-if="!readonly && !supplementMode" type="primary" size="small" icon="el-icon-plus" @click="openCreate">
         新增物资
       </el-button>
     </div>
@@ -22,6 +22,14 @@
         <el-table-column label="铭牌" min-width="180" align="center">
           <template #default="scope"><file-upload :value="getFiles(scope.row, 'mp')" preview /></template>
         </el-table-column>
+        <template v-if="supplementMode">
+          <el-table-column label="7天出厂检测报告" min-width="180" align="center">
+            <template #default="scope"><file-upload :value="getFiles(scope.row, 'jcbg7')" preview /></template>
+          </el-table-column>
+          <el-table-column label="28天出厂检测报告" min-width="180" align="center">
+            <template #default="scope"><file-upload :value="getFiles(scope.row, 'jcbg28')" preview /></template>
+          </el-table-column>
+        </template>
       </template>
       <template v-else-if="materialType">
         <el-table-column label="出厂合格证" min-width="180" align="center">
@@ -41,7 +49,8 @@
       <el-table-column v-if="!readonly" label="操作" width="150" align="center" fixed="right">
         <template #default="scope">
           <el-button type="text" @click="openEdit(scope.row, scope.$index)">修改</el-button>
-          <el-button type="text" class="delete-button" @click="removeRow(scope.$index)">删除</el-button>
+          <el-button v-if="!supplementMode" type="text" class="delete-button"
+            @click="removeRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,6 +58,17 @@
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="650px"
       append-to-body :close-on-click-modal="false" @closed="resetDialog">
       <el-form ref="materialForm" :model="materialForm" :rules="rules" label-width="120px">
+        <template v-if="supplementMode">
+          <el-form-item label="7天出厂检测报告">
+            <file-upload v-model="materialFiles.jcbg7" :limit="9999" :fileSize="500"
+              :fileType="attachmentFileTypes" :isShowTip="false" />
+          </el-form-item>
+          <el-form-item label="28天出厂检测报告">
+            <file-upload v-model="materialFiles.jcbg28" :limit="9999" :fileSize="500"
+              :fileType="attachmentFileTypes" :isShowTip="false" />
+          </el-form-item>
+        </template>
+        <template v-else>
         <el-form-item label="物资名称" prop="materialName">
           <el-input v-model.trim="materialForm.materialName" maxlength="200"
             show-word-limit placeholder="请输入物资名称" />
@@ -90,11 +110,11 @@
             <file-upload v-model="materialFiles.ccjcbg" :limit="9999" :fileSize="500"
               :fileType="attachmentFileTypes" :isShowTip="false" />
           </el-form-item>
-          <el-form-item label="7天检测报告">
+          <el-form-item label="7天出厂检测报告">
             <file-upload v-model="materialFiles.jcbg7" :limit="9999" :fileSize="500"
               :fileType="attachmentFileTypes" :isShowTip="false" />
           </el-form-item>
-          <el-form-item label="28天检测报告">
+          <el-form-item label="28天出厂检测报告">
             <file-upload v-model="materialFiles.jcbg28" :limit="9999" :fileSize="500"
               :fileType="attachmentFileTypes" :isShowTip="false" />
           </el-form-item>
@@ -103,6 +123,7 @@
           <el-input v-model.trim="materialForm.remark" type="textarea" :rows="3" maxlength="500"
             show-word-limit placeholder="请输入备注" />
         </el-form-item>
+        </template>
       </el-form>
       <template #footer>
         <el-button style="margin-right: 20px;" @click="dialogVisible = false">取消</el-button>
@@ -150,6 +171,10 @@ export default {
     materialType: {
       type: String,
       default: ''
+    },
+    supplementMode: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -182,6 +207,7 @@ export default {
       return this.isSteel ? '炉批号' : '批号'
     },
     dialogTitle() {
+      if (this.supplementMode) return '补录检测报告'
       return this.editIndex === -1 ? '新增物资' : '修改物资'
     }
   },
@@ -202,7 +228,7 @@ export default {
     confirmMaterial() {
       this.$refs.materialForm.validate(valid => {
         if (!valid) return
-        if (!this.validateFiles()) return
+        if (!this.supplementMode && !this.validateFiles()) return
         const list = this.value.map(item => ({ ...item }))
         const material = {
           ...this.materialForm,

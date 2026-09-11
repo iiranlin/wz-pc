@@ -37,7 +37,7 @@
             <span :class="['status-text', `status-${scope.value}`]">{{ statusMap[scope.value] || scope.value }}</span>
           </template>
           <template #billNo="scope">
-            <el-button type="text" @click.stop="openPage('view', scope.data.id)">{{ scope.value }}</el-button>
+            <el-button type="text" @click.stop="openPage('view', scope.data.id, scope.data.status)">{{ scope.value }}</el-button>
           </template>
           <template #receiptDate="scope">{{ formatDate(scope.value) }}</template>
           <template #createDate="scope">{{ formatDateTime(scope.value) }}</template>
@@ -67,8 +67,8 @@ import indexMixin from '@/views/mixins'
 
 const BUTTON_PERMISSIONS = {
   '1': ['update', 'delete', 'submit', 'export'],
-  '2': ['withdraw', 'export', 'flowSee'],
-  '3': ['export', 'flowSee'],
+  '2': ['update', 'withdraw', 'export', 'flowSee'],
+  '3': ['update', 'export', 'flowSee'],
   '0': ['update', 'submit', 'export', 'flowSee']
 }
 
@@ -153,8 +153,8 @@ export default {
     },
     handleButton(buttonCode, idArr) {
       if (buttonCode === 'create') return this.openPage('create')
-      if (buttonCode === 'update') return this.openPage('update', idArr[0])
-      if (buttonCode === 'view') return this.openPage('view', idArr[0])
+      if (buttonCode === 'update') return this.openPage('update', idArr[0], this.getRowStatus(idArr[0]))
+      if (buttonCode === 'view') return this.openPage('view', idArr[0], this.getRowStatus(idArr[0]))
       if (buttonCode === 'delete') return this.handleDelete(idArr)
       if (buttonCode === 'submit') return this.handleSubmit(idArr)
       if (buttonCode === 'withdraw') {
@@ -166,10 +166,14 @@ export default {
         this.workFlowViewVisible = true
       }
     },
-    openPage(type, id) {
+    getRowStatus(id) {
+      const row = this.list.find(item => String(item.id) === String(id))
+      return row ? row.status : ''
+    },
+    openPage(type, id, status) {
       this.$router.push({
         name: 'addGoodsReceipt',
-        query: { type, ...(id ? { id } : {}) }
+        query: { type, from: 'list', ...(id ? { id } : {}), ...(status !== '' && status != null ? { status } : {}) }
       })
     },
     handleDelete(ids) {
