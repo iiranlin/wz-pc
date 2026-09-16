@@ -1,5 +1,10 @@
 <template>
   <div class="login-stats-container">
+    <div class="top-actions">
+      <el-button type="primary" icon="el-icon-download" @click="handleReviewDurationDownload">
+        审核耗时统计表下载
+      </el-button>
+    </div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>角色登录信息查询</span>
@@ -246,6 +251,14 @@ export default {
         this.appLoading = false;
       }
     },
+    async handleReviewDurationDownload() {
+      try {
+        await FileApi.customDownload({ businessType: 18 })
+      } catch (error) {
+        console.error('审核耗时统计表下载失败', error)
+        this.$message.error('审核耗时统计表下载失败')
+      }
+    },
   }
 }
 </script>
@@ -255,6 +268,11 @@ export default {
   padding: 20px;
   height: calc(100vh - 90px);
   overflow-y: auto;
+}
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
 .filter-container {
   display: flex;
