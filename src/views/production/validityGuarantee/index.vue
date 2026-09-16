@@ -25,6 +25,13 @@
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+          <!-- 合同编号 -->
+          <template #contractNo="scoped">
+            <el-button type="text"
+              @click="$router.push({ name: 'addValidityGuarantee', query: { id: scoped.data.id, type: 'view' } })">
+              {{ scoped.data.contractNo }}
+            </el-button>
+          </template>
           <template #validityGuarantee="scope">
             {{ scope.data.validityGuarantee | formatDate }} 至
             {{ scope.data.validityGuaranteeEnd | formatDate }}

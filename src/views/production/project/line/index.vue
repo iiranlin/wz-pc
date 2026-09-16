@@ -64,7 +64,16 @@
           @emitAblFilter="emitAblFilter"
           @handleButton="handleButton"
         >
-        <!-- 项目状态 -->
+          <!-- 项目编号 -->
+          <template #projectNumber="scoped">
+            <el-button
+              type="text"
+              @click="$router.push({ name: 'detailLine', query: { id: scoped.data.id, type: 'view' } })"
+            >
+              {{ scoped.data.projectNumber }}
+            </el-button>
+          </template>
+          <!-- 项目状态 -->
          <!-- 已计划物资金额比例 == 100 增状态显示完工，否则在建 -->
          <template #status="scoped">
            {{ scoped.data.materialUsedRatio == 100 ? '完工' : '在建' }}

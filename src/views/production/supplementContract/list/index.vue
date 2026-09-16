@@ -32,6 +32,23 @@
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+          <!-- 合同编号 -->
+          <template #contractNo="scoped">
+            <el-button type="text" @click="$router.push({ name: 'detailSupplementContract', query: {
+              id: scoped.data.id,
+              type: 'view',
+              parentId: scoped.data.parentId,
+            } })">
+              {{ scoped.data.contractNo }}
+            </el-button>
+          </template>
+          <!-- 原合同编号 -->
+          <template #originalContractNumber="scoped">
+            <el-button type="text"
+              @click="$router.push({ name: 'detailContract', query: { id: scoped.data.parentId, type: 'view' } })">
+              {{ scoped.data.originalContractNumber }}
+            </el-button>
+          </template>
           <template #validityGuarantee="scope">
             {{ scope.data.validityGuarantee | formatDate }} 至 {{ scope.data.validityGuaranteeEnd | formatDate }}
           </template>

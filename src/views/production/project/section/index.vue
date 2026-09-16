@@ -29,6 +29,13 @@
         <table-index ref="tableIndex" :loading="loading" :tableIndexs="tableIndex" :tableData="list"
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton">
+          <!-- 标段编号 -->
+          <template #sectionNumber="scoped">
+            <el-button type="text"
+              @click="$router.push({ name: 'detailSection', query: { id: scoped.data.id, type: 'view' } })">
+              {{ scoped.data.sectionNumber }}
+            </el-button>
+          </template>
           <!-- 项目状态 -->
          <!-- 已计划物资金额比例 == 100 增状态显示完工，否则在建 -->
          <template #status="scoped">

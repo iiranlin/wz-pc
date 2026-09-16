@@ -52,6 +52,13 @@
           :property="property" :numberShow="numberShow" @handleSelectionChange="handleSelectionChange"
           @selectChange="selectChange" @emitAblFilter="emitAblFilter" @handleButton="handleButton"
           :rowClassName="tableRowClassName">
+          <!-- 合同编号 -->
+          <template #contractNo="scoped">
+            <el-button type="text"
+              @click="$router.push({ name: 'detailContract', query: { id: scoped.data.id, type: 'view' } })">
+              {{ scoped.data.contractNo }}
+            </el-button>
+          </template>
           <!-- 补充合同比例 -->
           <template #supplementalRatio="scope">
             {{ scope.value }}%
