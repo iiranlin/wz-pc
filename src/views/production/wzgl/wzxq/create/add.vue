@@ -56,6 +56,7 @@ import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import fileUpload from "@/components/upload";
 import {findByBusinessType} from '@/utils/index.js'
+import Decimal from 'decimal.js'
 export default {
   // 需求填报
   components: {
@@ -162,15 +163,15 @@ export default {
           errors.push(`第${rowNum}行，投资比例未填写`)
         }
 
-        const plan = +row.planAmount || 0;
-        const cumulative = +row.cumulativeAmount || 0;
-        const contract = +row.amount || 0;
+        const plan = new Decimal(row.planAmount || 0);
+        const cumulative = new Decimal(row.cumulativeAmount || 0);
+        const contract = new Decimal(row.amount || 0);
 
-        if (plan <= 0) {
+        if (plan.lte(0)) {
           errors.push(`第${rowNum}行，本次计划数量必须大于0 `);
         }
 
-        if (plan + cumulative > contract) {
+        if (plan.plus(cumulative).gt(contract)) {
           errors.push(`第${rowNum}行，本次计划数量超出合同数量 `);
         }
       });

@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column prop="cumulativeAmount" label="累计计划量（含本次）" align="center" width="200" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ +scope.row.cumulativeAmount + +(scope.row.planAmount || 0) }}
+          {{ getCumulativeAmount(scope.row) }}
         </template>
       </el-table-column>
       <el-table-column prop="planAmount" label="本次计划数量" align="center" width="150" show-overflow-tooltip>
@@ -46,7 +46,7 @@
         </template>
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.planAmount" :min="0"
-            :max="+scope.row.amount - +scope.row.cumulativeAmount" :precision="4" size="mini"
+            :max="getRemainingAmount(scope.row)" :precision="4" size="mini"
             style="width: 100%"></el-input-number>
         </template>
       </el-table-column>
@@ -151,6 +151,7 @@ import BatchDialog from './batchDialog.vue';
 import dayjs from 'dayjs';
 import ViewNegativeContractsDialog from '@/views/production/contract/list/components/viewNegativeContractsDialog.vue';
 import { getNegativeContractSummary } from '@/utils/negativeContractSummary';
+import Decimal from 'decimal.js';
 export default {
   // 新增物资填报表格
   data() {
@@ -169,8 +170,8 @@ export default {
     },
     totalPlanAmount() {
       return this.tableData.reduce((sum, item) => {
-        return sum + item.planAmount;
-      }, 0);
+        return sum.plus(item.planAmount || 0);
+      }, new Decimal(0)).toNumber();
     },
   },
   mounted() {
@@ -179,10 +180,16 @@ export default {
     this.tableData = this.getSelectedMaterialList().map(x => ({
       ...x,
       // 合同数量 - 累计数量
-      planAmount: +x.amount - +x.cumulativeAmount
+      planAmount: this.getRemainingAmount(x)
     }))
   },
   methods: {
+    getCumulativeAmount(row) {
+      return new Decimal(row.cumulativeAmount || 0).plus(row.planAmount || 0).toNumber();
+    },
+    getRemainingAmount(row) {
+      return new Decimal(row.amount || 0).minus(row.cumulativeAmount || 0).toNumber();
+    },
     getNegativeSummary(row) {
       return getNegativeContractSummary(row);
     },
