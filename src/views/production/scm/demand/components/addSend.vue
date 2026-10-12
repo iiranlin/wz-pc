@@ -100,6 +100,7 @@ export default {
       maxManualIndex: 1,
       buyer: userInfo?.deptName,
       loading: false,
+      hasActivated: false,
       title: "新增",
       checked: false,
       //   fileList type
@@ -169,6 +170,11 @@ export default {
   },
   async created() { },
   activated() {
+    // 首次进入由 mounted 初始化；从缓存恢复时重新获取详情数据。
+    if (this.hasActivated && ["view", "update"].includes(this.type)) {
+      this.updateInit(this.id);
+    }
+    this.hasActivated = true;
     if (this.type == "view") {
       this.$nextTick(() => {
         this.$tab.updatePage({
