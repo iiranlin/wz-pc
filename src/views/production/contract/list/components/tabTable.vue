@@ -80,6 +80,13 @@
               <span>{{ scope.row.unit }}</span>
             </template>
           </el-table-column>
+          <el-table-column v-if="type === 'update' || type === 'view'" prop="materialNumber" label="物资编码" width="180" align="center" show-overflow-tooltip ></el-table-column>
+          <el-table-column v-if="type === 'update' || type === 'view'" label="物资大类" width="180" align="center" show-overflow-tooltip >
+            <template slot-scope="scope">
+              <span>{{ { '1': '国铁集团管理', '2': '建设单位管理' }[String(scope.row.materialNumber || '').charAt(0)] || '' }}</span>
+            </template>
+          </el-table-column>
+
 
           <!-- 可编辑amount -->
           <el-table-column prop="amount" label="数量" width="180" align="center" show-overflow-tooltip>
