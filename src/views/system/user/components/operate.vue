@@ -54,8 +54,8 @@
         <el-col :span="12">
           <el-form-item label="接收短信:">
             <el-radio-group v-model="form.smsStatus">
-              <el-radio label="1">开启</el-radio>
-              <el-radio label="0">关闭</el-radio>
+              <el-radio :label="1">开启</el-radio>
+              <el-radio :label="0">关闭</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -302,6 +302,7 @@ export default {
           this.title = '新增用户'
           this.typeDeptId = false
           this.form.rank = '1'
+          this.form.smsStatus = 1
           if (!!id) {
             // 所选部门ID
             this.form.deptId = id
@@ -378,6 +379,7 @@ export default {
     userDetail(id) {
       userDetail(id).then(({ data }) => {
         this.form = data
+        this.form.smsStatus = Number(data.smsStatus)
         this.form.deptId = data.deptId || undefined
         this.form.flag = data.flag == undefined ? 1 : data.flag
         this.form.rank = '1'
