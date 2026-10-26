@@ -21,16 +21,30 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-form-item label="职务:" prop="duty">
-          <el-select v-model="selectedDuty" placeholder="请选择职务" clearable @change="handleDutyChange">
-             <el-option
-                  v-for="item in dict.type.ZW"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-          </el-select>
-        </el-form-item>
+        <el-col :span="12">
+          <el-form-item label="职务:" prop="duty">
+            <el-select v-model="selectedDuty" placeholder="请选择职务" clearable @change="handleDutyChange">
+               <el-option
+                    v-for="item in dict.type.ZW"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="员工职称:" prop="officerId">
+            <el-select v-model="form.officerId" placeholder="请选择员工职称" clearable @change="handleOfficerChange">
+              <el-option
+                v-for="item in officerOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
@@ -106,7 +120,7 @@
 </template>
 
 <script>
-import { userCreate, userDetail, userModify, userPhoneRepeat } from '@/api/system/user'
+import { userCreate, userDetail, userModify, userPhoneRepeat,UserOfficerByDeptId } from '@/api/system/user'
 import { deptTree, getDeptTreeByIdForRank } from '@/api/system/dept'
 import { getListByParentCode } from '@/api/system/dict'
 import Treeselect from "@riophae/vue-treeselect";
@@ -136,6 +150,8 @@ export default {
       deptOptions: [],
       typeSelectDepart: false,
       selectedDuty: null,
+      // 员工职称下拉选项
+      officerOptions: [],
       // 所有等级
       allRankList: [],
       rankList: [],
@@ -153,7 +169,9 @@ export default {
         phone: '',
         email: '',
         tel: '',
-        smsStatus: 1
+        smsStatus: 1,
+        officerId: '',
+        officerName: ''
       },
       // 表单校验
       rules: {
@@ -295,6 +313,11 @@ export default {
       this.openDataScope = true
       this.$nextTick(() => {
         this.$refs.elForm.resetFields()
+        // 重置员工职称相关数据
+        this.officerOptions = []
+        this.form.officerId = ''
+        this.form.officerName = ''
+
         if (type === 'update') {
           this.title = '修改用户'
           this.userDetail(id)
@@ -306,8 +329,24 @@ export default {
           if (!!id) {
             // 所选部门ID
             this.form.deptId = id
+            // 新增时若已带部门ID，直接拉取员工职称选项
+            this.loadOfficerOptions(id)
           }
         }
+      })
+    },
+    /** 加载员工职称下拉选项 */
+    loadOfficerOptions(deptId) {
+      if (!deptId) {
+        this.officerOptions = []
+        return Promise.resolve([])
+      }
+      return UserOfficerByDeptId(deptId).then(({ data }) => {
+        this.officerOptions = data || []
+        return this.officerOptions
+      }).catch(() => {
+        this.officerOptions = []
+        return []
       })
     },
     /** 转换用户数据结构 */
@@ -345,6 +384,21 @@ export default {
         this.$refs.elForm.validateField('deptId')
       }
       this.typeDeptId = true
+
+      // 切换部门时，重新加载员工职称下拉选项
+      if (value) {
+        this.loadOfficerOptions(value).then(() => {
+          // 若当前选中的员工职称不在新选项中，则清空
+          if (this.form.officerId && !this.officerOptions.some(o => o.id === this.form.officerId)) {
+            this.form.officerId = ''
+            this.form.officerName = ''
+          }
+        })
+      } else {
+        this.officerOptions = []
+        this.form.officerId = ''
+        this.form.officerName = ''
+      }
     },
     selectTreeselect() {
       this.form.rank = ''
@@ -383,8 +437,34 @@ export default {
         this.form.deptId = data.deptId || undefined
         this.form.flag = data.flag == undefined ? 1 : data.flag
         this.form.rank = '1'
+        // 保证员工职称字段存在
+        this.form.officerId = data.officerId || ''
+        this.form.officerName = data.officerName || ''
         // 设置selectedDuty的值
         this.selectedDuty = data.dutiesId || null
+
+        // 初始化员工职称下拉选项并回显
+        if (this.form.deptId) {
+          this.loadOfficerOptions(this.form.deptId).then(() => {
+            // 回显：优先用后端返回的 officerId，其次按 officerName 匹配
+            if (this.form.officerId) {
+              const matched = this.officerOptions.find(o => o.id === this.form.officerId)
+              if (matched) {
+                this.form.officerName = matched.name
+              } else {
+                // 选项里不存在该 ID，清空避免显示异常
+                this.form.officerId = ''
+                this.form.officerName = ''
+              }
+            } else if (this.form.officerName) {
+              const matched = this.officerOptions.find(o => o.name === this.form.officerName)
+              if (matched) {
+                this.form.officerId = matched.id
+              }
+            }
+          })
+        }
+
         this.$nextTick(async () => {
           if (this.form.rank == 4) {
             await this.initCustom()
@@ -547,6 +627,19 @@ export default {
       } else {
         this.form.dutiesId = ''
         this.form.duties = ''
+      }
+    },
+    /** 员工职称切换 */
+    handleOfficerChange(value) {
+      if (value) {
+        const item = this.officerOptions.find(o => o.id === value)
+        if (item) {
+          this.form.officerId = value
+          this.form.officerName = item.name || item.label || ''
+        }
+      } else {
+        this.form.officerId = ''
+        this.form.officerName = ''
       }
     },
   }

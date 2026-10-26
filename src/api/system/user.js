@@ -124,3 +124,15 @@ export function unlockUser(data) {
         data
     })
 }
+
+/**
+ * 根据用户单位，获取员工职称
+ * @param {*} data 
+ * @returns 
+ */
+export function UserOfficerByDeptId(deptId) {
+    return request({
+        url: `${VUE_APP_BASE_PREFIX}/user/getOfficerByDeptId/`+deptId,
+        method: 'get'
+    })
+}
