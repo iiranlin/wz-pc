@@ -32,7 +32,7 @@
         </template>
           <!-- 合同编号选择 -->
         <template #contractNoSlot="{ formModel }">
-          <el-form-item prop="contractNo" label="合同编号" class="label-right-align" :rules="[{ required: true, message: '请选择', trigger: 'change' }]">
+          <el-form-item prop="contractNo" label="合同编号" class="label-right-align" :rules="[{ required: false, message: '请选择', trigger: 'change' }]">
             <div style="position: relative;">
               <el-input v-model="formModel.contractNo" placeholder="请输入" @blur="handleContractNoBlur(formModel.contractNo)"></el-input>
               <!-- 点击选择透明遮板 -->
@@ -44,7 +44,7 @@
 
         <!--卖方单位  -->
         <template #sellerSlot="{ formModel }">
-          <el-form-item prop="sellerId" :rules="[{ required: true, message: '请选择', trigger: 'change' }]" label="卖方"
+          <el-form-item prop="sellerId" :rules="[{ required: false, message: '请选择', trigger: 'change' }]" label="卖方"
             class="label-right-align">
             <template v-if="type !== 'view'">
               <el-select v-model="formModel.sellerId" filterable required style="width: 100%" placeholder="请选择"
@@ -341,15 +341,8 @@ export default {
           this.$message.warning('请完善信息')
           return
         }
-        // 校验表格
-        const tableValid = this.$refs.tabTableRef.onCheck()
-        if (!tableValid) {
-          return
-        }
-
-        // 如果表格内数据为空，则提示
-        if (this.tableData.length === 0) {
-          this.$message.warning('请添加合同物资科目')
+        // 新增和编辑均仅在添加物资细目后校验表格必填项
+        if (this.tableData.length > 0 && !this.$refs.tabTableRef.onCheck()) {
           return
         }
 
