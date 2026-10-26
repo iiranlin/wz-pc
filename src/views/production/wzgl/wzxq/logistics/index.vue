@@ -22,15 +22,8 @@
 
         <!-- 装车照片附件 -->
         <template #fileSlot="scope">
-          <el-form-item prop="zczp" label="装车照片" class="label-right-align">
-            <fileUpload
-              v-model="scope.formModel.zczp"
-              :limit="9999"
-              :preview="type === 'view' && status != 2"
-              :isShowTip="false"
-              :fileType="['jpg', 'png', 'jpeg']"
-            />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="photos" :preview="true" />
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="quality" :preview="true" />
         </template>
       </VFormRender>
     </div>
@@ -38,6 +31,8 @@
 </template>
 
 <script>
+import ShippingAttachments from "@/components/shipping-attachments";
+import { prepareShippingAttachmentLayout, initShippingAttachments, readShippingAttachments } from "@/utils/shipping-attachments";
 import * as Api from "@/api/prodmgr-inv/project/planRest.js";
 import * as LineApi from "@/api/prodmgr-inv/project/line.js";
 import * as SectionApi from "@/api/prodmgr-inv/project/section.js";
@@ -55,6 +50,7 @@ import fileUpload from "@/components/upload";
 export default {
   // 需求物流查看
   components: {
+    ShippingAttachments,
     VFormRender,
     attachmentTable,
     detailTable,
@@ -150,7 +146,7 @@ export default {
           await this.formFillInPage();
           this.$refs.vFormRef.setFormData({
             ...data,
-            zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
+            ...readShippingAttachments(data.fileByList),
             createDate: dayjs(data.createDate).format("YYYY-MM-DD HH:mm"),
           });
 
@@ -178,7 +174,8 @@ export default {
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("logisticsRequest").then((res) => {
-          this.$refs["vFormRef"].setFormJson(res.data);
+          this.$refs["vFormRef"].setFormJson(prepareShippingAttachmentLayout(res.data, {"fileSlot": ["photos", "quality"]}));
+          initShippingAttachments(this.$refs.vFormRef);
           //   form action
           this.$refs["vFormRef"].setReadMode(true);
 

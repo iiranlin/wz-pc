@@ -38,14 +38,7 @@
           >
             <fileUpload :value="scope.formModel.fileList02" :preview="true" :limit="9999" />
           </el-form-item>
-          <el-form-item
-            prop="fileList"
-            label="质量证明文件"
-            class="label-right-align"
-            v-else
-          >
-            <fileUpload :value="scope.formModel.fileList04" :preview="true" :limit="9999" />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" v-else :model="scope.formModel" group="quality" quality-prop="fileList04" :preview="true" />
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
@@ -119,6 +112,8 @@
 </template>
 
 <script>
+import ShippingAttachments from "@/components/shipping-attachments";
+import { prepareShippingAttachmentLayout, initShippingAttachments, readShippingAttachments } from "@/utils/shipping-attachments";
 import Vue from "vue";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
@@ -130,6 +125,7 @@ import dayjs from "dayjs";
 export default {
   name: "returnDetail_gys",
   components: {
+    ShippingAttachments,
     VFormRender,
     fileUpload,
   },
@@ -200,7 +196,7 @@ export default {
             fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //验收单
             fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
             fileList03: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
-            fileList04: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //质量证明文件
+            ...readShippingAttachments(data.fileByList, "fileList04", "zlzm"),
             fileList05: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
           };
           this.$refs.vFormRef.setFormData(newData);
@@ -231,7 +227,8 @@ export default {
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("returnDetail_g").then((res) => {
-          this.$refs["vFormRef"].setFormJson(res.data);
+          this.$refs["vFormRef"].setFormJson(prepareShippingAttachmentLayout(res.data, this.backNode == '1' ? {} : {"file2Slot": "quality"}));
+          initShippingAttachments(this.$refs.vFormRef);
 
           this.$refs["vFormRef"].setFormData({
             buyer: this.buyer,

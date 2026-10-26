@@ -22,13 +22,8 @@
 					</template>
 					<!-- 附件 -->
 					<template #file2Slot="scope">
-						<el-form-item prop="fileList02" label="质量证明文件" class="label-right-align"
-							:rules="[{ required: false, message: '请上传', trigger: 'change' }]">
-							<fileUpload v-model="scope.formModel.fileList02" :value="scope.formModel.fileList02"
-								:preview="type == 'view'" :limit="9999" :fileSize="500"
-								:fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
-						</el-form-item>
-					</template>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="quality" quality-prop="fileList02" :preview="type == 'view'" :required="true" />
+        </template>
 					<!-- 附件 -->
 					<template #file3Slot="scope">
 						<el-form-item prop="fileList03" label="报验结果" class="label-right-align"
@@ -124,6 +119,8 @@
 		</div>
 	</template>
 <script>
+import ShippingAttachments from "@/components/shipping-attachments";
+import { prepareShippingAttachmentLayout, initShippingAttachments, readShippingAttachments, writeShippingAttachments } from "@/utils/shipping-attachments";
 import Vue from "vue";
 import * as Api from "@/api/prodmgr-inv/project/wms.js";
 import VFormRender from "@/components/form-render/index";
@@ -135,6 +132,7 @@ import dayjs from "dayjs";
 export default {
 	name: "imPage",
 	components: {
+    ShippingAttachments,
 		VFormRender,
 		fileUpload,
 	},
@@ -235,7 +233,7 @@ export default {
 							...data,
 							storeDate: data.storeDate ? dayjs(data.storeDate).format("YYYY-MM-DD") : '',
 							fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
-							fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //证明文件
+							...readShippingAttachments(data.fileByList, "fileList02", "zlzm"),
 							fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
 							rkd: data.fileByList ? JSON.parse(data.fileByList).rkd || [] : [], //入库单附件
 						};
@@ -284,7 +282,7 @@ export default {
 			}
 			//入库单
 				this.$set(fileByList, "rkd", formData.rkd);
-			//质量证明文件
+			//其他质量文件
 			if (formData.fileList02.length > 0) {
 				this.$set(fileByList, "zlzm", formData.fileList02);
 			}
@@ -292,6 +290,7 @@ export default {
 			if (formData.fileList03.length > 0) {
 				this.$set(fileByList, "byjg", formData.fileList03);
 			}
+			writeShippingAttachments(fileByList, formData, "fileList02", "zlzm");
 			formData.fileByList = JSON.stringify(fileByList);
 			const res = await Api.updateFileList({...formData,id:this.id})
 			if (res.code === 0) {
@@ -354,7 +353,7 @@ export default {
 				}
 				//入库单
 				this.$set(fileByList, "rkd", formData.rkd);
-				//质量证明文件
+				//其他质量文件
 				if (formData.fileList02.length > 0) {
 					this.$set(fileByList, "zlzm", formData.fileList02);
 				}
@@ -362,6 +361,7 @@ export default {
 				if (formData.fileList03.length > 0) {
 					this.$set(fileByList, "byjg", formData.fileList03);
 				}
+				writeShippingAttachments(fileByList, formData, "fileList02", "zlzm");
 				formData.fileByList = JSON.stringify(fileByList);
 				for (var i in this.tableData) {
 					var fileByList = this.tableData[i].fileByList
@@ -440,7 +440,8 @@ export default {
 		formFillInPage() {
 			return new Promise((resolve) => {
 				formFillInPage("im").then((res) => {
-					this.$refs["vFormRef"].setFormJson(res.data);
+					this.$refs["vFormRef"].setFormJson(prepareShippingAttachmentLayout(res.data, {"file2Slot": "quality"}));
+          initShippingAttachments(this.$refs.vFormRef);
 					this.$refs["vFormRef"].setFormData({
 						buyer: this.buyer,
 					});

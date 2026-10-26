@@ -241,6 +241,7 @@
 </template>
 
 <script>
+import { shippingAttachmentLabels } from "@/utils/shipping-attachments";
 import * as Api from '@/api/prodmgr-inv/project/line.js'
 import * as SectionApi from '@/api/prodmgr-inv/project/section.js'
 import { deptTreeAll } from '@/api/system/dept.js'
@@ -266,7 +267,7 @@ export default {
     mapFileType(value) {
       const map = {
         'fhd': '发货单',
-        'zczp': '装车照片',
+        ...shippingAttachmentLabels,
         'thfj': '退货附件',
         'thfj_sh': '收货退货附件',
         'thfj_im': '入库退货附件',

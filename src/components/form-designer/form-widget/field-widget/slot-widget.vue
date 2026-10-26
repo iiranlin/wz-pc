@@ -4,7 +4,8 @@
                           :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <div :class="[!!designState ? 'slot-wrapper-design' : 'slot-wrapper-render']">
       <!-- -->
-      <slot :name="field.options.name" v-bind:formModel="formModel"></slot>
+      <slot :name="field.options.shippingAttachmentSlot || field.options.name"
+            v-bind:formModel="formModel" :shippingAttachmentKey="field.options.shippingAttachmentKey"></slot>
       <!-- -->
       <!-- slot :name="field.options.name"></slot -->
       <div v-if="!!designState" class="slot-title">{{field.options.label}}</div>

@@ -65,10 +65,10 @@
       <el-descriptions-item label="联系电话" label-class-name="my-label" content-class-name="my-content">
         {{ detail.contactsPhone }}
       </el-descriptions-item>
-      <el-descriptions-item label="装车照片" label-class-name="my-label" content-class-name="my-content">
-        <!-- {{ JSON.stringify(detail.zczp) }} -->
-        <fileUpload v-model="detail.zczp" :limit="9999" :preview="true" :isShowTip="false"
-          :fileType="['jpg', 'png', 'jpeg']" />
+      <el-descriptions-item v-for="field in attachmentFields" :key="field.key" :label="field.label"
+        label-class-name="my-label" content-class-name="my-content">
+        <fileUpload :value="detail[field.key] || []" :limit="9999" :preview="true" :isShowTip="false"
+          :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
       </el-descriptions-item>
     </el-descriptions>
     <div style="height: 10px"></div>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { loadingPhotoFields, qualityFileFields, readShippingAttachments } from "@/utils/shipping-attachments";
 import dayjs from "dayjs";
 import wuliu from "@/views/components/wuliu";
 import itemTable from "./itemTable";
@@ -132,6 +133,7 @@ export default {
     };
     return {
       status,
+      attachmentFields: [...loadingPhotoFields, ...qualityFileFields, { key: "zlzmwj", label: "其他质量文件" }],
       courierNumber: "",
       detail: {},
       tabList: [],
@@ -149,8 +151,7 @@ export default {
   methods: {
     async getLogistics(id) {
       const res = await Api.getLogisticsDetail(id);
-      this.detail = res.data;
-      this.detail.zczp = JSON.parse(this.detail.fileByList).zczp
+      this.detail = { ...res.data, ...readShippingAttachments(res.data.fileByList) };
     },
     async getBatch() {
       const res = await Api.getBatchList(this.id)

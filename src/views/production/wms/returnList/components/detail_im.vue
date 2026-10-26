@@ -22,9 +22,7 @@
         </template>
         <!-- 附件 -->
         <template #file2Slot="scope">
-          <el-form-item prop="fileList" label="质量证明文件" class="label-right-align">
-            <fileUpload :value="scope.formModel.fileList02" :preview="true" :limit="9999" />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="quality" quality-prop="fileList02" :preview="true" />
         </template>
         <!-- 附件 -->
         <template #file3Slot="scope">
@@ -167,6 +165,8 @@
 </template>
 
 <script>
+import ShippingAttachments from "@/components/shipping-attachments";
+import { prepareShippingAttachmentLayout, initShippingAttachments, readShippingAttachments } from "@/utils/shipping-attachments";
 import Vue from "vue";
 import VFormRender from "@/components/form-render/index";
 import { formFillInPage } from "@/api/form/form";
@@ -178,6 +178,7 @@ import dayjs from "dayjs";
 export default {
   name: "returnDetail_im",
   components: {
+    ShippingAttachments,
     VFormRender,
     fileUpload,
   },
@@ -242,7 +243,7 @@ export default {
             ...data,
             backQualDate: data.backQualDate?dayjs(data.backQualDate).format("YYYY-MM-DD"):'',
             fileList01: data.fileByList ? JSON.parse(data.fileByList).jcbg || [] : [], //检测报告
-            fileList02: data.fileByList ? JSON.parse(data.fileByList).zlzm || [] : [], //质量证明文件
+            ...readShippingAttachments(data.fileByList, "fileList02", "zlzm"),
             fileList03: data.fileByList ? JSON.parse(data.fileByList).byjg || [] : [], //报验结果
           };
           this.$refs.vFormRef.setFormData(newData);
@@ -278,7 +279,8 @@ export default {
     formFillInPage() {
       return new Promise((resolve) => {
         formFillInPage("returnDetail_im").then((res) => {
-          this.$refs["vFormRef"].setFormJson(res.data);
+          this.$refs["vFormRef"].setFormJson(prepareShippingAttachmentLayout(res.data, {"file2Slot": "quality"}));
+          initShippingAttachments(this.$refs.vFormRef);
 
           this.$refs["vFormRef"].setFormData({
             buyer: this.buyer,

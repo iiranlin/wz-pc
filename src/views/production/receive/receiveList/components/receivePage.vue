@@ -38,17 +38,11 @@
         </template>
         <!-- 附件 -->
         <template #zcFileSlot="scope">
-          <el-form-item prop="zczp" label="装车照片" class="label-right-align">
-            <fileUpload v-model="scope.formModel.zczp" :preview="true" :fileSize="500" :limit="9999" :fileType="['pdf']"
-              :isShowTip="false" />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="photos" quality-prop="zlzmwj" :preview="true" />
         </template>
-        <!-- 质量证明文件 -->
+        <!-- 其他质量文件 -->
         <template #zlzmwjSlot="scope">
-          <el-form-item prop="zlzmwj" label="质量证明文件" class="label-right-align">
-            <fileUpload v-model="scope.formModel.zlzmwj" :preview="true" :fileSize="500" :limit="9999"
-              :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isShowTip="false" />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="quality" quality-prop="zlzmwj" :preview="true" />
         </template>
         <!-- 附件 -->
         <template #file1Slot="scope">
@@ -182,6 +176,8 @@
 </template>
 
 <script>
+import ShippingAttachments from "@/components/shipping-attachments";
+import { prepareShippingAttachmentLayout, initShippingAttachments, readShippingAttachments, writeShippingAttachments } from "@/utils/shipping-attachments";
 import Vue from "vue";
 import * as Api from "@/api/prodmgr-inv/project/receive.js";
 import VFormRender from "@/components/form-render/index";
@@ -196,6 +192,7 @@ import { setReadonlyTextFields } from "@/utils/form-render";
 export default {
   name: "receivePage",
   components: {
+    ShippingAttachments,
     VFormRender,
     fileUpload,
     toBeReviewed,
@@ -338,8 +335,7 @@ export default {
             // fileList回显
             const newData = {
               ...data,
-              zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
-              zlzmwj: data.fileByList ? JSON.parse(data.fileByList).zlzmwj || [] : [], //质量证明文件
+              ...readShippingAttachments(data.fileByList, "zlzmwj", "zlzmwj"),
               fileList01: data.fileByList ? JSON.parse(data.fileByList).zjd || [] : [], //验收单
               fileList02: data.fileByList ? JSON.parse(data.fileByList).qtzl || [] : [], //其他资料
               fileList03: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
@@ -355,7 +351,7 @@ export default {
                 : "",
               supplyDate: x.supplyDate ? dayjs(x.supplyDate).format("YYYY-MM-DD") : '',
               putTotal: data.takeStatus == 0 ? x.putTotal : this.type == "create" ? x.sendTotal : x.putTotal, //新建默认实收数量=发货数量
-              zczp: x.fileByList ? JSON.parse(x.fileByList).zczp || [] : [], //装车照片
+              zczp: x.fileByList ? JSON.parse(x.fileByList).zczp || [] : [], //装车照片1(车牌)
               fileList01: x.fileByList ? JSON.parse(x.fileByList).hgz || [] : [], //合格证
               fileList02: x.fileByList ? JSON.parse(x.fileByList).cjbg || [] : [], //厂检报告
               fileList03: x.fileByList ? JSON.parse(x.fileByList).thfj_sh || [] : [], //退货附件
@@ -480,7 +476,7 @@ export default {
           if (formData.fileList01.length > 0) {
             this.$set(fileByList, "zjd", formData.fileList01);
           }
-          //装车照片
+          //装车照片1(车牌)
           if (formData.zczp.length > 0) {
             this.$set(fileByList, "zczp", formData.zczp);
           }
@@ -492,6 +488,7 @@ export default {
           if (formData.fileList04.length > 0) {
             this.$set(fileByList, "jhd", formData.fileList04);
           }
+          writeShippingAttachments(fileByList, formData, "zlzmwj", "zlzmwj");
           formData.fileByList = JSON.stringify(fileByList);
           for (var i in this.tableData) {
             var fileByList = this.tableData[i].fileByList
@@ -548,7 +545,8 @@ export default {
           const formJson = this.type === "create"
             ? setReadonlyTextFields(res.data, ["planName", "sectionName", "deptName"])
             : res.data;
-          this.$refs["vFormRef"].setFormJson(formJson);
+          this.$refs["vFormRef"].setFormJson(prepareShippingAttachmentLayout(formJson, {"zcFileSlot": "photos", "zlzmwjSlot": "quality"}));
+          initShippingAttachments(this.$refs.vFormRef);
 
           this.$refs["vFormRef"].setFormData({
             buyer: this.buyer,

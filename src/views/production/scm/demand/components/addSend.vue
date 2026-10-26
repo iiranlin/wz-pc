@@ -14,19 +14,11 @@
         </template>
         <!-- 装车照片附件 -->
         <template #fhSlot="scope">
-          <el-form-item prop="zczp" label="装车照片" class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
-            <fileUpload v-model="scope.formModel.zczp" :limit="9999" :preview="type === 'view' && status != 2"
-              :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" :isImgToPdf="true" />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="photos" quality-prop="zlzmwj" :preview="type === 'view' && status != 2" :required="true" :image-to-pdf="true" />
         </template>
-        <!-- 质量证明文件 -->
+        <!-- 其他质量文件 -->
         <template #zlzmwjSlot="scope">
-          <el-form-item prop="zlzmwj" label="质量证明文件" class="label-right-align"
-            :rules="[{ required: true, message: '请上传', trigger: 'change' }]">
-            <fileUpload v-model="scope.formModel.zlzmwj" :limit="9999" :preview="type === 'view' && status != 2"
-              :isShowTip="false" :fileType="['pdf', 'jpg', 'png', 'jpeg']" />
-          </el-form-item>
+          <ShippingAttachments :field-key="scope.shippingAttachmentKey" :model="scope.formModel" group="quality" quality-prop="zlzmwj" :preview="type === 'view' && status != 2" :required="true" :image-to-pdf="true" />
         </template>
         <!-- 供应需求ID和需求项目切换 -->
         <!-- <template #slot2="scope">
@@ -70,6 +62,8 @@
 </template>
 
 <script>
+import ShippingAttachments from "@/components/shipping-attachments";
+import { prepareShippingAttachmentLayout, initShippingAttachments, readShippingAttachments, writeShippingAttachments } from "@/utils/shipping-attachments";
 import Vue from "vue";
 import * as Api from "@/api/prodmgr-inv/project/scm.js";
 import TabTable from "./tabTable.vue";
@@ -86,6 +80,7 @@ import { setReadonlyTextFields } from "@/utils/form-render";
 export default {
   name: "addSend",
   components: {
+    ShippingAttachments,
     VFormRender,
     fileUpload,
     TabTable,
@@ -307,8 +302,7 @@ export default {
           const newData = {
             ...data,
             fileList: data.fileByList ? JSON.parse(data.fileByList).fhd || [] : [], //发货单
-            zczp: data.fileByList ? JSON.parse(data.fileByList).zczp || [] : [], //装车照片
-            zlzmwj: data.fileByList ? JSON.parse(data.fileByList).zlzmwj || [] : [], //质量证明文件
+            ...readShippingAttachments(data.fileByList, "zlzmwj", "zlzmwj"),
             arrivalDate: dayjs(data.arrivalDate).format("YYYY-MM-DD"),
             shippingDate: dayjs(data.shippingDate).format("YYYY-MM-DD"),
           };
@@ -418,14 +412,7 @@ export default {
           if (formData.fileList.length > 0) {
             this.$set(fileByList, "fhd", formData.fileList);
           }
-          //装车照片
-          if (formData.zczp.length > 0) {
-            this.$set(fileByList, "zczp", formData.zczp);
-          }
-          //质量证明文件
-          if (formData.zlzmwj.length > 0) {
-            this.$set(fileByList, "zlzmwj", formData.zlzmwj);
-          }
+          writeShippingAttachments(fileByList, formData, "zlzmwj", "zlzmwj");
           formData.fileByList = JSON.stringify(fileByList);
           for (var i in this.tableData) {
             var fileByList = this.tableData[i].fileByList
@@ -483,7 +470,8 @@ export default {
           const formJson = this.type === "create"
             ? setReadonlyTextFields(res.data, ["planName", "sectionName", "contractName"])
             : res.data;
-          this.$refs["vFormRef"].setFormJson(formJson);
+          this.$refs["vFormRef"].setFormJson(prepareShippingAttachmentLayout(formJson, {"fhSlot": "photos", "zlzmwjSlot": "quality"}));
+          initShippingAttachments(this.$refs.vFormRef);
           resolve(true);
         });
       });
