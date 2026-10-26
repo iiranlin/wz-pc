@@ -139,8 +139,11 @@ export default {
         if (!row.field0 || row.field0.trim() === '') {
           errors.push(`第${rowNum}行，投资方未填写 `)
         }
-        if (!row.field1 || row.field1.trim() === '') {
-          errors.push(`第${rowNum}行，投资比例未填写 `)
+        const investmentRatio = String(row.field1 == null ? '' : row.field1).replace(/%/g, '').trim()
+        if (investmentRatio === '') {
+          errors.push(`第${rowNum}行，投资比例未填写`)
+        } else if (!/^\d+(\.\d{1,2})?$/.test(investmentRatio) || Number(investmentRatio) > 100) {
+          errors.push(`第${rowNum}行，投资比例须为0至100之间的数字，最多保留两位小数`)
         }
 
         const plan = +row.planAmount || 0;
@@ -291,6 +294,7 @@ export default {
         id: this.id,
         detailsModifyParams: tableData.map(x => ({
           ...x,
+          field1: `${String(x.field1).replace(/%/g, '').trim()}%`,
           id: null,
           allocationUniqueNumber: x.uniqueNumber || x.allocationUniqueNumber
         }))

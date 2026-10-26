@@ -73,7 +73,10 @@
       </el-table-column>
       <el-table-column prop="field1" label="投资比例" min-width="250" :render-header="renderHeader" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-input v-model="scope.row.field1" size="mini" style="width: 100%"></el-input>
+          <el-input :value="scope.row.field1" @input="$set(scope.row, 'field1', formatInvestmentRatio($event))"
+            size="mini" style="width: 100%">
+            <template slot="suffix">%</template>
+          </el-input>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="250" show-overflow-tooltip>
@@ -139,9 +142,21 @@ export default {
   },
   mounted() {
     this.$refs.batchDialogRef.$on('onOk', this.onDialogOk.bind(this)) // ✅
-    this.tableData = this.getSelectedMaterialList()
+    this.setTableData(this.getSelectedMaterialList())
   },
   methods: {
+    normalizeInvestmentRatio(value) {
+      return String(value == null ? '' : value).replace(/%/g, '').trim();
+    },
+    formatInvestmentRatio(value) {
+      const cleaned = String(value).replace(/[^\d.]/g, '');
+      const [integer, ...decimals] = cleaned.split('.');
+      const normalizedInteger = integer.replace(/^0+(?=\d)/, '');
+      const formatted = decimals.length
+        ? `${normalizedInteger || '0'}.${decimals.join('').slice(0, 2)}`
+        : normalizedInteger;
+      return Number(formatted) > 100 ? '100' : formatted;
+    },
     getNegativeSummary(row) {
       return getNegativeContractSummary(row);
     },
@@ -162,6 +177,7 @@ export default {
       // 将批量上传的文件，导入到总的数据中
       this.tableData = data.map(x => ({
         ...x,
+        field1: this.normalizeInvestmentRatio(x.field1),
         backPlanAmount: 0,
         supplyDate: `${dayjs(x.supplyDate).format('YYYY-MM-DD')}`
       }))
@@ -173,7 +189,10 @@ export default {
 
     },
     setTableData(data) {
-      this.tableData = data
+      this.tableData = data.map(x => ({
+        ...x,
+        field1: this.normalizeInvestmentRatio(x.field1)
+      }))
     },
     onGoView() {
       this.$router.push({

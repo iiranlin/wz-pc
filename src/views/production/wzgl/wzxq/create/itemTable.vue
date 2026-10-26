@@ -114,7 +114,10 @@
             style="margin-left: 8px; font-size: 14px">填充</el-button>
         </template>
         <template slot-scope="scope">
-          <el-input v-model="scope.row.field1" size="mini" style="width: 100%"></el-input>
+          <el-input :value="scope.row.field1" @input="$set(scope.row, 'field1', formatInvestmentRatio($event))"
+            size="mini" style="width: 100%">
+            <template slot="suffix">%</template>
+          </el-input>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="200" show-overflow-tooltip>
@@ -179,11 +182,24 @@ export default {
 
     this.tableData = this.getSelectedMaterialList().map(x => ({
       ...x,
+      field1: this.normalizeInvestmentRatio(x.field1),
       // 合同数量 - 累计数量
       planAmount: this.getRemainingAmount(x)
     }))
   },
   methods: {
+    normalizeInvestmentRatio(value) {
+      return String(value == null ? '' : value).replace(/%/g, '').trim();
+    },
+    formatInvestmentRatio(value) {
+      const cleaned = String(value).replace(/[^\d.]/g, '');
+      const [integer, ...decimals] = cleaned.split('.');
+      const normalizedInteger = integer.replace(/^0+(?=\d)/, '');
+      const formatted = decimals.length
+        ? `${normalizedInteger || '0'}.${decimals.join('').slice(0, 2)}`
+        : normalizedInteger;
+      return Number(formatted) > 100 ? '100' : formatted;
+    },
     getCumulativeAmount(row) {
       return new Decimal(row.cumulativeAmount || 0).plus(row.planAmount || 0).toNumber();
     },
@@ -210,6 +226,7 @@ export default {
       // 将批量上传的文件，导入到总的数据中
       this.tableData = data.map(x => ({
         ...x,
+        field1: this.normalizeInvestmentRatio(x.field1),
         supplyDate: `${dayjs(x.supplyDate).format('YYYY-MM-DD')}`
       }))
       this.setSelectedMaterialList(this.tableData);
