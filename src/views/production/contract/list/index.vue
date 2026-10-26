@@ -130,7 +130,7 @@ export default {
           return item
         }
         const currentRow = this.selection[0]
-        if (currentRow?.closed == '1') {
+        if (this.canCloseContract(currentRow)) {
           return {
             ...item,
             buttonName: '闭合'
@@ -219,6 +219,9 @@ export default {
     isEnabledContract(row) {
       return String(row?.contractStatus) === '2'
     },
+    canCloseContract(row) {
+      return String(row?.contractStatus) !== '1' && row?.closed == '1'
+    },
     canDeactivateContract(row) {
       return this.isEnabledContract(row) && row?.materialUsedRatio == 0
     },
@@ -305,7 +308,7 @@ export default {
       }
       if (btn.buttonCode === 'contractStatus') {
         if (currentRow?.contractStatus === '3' || currentRow?.contractStatus === '4') return true
-        if (currentRow?.closed == '1') return false
+        if (this.canCloseContract(currentRow)) return false
         return this.isEnabledContract(currentRow) && !this.canDeactivateContract(currentRow)
       }
       // 变更 - 非启用不能变更
@@ -388,7 +391,7 @@ export default {
           this.$router.push({ name: 'changeContract', query: { id: idArr[0], type: 'update', projectId: rowArr[0].projectId } })
           break;
         case 'contractStatus':
-          if (rowArr[0]?.closed == '1') {
+          if (this.canCloseContract(rowArr[0])) {
             this.handleClosed(rowArr[0])
           } else {
             this.changeStatus(rowArr[0])
