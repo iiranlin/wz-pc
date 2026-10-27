@@ -83,7 +83,8 @@ export default {
       status: status,
       treeCurrentKey: "",
       // 遮罩层
-      loading: false,
+      listLoadingCount: 0,
+      downloadLoading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -115,6 +116,11 @@ export default {
       hasOwn: true,
 
     };
+  },
+  computed: {
+    loading() {
+      return this.listLoadingCount > 0 || this.downloadLoading
+    },
   },
   activated() {
     this.getList();
@@ -225,8 +231,8 @@ export default {
     },
     /** 查询菜单列表 */
     getList() {
-      this.loading = true
-      Api.itemList(Object.assign({
+      this.listLoadingCount += 1
+      return Api.itemList(Object.assign({
         pageStatus: '1'
       }, this.listQuery, this.formData)).then(({ data }) => {
         this.list = data.list.map((x) => ({
@@ -236,7 +242,7 @@ export default {
         }));
         this.total = data.total
       }).finally(() => {
-        this.loading = false
+        this.listLoadingCount -= 1
       })
     },
     handleSelectionChange(ids, single, multiple, selection) {
@@ -284,7 +290,7 @@ export default {
     },
    async handleDonwload() {
       try {
-        this.loading = true;
+        this.downloadLoading = true;
         const isAllSelected = this.selection.length > 0 && this.selection.length === this.list.length;
         const isNoneSelected = this.selection.length === 0;
         const idList = (isAllSelected || isNoneSelected) ? null : this.ids;
@@ -292,7 +298,7 @@ export default {
       } catch (error) {
         this.$modal.msgError("下载失败，请重试");
       } finally {
-        this.loading = false;
+        this.downloadLoading = false;
       }
     },
     demandBack(id) {

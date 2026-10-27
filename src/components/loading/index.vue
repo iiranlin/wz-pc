@@ -4,7 +4,6 @@
 <script>
 import lottie from 'lottie-web'
 import * as lottieLoad from '@/assets/lottie.json'
-let animation = null
 export default {
     name: "Loading",
     props: {
@@ -13,17 +12,19 @@ export default {
             default: 'lottie'
         }
     },
-    created(){
-
-        this.$nextTick(()=>{
-           animation = lottie.loadAnimation({
-                container: document.getElementById(this.id),//当前需要渲染的DOM
-                renderer: "svg",//渲染方式，默认为svg,还可以渲染为html和canvas
-                loop: true,//循环播放
-                autoplay: true,//自动播放
-                animationData: lottieLoad.default,//本地动画
-            })
+    mounted() {
+        this.animation = lottie.loadAnimation({
+            container: this.$el,
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            animationData: lottieLoad.default,
         })
+    },
+    beforeDestroy() {
+        if (this.animation) {
+            this.animation.destroy()
+        }
     }
 }
 </script>
