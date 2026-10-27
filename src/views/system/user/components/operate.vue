@@ -22,8 +22,8 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="职务:" prop="duty">
-            <el-select v-model="selectedDuty" placeholder="请选择职务" clearable @change="handleDutyChange">
+          <el-form-item label="部长类型:" prop="duty">
+            <el-select v-model="selectedDuty" placeholder="请选择部长类型" clearable @change="handleDutyChange">
                <el-option
                     v-for="item in dict.type.ZW"
                     :key="item.value"
@@ -34,8 +34,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="员工职称:" prop="officerId">
-            <el-select v-model="form.officerId" placeholder="请选择员工职称" clearable @change="handleOfficerChange">
+          <el-form-item label="职务名称:" prop="officerId">
+            <el-select v-model="form.officerId" placeholder="请选择职务名称" clearable @change="handleOfficerChange">
               <el-option
                 v-for="item in officerOptions"
                 :key="item.id"
