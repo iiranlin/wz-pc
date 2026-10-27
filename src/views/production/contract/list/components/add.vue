@@ -32,7 +32,7 @@
         </template>
           <!-- 合同编号选择 -->
         <template #contractNoSlot="{ formModel }">
-          <el-form-item prop="contractNo" label="合同编号" class="label-right-align" :rules="[{ required: false, message: '请选择', trigger: 'change' }]">
+          <el-form-item prop="contractNo" label="合同编号" class="label-right-align required-blue" :rules="[{ required: false, message: '请选择', trigger: 'change' }]">
             <div style="position: relative;">
               <el-input v-model="formModel.contractNo" placeholder="请输入" @blur="handleContractNoBlur(formModel.contractNo)"></el-input>
               <!-- 点击选择透明遮板 -->
@@ -45,7 +45,7 @@
         <!--卖方单位  -->
         <template #sellerSlot="{ formModel }">
           <el-form-item prop="sellerId" :rules="[{ required: false, message: '请选择', trigger: 'change' }]" label="卖方"
-            class="label-right-align">
+            class="label-right-align required-blue">
             <template v-if="type !== 'view'">
               <el-select v-model="formModel.sellerId" filterable required style="width: 100%" placeholder="请选择"
                 @change="(val) => selectChange(gysOptions, val, 'seller')">
@@ -497,7 +497,9 @@ export default {
   text-align: right;
 }
 
-::v-deep .required-blue > .el-form-item__label::before {
+::v-deep .required-blue > .el-form-item__label::before,
+::v-deep .el-form-item__label[for="itemName"]::before,
+::v-deep .el-form-item__label[for="tenderNo"]::before {
   content: '*';
   color: #1890ff;
   margin-right: 4px;
