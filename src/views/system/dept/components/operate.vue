@@ -12,27 +12,29 @@
 			</el-row>
 			<el-row>
 				<el-col :span="12">
-					<el-form-item label="部门编号:" prop="deptCode">
-						<el-input v-model="form.deptCode" placeholder="请输入部门编号" maxlength="150"
-							:disabled="title === '修改部门'" />
-					</el-form-item>
-				</el-col>
-				<el-col :span="12">
 					<el-form-item label="部门名称:" prop="deptName">
 						<el-input v-model="form.deptName" placeholder="请输入部门名称" maxlength="150" />
 					</el-form-item>
 				</el-col>
-			</el-row>
-			<el-row>
 				<el-col :span="12">
 					<el-form-item label="部门简称:" prop="deptAlias">
 						<el-input v-model="form.deptAlias" placeholder="请输入部门简称" maxlength="150" />
 					</el-form-item>
 				</el-col>
+			</el-row>
+			<el-row>
 				<el-col :span="12">
 					<el-form-item label="排序:" prop="seq">
 						<el-input-number v-model="form.seq" controls-position="right" :min="1"
 							:max="99"></el-input-number>
+					</el-form-item>
+				</el-col>
+				<el-col :span="12">
+					<el-form-item label="状态:" prop="status">
+						<el-radio-group v-model="form.status">
+							<el-radio v-for="dict in statusOpt" :key="dict.label" :label="dict.value">{{ dict.label }}
+							</el-radio>
+						</el-radio-group>
 					</el-form-item>
 				</el-col>
 			</el-row>
@@ -41,14 +43,6 @@
 					<el-form-item label="单位类别:" prop="deptType">
 						<el-radio-group v-model="form.deptType" :disabled="type === 'update'">
 							<el-radio v-for="dict in deptEnum" :key="dict.label" :label="dict.value">{{ dict.label }}
-							</el-radio>
-						</el-radio-group>
-					</el-form-item>
-				</el-col>
-				<el-col :span="24">
-					<el-form-item label="状态:" prop="status">
-						<el-radio-group v-model="form.status">
-							<el-radio v-for="dict in statusOpt" :key="dict.label" :label="dict.value">{{ dict.label }}
 							</el-radio>
 						</el-radio-group>
 					</el-form-item>
@@ -169,24 +163,6 @@ export default {
 					}
 				}
 				],
-				// deptCode: [
-				//   { required: true, message: "部门编号不能为空", trigger: "blur" },
-				//   {
-				//     trigger: 'blur',
-				//     validator: (rule, value, callback) => {
-				//       var deptCodereg = /[^\a-\z\A-\Z0-9]/
-				//       if (deptCodereg.test(value)) {
-				//         callback(
-				//           new Error(
-				//             '部门编号只能是数字或字母'
-				//           )
-				//         )
-				//       } else {
-				//         callback()
-				//       }
-				//     }
-				//   }
-				// ],
 			},
 			flagOption: [{
 				code: 0,
@@ -304,10 +280,11 @@ export default {
 
 					this.loading = true;
 
-					// 自动拼接部门编号
-					this.form.deptCode = this.form.deptType + "_" + this.form.deptCode;
+					// 部门编号由后端生成，新增时不提交该字段
+					const payload = { ...this.form };
+					delete payload.deptCode;
 
-					deptCreate(this.form).then(({
+					deptCreate(payload).then(({
 						success,
 						message
 					}) => {
