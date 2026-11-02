@@ -93,7 +93,9 @@ module.exports = {
             [process.env.VUE_APP_BASE_API]: {
                 // target: `https://test-prodm.rails.cn/api/`,
                 // target: `http://39.107.57.20:38001/api/`,
-                target: `http://120.46.222.240:18022/api/`,
+                target: `http://192.168.110.233:8000/`,
+                // target: `http://120.46.222.240:18022/api/`,
+        // target: `https://123.151.17.46:8101/supply/fzpt/prod-api/api/`,
                 changeOrigin: true,
                 pathRewrite: {
                     ['^' + process.env.VUE_APP_BASE_API]: ''

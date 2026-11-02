@@ -1,4 +1,5 @@
 import request, { download } from "@/utils/request";
+import { MessageBox } from "element-ui";
 let VUE_APP_PRODMGR_INV = process.env.VUE_APP_PRODMGR_INV;
 
 /**
@@ -86,6 +87,21 @@ export const save = (data) => {
     url: `${VUE_APP_PRODMGR_INV}/materialDemandPlanRest/save`,
     method: "post",
     data,
+    passThroughCodes: [99],
+  }).then((res) => {
+    if (Number(res.code) === 99) {
+      const message = '您所在标段存在较多未完成初验收货的物资，请先处理完成后再提交新的计划！';
+      MessageBox.alert(message, '提示', {
+        confirmButtonText: '关闭',
+        showCancelButton: false,
+        showClose: false,
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        type: 'warning',
+      }).catch(() => {});
+      return Promise.reject(new Error(message));
+    }
+    return res;
   });
 };
 

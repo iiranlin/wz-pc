@@ -136,6 +136,9 @@ service.interceptors.response.use(res => {
         return Promise.reject(msg)
     } else if (code === 10001 || code == 10002) {
         return res.data
+    } else if ((res.config.passThroughCodes || []).includes(Number(code))) {
+        // 指定业务码交由接口业务处理
+        return res.data
     } else if (success === false) {
         // 当返回success为false时为接口异常,报错提示
         Message({ message: msg, type: 'error' })
