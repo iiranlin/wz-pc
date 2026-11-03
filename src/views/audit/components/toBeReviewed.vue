@@ -1,53 +1,71 @@
 <template>
-  <Dialog
-    :title="title"
-    :visible.sync="visible"
-    width="50%"
-    append-to-body
-    :close-on-click-modal="false"
-    @close="cancel()"
-  >
-    <el-form
-      ref="elForm"
-      :model="toBeReviewedForm"
-      label-suffix="："
-      label-width="120px"
+  <div>
+    <Dialog
+      title="提示"
+      :visible.sync="urgentVisible"
+      width="600px"
+      append-to-body
+      :close-on-click-modal="false"
     >
-      <el-form-item
-        label="审批意见"
-        prop="comment"
-        :rules="[
-          {
-            required: type === 'reject',
-            message: '请输入审批意见',
-            trigger: 'change',
-          },
-          {
-            trigger: 'change',
-            validator: this.checkComment,
-          },
-        ]"
+      <div class="urgent-tip">
+        物资计划使用时间距当前较近，请确定是否审核通过。如需修改，请点击“修改后同意”，经办人可进行修改后重新提交。
+      </div>
+      <div slot="footer" class="dialog-footer urgent-footer">
+        <el-button @click="urgentVisible = false">返回</el-button>
+        <el-button @click="confirmUrgent('passEdit')">修改后同意</el-button>
+        <el-button type="primary" @click="confirmUrgent('pass')">审核通过</el-button>
+      </div>
+    </Dialog>
+    <Dialog
+      :title="title"
+      :visible.sync="visible"
+      width="50%"
+      append-to-body
+      :close-on-click-modal="false"
+      @close="cancel()"
+    >
+      <el-form
+        ref="elForm"
+        :model="toBeReviewedForm"
+        label-suffix="："
+        label-width="120px"
       >
-        <el-input
-          type="textarea"
-          v-model="toBeReviewedForm.comment"
-          placeholder="请输入审批意见"
-          maxlength="500"
-          show-word-limit
-        ></el-input>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
-      <el-button @click="cancel()">取 消</el-button>
-    </div>
-    <!--选择审批人弹框-->
-    <activiti-assignee
-      ref="activitiAssignee"
-      @activitiAssigneeSelected="activitiAssigneeSelected"
-      :multiple="multiple"
-    ></activiti-assignee>
-  </Dialog>
+        <el-form-item
+          label="审批意见"
+          prop="comment"
+          :rules="[
+            {
+              required: type === 'reject',
+              message: '请输入审批意见',
+              trigger: 'change',
+            },
+            {
+              trigger: 'change',
+              validator: this.checkComment,
+            },
+          ]"
+        >
+          <el-input
+            type="textarea"
+            v-model="toBeReviewedForm.comment"
+            placeholder="请输入审批意见"
+            maxlength="500"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel()">取 消</el-button>
+      </div>
+      <!--选择审批人弹框-->
+      <activiti-assignee
+        ref="activitiAssignee"
+        @activitiAssigneeSelected="activitiAssigneeSelected"
+        :multiple="multiple"
+      ></activiti-assignee>
+    </Dialog>
+  </div>
 </template>
 
 <script>
@@ -71,6 +89,7 @@ export default {
       multiple:false,
       title: '',
       visible: false,
+      urgentVisible: false,
       toBeReviewedForm: {
         comment: ''
       },
@@ -85,10 +104,21 @@ export default {
   methods: {
     init (type, row, queryName, numArr = []) {
       this.selected = row;
-      this.type = type
-      this.title = type === 'pass' ? '通过' : type === 'passEdit' ? '修改后通过' : '驳回'
       this.queryName = queryName || ''
       this.numArr = numArr;
+      this.visible = false
+      this.urgentVisible = type === 'pass' && String(row[0]?.urgentFlag) === '1'
+      if (!this.urgentVisible) {
+        this.openReview(type)
+      }
+    },
+    confirmUrgent (type) {
+      this.urgentVisible = false
+      this.openReview(type)
+    },
+    openReview (type) {
+      this.type = type
+      this.title = type === 'pass' ? '通过' : type === 'passEdit' ? '修改后通过' : '驳回'
       this.visible = true
       this.$nextTick(() => {
         this.$refs['elForm'].resetFields()
@@ -217,3 +247,17 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.urgent-tip {
+  line-height: 1.8;
+}
+.urgent-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.urgent-footer > .el-button + .el-button {
+  margin-left: 0;
+}
+</style>
