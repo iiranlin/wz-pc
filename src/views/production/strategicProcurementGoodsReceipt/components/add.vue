@@ -182,6 +182,7 @@ export default {
         { buttonName: '保存', buttonCode: 'save', buttonIcon: 'Blue-Save', type: 'create, update' },
         { buttonName: '修改', buttonCode: 'edit', buttonIcon: 'Blue-Edit', type: 'view' },
         { buttonName: '通过', buttonCode: 'pass', buttonIcon: 'Blue-AddSon', type: 'view' },
+        { buttonName: '退回上一步', buttonCode: 'rollbackToPrevious', buttonIcon: 'Blue-Cancel', type: '' },
         { buttonName: '驳回', buttonCode: 'reject', buttonIcon: 'Blue-EditCard', type: 'view' }
       ]
     }
@@ -321,12 +322,22 @@ export default {
       }
     },
     buttonShow(button) {
+      if (button.buttonCode === 'rollbackToPrevious') {
+        const query = this.isDialog ? this.dialogQuery : this.$route.query
+        return query.name === 'audit' && query.type === 'view' && Array.isArray(this.queryAuditArr)
+          && this.queryAuditArr.length === 1 && !!this.queryAuditArr[0]?.taskId
+          && this.buttonShow({ ...button, buttonCode: 'reject' })
+      }
       if (['pass', 'reject'].includes(button.buttonCode)) return this.isAudit
       if (button.buttonCode === 'edit') return false
       if (button.buttonCode === 'save') return !this.isView && !this.isUpdateBlocked
       return true
     },
     newButton(buttonCode) {
+      if (buttonCode === 'rollbackToPrevious') {
+        this.$refs.toBereview.init('rollbackToPrevious', this.queryAuditArr, this.queryName || this.name)
+        return
+      }
       if (buttonCode === 'cancel') this.cancel()
       if (buttonCode === 'save') this.submitForm()
       if (buttonCode === 'edit') this.toUpdatePage()

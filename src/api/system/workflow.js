@@ -78,6 +78,24 @@ export const rejectWorkFlow = (data) => {
     }).finally(closeLoading())
 }
 
+/** 退回上一步：当前接口将成功和业务失败文案都放在 data 中。 */
+export const rollbackWorkFlow = (data) => {
+    return request({
+        url: `${VUE_APP_WORK_FLOW_SERVER}/wf/rollbackToPrevious/`,
+        method: 'post',
+        data
+    }).then(res => {
+        // 后端统一结构化返回前，只认可已约定的成功文案，避免业务失败误报成功。
+        if (res?.success !== true || typeof res.data !== 'string' || !res.data.startsWith('退回成功')) {
+            const message = typeof res?.data === 'string' && res.data.trim() ? res.data : '退回结果异常，请刷新列表核实任务状态'
+            const error = new Error(message)
+            error.isRollbackResult = true
+            throw error
+        }
+        return { ...res, message: res.data }
+    })
+}
+
 /**
  * 审批列表
  * @param {*} params

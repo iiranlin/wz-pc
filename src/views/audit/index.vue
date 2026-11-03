@@ -66,6 +66,7 @@ import review from "./components/toBeReviewed";
 import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
 import { FLOW_ROUTE } from "@/utils/constant";
+import { withRollbackButton } from "@/utils/workflow-review";
 export default {
   name: "audit",
   dicts: ["flowBusinessType"],
@@ -110,7 +111,7 @@ export default {
   created() {
     this.$store.dispatch("menuProperty", this.metaId).then((data) => {
       this.listQuery.pageSize = data.defaultPageSize || 30;
-      this.property = data;
+      this.property = withRollbackButton(data);
     });
   },
   methods: {
@@ -182,6 +183,9 @@ export default {
         case "reject":
           this.$refs.toBereview.init("reject", rowArr);
           break;
+        case "rollbackToPrevious":
+          this.$refs.toBereview.init("rollbackToPrevious", rowArr);
+          break;
         case "passEdit":
           // 修改后同意直接跳转详情
           this.$refs.toBereview.init("passEdit", rowArr);
@@ -239,6 +243,7 @@ export default {
     },
     //入库审核不能操作修改后同意
     buttonDisabled(button, row) {
+      if (button.buttonCode === 'rollbackToPrevious') return !row.taskId;
       if (button.buttonCode == "passEdit" && ['RKLC','WZML','SHLC', 'CGWJ', 'CGHT','FHLC','WZCJ','ZGCGJH','ZGCGJHXG'].includes(row.businessType)) {
         return true;
       }

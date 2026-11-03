@@ -12,7 +12,7 @@
                     <el-table-column label="意见" align="left" prop="status">
                         <template slot-scope="{ row }">
                             <span>
-                                {{ suggestionFormat(row.status, dict.type.flowTaskStatus)?`${suggestionFormat(row.status, dict.type.flowTaskStatus)}：`:'' }} {{ row.message }}
+                                {{ suggestionFormat(row.status, dict.type.flowTaskStatus)?`${suggestionFormat(row.status, dict.type.flowTaskStatus)}：`:'' }} {{ historyMessage(row) }}
                             </span>
                         </template>
                     </el-table-column>
@@ -147,8 +147,15 @@ export default {
     mounted() {
     },
     methods: {
+        historyMessage(row) {
+            if (row.status === 'back' || String(row.status) === '7') {
+                return (row.message || '').replace(/^退回上一步\s*[:：]\s*/, '')
+            }
+            return row.message
+        },
         // 处理意见显示状态
         suggestionFormat(val, code) {
+            if (val === 'back' || String(val) === '7') return '退回上一步'
             for (let key of code) {
                 if (key.value == val) {
                     return key.label

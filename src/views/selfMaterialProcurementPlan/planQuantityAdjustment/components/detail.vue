@@ -51,6 +51,7 @@
         { buttonName: "返回", buttonCode: "cancel", buttonIcon: "Blue-Cancel", type: "create, update" },
         { buttonName: "保存", buttonCode: "save", buttonIcon: "Blue-Save", type: "create, update" },
         { buttonName: "通过", buttonCode: "pass", buttonIcon: "Blue-AddSon", type: "" },
+        { buttonName: '退回上一步', buttonCode: 'rollbackToPrevious', buttonIcon: 'Blue-Cancel', type: '' },
         {
           buttonName: "驳回",
           buttonCode: "reject",
@@ -122,6 +123,10 @@
         this.$refs.vFormRef.setReadMode(true);
       },
       handleButtonClick(buttonCode) {
+        if (buttonCode === 'rollbackToPrevious') {
+          this.$refs.toBereview.init('rollbackToPrevious', this.queryAuditArr, this.queryName || this.name)
+          return
+        }
         const actions = {
           cancel: () => this.$router.go(-1),
           update: () =>{
@@ -144,6 +149,12 @@
 
     /** 按钮显示控制 */
     buttonShow(item) {
+      if (item.buttonCode === 'rollbackToPrevious') {
+        const query = this.isDialog ? this.dialogQuery : this.$route.query
+        return query.name === 'audit' && query.type === 'view' && Array.isArray(this.queryAuditArr)
+          && this.queryAuditArr.length === 1 && !!this.queryAuditArr[0]?.taskId
+          && this.buttonShow({ ...item, buttonCode: 'reject' })
+      }
       if (item.buttonCode === "save") {
         return this.type !== "view";
       }

@@ -143,6 +143,7 @@ export default {
         //   buttonIcon: "Blue-Edit",
         //   type: "",
         // },
+        { buttonName: '退回上一步', buttonCode: 'rollbackToPrevious', buttonIcon: 'Blue-Cancel', type: '' },
         {
           buttonName: "驳回",
           buttonCode: "reject",
@@ -222,6 +223,10 @@ export default {
       });
     },
     newButton(buttonCode) {
+      if (buttonCode === 'rollbackToPrevious') {
+        this.$refs.toBereview.init('rollbackToPrevious', this.queryAuditArr, this.queryName || this.name)
+        return
+      }
       if (buttonCode === "cancel") {
         this.cancel();
       } else if (buttonCode === "pass") {
@@ -260,6 +265,12 @@ export default {
     },
 
     buttonShow(item) {
+      if (item.buttonCode === 'rollbackToPrevious') {
+        const query = this.isDialog ? this.dialogQuery : this.$route.query
+        return query.name === 'audit' && query.type === 'view' && Array.isArray(this.queryAuditArr)
+          && this.queryAuditArr.length === 1 && !!this.queryAuditArr[0]?.taskId
+          && this.buttonShow({ ...item, buttonCode: 'reject' })
+      }
       // 审核中才能显示同意和不同意按钮
       if (item.buttonCode === "pass" || item.buttonCode === "reject") {
         return this.storeStatus == "5" && !['toBeDeal', 'handle'].includes(this.name);

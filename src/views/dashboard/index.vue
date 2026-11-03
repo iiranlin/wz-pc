@@ -86,6 +86,7 @@
                             height: 'calc(100% - 60px)'
                         }" :key="key">
                             <ChildAudit v-if="activeComponent === 'ChildAudit'"
+                                @audit-success="getAllTaskNumByUser"
                                 @loading-change="handleWaitLoadingChange"></ChildAudit>
                             <ChildToBeDeal v-if="activeComponent === 'ChildToBeDeal'"
                                 @loading-change="handleWaitLoadingChange"></ChildToBeDeal>
