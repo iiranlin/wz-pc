@@ -17,15 +17,9 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="部长类型:" prop="duty">
-            <el-select v-model="selectedDuty" placeholder="请选择部长类型" clearable @change="handleDutyChange">
-               <el-option
-                    v-for="item in dict.type.ZW"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-            </el-select>
+          <el-form-item label="电话号码:" prop="phone">
+            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
+              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -43,9 +37,15 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="电话号码:" prop="phone">
-            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
-              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" />
+          <el-form-item label="部长类型:" prop="duty">
+            <el-select v-model="selectedDuty" placeholder="请选择部长类型" clearable @change="handleDutyChange">
+               <el-option
+                    v-for="item in dict.type.ZW"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -178,6 +178,7 @@ export default {
           }
         ],
         phone: [
+          { required: true, message: '电话号码不能为空', trigger: 'blur' },
           {
             trigger: 'blur',
             validator: (rule, value, callback) => {
