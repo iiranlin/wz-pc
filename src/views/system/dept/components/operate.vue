@@ -280,9 +280,11 @@ export default {
 
 					this.loading = true;
 
-					// 部门编号由后端生成，新增时不提交该字段
-					const payload = { ...this.form };
-					delete payload.deptCode;
+					// 提交单位类别前缀，部门编号后半段由后端生成
+					const payload = {
+						...this.form,
+						deptCode: this.form.deptType + "_"
+					};
 
 					deptCreate(payload).then(({
 						success,
