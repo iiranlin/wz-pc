@@ -211,7 +211,7 @@ export default {
 			}
 			return {
 				id: node.id,
-				label: `【${node.deptCode}】` + node.deptName,
+				label: node.deptName,
 				children: node.children,
 			};
 		},
