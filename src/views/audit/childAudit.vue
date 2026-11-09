@@ -7,7 +7,7 @@
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
       @pagination="getList" />
     <operate ref="operate" :property="property" @menuSuccess="menuSuccess" />
-    <review ref="toBereview" @rollback-success="$emit('audit-success')"></review>
+    <review ref="toBereview"></review>
     <div>
       <workFlowView :bill-data="selectedRow" :work-flow-view-visible.sync="workFlowViewVisible" />
     </div>
@@ -21,7 +21,7 @@ import review from "./components/toBeReviewed";
 import indexMixin from "@/views/mixins";
 import workFlowView from "@/components/workFlowView";
 import { FLOW_ROUTE } from "@/utils/constant";
-import { withRollbackButton } from "@/utils/workflow-review";
+import { withoutRollbackButton } from "@/utils/workflow-review";
 import { findMenuByUrl } from "@/utils/index";
 import { getUserMenu } from '@/api/system/menu'
 
@@ -73,7 +73,7 @@ export default {
       const menuId = findMenuByUrl(menu.data, 'audit')?.id;
       this.$store.dispatch("menuProperty", menuId).then((data) => {
         this.listQuery.pageSize = data.defaultPageSize || 30;
-        this.property = withRollbackButton(data);
+        this.property = withoutRollbackButton(data);
       });
     })
   },
@@ -149,9 +149,6 @@ export default {
         case "reject":
           this.$refs.toBereview.init("reject", rowArr);
           break;
-        case "rollbackToPrevious":
-          this.$refs.toBereview.init("rollbackToPrevious", rowArr);
-          break;
         case "passEdit":
           // 修改后同意直接跳转详情
           this.$refs.toBereview.init("passEdit", rowArr);
@@ -196,6 +193,7 @@ export default {
           taskId: row.taskId,
           procInstId: row.procInstId,
           urgentFlag: row.urgentFlag,
+          prevIsStartNodeFlag: row.prevIsStartNodeFlag,
         },
       ];
       this.$router.push({
@@ -210,7 +208,6 @@ export default {
     },
     //入库审核不能操作修改后同意
     buttonDisabled(button, row) {
-      if (button.buttonCode === 'rollbackToPrevious') return !row.taskId;
       if (button.buttonCode == "passEdit" && ['RKLC', 'WZML', 'SHLC', 'CGWJ', 'CGHT', 'FHLC','WZCJ','ZGCGJH','ZGCGJHXG'].includes(row.businessType)) {
         return true;
       }

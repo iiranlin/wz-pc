@@ -262,6 +262,7 @@
 
 <script>
 import indexMixin from '../mixins';
+import { canShowRollbackButton } from '@/utils/workflow-review'
 export default {
   name: "ButtonTop",
   mixins: [indexMixin],
@@ -400,6 +401,9 @@ export default {
       }
     },
     isShow (item) {
+      if (item.buttonCode === 'rollbackToPrevious' && !canShowRollbackButton(this.$route?.query)) {
+        return false
+      }
       if (this.buttonShow) {
         return this.buttonShow(item)
       }

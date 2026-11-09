@@ -81,6 +81,7 @@
 <script>
 import activitiAssignee from './activitiAssignee'
 import { passWorkFlow, passEditWorkFlow, rejectWorkFlow, rollbackWorkFlow, activitiAssigneeList } from '@/api/system/workflow.js'
+import { canRollbackToPrevious } from '@/utils/workflow-review'
 export default {
   components: { activitiAssignee },
   data () {
@@ -115,8 +116,8 @@ export default {
   methods: {
     init (type, row, queryName, numArr = []) {
       if (this.rollbackSubmitting) return
-      if (type === 'rollbackToPrevious' && (!Array.isArray(row) || row.length !== 1 || !row[0]?.taskId)) {
-        this.$modal.msgWarning('请选择一条有效的待审核任务进行退回')
+      if (type === 'rollbackToPrevious' && !canRollbackToPrevious(row)) {
+        this.$modal.msgWarning('当前任务无法退回上一步')
         return
       }
       this.selected = row;
@@ -269,7 +270,6 @@ export default {
     },
     handleApproveSuccess () {
       this.visible = false
-      if (this.type === 'rollbackToPrevious') this.$emit('rollback-success')
       if (this.isCloudLogin()) {
         this.$router.replace('/index')
         return
