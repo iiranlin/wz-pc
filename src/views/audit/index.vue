@@ -229,6 +229,7 @@ export default {
           businessCode: row.businessCode,
           taskId: row.taskId,
           procInstId: row.procInstId,
+          urgentFlag: row.urgentFlag,
         },
       ];
       this.$router.push({

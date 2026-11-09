@@ -1,6 +1,22 @@
 <template>
   <div>
     <Dialog
+      title="提示"
+      :visible.sync="urgentVisible"
+      width="600px"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <div class="urgent-tip">
+        物资计划使用时间距当前较近，请确定是否审核通过。如需修改，请点击“修改后同意”，经办人可进行修改后重新提交。
+      </div>
+      <div slot="footer" class="dialog-footer urgent-footer">
+        <el-button @click="urgentVisible = false">返回</el-button>
+        <el-button @click="confirmUrgent('passEdit')">修改后同意</el-button>
+        <el-button type="primary" @click="confirmUrgent('pass')">审核通过</el-button>
+      </div>
+    </Dialog>
+    <Dialog
       :title="title"
       :visible.sync="visible"
       width="50%"
@@ -84,6 +100,7 @@ export default {
       title: '',
       visible: false,
       rollbackSubmitting: false,
+      urgentVisible: false,
       toBeReviewedForm: {
         comment: ''
       },
@@ -105,6 +122,14 @@ export default {
       this.selected = row;
       this.queryName = queryName || ''
       this.numArr = numArr;
+      this.visible = false
+      this.urgentVisible = type === 'pass' && String(row[0]?.urgentFlag) === '1'
+      if (!this.urgentVisible) {
+        this.openReview(type)
+      }
+    },
+    confirmUrgent (type) {
+      this.urgentVisible = false
       this.openReview(type)
     },
     openReview (type) {
@@ -275,5 +300,16 @@ export default {
 <style scoped>
 .rollback-tip {
   margin-bottom: 16px;
+}
+.urgent-tip {
+  line-height: 1.8;
+}
+.urgent-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.urgent-footer > .el-button + .el-button {
+  margin-left: 0;
 }
 </style>

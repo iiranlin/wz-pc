@@ -9,12 +9,7 @@
         </el-form-item>
       </el-row>
       <el-row>
-        <el-col :span="12">
-          <el-form-item label="用户账号:" prop="username">
-            <el-input v-model="form.username" placeholder="请输入用户账号" maxlength="20" :disabled="title === '修改用户'" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="用户名称:" prop="nickName">
             <el-input v-model="form.nickName" placeholder="请输入用户名称" maxlength="20" />
           </el-form-item>
@@ -22,15 +17,9 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="部长类型:" prop="duty">
-            <el-select v-model="selectedDuty" placeholder="请选择部长类型" clearable @change="handleDutyChange">
-               <el-option
-                    v-for="item in dict.type.ZW"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-            </el-select>
+          <el-form-item label="电话号码:" prop="phone">
+            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
+              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -48,9 +37,15 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="电话号码:" prop="phone">
-            <el-input v-model="form.phone" placeholder="请输入电话号码" maxlength="11"
-              @input="(v) => (form.phone = v.replace(/[^\d]/g, ''))" />
+          <el-form-item label="部长类型:" prop="duty">
+            <el-select v-model="selectedDuty" placeholder="请选择部长类型" clearable @change="handleDutyChange">
+               <el-option
+                    v-for="item in dict.type.ZW"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -131,16 +126,6 @@ export default {
   dicts: ['enableStauts','ZW'],
   components: { Treeselect },
   data() {
-    var validateUsername = (rule, value, callback) => {
-      let reg = /^[\da-z]+$/i
-      if (value == '') {
-        callback(new Error('用户账号不能为空'))
-      } else if (!reg.test(value)) {
-        callback(new Error('用户账号只能是字母或数字'))
-      } else {
-        callback()
-      }
-    }
     return {
       loading: false,
       title: '新增用户',
@@ -156,7 +141,6 @@ export default {
       allRankList: [],
       rankList: [],
       form: {
-        username: '',
         nickName: '',
         dutiesId: '',
         duties: '',
@@ -175,9 +159,6 @@ export default {
       },
       // 表单校验
       rules: {
-        username: [
-          { required: true, validator: validateUsername, trigger: 'blur' }
-        ],
         nickName: [
           { required: true, message: '用户名称不能为空', trigger: 'blur' },
           {
@@ -197,6 +178,7 @@ export default {
           }
         ],
         phone: [
+          { required: true, message: '电话号码不能为空', trigger: 'blur' },
           {
             trigger: 'blur',
             validator: (rule, value, callback) => {
@@ -356,7 +338,7 @@ export default {
       }
       return {
         id: node.id,
-        label: `【${node.deptCode}】` + node.deptName,
+        label: node.deptName,
         children: node.children
       }
     },
@@ -495,7 +477,10 @@ export default {
     },
     create() {
       this.loading = true
-      userCreate({ ...this.form, rank: '1' }).then(({ success, message }) => {
+      const data = { ...this.form, rank: '1' }
+      // 新增账号由后端生成，避免携带编辑用户时回填的账号
+      delete data.username
+      userCreate(data).then(({ success, message }) => {
         this.loading = false
         if (success) {
           this.$modal.msgSuccess(message)
