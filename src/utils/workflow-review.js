@@ -1,3 +1,8 @@
+export function isRollbackAudit({ auditStatus, message }) {
+  return auditStatus === 'back' || String(auditStatus) === '7' ||
+    (typeof message === 'string' && /^退回上一步\s*[:：]/.test(message.trim()))
+}
+
 export function withoutRollbackButton(property) {
   const filterButtons = buttons => {
     if (!Array.isArray(buttons)) return buttons

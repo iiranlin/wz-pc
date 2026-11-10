@@ -25,7 +25,9 @@
             :filters="field.isOrder == 1 ? [] : null"
             :render-header="(h, obj) => field.isSearchHeader == 1 ? renderSpecNameHeader(h, obj, field) : renderHeader(h, obj, field)">
             <template slot-scope="{ row, $index }">
-                <slot v-if="field.listSlot" :name="field.fieldCode" :$index="$index" :data="row" :value="row[field.fieldCode]"
+                <slot v-if="$scopedSlots[`cell-${field.fieldCode}`]" :name="`cell-${field.fieldCode}`" :$index="$index"
+                    :data="row" :value="row[field.fieldCode]" :fieldFormatArr="field.fieldFormatArr"></slot>
+                <slot v-else-if="field.listSlot" :name="field.fieldCode" :$index="$index" :data="row" :value="row[field.fieldCode]"
                     :fieldFormatArr="field.fieldFormatArr"></slot>
                 <span v-else-if="field.fieldType != null && field.fieldType.indexOf('date') != -1">
                     {{ parseTime(row[field.fieldCode], field.fieldFormat)

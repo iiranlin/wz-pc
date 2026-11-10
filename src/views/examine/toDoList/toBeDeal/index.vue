@@ -11,6 +11,10 @@
         <table-index ref="tableIndex" :loading="loading" idName="taskId" :tableData="dataList" :property="property"
             :numberShow="numberShow" @handleSelectionChange="handleSelectionChange" @handleButton="handleButton"
             @selectChange="selectChange" @emitAblFilter="emitAblFilter" @clickLink="clickLink">
+            <template #cell-auditStatus="{ data, value, fieldFormatArr }">
+                <span v-if="isRollbackAudit(data)">退回上一步</span>
+                <span v-else>{{ value | fieldFormat(fieldFormatArr) }}</span>
+            </template>
         </table-index>
         <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize"
             @pagination="getList" />
@@ -25,6 +29,7 @@ import mixins from '@/views/mixins'
 import workFlowView from '@/components/workFlowView'
 import { auditList } from '@/api/system/workflow'
 import { FLOW_ROUTE } from '@/utils/constant'
+import { isRollbackAudit } from '@/utils/workflow-review'
 export default {
     name: "toBeDeal",
     dicts: ['flowBusinessType'],
@@ -78,6 +83,7 @@ export default {
     },
     mounted() { },
     methods: {
+        isRollbackAudit,
         // 获取页面的属性
         menuProperty() {
             let id = this.$route.meta.id;
